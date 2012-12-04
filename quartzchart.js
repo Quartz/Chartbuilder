@@ -27,7 +27,8 @@ var chartConfig = {
 		prefix: "",
 		suffix: "",
 		type: "linear",
-		formatter: null
+		formatter: null,
+		mixed: true,
 	},
 	yAxis: [
 		{
@@ -48,9 +49,25 @@ var chartConfig = {
 	series: [
 		{
 			name: "This is Fake Data Enter Something Different Below",
-			data: [46.44,47.12,46.47,47.05,46.83,46.99,47.27,47.23,46.89,46.63,46.21,46.7,47.19,46.8,47.46,48.41,48.31,48.31,48.23,48.79,49.46,49.39,49.6,49.18,49.48,49.81,49.67,49.02,48.54,48.14,48.84,48.45,48.25,48.54,48.84,49.39,49.29,49.34,49.33,49.21,49.41,49.31,48.91,49.53,50.18,50.67,50.62,50.53,50.33,50.19,49.85,49.63,49.15,49.36,48.81,49.28,49.06,48.92,48.88,48,48.66,49.53,49.78,49.32,49.56,50.01,49.76,49.54,49.54,49.82,50.23,50.11,49.62,49.86,50.16,50.14,49.49,50.04,48.97,49.2,48.59,47.79,47.11,46.16,44.67,45.31,45.17,46.17],
+			data: [49.78,49.32,49.56,50.01,49.76,49.54,49.54,49.82,50.23,50.11,49.62,49.86,50.16,50.14,49.49,50.04,48.97,49.2,48.59,47.79,47.11,46.16,44.67,45.31,45.17,46.17],
+			source: "Some Org",
+			type: "column",
+			axis: 0,
+			color: null
+		},
+		{
+			name: "This is the other data set",
+			data: [49.31,48.91,49.53,50.18,50.67,50.62,50.53,50.33,50.19,49.85,49.63,49.15,49.36,48.81,49.2,47.27,47.23,49.31,48.91,49.53,50.18,50.67,50.62,50.53],
 			source: "Some Org",
 			type: "line",
+			axis: 0,
+			color: null
+		},
+		{
+			name: "This is the other data set",
+			data: [49.31,48.91,49.53,50.18,50.67,50.62,50.53,50.33,50.19,49.85,49.63,49.15,49.36,48.81,49.2,47.27,47.23,50.62,50.53,50.33,50.19,49.85,49.63],
+			source: "Some Org",
+			type: "column",
 			axis: 0,
 			color: null
 		}
@@ -127,6 +144,7 @@ var QuartzCharts = {
 	},
 	setYScales: function(first) {
 		var q = this.q
+		console.log(q.padding.top)
 		/*
 		*
 		* Y AXIS SECTION
@@ -219,6 +237,8 @@ var QuartzCharts = {
 				};
 				q.xAxis.scale = d3.scale.linear()
 					.domain([0,maxLength-1])
+					
+				q.maxLength = maxLength;
 			}
 			
 		}
@@ -241,8 +261,15 @@ var QuartzCharts = {
 				q.xAxis.scale.domain([0,maxLength-1])
 			}
 		}
+		
 		//set the range of the x axis
-		q.xAxis.scale.range([q.padding.left,q.width - q.padding.right])
+		if (q.xAxis.mixed) {
+			q.xAxis.scale.range([q.padding.left + 25,q.width - q.padding.right - 25]) //CHANGE to dynamically calculate 
+		}
+		else {
+			q.xAxis.scale.range([q.padding.left,q.width - q.padding.right])
+		};
+		
 		this.q = q;
 		
 	},
@@ -499,6 +526,9 @@ var QuartzCharts = {
 		//construct line maker helper functions for each yAxis
 		this.setLineMakers(first)
 		
+		//group the series by their type
+		var sbt = this.splitSeriesByType(q.series);
+		
 		if(first) {
 			
 			//create a group to contain series
@@ -507,13 +537,42 @@ var QuartzCharts = {
 				
 				
 			lineSeries = q.seriesContainer.selectAll("path");
+			columnSeries = q.seriesContainer.selectAll("g.seriesColumn")
+			var columnGroups
+			var columnRects
+			
+			columnWidth = Math.floor((q.width / q.maxLength) / sbt.column.length) - 3;
+			
+			//make sure width is >= 1
+			columnWidth = Math.max(columnWidth, 1)
+			
+			columnGroupShift = columnWidth + 1;
 				
 			//create a group to contain the legend items
 			q.legendItemContainer = q.chart.append("g")
 				.attr("id","legendItemContainer")
 				
+				//add bars to chart
+				columnGroups = columnSeries.data(sbt.column)
+					.enter()
+					.append("g") 
+						.attr("class","seriesColumn")
+						.attr("fill",function(d,i){return d.color? d.color : q.colors[i+sbt.line.length]})
+						.attr("transform",function(d,i){return "translate("+(i*columnGroupShift-columnGroupShift/2)+",0)"})
+						
+				columnGroups.selectAll("rect")
+					.data(function(d,i){return d.data})
+					.enter()
+						.append("rect")
+						.attr("width",columnWidth)
+						.attr("height", function(d,i) {yAxisIndex = 0; return q.height - q.yAxis[0].scale(d) - q.padding.bottom})
+						.attr("x",function(d,i) {return q.xAxis.scale(i) - columnWidth/2})
+						.attr("y",function(d,i) {yAxisIndex = 0; return q.height - (q.height - q.yAxis[0].scale(d) - q.padding.bottom) - q.padding.bottom})
+				
+				
+				
 				//add lines to chart
-				lineSeries.data(q.series) //CHANGE to handle multiple series types
+				lineSeries.data(sbt.line)
 					.enter()
 					.append("path")
 						.attr("d",function(d,j) { yAxisIndex = d.axis; return q.yAxis[d.axis].line(d.data)})
@@ -525,8 +584,46 @@ var QuartzCharts = {
 						.attr("fill","none")
 		}
 		else {
+			
+			//add bars to chart
+			columnGroups = q.seriesContainer.selectAll("g.seriesColumn")
+				.data(sbt.column)
+				.attr("fill",function(d,i){return d.color? d.color : q.colors[i+sbt.line.length]})
+				
+			columnGroups.enter()
+				.append("g") 
+					.attr("class","seriesColumn")
+					.attr("fill",function(d,i){return d.color? d.color : q.colors[i+sbt.line.length]})
+					.attr("transform",function(d,i){return "translate("+(i*columnGroupShift-columnGroupShift/2)+",0)"})
+					
+			columnSeries.transition()
+				.duration(500)
+				.attr("transform",function(d,i){return "translate("+(i*columnGroupShift-columnGroupShift/2)+",0)"})
+			
+			columnGroups.exit().remove()
+			
+			columnRects = columnGroups.selectAll("rect")
+				.data(function(d,i){return d.data})
+				
+			columnRects.enter()
+					.append("rect")
+					.attr("width",columnWidth)
+					.attr("height", function(d,i) {yAxisIndex = 0; return q.height - q.yAxis[0].scale(d) - q.padding.bottom})
+					.attr("x",function(d,i) {return q.xAxis.scale(i) - columnWidth/2})
+					.attr("y",function(d,i) {yAxisIndex = 0; return q.height - (q.height - q.yAxis[0].scale(d) - q.padding.bottom) - q.padding.bottom})
+			
+			columnRects.transition()
+				.duration(500)
+				.attr("width",columnWidth)
+				.attr("height", function(d,i) {yAxisIndex = 0; return q.height - q.yAxis[0].scale(d) - q.padding.bottom})
+				.attr("x",function(d,i) {return q.xAxis.scale(i) - columnWidth/2})
+				.attr("y",function(d,i) {yAxisIndex = 0; return q.height - (q.height - q.yAxis[0].scale(d) - q.padding.bottom) - q.padding.bottom})
+				
+			columnRects.exit().remove()
+			
+			
 			lineSeries = q.seriesContainer.selectAll("path")
-				.data(q.series)
+				.data(sbt.line)
 				.attr("stroke",function(d,i){return d.color? d.color : q.colors[i]});
 
 			lineSeries.enter()
@@ -589,13 +686,20 @@ var QuartzCharts = {
 
 					if(x + curWidth > q.width) {
 						x = q.padding.left
-						legendItemY += 15;
-						//q.padding.top += 15;
-						this.q = q
+						legendItemY += 15;						
 					}
 					d3.select(this).attr("transform","translate("+x+","+legendItemY+")")
 				}
 			})
+			
+			//test if the chart needs more top margin because of a large number of legend items
+			if (legendItemY > 0 && q.padding.top == 25) { //CHANGE
+				q.padding.top = legendItemY + 25;
+				this.q = q;
+				console.log(this.redraw())
+				
+				
+			};
 		}
 		
 		
@@ -605,6 +709,17 @@ var QuartzCharts = {
 		
 		
 	},
+	splitSeriesByType: function(series) {
+		var o = {
+			"line":[],
+			"column":[]
+		}
+		for (var i=0; i < series.length; i++) {
+			o[series[i].type].push(series[i])
+		}
+		
+		return o
+	},
 	update: function() {
 		
 	},
@@ -613,6 +728,8 @@ var QuartzCharts = {
 	},
 	redraw: function() {
 		var q = this.q
+		this.setYScales()
+		this.setXScales()
 		this.setYAxes()
 		this.setXAxis()
 		this.drawSeriesAndLegend();	

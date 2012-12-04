@@ -52,7 +52,7 @@ input, select {
 #rightColumn {
 	margin-top: 10px;
 }
-
+/*
 #interactiveContent svg .nfpDeltaBarPos {
 	fill: #5F9973;
 }
@@ -101,7 +101,7 @@ input, select {
 	text-rendering:  optimizeLegibility;
 	fill: #999999;
 }
-
+*/
 
 #interactiveContent .interfaceCol {
 	width: 46%;
