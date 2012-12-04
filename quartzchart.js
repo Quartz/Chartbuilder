@@ -60,7 +60,7 @@ var chartConfig = {
 			data: []
 		}
 	],
-	sourceline: "Data compiled by Quartz",
+	sourceline: "",
 	creditline: "Quartz | qz.com"
 }
 
