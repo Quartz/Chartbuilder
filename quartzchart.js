@@ -144,7 +144,6 @@ var QuartzCharts = {
 	},
 	setYScales: function(first) {
 		var q = this.q
-		console.log(q.padding.top)
 		/*
 		*
 		* Y AXIS SECTION
@@ -529,6 +528,12 @@ var QuartzCharts = {
 		//group the series by their type
 		var sbt = this.splitSeriesByType(q.series);
 		
+		//determine the propper column width
+		var columnWidth = Math.floor((q.width / q.maxLength) / sbt.column.length) - 3;
+		//make sure width is >= 1
+		columnWidth = Math.max(columnWidth, 1)
+		var columnGroupShift = columnWidth + 1;
+		
 		if(first) {
 			
 			//create a group to contain series
@@ -541,18 +546,13 @@ var QuartzCharts = {
 			var columnGroups
 			var columnRects
 			
-			columnWidth = Math.floor((q.width / q.maxLength) / sbt.column.length) - 3;
 			
-			//make sure width is >= 1
-			columnWidth = Math.max(columnWidth, 1)
-			
-			columnGroupShift = columnWidth + 1;
 				
 			//create a group to contain the legend items
 			q.legendItemContainer = q.chart.append("g")
 				.attr("id","legendItemContainer")
 				
-				//add bars to chart
+				//add columns to chart
 				columnGroups = columnSeries.data(sbt.column)
 					.enter()
 					.append("g") 
@@ -565,9 +565,9 @@ var QuartzCharts = {
 					.enter()
 						.append("rect")
 						.attr("width",columnWidth)
-						.attr("height", function(d,i) {yAxisIndex = 0; return q.height - q.yAxis[0].scale(d) - q.padding.bottom})
+						.attr("height", function(d,i) {yAxisIndex = 0; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
 						.attr("x",function(d,i) {return q.xAxis.scale(i) - columnWidth/2})
-						.attr("y",function(d,i) {yAxisIndex = 0; return q.height - (q.height - q.yAxis[0].scale(d) - q.padding.bottom) - q.padding.bottom})
+						.attr("y",function(d,i) {yAxisIndex = 0; return (q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex]))) >= 0 ? q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])) : q.yAxis[yAxisIndex].scale(d)})
 				
 				
 				
@@ -585,7 +585,7 @@ var QuartzCharts = {
 		}
 		else {
 			
-			//add bars to chart
+			//add columns to chart
 			columnGroups = q.seriesContainer.selectAll("g.seriesColumn")
 				.data(sbt.column)
 				.attr("fill",function(d,i){return d.color? d.color : q.colors[i+sbt.line.length]})
@@ -608,16 +608,16 @@ var QuartzCharts = {
 			columnRects.enter()
 					.append("rect")
 					.attr("width",columnWidth)
-					.attr("height", function(d,i) {yAxisIndex = 0; return q.height - q.yAxis[0].scale(d) - q.padding.bottom})
+					.attr("height", function(d,i) {yAxisIndex = 0; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
 					.attr("x",function(d,i) {return q.xAxis.scale(i) - columnWidth/2})
-					.attr("y",function(d,i) {yAxisIndex = 0; return q.height - (q.height - q.yAxis[0].scale(d) - q.padding.bottom) - q.padding.bottom})
+					.attr("y",function(d,i) {yAxisIndex = 0; return (q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex]))) >= 0 ? q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])) : q.yAxis[yAxisIndex].scale(d)})
 			
 			columnRects.transition()
 				.duration(500)
 				.attr("width",columnWidth)
-				.attr("height", function(d,i) {yAxisIndex = 0; return q.height - q.yAxis[0].scale(d) - q.padding.bottom})
+				.attr("height", function(d,i) {yAxisIndex = 0; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
 				.attr("x",function(d,i) {return q.xAxis.scale(i) - columnWidth/2})
-				.attr("y",function(d,i) {yAxisIndex = 0; return q.height - (q.height - q.yAxis[0].scale(d) - q.padding.bottom) - q.padding.bottom})
+				.attr("y",function(d,i) {yAxisIndex = 0; return (q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex]))) >= 0 ? q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])) : q.yAxis[yAxisIndex].scale(d)})
 				
 			columnRects.exit().remove()
 			
@@ -695,9 +695,7 @@ var QuartzCharts = {
 			//test if the chart needs more top margin because of a large number of legend items
 			if (legendItemY > 0 && q.padding.top == 25) { //CHANGE
 				q.padding.top = legendItemY + 25;
-				this.q = q;
-				console.log(this.redraw())
-				
+				this.q = q;				
 				
 			};
 		}
@@ -762,6 +760,17 @@ var QuartzCharts = {
 				};
 			}
 			return d3.extent(data)
+		},
+		columnXandHeight: function(d,axis) {
+			//a function to find the propper value to cut off a column
+			if(d > 0 && axis.domain[0] > 0) {
+				return axis.domain[0]
+			}
+			else if (d < 0 && axis.domain[1] < 0) {
+				return axis.domain[1]
+			}
+			
+			return 0
 		}
 	},
 	q: {}

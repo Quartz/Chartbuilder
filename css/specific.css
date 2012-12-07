@@ -153,8 +153,12 @@ input, select {
 	margin-bottom: 12px;
 }
 
-#interactiveContent .seriesItem label, #interactiveContent .seriesItem input {
+#interactiveContent .seriesItemGroup label, 
+#interactiveContent .seriesItemGroup input, 
+#interactiveContent .seriesItemGroup select,
+#interactiveContent .seriesItemGroup .colorPicker-picker {
 	float: left;
+	margin-right: 5px;
 }
 
 #interactiveContent .seriesItem label {

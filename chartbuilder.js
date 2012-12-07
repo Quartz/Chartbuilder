@@ -1,4 +1,4 @@
-
+var chart;
 ChartBuilder = {
 	allColors: ["ff4cf4","ffb3ff","e69ce6","cc87cc","b373b3","995f99","804c80","665266", //purples
 				"158eff","99cdff","9cc2e6","87abcc","7394b3","5f7d99","466780","525c66", //blues
@@ -36,7 +36,6 @@ ChartBuilder = {
 	parseData: function(a) {
 		var d = []
 		var parseFunc;
-		
 		for (var i=0; i < a.length; i++) {
 			if((/date/gi).test(a[i][0])) {
 				parseFunc = this.dateAll
@@ -47,12 +46,14 @@ ChartBuilder = {
 				parseFunc = this.floatAll
 			}
 			
+			
 			d.push({
 				"name": a[i].shift(),
 				"data":parseFunc(a[i]),
 				"prefix":"",
 				"suffix":"",
-				"axis": 0
+				"axis": 0,
+				"type": chart.q.series[i].type ? chart.q.series[i].type : "line"
 			});
 		};
 		return d
@@ -137,13 +138,18 @@ ChartBuilder = {
 		for (var i=0; i < q.series.length; i++) {
 			s = q.series[i]
 			seriesItem = $('<div class="seriesItemGroup">\
-				<label for="'+this.idSafe(s.name)+'">'+s.name+'</label>\
-				<input id="'+this.idSafe(s.name)+'" name="'+this.idSafe(s.name)+'" type="text" />\
+				<label for="'+this.idSafe(s.name)+'_color">'+s.name+'</label>\
+				<input id="'+this.idSafe(s.name)+'_color" name="'+this.idSafe(s.name)+'" type="text" />\
+				<select class="typePicker" id="'+this.idSafe(s.name)+'_type">\
+				<option '+(s.type=="line"?"selected":"")+' value="line">Line</option>\
+				<option '+(s.type=="column"?"selected":"")+' value="column">Column</option>\
+				</select>\
+				<div class="clearfix"></div>\
 			</div>');
 			
 			var color = s.color ? s.color.replace("#","") : chart.q.colors[i].replace("#","")
 			seriesContainer.append(seriesItem);
-			var picker = seriesItem.find("#"+this.idSafe(s.name)).colorPicker({pickerDefault: color, colors:[	"ff4cf4","ffb3ff","e69ce6","cc87cc","b373b3","995f99","804c80","665266", //purple
+			var picker = seriesItem.find("#"+this.idSafe(s.name)+"_color").colorPicker({pickerDefault: color, colors:[	"ff4cf4","ffb3ff","e69ce6","cc87cc","b373b3","995f99","804c80","665266", //purple
 												"158eff","99cdff","9cc2e6","87abcc","7394b3","5f7d99","466780","525c66", //blue
 												"000000","f2f2f2","e6e6e6","cccccc","b3b3b3","999999","808080","666666", //gray
 												"15ff67","b3ffcc","9ce6b5","87cc9e","73b389","5f9973","4c805d","526659", //green
@@ -151,12 +157,18 @@ ChartBuilder = {
 												"FF4200","ffb899","e6b39c","cc9c87","b38673","99715f","805c4c","665852", //orange
 												"FF005C","ff99b9","e69cb3","cc879d","b37387","995f71","804c5d","665258", //red
 												]});
+			var typer = seriesItem.find("#"+this.idSafe(s.name)+"_type")
 												
 			seriesItem.data("index",i)
 			picker.change(function() {
 				chart.q.series[$(this).parent().data().index].color = $(this).val()
 				ChartBuilder.redraw()
-			})									
+			})
+			
+			typer.change(function() {
+				chart.q.series[$(this).parent().data().index].type = $(this).val()
+				ChartBuilder.redraw()
+			})
 			
 			
 		}
@@ -211,7 +223,7 @@ ChartBuilder = {
 	useState: false,
 	draws: 0
 }
-var chart;
+
 $(document).ready(function() {
 	chart = QuartzCharts.build(chartConfig)
 	
