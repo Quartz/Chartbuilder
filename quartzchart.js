@@ -547,7 +547,7 @@ var QuartzCharts = {
 		
 		//group the series by their type
 		var sbt = this.splitSeriesByType(q.series);
-		
+		q.sbt = sbt
 		//determine the propper column width
 		var columnWidth = Math.floor(((q.width-q.padding.right-q.padding.left) / q.maxLength) / sbt.column.length) - 3;
 		

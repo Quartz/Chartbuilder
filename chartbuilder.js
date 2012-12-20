@@ -6,7 +6,7 @@ ChartBuilder = {
 				"15ff67","b3ffcc","9ce6b5","87cc9e","73b389","5f9973","4c805d","526659", //greens
 				"FFFF03","fbffb3","e2e69c","c9cc87","b0b373","96995F","7e804c","656652", //yellows
 				"FF4200","ffb899","e6b39c","cc9c87","b38673","99715f","805c4c","665852", //oranges
-				"FF005C","ff99b9","e69cb3","cc879d","b37387","995f71","804c5d","665258", //reds
+				"FF005C","ff99b9","e69cb3","cc879d","b37387","995f71","804c5d","665258"  //reds
 				],
 	getNewData: function() {
 		var csvString = $("#csvInput").val()
@@ -156,6 +156,7 @@ ChartBuilder = {
 		chart.redraw()
 		$(".seriesItemGroup").detach()
 		var q = chart.q, s, picker;
+		var colIndex = q.sbt.line.length, lineIndex = 0;
 		var seriesContainer = $("#seriesItems")
 		for (var i=0; i < q.series.length; i++) {
 			s = q.series[i]
@@ -169,16 +170,19 @@ ChartBuilder = {
 				<div class="clearfix"></div>\
 			</div>');
 			
-			var color = s.color ? s.color.replace("#","") : chart.q.colors[i].replace("#","")
+			var color = ""
+			
+			if(s.type == "line") {
+				color = s.color ? s.color.replace("#","") : q.colors[lineIndex].replace("#","")
+				lineIndex++
+			}
+			else if(s.type == "column") {
+				color = s.color ? s.color.replace("#","") : q.colors[colIndex].replace("#","")
+				colIndex++
+			}
+			
 			seriesContainer.append(seriesItem);
-			var picker = seriesItem.find("#"+this.idSafe(s.name)+"_color").colorPicker({pickerDefault: color, colors:[	"ff4cf4","ffb3ff","e69ce6","cc87cc","b373b3","995f99","804c80","665266", //purple
-												"158eff","99cdff","9cc2e6","87abcc","7394b3","5f7d99","466780","525c66", //blue
-												"000000","f2f2f2","e6e6e6","cccccc","b3b3b3","999999","808080","666666", //gray
-												"15ff67","b3ffcc","9ce6b5","87cc9e","73b389","5f9973","4c805d","526659", //green
-												"FFFF03","fbffb3","e2e69c","c9cc87","b0b373","96995F","7e804c","656652", //yellow
-												"FF4200","ffb899","e6b39c","cc9c87","b38673","99715f","805c4c","665852", //orange
-												"FF005C","ff99b9","e69cb3","cc879d","b37387","995f71","804c5d","665258", //red
-												]});
+			var picker = seriesItem.find("#"+this.idSafe(s.name)+"_color").colorPicker({pickerDefault: color, colors:this.allColors});
 			var typer = seriesItem.find("#"+this.idSafe(s.name)+"_type")
 												
 			seriesItem.data("index",i)
@@ -247,6 +251,12 @@ ChartBuilder = {
 }
 
 $(document).ready(function() {
+	
+	chartConfig.colors = []
+	for (var i=0; i < ChartBuilder.allColors.length; i++) {
+		chartConfig.colors[i] = "#"+ ChartBuilder.allColors[i]
+	}
+	
 	chart = QuartzCharts.build(chartConfig)
 	
 	ChartBuilder.redraw()
