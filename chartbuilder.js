@@ -29,9 +29,12 @@ ChartBuilder = {
 		else {
 			//more commas than tabs
 		}
+		
 		var data = $.csv.toArrays(csvString,parseOptions)
 		data = this.parseData(this.pivotData(data))
 		return {data: data, datetime: (/date/gi).test(data[0].name)}
+		
+		
 	},
 	parseData: function(a) {
 		var d = []
@@ -46,35 +49,54 @@ ChartBuilder = {
 				parseFunc = this.floatAll
 			}
 			
-			
 			d.push({
 				"name": a[i].shift(),
 				"data":parseFunc(a[i]),
-				"prefix":"",
-				"suffix":"",
-				"axis": 0,
-				"type": chart.q.series[i].type ? chart.q.series[i].type : "line"
 			});
+			
 		};
 		return d
+	},
+	mergeData: function(a) {
+		var d
+		var dataLength = Math.min(a.data.length,chart.q.series.length)
+		for (var i=0; i < dataLength; i++) {
+			d = a.data[i]
+			d.prefix = chart.q.series[i].prefix
+			d.suffix = chart.q.series[i].suffix
+			d.axis = chart.q.series[i].axis
+			d.type = chart.q.series[i].type
+			d.color = chart.q.series[i].color
+			
+			a.data[i] = d
+		};
+		return a
 	},
 	pivotData: function(a){
 		var o = []
 		for (var i=0; i < a.length; i++) {
-			for (var j=0; j < a[i].length; j++) {
-				if(i == 0) {
-					o.push([])
-				}
-				if(a[i][j] != "") {
-					o[j][i] = a[i][j]
-				}
-			};
+			if(a[i]) {
+				for (var j=0; j < a[i].length; j++) {
+					if(i == 0) {
+						o.push([])
+					}
+					if(a[i][j] != "") {
+						o[j][i] = a[i][j]
+					}
+				};
+			}
+			
 		}
 		return o
 	},
 	floatAll: function(a) {
 		for (var i=0; i < a.length; i++) {
-			a[i] = parseFloat(a[i])
+			if(a[i] && a[i].length > 0 && (/[\d\.]+/).test(a[i])) {
+				a[i] = parseFloat(a[i])
+			}
+			else {
+				a[i] = null
+			}
 		};
 		return a
 	},
@@ -230,7 +252,20 @@ $(document).ready(function() {
 	ChartBuilder.redraw()
 	ChartBuilder.inlineAllStyles();
 	$("#csvInput").val(function() {
-		return chart.q.series[0].name + "\n" + chart.q.series[0].data.join("\n")
+		var val = ""
+		for (var i=0; i < chart.q.series.length; i++) {
+			val += chart.q.series[i].name 
+			val += (i<chart.q.series.length-1) ? "\t" : "\n"
+		};
+		for (var j=0; j < chart.q.series[0].data.length; j++) {
+			for (var i=0; i < chart.q.series.length; i++) {
+				val += chart.q.series[i].data[j] 
+				val += (i<chart.q.series.length-1) ? "\t" : "\n"
+			};
+		};
+		return val
+		
+		//return chart.q.series[0].name + "\n" + chart.q.series[0].data.join("\n")
 	})
 	
 	$("#createImageButton").click(function() {
@@ -240,14 +275,18 @@ $(document).ready(function() {
 	})
 	
 	$("#csvInput").bind("paste", function(e) {
-		for (var i = chart.q.yAxis.length - 1; i >= 0; i--){
-			chart.q.yAxis[i].domain = [null,null];
-		};
+		console.log($("#right_axis_max").val().length,$("#right_axis_min").val().length)
+		if($("#right_axis_max").val().length == 1 && $("#right_axis_min").val().length == 0) {
+			for (var i = chart.q.yAxis.length - 1; i >= 0; i--){
+				chart.q.yAxis[i].domain = [null,null];
+			};
+		}
+		
 	})
 	
 	//add interactions to interface
 	$("#csvInput").keyup(function() {
-		var newData = ChartBuilder.getNewData()
+		var newData = ChartBuilder.mergeData(ChartBuilder.getNewData())
 		if(newData.datetime) {
 			chart.q.dateRef = [newData.data.shift()]
 			chart.q.xAxis.type = "date";
@@ -294,10 +333,12 @@ $(document).ready(function() {
 	})
 	
 	$("#right_axis_min").keyup(function() {
-		var val = parseFloat($(this).val())
+		var val = $(this).val()
+		var val = parseFloat(val)
 		if(val == NaN) {
 			val == null
 		}
+		
 		chart.q.yAxis[0].domain[0] = val;
 		chart.setYScales();
 		ChartBuilder.redraw()

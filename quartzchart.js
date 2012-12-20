@@ -27,7 +27,7 @@ var chartConfig = {
 		prefix: "",
 		suffix: "",
 		type: "linear",
-		formatter: null,
+		formatter: "mm",
 		mixed: true,
 	},
 	yAxis: [
@@ -172,11 +172,11 @@ var QuartzCharts = {
 		
 		for (var i = extremes.length - 1; i >= 0; i--){
 			var ex = d3.extent(extremes[i])
-			if(!q.yAxis[i].domain[0]) {
+			if(q.yAxis[i].domain[0] == null) {
 				q.yAxis[i].domain[0] = ex[0]
 			}
 			
-			if(!q.yAxis[i].domain[1]) {
+			if(q.yAxis[i].domain[1]  == null) {
 				q.yAxis[i].domain[1] = ex[1]
 			}
 		};
@@ -461,12 +461,22 @@ var QuartzCharts = {
 				switch(q.xAxis.formatter) {
 				   // "mmddyyyy":
 				   // "mmdd"
-				   // "yy"
-				   // "yyyy"
-				   // "MM"
-				   // "M"
+					case "yy":
+						q.xAxis.axis.ticks(d3.time.years,1)
+					break;
+					
+					case "yyyy":
+						q.xAxis.axis.ticks(d3.time.years,1)
+					break;
+					
+					case "MM":
+						q.xAxis.axis.ticks(d3.time.months,1)
+					break;
+					
+					case "M":
+						q.xAxis.axis.ticks(d3.time.months,1)
+					break;
 				   // "hmm"
-
 
 					case "YY":
 						q.xAxis.axis.ticks(d3.time.years,1)
@@ -490,12 +500,22 @@ var QuartzCharts = {
 				switch(q.xAxis.formatter) {
 				   // "mmddyyyy":
 				   // "mmdd"
-				   // "yy"
-				   // "yyyy"
-				   // "MM"
-				   // "M"
+					case "yy":
+						q.xAxis.axis.ticks(d3.time.years,1)
+					break;
+					
+					case "yyyy":
+						q.xAxis.axis.ticks(d3.time.years,1)
+					break;
+					
+					case "MM":
+						q.xAxis.axis.ticks(d3.time.months,1)
+					break;
+					
+					case "M":
+						q.xAxis.axis.ticks(d3.time.months,1)
+					break;
 				   // "hmm"
-
 
 					case "YY":
 						q.xAxis.axis.ticks(d3.time.years,1)
@@ -508,7 +528,7 @@ var QuartzCharts = {
 		}
 		
 		q.chart.selectAll("#xAxis text")
-			.attr("text-anchor", q.xAxis.type == "date" ? "start":"middle")
+			.attr("text-anchor", q.xAxis.type == "date" && !q.xAxis.mixed ? "start":"middle")
 		
 		this.q = q
 	},
@@ -529,7 +549,8 @@ var QuartzCharts = {
 		var sbt = this.splitSeriesByType(q.series);
 		
 		//determine the propper column width
-		var columnWidth = Math.floor((q.width / q.maxLength) / sbt.column.length) - 3;
+		var columnWidth = Math.floor(((q.width-q.padding.right-q.padding.left) / q.maxLength) / sbt.column.length) - 3;
+		
 		//make sure width is >= 1
 		columnWidth = Math.max(columnWidth, 1)
 		var columnGroupShift = columnWidth + 1;
@@ -566,7 +587,10 @@ var QuartzCharts = {
 						.append("rect")
 						.attr("width",columnWidth)
 						.attr("height", function(d,i) {yAxisIndex = 0; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
-						.attr("x",function(d,i) {return q.xAxis.scale(i) - columnWidth/2})
+						.attr("x",q.xAxis.type =="date" ? 
+								function(d,i) {return q.xAxis.scale(QuartzCharts.q.dateRef[0].data[i])}:
+								function(d,i) {return q.xAxis.scale(i) - columnWidth/2}
+						)
 						.attr("y",function(d,i) {yAxisIndex = 0; return (q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex]))) >= 0 ? q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])) : q.yAxis[yAxisIndex].scale(d)})
 				
 				
@@ -609,14 +633,20 @@ var QuartzCharts = {
 					.append("rect")
 					.attr("width",columnWidth)
 					.attr("height", function(d,i) {yAxisIndex = 0; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
-					.attr("x",function(d,i) {return q.xAxis.scale(i) - columnWidth/2})
+					.attr("x",q.xAxis.type =="date" ? 
+							function(d,i) {return q.xAxis.scale(QuartzCharts.q.dateRef[0].data[i])}:
+							function(d,i) {return q.xAxis.scale(i) - columnWidth/2}
+					)
 					.attr("y",function(d,i) {yAxisIndex = 0; return (q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex]))) >= 0 ? q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])) : q.yAxis[yAxisIndex].scale(d)})
 			
 			columnRects.transition()
 				.duration(500)
 				.attr("width",columnWidth)
 				.attr("height", function(d,i) {yAxisIndex = 0; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
-				.attr("x",function(d,i) {return q.xAxis.scale(i) - columnWidth/2})
+				.attr("x",q.xAxis.type =="date" ? 
+						function(d,i) {return q.xAxis.scale(QuartzCharts.q.dateRef[0].data[i])}:
+						function(d,i) {return q.xAxis.scale(i) - columnWidth/2}
+				)
 				.attr("y",function(d,i) {yAxisIndex = 0; return (q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex]))) >= 0 ? q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])) : q.yAxis[yAxisIndex].scale(d)})
 				
 			columnRects.exit().remove()

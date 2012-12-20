@@ -23,6 +23,14 @@ input, select {
 	margin-bottom: 5px;
 }
 
+body {
+	overflow: hidden;
+}
+
+#interactiveContent {
+	width: 3000px;
+}
+
 #interactiveContent .cbColumn{
 	float:left;
 }
