@@ -18,8 +18,9 @@ ChartBuilder = {
 			skip:"0"
 		}
 		var tab = String.fromCharCode(9)
-
-		if(csvString.split(tab).length > csvString.split(",").length) {
+        
+		/* JUST USE TAB DELIMETED OKAY
+		if(csvString.split(tab).length < csvString.split(",").length) {
 			//more tabs than commas
 			
 			//swap tabs for pipes because of some bug in the csv library
@@ -29,10 +30,26 @@ ChartBuilder = {
 		else {
 			//more commas than tabs
 		}
+		*/
 		
-		var data = $.csv.toArrays(csvString,parseOptions)
-		data = this.parseData(this.pivotData(data))
-		return {data: data, datetime: (/date/gi).test(data[0].name)}
+		//swap tabs for pipes because of some bug in the csv library
+		csvString = csvString.split(tab).join("|")
+		parseOptions.separator = "|"
+		
+		/*remove commas (but not from the header row)*/
+		csvString = csvString.split("\n")
+		//cache the header row
+		var header = csvString[0] + ""
+		csvString = csvString.join("\n").split(",").join("")
+		csvString = csvString.split("\n")
+		csvString[0] = header;
+		csvString = csvString.join("\n")
+		
+		var rawdata = $.csv.toArrays(csvString,parseOptions)
+		var data = this.parseData(this.pivotData(rawdata))
+		var output = {data: data, datetime: (/date/gi).test(data[0].name)}
+		this.createTable(rawdata,output)
+		return output
 		
 		
 	},
@@ -89,6 +106,23 @@ ChartBuilder = {
 		}
 		return o
 	},
+	createTable: function(r,d){
+		$table = $("#dataTable table")
+		$table.text("")
+		$table.append("<tr><th>"+r[0].join("</th><th>")+"</th></tr>")
+		for (var i=1; i < r.length; i++) {
+			if(r[i]) {
+				if(d.datetime) {
+					r[i][0] = Date.create(r[i][0]).format("{M}/{d}/{yy} {hh}:{mm}")
+				}
+				$("<tr><td>"+r[i].join("</td><td>")+"</td></tr>")
+					.addClass(i%2 == 0? "otherrow":"row")
+					.appendTo($table)
+			}
+			
+				
+		};
+	},
 	floatAll: function(a) {
 		for (var i=0; i < a.length; i++) {
 			if(a[i] && a[i].length > 0 && (/[\d\.]+/).test(a[i])) {
@@ -102,7 +136,7 @@ ChartBuilder = {
 	},
 	dateAll: function(a) {
 		for (var i=0; i < a.length; i++) {
-			a[i] = new Date(a[i])
+			a[i] = Date.create(a[i])
 		};
 		return a
 	},

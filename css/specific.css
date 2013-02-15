@@ -123,15 +123,29 @@ body {
 
 #datainput {
 	margin-top: 10px;
-	height: 300px;
+	margin-bottom:30px;
+	height: 100px;
 }
 
 #datainput textarea{
 	width: 100%;
-	height: 300px;
+	height: 100%;
+	font-family: Monaco, sans-serif;
+	font-size: 10px;
+	box-sizing:border-box;
+	-moz-box-sizing:border-box; /* Firefox */
+	-webkit-box-sizing:border-box; /* Safari */
+}
+#dataTable .otherrow {
+	background-color: #eee;
+}
+
+#dataTable {
+	width: 600px;
 	font-family: Monaco, sans-serif;
 	font-size: 10px;
 }
+
 #interactiveContent .hide {
 	display: none;
 }
@@ -178,3 +192,4 @@ body {
 	margin:0px;
 	margin-left: 5px;
 }
+
