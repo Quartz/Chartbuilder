@@ -87,6 +87,7 @@ var QuartzCharts = {
 	dateParsers: {
 		"mmddyyyy": function(d) {return [d.getMonth()+1,d.getDate(),d.getFullYear()].join("/");},
 		"mmdd": function(d) {return [d.getMonth()+1,d.getDate()].join("/")},
+		"mmyy": function(d) {return [d.getMonth()+1,String(d.getFullYear()).split("").splice(2,2).join("")].join("/")},
 		"yy": function(d) {return "’"+String(d.getFullYear()).split("").splice(2,2).join("")},
 		"yyyy": function(d) {return d.getFullYear()},
 		"MM": function(d) {return QuartzCharts.longMonths[d.getMonth()]},
@@ -153,15 +154,24 @@ var QuartzCharts = {
 		var axisIndex = 0;
 		var extremes = [], ex;
 		for (var i = q.series.length - 1; i >= 0; i--){
+			
+			//CHANGE if there is no axis set to 0
+			if(!q.series[i].axis) {
+				q.series[i].axis = 0;
+			}
+			
+			
 			axisIndex = q.series[i].axis;
+			
 			
 			//CHANGE check if there are any extremes for the current axis
 			if(extremes[axisIndex] === undefined) {
 				extremes[axisIndex] = []
 			}
 			
+			
 			if(q.yAxis[axisIndex] === undefined) {
-				console.error(q.series[i].name + " ["+i+"] is associated with axis " + q.series[i].axis + ", but that axis does not exist")
+				console.error(q.series[i].name + " ["+i+"] is associated with axis " + axisIndex + ", but that axis does not exist")
 			}
 			
 			//calculate extremes of current series and add them to extremes array
@@ -430,7 +440,13 @@ var QuartzCharts = {
 			//add the prefix and suffix to the top most label as appropriate
 			if(curAxis.suffix.use == "top" && curAxis.prefix.use == "top") {
 				//both preifx and suffix should be added to the top most label
-				topAxisLabel.text(q.yAxis[i].prefix.value + topAxisLabel.text() + q.yAxis[i].suffix.value)
+				if(topAxisLabel) {
+					topAxisLabel.text(q.yAxis[i].prefix.value + topAxisLabel.text() + q.yAxis[i].suffix.value)
+				}
+				else {
+					console.error("top label not foun")
+				}
+				
 			}
 			else if (curAxis.suffix.use == "top") {
 				//only the suffix should be added (Because the prefix is already there)
@@ -442,7 +458,7 @@ var QuartzCharts = {
 			}
 			
 		};
-		this.q = q
+		//this.q = q
 	},
 	setXAxis: function(first) {
 		var q = this.q
@@ -743,6 +759,7 @@ var QuartzCharts = {
 			"column":[]
 		}
 		for (var i=0; i < series.length; i++) {
+			
 			o[series[i].type].push(series[i])
 		}
 		
