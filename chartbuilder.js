@@ -78,8 +78,8 @@ ChartBuilder = {
 	},
 	mergeData: function(a) {
 		var d
-		var dataLength = Math.min(a.data.length,chart.q.series.length)
-		for (var i=0; i < dataLength; i++) {
+		//var dataLength = Math.min(a.data.length,chart.q.series.length)
+		for (var i=0; i < a.data.length; i++) {
 			d = a.data[i]
 			//d.prefix = chart.q.series[i].prefix
 			//d.suffix = chart.q.series[i].suffix
@@ -88,8 +88,14 @@ ChartBuilder = {
 			//d.color = chart.q.series[i].color
 			
 			//a.data[i] = d
+			if(i < chart.q.series.length) {
+				a.data[i] = $.extend({},chart.q.series[i],d)
+			}
+			else {
+				//defaults for new series
+				a.data[i].type = "line"
+			}
 			
-			a.data[i] = $.extend({},chart.q.series[i],d)
 		};
 		
 		return a

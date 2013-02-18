@@ -49,7 +49,7 @@ var chartConfig = {
 	series: [
 		{
 			name: "This is Fake Data Enter Something Different Below",
-			data: [49.78,49.32,49.56,50.01,49.76,49.54,49.54,49.82,50.23,50.11,49.62,49.86,50.16,50.14,49.49,50.04,48.97,49.2,48.59,47.79,47.11,46.16,44.67,45.31,45.17,46.17],
+			data: [49.78, 49.32, 49.56, 50.01, 49.76, 49.54, 49.54, 49.82, 50.23, 50.11, 49.62, 49.86, 50.16, 50.14, 49.49, 50.04, 48.97, 49.2, 48.59, 47.79, 47.11],
 			source: "Some Org",
 			type: "column",
 			axis: 0,
@@ -57,15 +57,15 @@ var chartConfig = {
 		},
 		{
 			name: "This is the other data set",
-			data: [49.31,48.91,49.53,50.18,50.67,50.62,50.53,50.33,50.19,49.85,49.63,49.15,49.36,48.81,49.2,47.27,47.23,49.31,48.91,49.53,50.18,50.67,50.62,50.53],
+			data: [49.31, 48.91, 49.53, 50.18, 50.67, 50.62, 50.53, 50.33, 50.19, 49.85, 49.63, 49.15, 49.36, 48.81, 49.2, 47.27, 47.23, 49.31, 48.91, 49.53, 50.18],
 			source: "Some Org",
-			type: "line",
+			type: "column",
 			axis: 0,
 			color: null
 		},
 		{
 			name: "This is the other data set",
-			data: [49.31,48.91,49.53,50.18,50.67,50.62,50.53,50.33,50.19,49.85,49.63,49.15,49.36,48.81,49.2,47.27,47.23,50.62,50.53,50.33,50.19,49.85,49.63],
+			data: [49.31, 48.91, 49.53, 50.18, 50.67, 50.62, 50.53, 50.33, 50.19, 49.85, 49.63, 49.15, 49.36, 48.81, 49.2, 47.27, 47.23, 50.62, 50.53, 50.33, 50.19],
 			source: "Some Org",
 			type: "column",
 			axis: 0,
@@ -221,6 +221,7 @@ var QuartzCharts = {
 	},
 	setXScales: function(first) {
 		var q = this.q
+		var dateExtent, shortestPeriod = Infinity;
 		if(first) {
 			//create x scales
 			
@@ -232,10 +233,17 @@ var QuartzCharts = {
 
 			//calculate extremes of axis
 			if(q.xAxis.type == "date") {
+				dateExtent = d3.extent(q.dateRef[0].data);
 				q.xAxis.scale = d3.time.scale()
 					//.domain(QuartzCharts.multiextent(q.series,function(d){return d.data}))
-					.domain(d3.extent(q.dateRef[0].data))
-					
+					.domain(dateExtent)
+				
+				//calculate smallest gap between two dates
+				for (var i = q.dateRef[0].data.length - 2; i >= 0; i--){
+					shortestPeriod = Math.min(shortestPeriod, Math.abs(q.dateRef[0].data[i] - q.dateRef[0].data[i+1]))
+				}
+				
+				q.maxLength = Math.abs(Math.floor((dateExtent[0] - dateExtent[1]) / shortestPeriod))
 			}
 			else {
 
@@ -256,9 +264,17 @@ var QuartzCharts = {
 
 			//calculate extremes of axis
 			if(q.xAxis.type == "date") {
+				dateExtent = d3.extent(q.dateRef[0].data);
 				q.xAxis.scale = d3.time.scale()
 					//.domain(QuartzCharts.multiextent(q.series,function(d){return d.data}))
-					.domain(d3.extent(q.dateRef[0].data))
+					.domain(dateExtent)
+					
+				//calculate smallest gap between two dates
+				for (var i = q.dateRef[0].data.length - 2; i >= 0; i--){
+					shortestPeriod = Math.min(shortestPeriod, Math.abs(q.dateRef[0].data[i] - q.dateRef[0].data[i+1]))
+				}
+				
+				q.maxLength = Math.abs(Math.floor((dateExtent[0] - dateExtent[1]) / shortestPeriod))
 			}
 			else {
 
@@ -268,6 +284,8 @@ var QuartzCharts = {
 					maxLength = Math.max(maxLength, q.series[i].data.length)
 				};
 				q.xAxis.scale.domain([0,maxLength-1])
+				
+				q.maxLength = maxLength;
 			}
 		}
 		
@@ -565,10 +583,11 @@ var QuartzCharts = {
 		var sbt = this.splitSeriesByType(q.series);
 		q.sbt = sbt
 		//determine the propper column width
+		//								---- Width of chart area ----------     -Num Data pts-  -Num Column Series-
 		var columnWidth = Math.floor(((q.width-q.padding.right-q.padding.left) / q.maxLength) / sbt.column.length) - 3;
-		
 		//make sure width is >= 1
-		columnWidth = Math.max(columnWidth, 1)
+		columnWidth = Math.max(columnWidth, 1);
+		columnWidth = Math.min(columnWidth, (q.width-q.padding.right-q.padding.left) * 0.075)
 		var columnGroupShift = columnWidth + 1;
 		
 		if(first) {
@@ -595,7 +614,7 @@ var QuartzCharts = {
 					.append("g") 
 						.attr("class","seriesColumn")
 						.attr("fill",function(d,i){return d.color? d.color : q.colors[i+sbt.line.length]})
-						.attr("transform",function(d,i){return "translate("+(i*columnGroupShift-columnGroupShift/2)+",0)"})
+						.attr("transform",function(d,i){return "translate("+(i*columnGroupShift - (columnGroupShift * (sbt.column.length-1)/2))+",0)"})
 						
 				columnGroups.selectAll("rect")
 					.data(function(d,i){return d.data})
@@ -604,7 +623,7 @@ var QuartzCharts = {
 						.attr("width",columnWidth)
 						.attr("height", function(d,i) {yAxisIndex = 0; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
 						.attr("x",q.xAxis.type =="date" ? 
-								function(d,i) {return q.xAxis.scale(QuartzCharts.q.dateRef[0].data[i])}:
+								function(d,i) {return q.xAxis.scale(QuartzCharts.q.dateRef[0].data[i])  - columnWidth/2}:
 								function(d,i) {return q.xAxis.scale(i) - columnWidth/2}
 						)
 						.attr("y",function(d,i) {yAxisIndex = 0; return (q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex]))) >= 0 ? q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])) : q.yAxis[yAxisIndex].scale(d)})
@@ -622,8 +641,15 @@ var QuartzCharts = {
 						.attr("stroke-linejoin","round")
 						.attr("stroke-linecap","round")
 						.attr("fill","none")
+						
+				
 		}
 		else {
+			
+			lineSeries = q.seriesContainer.selectAll("path");
+			columnSeries = q.seriesContainer.selectAll("g.seriesColumn")
+			var columnGroups
+			var columnRects
 			
 			//add columns to chart
 			columnGroups = q.seriesContainer.selectAll("g.seriesColumn")
@@ -634,11 +660,11 @@ var QuartzCharts = {
 				.append("g") 
 					.attr("class","seriesColumn")
 					.attr("fill",function(d,i){return d.color? d.color : q.colors[i+sbt.line.length]})
-					.attr("transform",function(d,i){return "translate("+(i*columnGroupShift-columnGroupShift/2)+",0)"})
+					.attr("transform",function(d,i){return "translate("+(i*columnGroupShift - (columnGroupShift * (sbt.column.length-1)/2))+",0)"})
 					
 			columnSeries.transition()
 				.duration(500)
-				.attr("transform",function(d,i){return "translate("+(i*columnGroupShift-columnGroupShift/2)+",0)"})
+				.attr("transform",function(d,i){return "translate("+(i*columnGroupShift - (columnGroupShift * (sbt.column.length-1)/2))+",0)"})
 			
 			columnGroups.exit().remove()
 			
@@ -650,7 +676,7 @@ var QuartzCharts = {
 					.attr("width",columnWidth)
 					.attr("height", function(d,i) {yAxisIndex = 0; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
 					.attr("x",q.xAxis.type =="date" ? 
-							function(d,i) {return q.xAxis.scale(QuartzCharts.q.dateRef[0].data[i])}:
+							function(d,i) {return q.xAxis.scale(QuartzCharts.q.dateRef[0].data[i])  - columnWidth/2}:
 							function(d,i) {return q.xAxis.scale(i) - columnWidth/2}
 					)
 					.attr("y",function(d,i) {yAxisIndex = 0; return (q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex]))) >= 0 ? q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])) : q.yAxis[yAxisIndex].scale(d)})
@@ -660,7 +686,7 @@ var QuartzCharts = {
 				.attr("width",columnWidth)
 				.attr("height", function(d,i) {yAxisIndex = 0; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
 				.attr("x",q.xAxis.type =="date" ? 
-						function(d,i) {return q.xAxis.scale(QuartzCharts.q.dateRef[0].data[i])}:
+						function(d,i) {return q.xAxis.scale(QuartzCharts.q.dateRef[0].data[i])  - columnWidth/2}:
 						function(d,i) {return q.xAxis.scale(i) - columnWidth/2}
 				)
 				.attr("y",function(d,i) {yAxisIndex = 0; return (q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex]))) >= 0 ? q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])) : q.yAxis[yAxisIndex].scale(d)})
