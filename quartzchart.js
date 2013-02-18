@@ -51,7 +51,7 @@ var chartConfig = {
 			name: "This is Fake Data Enter Something Different Below",
 			data: [49.78, 49.32, 49.56, 50.01, 49.76, 49.54, 49.54, 49.82, 50.23, 50.11, 49.62, 49.86, 50.16, 50.14, 49.49, 50.04, 48.97, 49.2, 48.59, 47.79, 47.11],
 			source: "Some Org",
-			type: "column",
+			type: "line",
 			axis: 0,
 			color: null
 		},
@@ -601,6 +601,7 @@ var QuartzCharts = {
 			columnSeries = q.seriesContainer.selectAll("g.seriesColumn")
 			var columnGroups
 			var columnRects
+			var lineSeriesDots = q.seriesContainer.selectAll("g.lineSeriesDots")
 			
 			
 				
@@ -641,8 +642,26 @@ var QuartzCharts = {
 						.attr("stroke-linejoin","round")
 						.attr("stroke-linecap","round")
 						.attr("fill","none")
-						
 				
+				lineSeriesDotGroups = lineSeriesDots.data(sbt.line)
+					.enter()
+					.append("g")
+					.attr("class","lineSeriesDots")
+					.attr("fill", function(d,i){return d.color? d.color : q.colors[i]})
+				
+				lineSeriesDotGroups
+					.filter(function(d){return d.data.length < 15})
+					.selectAll("circle")
+					.data(function(d){ return d.data})
+					.enter()
+						.append("circle")
+						.attr("r",4)
+						.attr("transform",function(d,i){
+							yAxisIndex = 0; 
+							return "translate("+(q.xAxis.type=="date" ?
+								q.xAxis.scale(QuartzCharts.q.dateRef[0].data[i]):
+								q.xAxis.scale(i)) + "," + q.yAxis[yAxisIndex].scale(d) + ")"
+							})
 		}
 		else {
 			
@@ -650,6 +669,7 @@ var QuartzCharts = {
 			columnSeries = q.seriesContainer.selectAll("g.seriesColumn")
 			var columnGroups
 			var columnRects
+			var lineSeriesDotGroups
 			
 			//add columns to chart
 			columnGroups = q.seriesContainer.selectAll("g.seriesColumn")
@@ -714,6 +734,40 @@ var QuartzCharts = {
 
 			lineSeries.exit().remove()
 			
+			lineSeriesDotGroups = q.seriesContainer.selectAll("g.lineSeriesDots")
+				.data(sbt.line)
+				.attr("fill",function(d,i){return d.color? d.color : q.colors[i]})
+			
+			lineSeriesDotGroups
+				.enter()
+				.append("g")
+				.attr("class","lineSeriesDots")
+				.attr("fill", function(d,i){return d.color? d.color : q.colors[i]})
+			
+			lineSeriesDots = lineSeriesDotGroups.filter(function(d){return d.data.length < 15})
+				.selectAll("circle")
+				.data(function(d,i){return d.data})
+				
+			lineSeriesDots.enter()
+				.append("circle")
+				.attr("r",4)
+				.attr("transform",function(d,i){
+					yAxisIndex = 0; 
+					return "translate("+(q.xAxis.type=="date" ?
+						q.xAxis.scale(QuartzCharts.q.dateRef[0].data[i]):
+						q.xAxis.scale(i)) + "," + q.yAxis[yAxisIndex].scale(d) + ")"
+					})
+			
+			lineSeriesDots.transition()
+				.duration(500)
+				.attr("transform",function(d,i){
+					yAxisIndex = 0; 
+					return "translate("+(q.xAxis.type=="date" ?
+						q.xAxis.scale(QuartzCharts.q.dateRef[0].data[i]):
+						q.xAxis.scale(i)) + "," + q.yAxis[yAxisIndex].scale(d) + ")"
+					})
+			
+			lineSeriesDots.exit().remove()
 		}
 		
 		//remove current legends
