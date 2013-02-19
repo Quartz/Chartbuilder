@@ -27,8 +27,9 @@ var chartConfig = {
 		prefix: "",
 		suffix: "",
 		type: "linear",
-		formatter: "mm",
+		formatter: "m",
 		mixed: true,
+		ticks: 5
 	},
 	yAxis: [
 		{
@@ -90,8 +91,23 @@ var QuartzCharts = {
 		"mmyy": function(d) {return [d.getMonth()+1,String(d.getFullYear()).split("").splice(2,2).join("")].join("/")},
 		"yy": function(d) {return "’"+String(d.getFullYear()).split("").splice(2,2).join("")},
 		"yyyy": function(d) {return d.getFullYear()},
-		"MM": function(d) {return QuartzCharts.longMonths[d.getMonth()]},
-		"M": function(d) {return QuartzCharts.shortMonths[d.getMonth()]},
+		"MM": function(d) {
+			if(d.getMonth() == 0) {
+				return d.getFullYear();
+			}
+			else {
+				return QuartzCharts.longMonths[d.getMonth()]
+			}
+			
+		},
+		"M": function(d) {	
+			if(d.getMonth() == 0){
+				return "’"+String(d.getFullYear()).split("").splice(2,2).join("")
+			} 
+			else { 
+				return QuartzCharts.shortMonths[d.getMonth()]
+			}
+		},
 		"hmm": function(d) {var hours = d.getHours(), min = d.getMinutes(); hours = hours==0 ? 12 : hours ; return (hours > 12 ? hours-12 : hours) + ":" + (min < 10 ? "0"+min : min)},
 	},
 	build: function(config) {
@@ -117,6 +133,11 @@ var QuartzCharts = {
 			.attr("fill","#ffffff")
 			.attr("stroke","none")
 				
+		
+		//group the series by their type
+		this.q.sbt = this.splitSeriesByType(this.q.series);
+		this.calculateColumnWidths()
+		
 		this.setYScales(true);
 		this.setXScales(true);
 		
@@ -290,8 +311,8 @@ var QuartzCharts = {
 		}
 		
 		//set the range of the x axis
-		if (q.xAxis.mixed) {
-			q.xAxis.scale.range([q.padding.left + 25,q.width - q.padding.right - 25]) //CHANGE to dynamically calculate 
+		if (q.xAxis.hasColumns) {
+			q.xAxis.scale.range([q.padding.left + this.q.columnGroupWidth/2,q.width - q.padding.right - (10* (Math.round(this.q.yAxis[0].domain[1]*3/4*100) + "").length )]) 
 		}
 		else {
 			q.xAxis.scale.range([q.padding.left,q.width - q.padding.right])
@@ -462,7 +483,7 @@ var QuartzCharts = {
 					topAxisLabel.text(q.yAxis[i].prefix.value + topAxisLabel.text() + q.yAxis[i].suffix.value)
 				}
 				else {
-					console.error("top label not foun")
+					console.error("top label not found")
 				}
 				
 			}
@@ -490,6 +511,7 @@ var QuartzCharts = {
 				.scale(q.xAxis.scale)
 				.orient("bottom")
 				.tickFormat(q.xAxis.formatter ? this.dateParsers[q.xAxis.formatter] : function(d) {return d})
+				.ticks(q.xAxis.ticks)
 				
 			if(q.xAxis.type == "date") {
 				switch(q.xAxis.formatter) {
@@ -529,6 +551,7 @@ var QuartzCharts = {
 		else {
 			q.xAxis.axis.scale(q.xAxis.scale)
 				.tickFormat(q.xAxis.formatter ? this.dateParsers[q.xAxis.formatter] : function(d) {return d})
+				.ticks(q.xAxis.ticks)
 			
 			if(q.xAxis.type == "date") {
 				switch(q.xAxis.formatter) {
@@ -562,9 +585,27 @@ var QuartzCharts = {
 		}
 		
 		q.chart.selectAll("#xAxis text")
-			.attr("text-anchor", q.xAxis.type == "date" && !q.xAxis.mixed ? "start":"middle")
+			.attr("text-anchor", q.xAxis.type == "date" && !q.xAxis.hasColumns ? "start":"middle")
 		
 		this.q = q
+	},
+	calculateColumnWidths: function() {
+		var q = this.q
+		//store split by type for convenience
+		var sbt = q.sbt
+		
+		
+		//determine the propper column width
+		//								---- Width of chart area ----------     -Num Data pts-  -Num Column Series-
+		var columnWidth = Math.floor(((q.width-q.padding.right-q.padding.left) / q.maxLength) / sbt.column.length) - 3;
+		//make sure width is >= 1
+		columnWidth = Math.max(columnWidth, 1);
+		columnWidth = Math.min(columnWidth, (q.width-q.padding.right-q.padding.left) * 0.075)
+		var columnGroupShift = columnWidth + 1;
+		
+		this.q.columnWidth = columnWidth;
+		this.q.columnGroupWidth = (columnWidth + 1) * sbt.column.length;
+		this.q.columnGroupShift = columnWidth +1;
 	},
 	drawSeriesAndLegend: function(first){
 		/*
@@ -579,16 +620,12 @@ var QuartzCharts = {
 		//construct line maker helper functions for each yAxis
 		this.setLineMakers(first)
 		
-		//group the series by their type
-		var sbt = this.splitSeriesByType(q.series);
-		q.sbt = sbt
-		//determine the propper column width
-		//								---- Width of chart area ----------     -Num Data pts-  -Num Column Series-
-		var columnWidth = Math.floor(((q.width-q.padding.right-q.padding.left) / q.maxLength) / sbt.column.length) - 3;
-		//make sure width is >= 1
-		columnWidth = Math.max(columnWidth, 1);
-		columnWidth = Math.min(columnWidth, (q.width-q.padding.right-q.padding.left) * 0.075)
-		var columnGroupShift = columnWidth + 1;
+		//store split by type for convenience
+		var sbt = q.sbt
+		
+		var columnWidth = this.q.columnWidth;
+		var columnGroupShift = this.q.columnGroupShift;
+		
 		
 		if(first) {
 			
@@ -734,6 +771,8 @@ var QuartzCharts = {
 
 			lineSeries.exit().remove()
 			
+			
+			//Add dots to the appropriate line series
 			lineSeriesDotGroups = q.seriesContainer.selectAll("g.lineSeriesDots")
 				.data(sbt.line)
 				.attr("fill",function(d,i){return d.color? d.color : q.colors[i]})
@@ -743,10 +782,13 @@ var QuartzCharts = {
 				.append("g")
 				.attr("class","lineSeriesDots")
 				.attr("fill", function(d,i){return d.color? d.color : q.colors[i]})
+				
+			lineSeriesDotGroups.exit().remove()
 			
 			lineSeriesDots = lineSeriesDotGroups.filter(function(d){return d.data.length < 15})
 				.selectAll("circle")
 				.data(function(d,i){return d.data})
+				
 				
 			lineSeriesDots.enter()
 				.append("circle")
@@ -768,6 +810,7 @@ var QuartzCharts = {
 					})
 			
 			lineSeriesDots.exit().remove()
+			
 		}
 		
 		//remove current legends
@@ -839,8 +882,14 @@ var QuartzCharts = {
 			"column":[]
 		}
 		for (var i=0; i < series.length; i++) {
-			
 			o[series[i].type].push(series[i])
+		}
+		
+		if(o.column.length > 0) {
+			this.q.xAxis.hasColumns = true;
+		}
+		else {
+			this.q.xAxis.hasColumns = false;
 		}
 		
 		return o
@@ -853,6 +902,11 @@ var QuartzCharts = {
 	},
 	redraw: function() {
 		var q = this.q
+		
+		//group the series by their type
+		this.q.sbt = this.splitSeriesByType(this.q.series);
+		this.calculateColumnWidths()
+		
 		this.setYScales()
 		this.setXScales()
 		this.setYAxes()

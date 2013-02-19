@@ -385,7 +385,7 @@ $(document).ready(function() {
 			ChartBuilder.inlineAllStyles();
 		}
 
-	})
+	}).keyup()
 	
 	$("#right_axis_prefix").keyup(function() {
 		chart.q.yAxis[0].prefix.value = $(this).val()
@@ -442,6 +442,12 @@ $(document).ready(function() {
 		}
 		chart.q.yAxis[0].tickValues = val
 		chart.setYScales();
+		ChartBuilder.redraw()
+		ChartBuilder.inlineAllStyles();
+	})
+	
+	$("#x_axis_tick_num").change(function() {
+		chart.q.xAxis.ticks = parseInt($(this).val())
 		ChartBuilder.redraw()
 		ChartBuilder.inlineAllStyles();
 	})
