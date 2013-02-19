@@ -27,6 +27,14 @@ body {
 	overflow: hidden;
 }
 
+h2 {
+	margin: 0px;
+	font-size: 18px;
+}
+
+h2:not(:first-child) {
+	margin-top: 20px;
+}
 #interactiveContent {
 	width: 3000px;
 }
@@ -151,18 +159,23 @@ body {
 }
 
 #interactiveContent .updateButton {
+	margin-top: 20px;
 	clear: both;
 	cursor: pointer;
 	width: 200px;
 	height: 30px;
+	
 }
 
 #interactiveContent .updateButton p {
-	margin: 5px;
+	font-family: "AdelleSansWeb",Arial, "MS Trebuchet", sans-serif;
 	padding: 5px;
-	background-color: #DDD;
-	border: 1px solid #999;
+	background-color: #999;
+	color: #ffffff;
 	text-align: center;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
 }
 
 #interactiveContent {
@@ -171,16 +184,26 @@ body {
 	margin-right: auto;
 }
 
+
 #interactiveContent .seriesItem {
 	margin-bottom: 12px;
 }
 
-#interactiveContent .seriesItemGroup label, 
+#interactiveContent label {
+	font-family: "AdelleSansWeb",Arial, "MS Trebuchet", sans-serif;
+	color: #666666;
+	display: block;
+	font-size: 12px;
+	font-weight: bold;
+}
 #interactiveContent .seriesItemGroup input, 
 #interactiveContent .seriesItemGroup select,
 #interactiveContent .seriesItemGroup .colorPicker-picker {
 	float: left;
 	margin-right: 5px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
 }
 
 #interactiveContent .seriesItem label {

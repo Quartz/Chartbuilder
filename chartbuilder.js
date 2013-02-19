@@ -74,6 +74,13 @@ ChartBuilder = {
 			});
 			
 		};
+		for (var i = d.length - 1; i >= 0; i--){
+			for (var j = d[i].length - 1; j >= 0; j--){
+				if(d[i][j] == "" || d[i][j]==" ") {
+					d[i][j] = null
+				}
+			};
+		};
 		return d
 	},
 	mergeData: function(a) {
