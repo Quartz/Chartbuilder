@@ -186,19 +186,29 @@ ChartBuilder = {
 		var canvasContext = canvas.getContext("2d")
 		var svg = $.trim(document.getElementById("chartContainer").innerHTML)
 		canvasContext.drawSvg(svg,0,0)
-		$("#downloadLink").attr("href",canvas.toDataURL("png"))
+		
+		
+		var filename = [];
+		for (var i=0; i < chart.q.series.length; i++) {
+			filename.push(chart.q.series[i].name);
+		};
+		filename = filename.join("-").replace(/[^\w\d]+/gi, '-');
+		
+		
+		$("#downloadImageLink").attr("href",canvas.toDataURL("png"))
 			.toggleClass("hide")
-			.attr("download",function(){
-				var filename = [];
-				for (var i=0; i < chart.q.series.length; i++) {
-					filename.push(chart.q.series[i].name);
-				};
-				return filename.join("-").replace(/[^\w\d]+/gi, '-') + "_chart.png"
+			.attr("download",function(){ return filename + "_chart.png"
+			});
+			
+		$("#downloadSVGLink").attr("href","data:text/svg,"+ encodeURI($("#chartContainer").html().split("PTSerif").join("PT Serif")) )
+			.toggleClass("hide")
+			.attr("download",function(){ return filename + "_chart.svg"
 			})
 	},
 
 	redraw: function() {
 		$(".seriesItemGroup").detach()
+		$(".downloadLink").addClass("hide")
 		var q = chart.q, s, picker;
 		
 		var colIndex = q.sbt.line.length, lineIndex = 0;
@@ -448,8 +458,8 @@ $(document).ready(function() {
 		chart.q.sourceLine.text(chart.q.sourceline)
 	})
 	
-	$("#downloadLink").click(function() {
-		$(this).toggleClass("hide")
+	$(".downloadLink").click(function() {
+		$(".downloadLink").toggleClass("hide")
 	})
 
 
