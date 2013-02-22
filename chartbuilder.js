@@ -49,7 +49,7 @@ ChartBuilder = {
 		
 		var rawdata = $.csv.toArrays(csvString,parseOptions)
 		var data = this.parseData(this.pivotData(rawdata))
-		var output = {data: data, datetime: (/date/gi).test(data[0].name)}
+		var output = {data: data, datetime: ((/date/gi).test(data[0].name) || (/time/gi).test(data[0].name))}
 		this.createTable(rawdata,output)
 		return output
 		
@@ -59,7 +59,7 @@ ChartBuilder = {
 		var d = []
 		var parseFunc;
 		for (var i=0; i < a.length; i++) {
-			if((/date/gi).test(a[i][0])) {
+			if((/date/gi).test(a[i][0]) || (/time/gi).test(a[i][0])) {
 				parseFunc = this.dateAll
 				//this.config.dateseries = true;
 			}
