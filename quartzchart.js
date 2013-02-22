@@ -49,7 +49,7 @@ var chartConfig = {
 	],
 	series: [
 		{
-			name: "This is Fake Data Enter Something Different Below",
+			name: "Enter something new",
 			data: [49.78, 49.32, 49.56, 50.01, 49.76, 49.54, 49.54, 49.82, 50.23, 50.11, 49.62, 49.86, 50.16, 50.14, 49.49, 50.04, 48.97, 49.2, 48.59, 47.79, 47.11],
 			source: "Some Org",
 			type: "line",
@@ -57,7 +57,7 @@ var chartConfig = {
 			color: null
 		},
 		{
-			name: "This is the other data set",
+			name: "Fake data",
 			data: [49.31, 48.91, 49.53, 50.18, 50.67, 50.62, 50.53, 50.33, 50.19, 49.85, 49.63, 49.15, 49.36, 48.81, 49.2, 47.27, 47.23, 49.31, 48.91, 49.53, 50.18],
 			source: "Some Org",
 			type: "column",
@@ -65,7 +65,7 @@ var chartConfig = {
 			color: null
 		},
 		{
-			name: "This is the other data set",
+			name: "This data seems real",
 			data: [49.31, 48.91, 49.53, 50.18, 50.67, 50.62, 50.53, 50.33, 50.19, 49.85, 49.63, 49.15, 49.36, 48.81, 49.2, 47.27, 47.23, 50.62, 50.53, 50.33, 50.19],
 			source: "Some Org",
 			type: "column",
@@ -585,7 +585,16 @@ var QuartzCharts = {
 		}
 		
 		q.chart.selectAll("#xAxis text")
-			.attr("text-anchor", q.xAxis.type == "date" && !q.xAxis.hasColumns ? "start":"middle")
+			.attr("text-anchor", q.xAxis.type == "date" ? "start":"middle")
+			.each(function() {
+				var pwidth = this.parentNode.getBBox().width
+				var attr = this.parentNode.getAttribute("transform")
+				var attrx = Number(attr.split("(")[1].split(",")[0])
+				var attry = Number(attr.split(")")[0].split(",")[1])
+				if (pwidth + attrx > q.width) {
+					this.setAttribute("x",Number(this.getAttribute("x"))-(pwidth + attrx - q.width + q.padding.right))
+				}
+			})
 		
 		this.q = q
 	},
@@ -650,7 +659,7 @@ var QuartzCharts = {
 				columnGroups = columnSeries.data(sbt.column)
 					.enter()
 					.append("g") 
-						.attr("class","seriesColumn")
+						.attr("class","seriesColumn seriesGroup")
 						.attr("fill",function(d,i){return d.color? d.color : q.colors[i+sbt.line.length]})
 						.attr("transform",function(d,i){return "translate("+(i*columnGroupShift - (columnGroupShift * (sbt.column.length-1)/2))+",0)"})
 						
@@ -673,7 +682,7 @@ var QuartzCharts = {
 					.enter()
 					.append("path")
 						.attr("d",function(d,j) { yAxisIndex = d.axis; return q.yAxis[d.axis].line(d.data)})
-						.attr("class","seriesLine")
+						.attr("class","seriesLine seriesGroup")
 						.attr("stroke",function(d,i){return d.color? d.color : q.colors[i]})
 						.attr("stroke-width",3)
 						.attr("stroke-linejoin","round")
@@ -683,7 +692,7 @@ var QuartzCharts = {
 				lineSeriesDotGroups = lineSeriesDots.data(sbt.line)
 					.enter()
 					.append("g")
-					.attr("class","lineSeriesDots")
+					.attr("class","lineSeriesDots seriesGroup")
 					.attr("fill", function(d,i){return d.color? d.color : q.colors[i]})
 				
 				lineSeriesDotGroups
@@ -812,6 +821,20 @@ var QuartzCharts = {
 			lineSeriesDots.exit().remove()
 			
 		}
+		//CHANGE Bring lines to top (doesn't work)
+		q.seriesContainer.selectAll(".seriesGroup").sort(function(a,b){
+			if(a.data.type == "line") {
+				return -1
+			}
+			else if(b.data.type == "line") {
+				return 1
+			}
+			else {
+				return 0
+			}
+			
+		})
+		
 		
 		//remove current legends
 		q.legendItemContainer.selectAll("g.legendItem").remove()
