@@ -63,13 +63,16 @@ ChartBuilder = {
 				parseFunc = this.dateAll
 				//this.config.dateseries = true;
 			}
+			else if (i == 0) {
+				parseFunc = this.doNothing
+			}
 			else {
 				//this.config.dateseries = false;
 				parseFunc = this.floatAll
 			}
 			
 			d.push({
-				"name": a[i].shift(),
+				"name": a[i].shift().split("..").join("\n"),
 				"data":parseFunc(a[i]),
 			});
 			
@@ -156,6 +159,9 @@ ChartBuilder = {
 		for (var i=0; i < a.length; i++) {
 			a[i] = Date.create(a[i])
 		};
+		return a
+	},
+	doNothing: function(a) {
 		return a
 	},
 	inlineAllStyles: function() {
@@ -290,7 +296,7 @@ ChartBuilder = {
 			xAxis: xAxisObj,
 			yAxis: yAxisObj,
 			series: q.series,
-			dateRef: q.dateRef,
+			xAxisRef: q.xAxisRef,
 			sourceline: q.sourceline,
 			creditline: q.creditline
 		}
@@ -365,15 +371,15 @@ $(document).ready(function() {
 			var newData = ChartBuilder.getNewData()
 			
 			if(newData.datetime) {
-				chart.q.series.unshift(chart.q.dateRef)
+				chart.q.series.unshift(chart.q.xAxisRef)
 				newData = ChartBuilder.mergeData(newData)
-				chart.q.dateRef = [newData.data.shift()]
 				chart.q.xAxis.type = "date";
 			}
 			else {
 				newData = ChartBuilder.mergeData(newData)
-				chart.q.xAxis.type = "linear";
+				chart.q.xAxis.type = "ordinal";
 			}
+			chart.q.xAxisRef = [newData.data.shift()]
 			
 			
 			

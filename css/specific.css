@@ -24,7 +24,8 @@ input, select {
 }
 
 body {
-	overflow: hidden;
+	overflow-y: scroll;
+	overflow-x: hidden;
 }
 
 h2 {
@@ -152,6 +153,7 @@ h2:not(:first-child) {
 	width: 600px;
 	font-family: Monaco, sans-serif;
 	font-size: 10px;
+	overflow-x: scroll;
 }
 
 #interactiveContent .hide {
