@@ -226,6 +226,7 @@ ChartBuilder = {
 		
 		var colIndex = q.sbt.line.length, lineIndex = 0;
 		var seriesContainer = $("#seriesItems")
+		var isMultiAxis = false;
 		for (var i=0; i < q.series.length; i++) {
 			s = q.series[i]
 			seriesItem = $('<div class="seriesItemGroup">\
@@ -234,6 +235,9 @@ ChartBuilder = {
 				<select class="typePicker" id="'+this.idSafe(s.name)+'_type">\
 				<option '+(s.type=="line"?"selected":"")+' value="line">Line</option>\
 				<option '+(s.type=="column"?"selected":"")+' value="column">Column</option>\
+				<option '+(s.type=="bargrid"?"selected":"")+' value="bargrid">Bar Grid</option>\
+				<label for="'+this.idSafe(s.name)+'_check">2nd Axis</label>\
+				<input id="'+this.idSafe(s.name)+'_check" name="'+this.idSafe(s.name)+'_check" type="checkbox" />\
 				</select>\
 				<div class="clearfix"></div>\
 			</div>');
@@ -252,6 +256,15 @@ ChartBuilder = {
 			seriesContainer.append(seriesItem);
 			var picker = seriesItem.find("#"+this.idSafe(s.name)+"_color").colorPicker({pickerDefault: color, colors:this.allColors});
 			var typer = seriesItem.find("#"+this.idSafe(s.name)+"_type")
+			var axer = seriesItem.find("#"+this.idSafe(s.name)+"_check")
+			
+			if(q.series[i].axis == 1) {
+				axer.prop("checked",true)
+				isMultiAxis = true;
+			}
+			else {
+				axer.prop("checked",false)
+			}
 												
 			seriesItem.data("index",i)
 			picker.change(function() {
@@ -261,6 +274,11 @@ ChartBuilder = {
 			
 			typer.change(function() {
 				chart.q.series[$(this).parent().data().index].type = $(this).val()
+				ChartBuilder.redraw()
+			})
+			
+			axer.change(function() {
+				chart.q.series[$(this).parent().data().index].axis = $(this).is(':checked')?1:0;
 				ChartBuilder.redraw()
 			})
 			
@@ -289,6 +307,14 @@ ChartBuilder = {
 			formatter: q.xAxis.formatter
 		}
 		
+		if(isMultiAxis){
+			$("#leftAxisControls").removeClass("hidden")
+		}
+		else {
+			$("#leftAxisControls").addClass("hidden")
+		}
+		
+		
 		var state = {
 			container: q.container,
 			colors: q.colors,
@@ -308,7 +334,7 @@ ChartBuilder = {
 		
 		chart.q = q;
 		
-		
+		ChartBuilder.inlineAllStyles();
 	},
 	idSafe: function(s) {
 		s = s.replace(/[^\w\d]+/gi,"-")
@@ -370,13 +396,13 @@ $(document).ready(function() {
 			
 			var newData = ChartBuilder.getNewData()
 			
+			chart.q.series.unshift(chart.q.xAxisRef)
+			newData = ChartBuilder.mergeData(newData)
+			
 			if(newData.datetime) {
-				chart.q.series.unshift(chart.q.xAxisRef)
-				newData = ChartBuilder.mergeData(newData)
 				chart.q.xAxis.type = "date";
 			}
 			else {
-				newData = ChartBuilder.mergeData(newData)
 				chart.q.xAxis.type = "ordinal";
 			}
 			chart.q.xAxisRef = [newData.data.shift()]

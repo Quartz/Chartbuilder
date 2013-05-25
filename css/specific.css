@@ -26,6 +26,15 @@ input, select {
 body {
 	overflow-y: scroll;
 	overflow-x: hidden;
+	line-height: 1.1em;
+}
+
+cite {
+	font-size: 10px;
+	color: #999;
+	margin-bottom: 5px;
+	line-height: 12px;
+	display:block;
 }
 
 h2 {

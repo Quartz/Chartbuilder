@@ -45,6 +45,20 @@ var chartConfig = {
 			},
 			ticks: 4,
 			formatter: null
+		},
+		{
+			domain: [null,null],
+			tickValues: null,
+			prefix: {
+				value: "",
+				use: "top" //can be "top" "all" "positive" or "negative"
+			},
+			suffix: {
+				value: "",
+				use: "top"
+			},
+			ticks: 4,
+			formatter: null
 		}
 	],
 	series: [
@@ -60,7 +74,7 @@ var chartConfig = {
 			name: "apples",
 			data: [5.5,10.2,6.1,3.8],
 			source: "Some Org",
-			type: "column",
+			type: "line",
 			axis: 0,
 			color: null
 		},
@@ -68,7 +82,7 @@ var chartConfig = {
 			name: "oranges",
 			data: [23,10,13,7],
 			source: "Some Org",
-			type: "column",
+			type: "line",
 			axis: 0,
 			color: null
 		}
@@ -218,10 +232,7 @@ var QuartzCharts = {
 				//q.yAxis[i].domain = d3.extent(extremes[i])
 				q.yAxis[i].scale = d3.scale.linear()
 					.domain(q.yAxis[i].domain)
-					.range([
-						q.height - q.padding.bottom,
-						q.padding.top
-						])
+					
 			};
 		}
 		else {
@@ -230,13 +241,25 @@ var QuartzCharts = {
 				q.yAxis[i].domain = d3.extent(q.yAxis[i].domain)
 				q.yAxis[i].scale
 					.domain(q.yAxis[i].domain)
-					.range([
-						q.height - q.padding.bottom,
-						q.padding.top
-						])
 			};
 		}		
 		
+		if(q.isBargrid) {
+			for (var i = q.yAxis.length - 1; i >= 0; i--){
+				q.yAxis[i].scale.range([
+					q.padding.left,
+					q.width - q.padding.right
+					])
+			};
+		}
+		else {
+			for (var i = q.yAxis.length - 1; i >= 0; i--){
+				q.yAxis[i].scale.range([
+					q.height - q.padding.bottom,
+					q.padding.top
+					])
+			};
+		}
 		
 		this.q = q;
 	},
@@ -311,7 +334,13 @@ var QuartzCharts = {
 		}
 		var rangeArray = []
 		//set the range of the x axis
-		if (q.xAxis.hasColumns) {
+		if(q.xAxis.isBargrid) {
+			rangeArray = [
+				q.padding.top,
+				q.height - q.padding.bottom
+			]
+		}
+		else if (q.xAxis.hasColumns) {
 			rangeArray = [
 				q.padding.left + this.q.columnGroupWidth/2,
 				q.width - q.padding.right - this.q.columnGroupWidth
@@ -383,7 +412,7 @@ var QuartzCharts = {
 				axisGroup = q.chart.append("g")
 					.attr("class","axis")
 					.attr("id",i==0?"rightAxis":"leftAxis")
-					.attr("transform",i==0?"translate("+q.padding.left+",0)":"translate(0,0)")
+					.attr("transform",i==0?"translate("+q.padding.left+",0)":"translate("+(q.width-q.padding.right)+",0)")
 					.call(q.yAxis[i].axis)
 			}
 			else {
@@ -398,7 +427,7 @@ var QuartzCharts = {
 			//adjust label position and add prefix and suffix
 			var topAxisLabel, minY = 10000000000;
 			axisGroup.selectAll("g")
-				.each(function(d,i) {
+				.each(function(d,j) {
 					//create an object to store axisItem info
 					var axisItem = {}
 					
@@ -413,7 +442,7 @@ var QuartzCharts = {
 					//store the text element of the axisItem
 					//align the text right position it on top of the line
 					axisItem.text = d3.select(this).select("text")
-						.attr("text-anchor","end")
+						.attr("text-anchor",i==0?"end":"start")
 						.attr("y",-9)
 						
 					//store the line element of the axisItem	
@@ -521,7 +550,7 @@ var QuartzCharts = {
 			*/
 			q.xAxis.axis = d3.svg.axis()
 				.scale(q.xAxis.scale)
-				.orient("bottom")
+				.orient(q.isBargrid?"left":"bottom")
 				.tickFormat(q.xAxis.formatter ? this.dateParsers[q.xAxis.formatter] : function(d) {return d})
 				.ticks(q.xAxis.ticks)
 				
@@ -555,7 +584,7 @@ var QuartzCharts = {
 			q.chart.append("g")
 				.attr("class",'axis')
 				.attr("id","xAxis")
-				.attr("transform","translate(0,"+(q.height - q.padding.bottom + 8)+")")
+				.attr("transform",q.isBargrid?"":"translate(0,"+(q.height - q.padding.bottom + 8)+")")
 				.call(q.xAxis.axis)
 				
 			
@@ -564,6 +593,7 @@ var QuartzCharts = {
 			q.xAxis.axis.scale(q.xAxis.scale)
 				.tickFormat(q.xAxis.formatter ? this.dateParsers[q.xAxis.formatter] : function(d) {return d + "hello"})
 				.ticks(q.xAxis.ticks)
+				.orient(q.isBargrid?"left":"bottom")
 			
 			if(q.xAxis.type == "date") {
 				switch(q.xAxis.formatter) {
@@ -593,6 +623,7 @@ var QuartzCharts = {
 			}
 			
 			q.chart.selectAll("#xAxis")
+				.attr("transform",q.isBargrid?"":"translate(0,"+(q.height - q.padding.bottom + 8)+")")
 				.call(q.xAxis.axis)
 		}
 		
@@ -680,12 +711,11 @@ var QuartzCharts = {
 					.enter()
 						.append("rect")
 						.attr("width",columnWidth)
-						.attr("height", function(d,i) {yAxisIndex = 0; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
+						.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
 						.attr("x", function(d,i) {
-							console.log(q.xAxis.scale.domain())
 							return q.xAxis.scale(q.xAxisRef[0].data[i])  - columnWidth/2
 							})
-						.attr("y",function(d,i) {yAxisIndex = 0; return (q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex]))) >= 0 ? q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])) : q.yAxis[yAxisIndex].scale(d)})
+						.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex]))) >= 0 ? q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])) : q.yAxis[yAxisIndex].scale(d)})
 				
 				
 				
@@ -715,8 +745,10 @@ var QuartzCharts = {
 						.append("circle")
 						.attr("r",4)
 						.attr("transform",function(d,i){
-							yAxisIndex = 0; 
-							return "translate("+ q.xAxis.scale(QuartzCharts.q.xAxisRef[0].data[i]) + ")"
+							yAxisIndex = d3.select(this.parentElement).data()[0].axis; 
+							return "translate("+(q.xAxis.type=="date" ?
+								q.xAxis.scale(QuartzCharts.q.xAxisRef[0].data[i]):
+								q.xAxis.scale(i)) + "," + q.yAxis[yAxisIndex].scale(d) + ")"
 							})
 		}
 		else {
@@ -750,19 +782,19 @@ var QuartzCharts = {
 			columnRects.enter()
 					.append("rect")
 					.attr("width",columnWidth)
-					.attr("height", function(d,i) {yAxisIndex = 0; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
+					.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
 					.attr("x",function(d,i) {return q.xAxis.scale(QuartzCharts.q.xAxisRef[0].data[i])  - columnWidth/2})
-					.attr("y",function(d,i) {yAxisIndex = 0; return (q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex]))) >= 0 ? q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])) : q.yAxis[yAxisIndex].scale(d)})
+					.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex]))) >= 0 ? q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])) : q.yAxis[yAxisIndex].scale(d)})
 			
 			columnRects.transition()
 				.duration(500)
 				.attr("width",columnWidth)
-				.attr("height", function(d,i) {yAxisIndex = 0; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
+				.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
 				.attr("x",q.xAxis.type =="date" ? 
 						function(d,i) {return q.xAxis.scale(QuartzCharts.q.xAxisRef[0].data[i])  - columnWidth/2}:
 						function(d,i) {return q.xAxis.scale(i) - columnWidth/2}
 				)
-				.attr("y",function(d,i) {yAxisIndex = 0; return (q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex]))) >= 0 ? q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])) : q.yAxis[yAxisIndex].scale(d)})
+				.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex]))) >= 0 ? q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])) : q.yAxis[yAxisIndex].scale(d)})
 				
 			columnRects.exit().remove()
 			
@@ -810,7 +842,7 @@ var QuartzCharts = {
 				.append("circle")
 				.attr("r",4)
 				.attr("transform",function(d,i){
-					yAxisIndex = 0; 
+					yAxisIndex = d3.select(this.parentElement).data()[0].axis; 
 					return "translate("+(q.xAxis.type=="date" ?
 						q.xAxis.scale(QuartzCharts.q.xAxisRef[0].data[i]):
 						q.xAxis.scale(i)) + "," + q.yAxis[yAxisIndex].scale(d) + ")"
@@ -819,7 +851,7 @@ var QuartzCharts = {
 			lineSeriesDots.transition()
 				.duration(500)
 				.attr("transform",function(d,i){
-					yAxisIndex = 0; 
+					yAxisIndex = d3.select(this.parentElement).data()[0].axis; 
 					return "translate("+(q.xAxis.type=="date" ?
 						q.xAxis.scale(QuartzCharts.q.xAxisRef[0].data[i]):
 						q.xAxis.scale(i)) + "," + q.yAxis[yAxisIndex].scale(d) + ")"
@@ -909,7 +941,8 @@ var QuartzCharts = {
 	splitSeriesByType: function(series) {
 		var o = {
 			"line":[],
-			"column":[]
+			"column":[],
+			"bargrid":[]
 		}
 		for (var i=0; i < series.length; i++) {
 			o[series[i].type].push(series[i])
@@ -920,6 +953,13 @@ var QuartzCharts = {
 		}
 		else {
 			this.q.xAxis.hasColumns = false;
+		}
+		
+		if(o.bargrid.length > 0) {
+			this.q.isBargrid = true;
+		}
+		else {
+			this.q.isBargrid = false;
 		}
 		
 		return o
