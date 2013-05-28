@@ -15,6 +15,7 @@ var yAxisIndex
 
 var chartConfig = {
 	container: "#chartContainer",
+	editable: true,
 	colors: ["#ff4cf4","#ffb3ff","#e69ce6","#cc87cc","#b373b3","#995f99","#804c80","#665266","#158eff","#99cdff","#9cc2e6","#87abcc","#7394b3","#5f7d99","#466780","#525c66"],
 	padding :{
 		top: 25,
@@ -44,7 +45,8 @@ var chartConfig = {
 				use: "top"
 			},
 			ticks: 4,
-			formatter: null
+			formatter: null,
+			color: null
 		},
 		{
 			domain: [null,null],
@@ -58,7 +60,8 @@ var chartConfig = {
 				use: "top"
 			},
 			ticks: 4,
-			formatter: null
+			formatter: null,
+			color: null
 		}
 	],
 	series: [
@@ -142,6 +145,7 @@ var QuartzCharts = {
 		
 		//put a background rect to prevent transparency
 		q.chart.append("rect")
+			.attr("id","ground")
 			.attr("width",q.width)
 			.attr("height",q.height)
 			.attr("fill","#ffffff")
@@ -177,6 +181,20 @@ var QuartzCharts = {
 		
 		this.q = q;
 		return this;
+	},
+	resize: function(){
+		var q = this.q
+		q.width = q.$container.width() //save the width in pixels
+		q.height = q.$container.height() //save the height in pixels
+		console.log(q.height)
+		//put a background rect to prevent transparency
+		d3.select("rect#ground")
+			.attr("width",q.width)
+			.attr("height",q.height)
+			
+		q.metaInfo.attr("transform","translate(0,"+(q.height-4)+")")
+		
+		this.q = q;
 	},
 	setYScales: function(first) {
 		var q = this.q
@@ -342,7 +360,7 @@ var QuartzCharts = {
 		}
 		else if (q.xAxis.hasColumns) {
 			rangeArray = [
-				q.padding.left + this.q.columnGroupWidth/2,
+				q.padding.left + this.q.columnGroupWidth/2 + (q.yAxis.length==1?0:this.q.columnGroupWidth/2),
 				q.width - q.padding.right - this.q.columnGroupWidth
 				] 
 			//q.xAxis.scale.range([q.padding.left + this.q.columnGroupWidth/2,q.width - q.padding.right - (10* (Math.round(this.q.yAxis[0].domain[1]*3/4*100) + "").length )]) 
@@ -443,11 +461,13 @@ var QuartzCharts = {
 					//align the text right position it on top of the line
 					axisItem.text = d3.select(this).select("text")
 						.attr("text-anchor",i==0?"end":"start")
+						.attr("fill",i==0?"#666666":q.yAxis[i].color)
 						.attr("y",-9)
 						
 					//store the line element of the axisItem	
 					axisItem.line = d3.select(this).select("line")
 						.attr("stroke","#E6E6E6")
+						
 					
 					//apply the prefix as appropriate
 					switch(curAxis.prefix.use) {
@@ -555,6 +575,7 @@ var QuartzCharts = {
 				.ticks(q.xAxis.ticks)
 				
 			if(q.xAxis.type == "date") {
+				
 				switch(q.xAxis.formatter) {
 				   // "mmddyyyy":
 				   // "mmdd"
@@ -592,19 +613,29 @@ var QuartzCharts = {
 		else {
 			q.xAxis.axis.scale(q.xAxis.scale)
 				.tickFormat(q.xAxis.formatter ? this.dateParsers[q.xAxis.formatter] : function(d) {return d + "hello"})
-				.ticks(q.xAxis.ticks)
+				.ticks(q.isBargrid?q.series[0].data.length:q.xAxis.ticks)
 				.orient(q.isBargrid?"left":"bottom")
 			
 			if(q.xAxis.type == "date") {
+				var timeSpan = q.xAxis.scale.domain()[1]-q.xAxis.scale.domain()[0],
+				months = timeSpan/2592000000,
+				years = timeSpan/31536000000;
+				
+				if(years > 10) {
+					yearGap = 5;
+				}
+				else {
+					yearGap = 1;
+				}
 				switch(q.xAxis.formatter) {
 				   // "mmddyyyy":
 				   // "mmdd"
 					case "yy":
-						q.xAxis.axis.ticks(d3.time.years,1)
+						q.xAxis.axis.ticks(d3.time.years,yearGap)
 					break;
 					
 					case "yyyy":
-						q.xAxis.axis.ticks(d3.time.years,1)
+						q.xAxis.axis.ticks(d3.time.years,yearGap)
 					break;
 					
 					case "MM":
@@ -636,6 +667,7 @@ var QuartzCharts = {
 				var attry = Number(attr.split(")")[0].split(",")[1])
 				if (pwidth + attrx > q.width) {
 					this.setAttribute("x",Number(this.getAttribute("x"))-(pwidth + attrx - q.width + q.padding.right))
+					this.setAttribute("text-anchor","start")
 				}
 			})
 		
@@ -759,106 +791,145 @@ var QuartzCharts = {
 			var columnRects
 			var lineSeriesDotGroups
 			
-			//add columns to chart
-			columnGroups = q.seriesContainer.selectAll("g.seriesColumn")
-				.data(sbt.column)
-				.attr("fill",function(d,i){return d.color? d.color : q.colors[i+sbt.line.length]})
-				
-			columnGroups.enter()
-				.append("g") 
-					.attr("class","seriesColumn")
+			if(q.xAxis.isBargrid) {
+				//add columns to chart
+				columnGroups = q.seriesContainer.selectAll("g.seriesColumn")
+					.data(q.series)
 					.attr("fill",function(d,i){return d.color? d.color : q.colors[i+sbt.line.length]})
-					.attr("transform",function(d,i){return "translate("+(i*columnGroupShift - (columnGroupShift * (sbt.column.length-1)/2))+",0)"})
-					
-			columnSeries.transition()
-				.duration(500)
-				.attr("transform",function(d,i){return "translate("+(i*columnGroupShift - (columnGroupShift * (sbt.column.length-1)/2))+",0)"})
-			
-			columnGroups.exit().remove()
-			
-			columnRects = columnGroups.selectAll("rect")
-				.data(function(d,i){return d.data})
 				
-			columnRects.enter()
-					.append("rect")
+				columnGroups.enter()
+					.append("g") 
+						.attr("class","seriesColumn")
+						.attr("fill",function(d,i){return d.color? d.color : q.colors[i+q.series.length]})
+						.attr("transform",function(d,i){return "translate(0,0)"})
+					
+				columnSeries.transition()
+					.duration(500)
+					.attr("transform",function(d,i){return "translate(0,0)"})
+			
+				columnGroups.exit().remove()
+			
+				columnRects = columnGroups.selectAll("rect")
+					.data(function(d,i){return d.data})
+				
+				columnRects.enter()
+						.append("rect")
+						.attr("height",20)
+						.attr("width", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
+						.attr("x",0)
+						.attr("y",function(d,i) {return q.xAxis.scale(i)})			
+				
+				columnRects.transition()
+					.duration(500)
+					.attr("height",20)
+					.attr("width", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
+					.attr("x",0)
+					.attr("y",function(d,i) {return q.xAxis.scale(i)})
+				
+				columnRects.exit().remove()
+			}
+			else {
+				//add columns to chart
+				columnGroups = q.seriesContainer.selectAll("g.seriesColumn")
+					.data(sbt.column)
+					.attr("fill",function(d,i){return d.color? d.color : q.colors[i+sbt.line.length]})
+				
+				columnGroups.enter()
+					.append("g") 
+						.attr("class","seriesColumn")
+						.attr("fill",function(d,i){return d.color? d.color : q.colors[i+sbt.line.length]})
+						.attr("transform",function(d,i){return "translate("+(i*columnGroupShift - (columnGroupShift * (sbt.column.length-1)/2))+",0)"})
+					
+				columnSeries.transition()
+					.duration(500)
+					.attr("transform",function(d,i){return "translate("+(i*columnGroupShift - (columnGroupShift * (sbt.column.length-1)/2))+",0)"})
+			
+				columnGroups.exit().remove()
+			
+				columnRects = columnGroups.selectAll("rect")
+					.data(function(d,i){return d.data})
+				
+				columnRects.enter()
+						.append("rect")
+						.attr("width",columnWidth)
+						.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
+						.attr("x",function(d,i) {return q.xAxis.scale(QuartzCharts.q.xAxisRef[0].data[i])  - columnWidth/2})
+						.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex]))) >= 0 ? q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])) : q.yAxis[yAxisIndex].scale(d)})
+			
+				columnRects.transition()
+					.duration(500)
 					.attr("width",columnWidth)
 					.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
-					.attr("x",function(d,i) {return q.xAxis.scale(QuartzCharts.q.xAxisRef[0].data[i])  - columnWidth/2})
+					.attr("x",q.xAxis.type =="date" ? 
+							function(d,i) {return q.xAxis.scale(QuartzCharts.q.xAxisRef[0].data[i])  - columnWidth/2}:
+							function(d,i) {return q.xAxis.scale(i) - columnWidth/2}
+					)
 					.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex]))) >= 0 ? q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])) : q.yAxis[yAxisIndex].scale(d)})
-			
-			columnRects.transition()
-				.duration(500)
-				.attr("width",columnWidth)
-				.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
-				.attr("x",q.xAxis.type =="date" ? 
-						function(d,i) {return q.xAxis.scale(QuartzCharts.q.xAxisRef[0].data[i])  - columnWidth/2}:
-						function(d,i) {return q.xAxis.scale(i) - columnWidth/2}
-				)
-				.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex]))) >= 0 ? q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])) : q.yAxis[yAxisIndex].scale(d)})
 				
-			columnRects.exit().remove()
+				columnRects.exit().remove()
 			
 			
-			lineSeries = q.seriesContainer.selectAll("path")
-				.data(sbt.line)
-				.attr("stroke",function(d,i){return d.color? d.color : q.colors[i]});
+				lineSeries = q.seriesContainer.selectAll("path")
+					.data(sbt.line)
+					.attr("stroke",function(d,i){return d.color? d.color : q.colors[i]});
 
-			lineSeries.enter()
-				.append("path")
-					.attr("d",function(d,j) { yAxisIndex = d.axis; return q.yAxis[d.axis].line(d.data)})
-					.attr("class","seriesLine")
-					.attr("stroke",function(d,i){return d.color? d.color : q.colors[i]})
-					.attr("stroke-width",3)
-					.attr("stroke-linejoin","round")
-					.attr("stroke-linecap","round")
-					.attr("fill","none");
+				lineSeries.enter()
+					.append("path")
+						.attr("d",function(d,j) { yAxisIndex = d.axis; return q.yAxis[d.axis].line(d.data)})
+						.attr("class","seriesLine")
+						.attr("stroke",function(d,i){return d.color? d.color : q.colors[i]})
+						.attr("stroke-width",3)
+						.attr("stroke-linejoin","round")
+						.attr("stroke-linecap","round")
+						.attr("fill","none");
 
-			lineSeries.transition()
-				.duration(500)
-				.attr("d",function(d,j) { yAxisIndex = d.axis; return QuartzCharts.q.yAxis[d.axis].line(d.data)})
+				lineSeries.transition()
+					.duration(500)
+					.attr("d",function(d,j) { yAxisIndex = d.axis; return QuartzCharts.q.yAxis[d.axis].line(d.data)})
 
-			lineSeries.exit().remove()
+				lineSeries.exit().remove()
 			
 			
-			//Add dots to the appropriate line series
-			lineSeriesDotGroups = q.seriesContainer.selectAll("g.lineSeriesDots")
-				.data(sbt.line)
-				.attr("fill",function(d,i){return d.color? d.color : q.colors[i]})
+				//Add dots to the appropriate line series
+				lineSeriesDotGroups = q.seriesContainer.selectAll("g.lineSeriesDots")
+					.data(sbt.line)
+					.attr("fill",function(d,i){return d.color? d.color : q.colors[i]})
 			
-			lineSeriesDotGroups
-				.enter()
-				.append("g")
-				.attr("class","lineSeriesDots")
-				.attr("fill", function(d,i){return d.color? d.color : q.colors[i]})
+				lineSeriesDotGroups
+					.enter()
+					.append("g")
+					.attr("class","lineSeriesDots")
+					.attr("fill", function(d,i){return d.color? d.color : q.colors[i]})
 				
-			lineSeriesDotGroups.exit().remove()
+				lineSeriesDotGroups.exit().remove()
 			
-			lineSeriesDots = lineSeriesDotGroups.filter(function(d){return d.data.length < 15})
-				.selectAll("circle")
-				.data(function(d,i){return d.data})
+				lineSeriesDots = lineSeriesDotGroups.filter(function(d){return d.data.length < 15})
+					.selectAll("circle")
+					.data(function(d,i){return d.data})
 				
 				
-			lineSeriesDots.enter()
-				.append("circle")
-				.attr("r",4)
-				.attr("transform",function(d,i){
-					yAxisIndex = d3.select(this.parentElement).data()[0].axis; 
-					return "translate("+(q.xAxis.type=="date" ?
-						q.xAxis.scale(QuartzCharts.q.xAxisRef[0].data[i]):
-						q.xAxis.scale(i)) + "," + q.yAxis[yAxisIndex].scale(d) + ")"
-					})
+				lineSeriesDots.enter()
+					.append("circle")
+					.attr("r",4)
+					.attr("transform",function(d,i){
+						yAxisIndex = d3.select(this.parentElement).data()[0].axis; 
+						return "translate("+(q.xAxis.type=="date" ?
+							q.xAxis.scale(QuartzCharts.q.xAxisRef[0].data[i]):
+							q.xAxis.scale(i)) + "," + q.yAxis[yAxisIndex].scale(d) + ")"
+						})
 			
-			lineSeriesDots.transition()
-				.duration(500)
-				.attr("transform",function(d,i){
-					yAxisIndex = d3.select(this.parentElement).data()[0].axis; 
-					return "translate("+(q.xAxis.type=="date" ?
-						q.xAxis.scale(QuartzCharts.q.xAxisRef[0].data[i]):
-						q.xAxis.scale(i)) + "," + q.yAxis[yAxisIndex].scale(d) + ")"
-					})
+				lineSeriesDots.transition()
+					.duration(500)
+					.attr("transform",function(d,i){
+						yAxisIndex = d3.select(this.parentElement).data()[0].axis; 
+						return "translate("+(q.xAxis.type=="date" ?
+							q.xAxis.scale(QuartzCharts.q.xAxisRef[0].data[i]):
+							q.xAxis.scale(i)) + "," + q.yAxis[yAxisIndex].scale(d) + ")"
+						})
 			
-			lineSeriesDots.exit().remove()
+				lineSeriesDots.exit().remove()
 			
+			}
 		}
 		//CHANGE Bring lines to top (doesn't work)
 		q.seriesContainer.selectAll(".seriesGroup").sort(function(a,b){
@@ -887,13 +958,15 @@ var QuartzCharts = {
 			.append("g")
 			.attr("class","legendItem")
 			.attr("transform",function(d,i) {return "translate("+q.padding.left+",0)"});
-
-		legItems.append("text")
+			
+		var legLabels = legItems.append("text")
 				.attr("class","legendLabel")
 				.attr("x",q.series.length > 1 ? 12 : 0)
 				.attr("y",q.series.length > 1 ? 18 : q.topAxisItem.y - 4)
 				.attr("fill",q.series.length > 1 ? function(d,i){return d.color? d.color : q.colors[i]} : "#666666")
 				.text(function(d,i){return d.name});
+				
+		
 					
 		//if there is more than one line
 		if(q.series.length > 1) {

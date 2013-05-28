@@ -182,7 +182,7 @@ ChartBuilder = {
 			
 		d3.selectAll("#interactiveContent svg .axis text")
 				.attr("style","font-family:'PTSerif';font-size: 16px;")
-				.attr("fill","#666666")
+				//.attr("fill","#666666")
 		
 		d3.selectAll("#interactiveContent svg .legendItem text")
 					.attr("style","font-family:'PTSerif';font-size: 16px;")
@@ -260,6 +260,10 @@ ChartBuilder = {
 			
 			if(q.series[i].axis == 1) {
 				axer.prop("checked",true)
+				if(!q.yAxis[1].color || !isMultiAxis) {
+					q.yAxis[1].color = q.series[i].color
+					q.padding.top = 40;
+				}
 				isMultiAxis = true;
 			}
 			else {
@@ -273,7 +277,16 @@ ChartBuilder = {
 			})
 			
 			typer.change(function() {
-				chart.q.series[$(this).parent().data().index].type = $(this).val()
+				var val = $(this).val(),
+				index = $(this).parent().data().index;
+				chart.q.series[index].type = val
+				if(val == "bargrid") {
+					$("#chartContainer").css("height",chart.q.series[index].data.length*50 + chart.q.padding.top + chart.q.padding.bottom)
+				}
+				else {
+					$("#chartContainer").css("height",338)
+				}
+				chart.resize()
 				ChartBuilder.redraw()
 			})
 			
@@ -283,6 +296,7 @@ ChartBuilder = {
 			})
 			
 			chart.redraw()
+			this.makeLegendAdjustable()
 		}
 		
 		
@@ -336,12 +350,94 @@ ChartBuilder = {
 		
 		ChartBuilder.inlineAllStyles();
 	},
+	makeLegendAdjustable: function() {
+		
+		var legendLabelDrag = d3.behavior.drag()
+		    .origin(Object)
+			.on("dragstart",function(d){
+				elem = d3.select(this)
+				d3.select(elem[0][0].parentElement).selectAll("rect").style("display","none")
+				if(chart.q.padding.top != 10) {
+					chart.q.padding.top = 10;
+					chart.redraw()
+					ChartBuilder.inlineAllStyles()
+					ChartBuilder.makeLegendAdjustable()
+				}
+				
+			})
+		    .on("drag", function(d){
+				elem = d3.select(this)
+				elem.attr("x", Number(elem.attr("x")) + d3.event.dx)
+					.attr("y", Number(elem.attr("y")) + d3.event.dy);
+					
+				console.log(elem.attr("x"))
+		});
+		
+		d3.selectAll("text.legendLabel").call(legendLabelDrag);
+		
+		
+	},
 	idSafe: function(s) {
 		s = s.replace(/[^\w\d]+/gi,"-")
 		return s
 	},
 	useState: false,
-	draws: 0
+	draws: 0,
+	actions: {
+		axis_prefix_change: function(index,that) {
+			chart.q.yAxis[index].prefix.value = $(that).val()
+			ChartBuilder.redraw()
+			ChartBuilder.inlineAllStyles();
+		},
+		axis_suffix_change: function(index,that) {
+			chart.q.yAxis[index].suffix.value = $(that).val()
+			ChartBuilder.redraw()
+			ChartBuilder.inlineAllStyles();
+		},
+		axis_tick_num_change: function(index,that) {
+			chart.q.yAxis[index].ticks = parseInt($(that).val())
+			ChartBuilder.redraw()
+			ChartBuilder.inlineAllStyles();
+		},
+		axis_max_change: function(index,that) {
+			var val = parseFloat($(that).val())
+			if(isNaN(val)) {
+				val = null
+			}
+			chart.q.yAxis[index].domain[1] = val;
+			chart.setYScales();
+			ChartBuilder.redraw()
+			ChartBuilder.inlineAllStyles();
+		},
+		axis_min_change: function(index,that) {
+			var val = $(that).val()
+			var val = parseFloat(val)
+			if(val == NaN) {
+				val == null
+			}
+
+			chart.q.yAxis[index].domain[0] = val;
+			chart.setYScales();
+			ChartBuilder.redraw()
+			ChartBuilder.inlineAllStyles();
+		},
+		axis_tick_override_change: function(index,that) {
+			var val = $(that).val()
+			val = val.split(",")
+			if(val.length > 1) {
+				for (var i = val.length - 1; i >= 0; i--){
+					val[i] = parseFloat(val[i])
+				};
+			}
+			else {
+				val = null
+			}
+			chart.q.yAxis[index].tickValues = val
+			chart.setYScales();
+			ChartBuilder.redraw()
+			ChartBuilder.inlineAllStyles();
+		}
+	}
 }
 
 $(document).ready(function() {
@@ -420,68 +516,57 @@ $(document).ready(function() {
 	}).keyup()
 	
 	$("#right_axis_prefix").keyup(function() {
-		chart.q.yAxis[0].prefix.value = $(this).val()
-		ChartBuilder.redraw()
-		ChartBuilder.inlineAllStyles();
+		ChartBuilder.actions.axis_prefix_change(0,this)
 	})
 	
 	$("#right_axis_suffix").keyup(function() {
-		chart.q.yAxis[0].suffix.value = $(this).val()
-		ChartBuilder.redraw()
-		ChartBuilder.inlineAllStyles();
+		ChartBuilder.actions.axis_suffix_change(0,this)
 	})
 	
 	$("#right_axis_tick_num").change(function() {
-		chart.q.yAxis[0].ticks = parseInt($(this).val())
-		ChartBuilder.redraw()
-		ChartBuilder.inlineAllStyles();
+		ChartBuilder.actions.axis_tick_num_change(0,this)
 	})
 	
 	$("#right_axis_max").keyup(function() {
-		var val = parseFloat($(this).val())
-		if(isNaN(val)) {
-			val = null
-		}
-		chart.q.yAxis[0].domain[1] = val;
-		chart.setYScales();
-		ChartBuilder.redraw()
-		ChartBuilder.inlineAllStyles();
+		ChartBuilder.actions.axis_max_change(0,this)
 	})
 	
 	$("#right_axis_min").keyup(function() {
-		var val = $(this).val()
-		var val = parseFloat(val)
-		if(val == NaN) {
-			val == null
-		}
-		
-		chart.q.yAxis[0].domain[0] = val;
-		chart.setYScales();
-		ChartBuilder.redraw()
-		ChartBuilder.inlineAllStyles();
+		ChartBuilder.actions.axis_min_change(0,this)
 	})
 	
 	$("#right_axis_tick_override").keyup(function() {
-		var val = $(this).val()
-		val = val.split(",")
-		if(val.length > 1) {
-			for (var i = val.length - 1; i >= 0; i--){
-				val[i] = parseFloat(val[i])
-			};
-		}
-		else {
-			val = null
-		}
-		chart.q.yAxis[0].tickValues = val
-		chart.setYScales();
-		ChartBuilder.redraw()
-		ChartBuilder.inlineAllStyles();
+		ChartBuilder.actions.axis_tick_override_change(0,this)
 	})
 	
 	$("#x_axis_tick_num").change(function() {
 		chart.q.xAxis.ticks = parseInt($(this).val())
 		ChartBuilder.redraw()
 		ChartBuilder.inlineAllStyles();
+	})
+	
+	$("#left_axis_prefix").keyup(function() {
+		ChartBuilder.actions.axis_prefix_change(1,this)
+	})
+
+	$("#left_axis_suffix").keyup(function() {
+		ChartBuilder.actions.axis_suffix_change(1,this)
+	})
+
+	$("#left_axis_tick_num").change(function() {
+		ChartBuilder.actions.axis_tick_num_change(1,this)
+	})
+
+	$("#left_axis_max").keyup(function() {
+		ChartBuilder.actions.axis_max_change(1,this)
+	})
+
+	$("#left_axis_min").keyup(function() {
+		ChartBuilder.actions.axis_min_change(1,this)
+	})
+
+	$("#left_axis_tick_override").keyup(function() {
+		ChartBuilder.actions.axis_tick_override_change(1,this)
 	})
 	
 	$("#x_axis_date_format").change(function() {
