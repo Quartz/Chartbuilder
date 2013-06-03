@@ -665,8 +665,11 @@ var QuartzCharts = {
 				var attr = this.parentNode.getAttribute("transform")
 				var attrx = Number(attr.split("(")[1].split(",")[0])
 				var attry = Number(attr.split(")")[0].split(",")[1])
-				if (pwidth + attrx > q.width) {
+				if (pwidth/2 + attrx > q.width) {
 					this.setAttribute("x",Number(this.getAttribute("x"))-(pwidth + attrx - q.width + q.padding.right))
+					this.setAttribute("text-anchor","start")
+				}
+				else if (attrx - pwidth/2 < 0) {
 					this.setAttribute("text-anchor","start")
 				}
 			})
@@ -827,6 +830,7 @@ var QuartzCharts = {
 					.attr("y",function(d,i) {return q.xAxis.scale(i)})
 				
 				columnRects.exit().remove()
+				lineSeriesDotGroups = q.seriesContainer.selectAll("g.lineSeriesDots").remove()
 			}
 			else {
 				//add columns to chart
@@ -930,6 +934,7 @@ var QuartzCharts = {
 				lineSeriesDots.exit().remove()
 			
 			}
+			lineSeries.each(function(){this.parentNode.appendChild(this);})
 		}
 		//CHANGE Bring lines to top (doesn't work)
 		q.seriesContainer.selectAll(".seriesGroup").sort(function(a,b){
