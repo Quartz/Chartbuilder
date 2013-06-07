@@ -352,7 +352,7 @@ var QuartzCharts = {
 		}
 		var rangeArray = []
 		//set the range of the x axis
-		if(q.xAxis.isBargrid) {
+		if(q.isBargrid) {
 			rangeArray = [
 				q.padding.top,
 				q.height - q.padding.bottom
@@ -605,7 +605,7 @@ var QuartzCharts = {
 			q.chart.append("g")
 				.attr("class",'axis')
 				.attr("id","xAxis")
-				.attr("transform",q.isBargrid?"":"translate(0,"+(q.height - q.padding.bottom + 8)+")")
+				.attr("transform",q.isBargrid?"translate("+q.padding.left+",0)":"translate(0,"+(q.height - q.padding.bottom + 8)+")")
 				.call(q.xAxis.axis)
 				
 			
@@ -654,12 +654,12 @@ var QuartzCharts = {
 			}
 			
 			q.chart.selectAll("#xAxis")
-				.attr("transform",q.isBargrid?"":"translate(0,"+(q.height - q.padding.bottom + 8)+")")
+				.attr("transform",q.isBargrid?"translate("+q.padding.left+",0)":"translate(0,"+(q.height - q.padding.bottom + 8)+")")
 				.call(q.xAxis.axis)
 		}
-		
 		q.chart.selectAll("#xAxis text")
-			.attr("text-anchor", q.xAxis.type == "date" ? "start":"middle")
+			.attr("text-anchor", q.xAxis.type == "date" ? "start": (q.isBargrid ? "end":"middle"))
+			//.attr("text-anchor", q.isBargrid ? "end":"middle")
 			.each(function() {
 				var pwidth = this.parentNode.getBBox().width
 				var attr = this.parentNode.getAttribute("transform")
@@ -669,7 +669,7 @@ var QuartzCharts = {
 					this.setAttribute("x",Number(this.getAttribute("x"))-(pwidth + attrx - q.width + q.padding.right))
 					this.setAttribute("text-anchor","start")
 				}
-				else if (attrx - pwidth/2 < 0) {
+				else if (attrx - pwidth/2 < 0 && !q.isBargrid) {
 					this.setAttribute("text-anchor","start")
 				}
 			})
@@ -793,11 +793,10 @@ var QuartzCharts = {
 			var columnGroups
 			var columnRects
 			var lineSeriesDotGroups
-			
-			if(q.xAxis.isBargrid) {
+			if(q.isBargrid) {
 				//add columns to chart
 				columnGroups = q.seriesContainer.selectAll("g.seriesColumn")
-					.data(q.series)
+					.data(sbt.bargrid)
 					.attr("fill",function(d,i){return d.color? d.color : q.colors[i+sbt.line.length]})
 				
 				columnGroups.enter()
@@ -819,15 +818,15 @@ var QuartzCharts = {
 						.append("rect")
 						.attr("height",20)
 						.attr("width", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
-						.attr("x",0)
-						.attr("y",function(d,i) {return q.xAxis.scale(i)})			
+						.attr("x",q.padding.left)
+						.attr("y",function(d,i) {return q.xAxis.scale(i) - 10})
 				
 				columnRects.transition()
 					.duration(500)
 					.attr("height",20)
 					.attr("width", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
-					.attr("x",0)
-					.attr("y",function(d,i) {return q.xAxis.scale(i)})
+					.attr("x",q.padding.left)
+					.attr("y",function(d,i) {return q.xAxis.scale(i) - 10})
 				
 				columnRects.exit().remove()
 				lineSeriesDotGroups = q.seriesContainer.selectAll("g.lineSeriesDots").remove()
@@ -1035,6 +1034,7 @@ var QuartzCharts = {
 		
 		if(o.bargrid.length > 0) {
 			this.q.isBargrid = true;
+			this.q.padding.left = 50
 		}
 		else {
 			this.q.isBargrid = false;

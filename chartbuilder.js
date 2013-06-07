@@ -281,7 +281,7 @@ ChartBuilder = {
 				index = $(this).parent().data().index;
 				chart.q.series[index].type = val
 				if(val == "bargrid") {
-					$("#chartContainer").css("height",chart.q.series[index].data.length*50 + chart.q.padding.top + chart.q.padding.bottom)
+					$("#chartContainer").css("height",chart.q.series[index].data.length*20 + chart.q.padding.top + chart.q.padding.bottom)
 				}
 				else {
 					$("#chartContainer").css("height",338)
