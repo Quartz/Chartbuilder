@@ -429,7 +429,7 @@ var QuartzCharts = {
 					
 				//append axis container
 				axisGroup = q.chart.append("g")
-					.attr("class","axis")
+					.attr("class","axis yAxis")
 					.attr("id",i==0?"rightAxis":"leftAxis")
 					.attr("transform",i==0?"translate("+q.padding.left+",0)":"translate("+(q.width-q.padding.right)+",0)")
 					.call(q.yAxis[i].axis)
@@ -444,7 +444,7 @@ var QuartzCharts = {
 			}
 				
 			//adjust label position and add prefix and suffix
-			var topAxisLabel, minY = 10000000000;
+			var topAxisLabel, minY = Infinity;
 			axisGroup.selectAll("g")
 				.each(function(d,j) {
 					//create an object to store axisItem info
@@ -559,7 +559,17 @@ var QuartzCharts = {
 			}
 			
 		};
-		//this.q = q
+		
+		if(q.isBargrid){
+			d3.selectAll(".yAxis").style("display","none")
+		}
+		else {
+			d3.selectAll(".yAxis").style("display",null)
+		}
+		
+		
+		this.q = q
+		
 	},
 	setXAxis: function(first) {
 		var q = this.q
@@ -658,6 +668,7 @@ var QuartzCharts = {
 				.attr("transform",q.isBargrid?"translate("+q.padding.left+",0)":"translate(0,"+(q.height - q.padding.bottom + 8)+")")
 				.call(q.xAxis.axis)
 		}
+		
 		q.chart.selectAll("#xAxis text")
 			.attr("text-anchor", q.xAxis.type == "date" ? "start": (q.isBargrid ? "end":"middle"))
 			//.attr("text-anchor", q.isBargrid ? "end":"middle")
@@ -666,13 +677,25 @@ var QuartzCharts = {
 				var attr = this.parentNode.getAttribute("transform")
 				var attrx = Number(attr.split("(")[1].split(",")[0])
 				var attry = Number(attr.split(")")[0].split(",")[1])
-				if (pwidth/2 + attrx > q.width) {
-					this.setAttribute("x",Number(this.getAttribute("x"))-(pwidth + attrx - q.width + q.padding.right))
-					this.setAttribute("text-anchor","start")
+				if(!q.isBargrid) {
+					// fix labels to not fall off edge when not bargrid
+					if (pwidth/2 + attrx > q.width) {
+						this.setAttribute("x",Number(this.getAttribute("x"))-(pwidth + attrx - q.width + q.padding.right))
+						this.setAttribute("text-anchor","start")
+					}
+					else if (attrx - pwidth/2) {
+						this.setAttribute("text-anchor","start")
+					}
 				}
-				else if (attrx - pwidth/2 < 0 && !q.isBargrid) {
-					this.setAttribute("text-anchor","start")
+				else {
+					//adjust padding for bargrid
+					if(q.padding.left - pwidth < 10) {
+						q.padding.left = pwidth + 10;
+						QuartzCharts.redraw() //CHANGE
+					}
+					
 				}
+				
 			})
 		
 		this.q = q
@@ -1036,7 +1059,7 @@ var QuartzCharts = {
 		
 		if(o.bargrid.length > 0) {
 			this.q.isBargrid = true;
-			this.q.padding.left = 200
+			//this.q.padding.left = 200
 		}
 		else {
 			this.q.isBargrid = false;

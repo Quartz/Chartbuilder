@@ -370,7 +370,7 @@ ChartBuilder = {
 				elem.attr("x", Number(elem.attr("x")) + d3.event.dx)
 					.attr("y", Number(elem.attr("y")) + d3.event.dy);
 					
-				console.log(elem.attr("x"))
+				
 		});
 		
 		d3.selectAll("text.legendLabel").call(legendLabelDrag);
