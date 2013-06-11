@@ -129,6 +129,10 @@ h2:not(:first-child) {
 }
 */
 
+#interactiveContent svg .legendItem text {
+	cursor: move;
+}
+
 #interactiveContent .interfaceCol {
 	width: 46%;
 	margin: 1%;

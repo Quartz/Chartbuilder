@@ -167,22 +167,23 @@ ChartBuilder = {
 	inlineAllStyles: function() {
 		
 		d3.selectAll("#interactiveContent svg .axis line")
-			.attr("fill","none")
-			.attr("shape-rendering","crispEdges")
+			.style("fill","none")
+			.style("shape-rendering","crispEdges")
 			
 		d3.selectAll("#interactiveContent svg .axis line#zeroLine")
-				.attr("stroke", "#ff4cf4");
+				.style("stroke", "#ff4cf4");
 				
 		d3.selectAll("#interactiveContent svg #xAxis line")
-			.attr("stroke","#e6e6e6")
+			.style("stroke","#e6e6e6")
 
 		d3.selectAll("#interactiveContent svg .axis path")
-			.attr("stroke", "none")
-			.attr("fill","none");
+			.style("stroke", "none")
+			.style("fill","none");
 			
 		d3.selectAll("#interactiveContent svg .axis text")
-				.attr("style","font-family:'PTSerif';font-size: 16px;")
-				//.attr("fill","#666666")
+				.style("font-family",'PTSerif')
+				.style("font-size", "16px")
+				.style("fill","#666666")
 		
 		d3.selectAll("#interactiveContent svg .legendItem text")
 					.attr("style","font-family:'PTSerif';font-size: 16px;")
@@ -224,7 +225,7 @@ ChartBuilder = {
 		$(".downloadLink").addClass("hide")
 		var q = chart.q, s, picker;
 		
-		var colIndex = q.sbt.line.length, lineIndex = 0;
+		var colIndex = q.sbt.line.length, lineIndex = 0, bargridIndex = 0;
 		var seriesContainer = $("#seriesItems")
 		var isMultiAxis = false;
 		for (var i=0; i < q.series.length; i++) {
@@ -251,6 +252,10 @@ ChartBuilder = {
 			else if(s.type == "column") {
 				color = s.color ? s.color.replace("#","") : q.colors[colIndex].replace("#","")
 				colIndex++
+			}
+			else if(s.type =="bargrid") {
+				color = s.color ? s.color.replace("#","") : q.colors[bargridIndex].replace("#","")
+				bargridIndex++
 			}
 			
 			seriesContainer.append(seriesItem);
@@ -291,7 +296,34 @@ ChartBuilder = {
 			})
 			
 			axer.change(function() {
-				chart.q.series[$(this).parent().data().index].axis = $(this).is(':checked')?1:0;
+				var axis = $(this).is(':checked')?1:0;
+				chart.q.series[$(this).parent().data().index].axis = axis
+				
+				if(!chart.q.yAxis[axis]){
+					chart.q.yAxis[axis] = {
+											domain: [null,null],
+											tickValues: null,
+											prefix: {
+												value: "",
+												use: "top" //can be "top" "all" "positive" or "negative"
+											},
+											suffix: {
+												value: "",
+												use: "top"
+											},
+											ticks: 4,
+											formatter: null,
+											color: null,
+										}
+				}
+				
+				if(chart.q.yAxis.length > 1 && axis == 0) {
+					chart.q.yAxis.pop()
+				}
+				
+				chart.setYScales();
+				chart.setYAxes();
+				chart.setLineMakers()
 				ChartBuilder.redraw()
 			})
 			
@@ -395,6 +427,7 @@ ChartBuilder = {
 			ChartBuilder.inlineAllStyles();
 		},
 		axis_tick_num_change: function(index,that) {
+			console.log(chart.q.yAxis[index])
 			chart.q.yAxis[index].ticks = parseInt($(that).val())
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
@@ -503,7 +536,25 @@ $(document).ready(function() {
 			}
 			chart.q.xAxisRef = [newData.data.shift()]
 			
-			
+			//for (var i = newData.data.length - 1; i >= 0; i--){
+			//	if(!chart.q.yAxis[newData.data[i].axis]){
+			//		chart.q.yAxis.push({
+			//			domain: [null,null],
+			//			tickValues: null,
+			//			prefix: {
+			//				value: "",
+			//				use: "top" //can be "top" "all" "positive" or "negative"
+			//			},
+			//			suffix: {
+			//				value: "",
+			//				use: "top"
+			//			},
+			//			ticks: 4,
+			//			formatter: null,
+			//			color: null
+			//		})
+			//	}
+			//};
 			
 			chart.q.series=newData.data
 			//chart.setYScales();

@@ -47,21 +47,6 @@ var chartConfig = {
 			ticks: 4,
 			formatter: null,
 			color: null
-		},
-		{
-			domain: [null,null],
-			tickValues: null,
-			prefix: {
-				value: "",
-				use: "top" //can be "top" "all" "positive" or "negative"
-			},
-			suffix: {
-				value: "",
-				use: "top"
-			},
-			ticks: 4,
-			formatter: null,
-			color: null
 		}
 	],
 	series: [
@@ -134,6 +119,9 @@ var QuartzCharts = {
 		q.$container = $(q.container);
 		q.all = this;
 		
+		q.defaults =  {}
+		q.defaults.padding = $.extend({}, config.padding); //change
+		
 		//append svg to container using svg
 		q.chart = d3.select(q.container).append("svg")
 			.attr("id","chart")
@@ -186,7 +174,6 @@ var QuartzCharts = {
 		var q = this.q
 		q.width = q.$container.width() //save the width in pixels
 		q.height = q.$container.height() //save the height in pixels
-		console.log(q.height)
 		//put a background rect to prevent transparency
 		d3.select("rect#ground")
 			.attr("width",q.width)
@@ -244,30 +231,30 @@ var QuartzCharts = {
 			}
 		};
 		
-		if(first) {
 			//set extremes in y axis objects and create scales
 			for (var i = q.yAxis.length - 1; i >= 0; i--){
 				//q.yAxis[i].domain = d3.extent(extremes[i])
-				q.yAxis[i].scale = d3.scale.linear()
-					.domain(q.yAxis[i].domain)
+				if(first || !q.yAxis[i].scale) {
+					q.yAxis[i].scale = d3.scale.linear()
+						.domain(q.yAxis[i].domain)
+				}
+				else {
+					//set extremes in y axis objects and update scales
+					q.yAxis[i].domain = d3.extent(q.yAxis[i].domain)
+					q.yAxis[i].scale
+						.domain(q.yAxis[i].domain)
+				}
+				
 					
 			};
-		}
-		else {
-			//set extremes in y axis objects and update scales
-			for (var i = q.yAxis.length - 1; i >= 0; i--){
-				q.yAxis[i].domain = d3.extent(q.yAxis[i].domain)
-				q.yAxis[i].scale
-					.domain(q.yAxis[i].domain)
-			};
-		}		
+			
 		
 		if(q.isBargrid) {
 			for (var i = q.yAxis.length - 1; i >= 0; i--){
 				q.yAxis[i].domain[0] = Math.min(q.yAxis[i].domain[0],0)
 				q.yAxis[i].scale.range([
 					q.padding.left,
-					(q.width/q.series.length) - q.padding.right
+					(q.width/q.sbt.bargrid.length) - q.padding.right
 					])
 			};
 		}
@@ -383,29 +370,31 @@ var QuartzCharts = {
 	},
 	setLineMakers: function(first) {
 		var q = this.q
-		if(first) {
-			for (var i = q.yAxis.length - 1; i >= 0; i--){
-				q.yAxis[i].line = d3.svg.line();
-				q.yAxis[i].line.y(function(d,j){return q.yAxis[yAxisIndex].scale(d)})
-		//		if(q.xAxis.type == "date") {
-					q.yAxis[i].line.x(function(d,j){return q.xAxis.scale(q.xAxisRef[0].data[j])})
-		//		}
-		//		else {
-		//			q.yAxis[i].line.x(function(d,j){return q.xAxis.scale(j)})
-		//		}
-			};
-		}
-		else {
-			for (var i = q.yAxis.length - 1; i >= 0; i--){
-				q.yAxis[i].line.y(function(d,j){return q.yAxis[yAxisIndex].scale(d)})
-				//if(q.xAxis.type == "date") {
-					q.yAxis[i].line.x(function(d,j){return q.xAxis.scale(q.xAxisRef[0].data[j])})
-			//	}
-			//	else {
-			//		q.yAxis[i].line.x(function(d,j){return q.xAxis.scale(j)})
-			//	}
-			};
-		}
+
+		for (var i = q.yAxis.length - 1; i >= 0; i--){
+			if(first || !q.yAxis[i].line) {
+						q.yAxis[i].line = d3.svg.line();
+						q.yAxis[i].line.y(function(d,j){return q.yAxis[yAxisIndex].scale(d)})
+				//		if(q.xAxis.type == "date") {
+							q.yAxis[i].line.x(function(d,j){return q.xAxis.scale(q.xAxisRef[0].data[j])})
+				//		}
+				//		else {
+				//			q.yAxis[i].line.x(function(d,j){return q.xAxis.scale(j)})
+				//		}
+			}
+			else {
+				for (var i = q.yAxis.length - 1; i >= 0; i--){
+					q.yAxis[i].line.y(function(d,j){return q.yAxis[yAxisIndex].scale(d)})
+					//if(q.xAxis.type == "date") {
+						q.yAxis[i].line.x(function(d,j){return q.xAxis.scale(q.xAxisRef[0].data[j])})
+				//	}
+				//	else {
+				//		q.yAxis[i].line.x(function(d,j){return q.xAxis.scale(j)})
+				//	}
+				};
+			}
+
+		};
 		this.q = q
 	},
 	setYAxes: function(first) {
@@ -416,10 +405,16 @@ var QuartzCharts = {
 		*/
 		var q = this.q;
 		var curAxis,axisGroup;
+		
+		//CHANGE
+		
+		
 		for (var i = q.yAxis.length - 1; i >= 0; i--){
 			curAxis = q.yAxis[i]
+			
 			//create svg axis
-			if(first) {
+			if(first || !q.yAxis[i].axis) {
+				
 				q.yAxis[i].axis = d3.svg.axis()
 					.scale(q.yAxis[i].scale)
 					.orient(i==0?"right":"left")
@@ -428,6 +423,7 @@ var QuartzCharts = {
 					.tickValues(q.yAxis[i].tickValues)
 					
 				//append axis container
+
 				axisGroup = q.chart.append("g")
 					.attr("class","axis yAxis")
 					.attr("id",i==0?"rightAxis":"leftAxis")
@@ -689,9 +685,9 @@ var QuartzCharts = {
 				}
 				else {
 					//adjust padding for bargrid
-					if(q.padding.left - pwidth < 10) {
+					if(q.padding.left - pwidth < q.defaults.padding.left) {
 						q.padding.left = pwidth + 10;
-						QuartzCharts.redraw() //CHANGE
+						q.all.redraw() //CHANGE (maybe)
 					}
 					
 				}
@@ -828,13 +824,19 @@ var QuartzCharts = {
 						.attr("class","seriesColumn")
 						.attr("fill",function(d,i){return d.color? d.color : q.colors[i+q.series.length]})
 						.attr("transform",function(d,i){return "translate(0,"+q.padding.top+")"})
-					
+						.append("text")
+							.attr("class","bargridLabel")
+							.text(function(d,i){return d.name})
+							.attr("x",q.padding.left)
+							.attr("y",15)
+				
 				columnSeries.transition()
 					.duration(500)
 					.attr("transform",function(d,i){return "translate("+(i * (q.width-q.padding.left)/q.series.length)+",0)"})
-			
+					
 				columnGroups.exit().remove()
-			
+				
+				
 				columnRects = columnGroups.selectAll("rect")
 					.data(function(d,i){return d.data})
 				
@@ -842,7 +844,7 @@ var QuartzCharts = {
 						.append("rect")
 						.attr("height",20)
 						.attr("width", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
-						.attr("x",q.padding.left)
+						.attr("x",function(d,i){return d<0?q.padding.left - this.attr("width"):q.padding.left})
 						.attr("y",function(d,i) {return q.xAxis.scale(i) - 10})
 				
 				columnRects.transition()
@@ -1059,10 +1061,11 @@ var QuartzCharts = {
 		
 		if(o.bargrid.length > 0) {
 			this.q.isBargrid = true;
-			//this.q.padding.left = 200
+			this.q.padding.top = this.q.defaults.padding.top + 12
 		}
 		else {
 			this.q.isBargrid = false;
+			this.q.padding.top = this.q.defaults.padding.top
 		}
 		
 		return o
