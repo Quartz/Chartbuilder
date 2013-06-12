@@ -255,7 +255,8 @@ var QuartzCharts = {
 				q.yAxis[i].scale.range([
 					q.padding.left,
 					(q.width/q.sbt.bargrid.length) - q.padding.right
-					])
+					]).nice()
+					
 			};
 		}
 		else {
@@ -263,7 +264,7 @@ var QuartzCharts = {
 				q.yAxis[i].scale.range([
 					q.height - q.padding.bottom,
 					q.padding.top
-					])
+					]).nice()
 			};
 		}
 		
@@ -407,14 +408,15 @@ var QuartzCharts = {
 		var curAxis,axisGroup;
 		
 		//CHANGE
-		
+		if(q.yAxis.length == 1 ){
+			d3.select("#leftAxis").remove()
+		}
 		
 		for (var i = q.yAxis.length - 1; i >= 0; i--){
 			curAxis = q.yAxis[i]
 			
 			//create svg axis
-			if(first || !q.yAxis[i].axis) {
-				
+			if(first || !q.yAxis[i].axis) {	
 				q.yAxis[i].axis = d3.svg.axis()
 					.scale(q.yAxis[i].scale)
 					.orient(i==0?"right":"left")

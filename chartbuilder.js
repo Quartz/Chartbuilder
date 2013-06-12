@@ -427,7 +427,6 @@ ChartBuilder = {
 			ChartBuilder.inlineAllStyles();
 		},
 		axis_tick_num_change: function(index,that) {
-			console.log(chart.q.yAxis[index])
 			chart.q.yAxis[index].ticks = parseInt($(that).val())
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
