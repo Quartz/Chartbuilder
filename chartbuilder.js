@@ -391,7 +391,7 @@ ChartBuilder = {
 		};
 		
 		if(hasBargrid) {
-			$("#chartContainer").css("height",chart.q.series[0].data.length*20 + chart.q.padding.top + chart.q.padding.bottom)
+			$("#chartContainer").css("height",chart.q.series[0].data.length*22 + chart.q.padding.top + chart.q.padding.bottom)
 		}
 		else {
 			$("#chartContainer").css("height",338)

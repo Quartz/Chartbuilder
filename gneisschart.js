@@ -891,10 +891,14 @@ var Gneiss = {
 				lineSeries.remove()
 			}
 			else {
+				
 				//add columns to chart
 				columnGroups = q.seriesContainer.selectAll("g.seriesColumn")
 					.data(sbt.column)
 					.attr("fill",function(d,i){return d.color? d.color : q.colors[i+sbt.line.length]})
+				
+				//remove bargrid labels
+				columnGroups.selectAll("text.barLabel").remove()
 				
 				columnGroups.enter()
 					.append("g") 
@@ -968,6 +972,9 @@ var Gneiss = {
 				lineSeriesDots = lineSeriesDotGroups.filter(function(d){return d.data.length < 15})
 					.selectAll("circle")
 					.data(function(d,i){return d.data})
+					
+				lineSeriesDotGroups.filter(function(d){return d.data.length > 15})
+					.remove()
 				
 				
 				lineSeriesDots.enter()
