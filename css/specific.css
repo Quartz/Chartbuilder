@@ -18,9 +18,24 @@ License: /fonts/PTSerif/Paratype PT Sans Free Font License.txt
   font-style: normal;
 }
 
-input, select {
+input[type="text"], select {
 	display: block;
 	margin-bottom: 5px;
+	width: 100%;
+	font-family: 'PTSerif';
+	color: #666666;
+}
+
+input {
+	border: 1px solid #ccc;
+}
+
+input[type="text"] {
+	padding-left: 5px;
+}
+
+select.typePicker  {
+	width: 50%;
 }
 
 body {
