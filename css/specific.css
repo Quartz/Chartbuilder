@@ -1,0 +1,217 @@
+@font-face {
+    font-family: 'AdelleSansWeb';
+    src:
+        url('http://app.qz.com/fonts/AdelleSansWeb/AdelleSansBasic_Bold.eot?#iefix') format('embedded-opentype'),
+        url('http://app.qz.com/fonts/AdelleSansWeb/AdelleSansBasic_Bold.woff')       format('woff'),
+        url('http://app.qz.com/fonts/AdelleSansWeb/AdelleSansBasic_Bold.ttf')        format('truetype');
+    font-weight: 700;
+}
+
+/*
+Source: http://www.fontsquirrel.com/fonts/pt-serif
+License: /fonts/PTSerif/Paratype PT Sans Free Font License.txt
+*/
+@font-face {
+  font-family: 'PTSerif';
+  src: url('http://app.qz.com/fonts/PTSerif/PTF55F.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+input, select {
+	display: block;
+	margin-bottom: 5px;
+}
+
+body {
+}
+
+h2 {
+	margin: 0px;
+	font-size: 18px;
+}
+
+h2:not(:first-child) {
+	margin-top: 20px;
+}
+#interactiveContent {
+	width: 3000px;
+}
+
+#interactiveContent .cbColumn{
+	float:left;
+}
+
+#interactiveContent #leftColumn {
+	width: 620px;
+	height: 1000px;
+}
+
+#interactiveContent #rightColumn {
+	width:400px
+}
+
+#chartContainer {
+	width: 600px;
+	height: 338px;
+	border: 1px solid #efefef;
+	
+}
+
+#staticStuff {
+	position: fixed;
+	margin-top:10px;
+	margin-left:10px;
+}
+
+#rightColumn {
+	margin-top: 10px;
+}
+/*
+#interactiveContent svg .nfpDeltaBarPos {
+	fill: #5F9973;
+}
+
+#interactiveContent svg .nfpDeltaBarNeg {
+	fill: #B37387;
+}
+
+#interactiveContent svg .axis line {
+	fill: none;
+	shape-rendering: crispEdges;
+}
+
+#interactiveContent svg .axis line#zeroLine {
+	stroke: #ff4cf4;
+}
+
+#interactiveContent svg #xAxis line {
+	stroke: #e6e6e6;
+}
+
+#interactiveContent svg .axis path {
+	stroke: none;
+	fill: none;
+}
+
+#interactiveContent svg .axis text {
+	font-family: "PTSerif";
+	font-size: 16px;
+	fill: #666666;
+}
+
+#interactiveContent svg .chartLine {
+	stroke-width: 3px;
+	fill: none;
+}
+
+#interactiveContent svg .legendItem text {
+	font-family: "PTSerif";
+	font-size: 16px;
+}
+
+#interactiveContent svg text.metaText {
+	font-family: "PTSerif";
+	font-size: 12px;
+	text-rendering:  optimizeLegibility;
+	fill: #999999;
+}
+*/
+
+#interactiveContent .interfaceCol {
+	width: 46%;
+	margin: 1%;
+	float: left;
+}
+
+#canvas {
+	display: none;
+}
+
+#datainput {
+	margin-top: 10px;
+	margin-bottom:30px;
+	height: 100px;
+}
+
+#datainput textarea{
+	width: 100%;
+	height: 100%;
+	font-family: Monaco, sans-serif;
+	font-size: 10px;
+	box-sizing:border-box;
+	-moz-box-sizing:border-box; /* Firefox */
+	-webkit-box-sizing:border-box; /* Safari */
+}
+#dataTable .otherrow {
+	background-color: #eee;
+}
+
+#dataTable {
+	width: 600px;
+	font-family: Monaco, sans-serif;
+	font-size: 10px;
+}
+
+#interactiveContent .hide {
+	display: none;
+}
+
+#interactiveContent .updateButton {
+	margin-top: 20px;
+	clear: both;
+	cursor: pointer;
+	width: 200px;
+	height: 30px;
+	
+}
+
+#interactiveContent .updateButton p {
+	font-family: "AdelleSansWeb",Arial, "MS Trebuchet", sans-serif;
+	padding: 5px;
+	background-color: #999;
+	color: #ffffff;
+	text-align: center;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+
+#interactiveContent {
+	margin-top: 5px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+
+#interactiveContent .seriesItem {
+	margin-bottom: 12px;
+}
+
+#interactiveContent label {
+	font-family: "AdelleSansWeb",Arial, "MS Trebuchet", sans-serif;
+	color: #666666;
+	display: block;
+	font-size: 12px;
+	font-weight: bold;
+}
+#interactiveContent .seriesItemGroup input, 
+#interactiveContent .seriesItemGroup select,
+#interactiveContent .seriesItemGroup .colorPicker-picker {
+	float: left;
+	margin-right: 5px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+
+#interactiveContent .seriesItem label {
+	margin-left: 6px;
+	margin-right: 3px;
+}
+
+#interactiveContent .seriesItem p {
+	margin:0px;
+	margin-left: 5px;
+}
+
