@@ -190,7 +190,10 @@ ChartBuilder = {
 
 		d3.selectAll("#interactiveContent svg text.metaText")
 			.attr("style","font-family:'PTSerif';font-size: 12px; text-rendering:  optimizeLegibility; fill: #999999;") 
-				
+		
+		d3.selectAll("#interactiveContent svg text.barLabel, #interactiveContent svg text.bargridLabel")
+			.style("font-family",'PTSerif')
+			.style("font-size", "16px")
 	},
 	createChartImage: function() {
 		var canvas = document.getElementById("canvas")

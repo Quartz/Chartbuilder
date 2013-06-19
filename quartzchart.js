@@ -781,7 +781,7 @@ var QuartzCharts = {
 				lineSeries.data(sbt.line)
 					.enter()
 					.append("path")
-						.attr("d",function(d,j) { yAxisIndex = d.axis; return q.yAxis[d.axis].line(d.data)})
+						.attr("d",function(d,j) { yAxisIndex = d.axis; pathString = q.yAxis[d.axis].line(d.data);  return pathString.indexOf("NaN")==-1?pathString:"M0,0"})
 						.attr("class","seriesLine seriesGroup")
 						.attr("stroke",function(d,i){return d.color? d.color : q.colors[i]})
 						.attr("stroke-width",3)
@@ -822,16 +822,28 @@ var QuartzCharts = {
 					.data(sbt.bargrid)
 					.attr("fill",function(d,i){return d.color? d.color : q.colors[i+sbt.line.length]})
 				
-				columnGroups.enter()
+				var seriesColumns = columnGroups.enter()
 					.append("g") 
 						.attr("class","seriesColumn")
 						.attr("fill",function(d,i){return d.color? d.color : q.colors[i+q.series.length]})
 						.attr("transform",function(d,i){return "translate(0,"+q.padding.top+")"})
+						
+				var bargridLabel = seriesColumns.selectAll("text.bargridLabel")
+						.data(function(d,i){return d;})
+						
+				bargridLabel.enter()
 						.append("text")
-							.attr("class","bargridLabel")
-							.text(function(d,i){return d.name})
-							.attr("x",q.padding.left)
-							.attr("y",15)
+						.attr("class","bargridLabel")
+						.text(function(d,i){return d.name})
+						.attr("x",q.padding.left)
+						.attr("y",15)
+						
+				bargridLabel.transition()
+						.text(function(d,i){return d.name})
+						.attr("x",q.padding.left)
+						.attr("y",15)
+				
+				bargridLabel.exit().remove()
 				
 				columnSeries.transition()
 					.duration(500)
@@ -856,6 +868,22 @@ var QuartzCharts = {
 					.attr("width", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
 					.attr("x",q.padding.left + 3)
 					.attr("y",function(d,i) {return q.xAxis.scale(i) - 10})
+				
+				var barLabels = columnGroups.selectAll("text.barLabel")
+					.data(function(d,i){return d.data})
+					
+				barLabels.enter()
+					.append("text")
+					.attr("class","barLabel")
+					.text(function(d,i){return d})
+					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return q.padding.left + 6 + Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
+					.attr("y",function(d,i) {return q.xAxis.scale(i) + 5})
+					
+				barLabels.transition()
+					.text(function(d,i){var yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (i==0?q.yAxis[yAxisIndex].prefix.value:"") + d + (i==0?q.yAxis[yAxisIndex].suffix.value:"")})
+					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return q.padding.left + 6 + Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
+					.attr("y",function(d,i) {return q.xAxis.scale(i) + 5})
+				
 				
 				columnRects.exit().remove()
 				lineSeriesDotGroups = q.seriesContainer.selectAll("g.lineSeriesDots").remove()
