@@ -681,14 +681,15 @@ var QuartzCharts = {
 						this.setAttribute("x",Number(this.getAttribute("x"))-(pwidth + attrx - q.width + q.padding.right))
 						this.setAttribute("text-anchor","start")
 					}
-					else if (attrx - pwidth/2) {
+					else if (attrx - pwidth/2 < 0) {
 						this.setAttribute("text-anchor","start")
 					}
+					q.padding.left = q.defaults.padding.left
 				}
 				else {
 					//adjust padding for bargrid
 					if(q.padding.left - pwidth < q.defaults.padding.left) {
-						q.padding.left = pwidth + 10;
+						q.padding.left = pwidth + q.defaults.padding.left;
 						q.all.redraw() //CHANGE (maybe)
 					}
 					
@@ -960,49 +961,40 @@ var QuartzCharts = {
 						})
 			
 				lineSeriesDots.exit().remove()
+				
+				//bring lines to front
 				lineSeries.each(function(){this.parentNode.appendChild(this);})
+				
+				//bring dots to front
+				lineSeriesDots.each(function(){this.parentNode.appendChild(this);})
 			}
 			
 		}
-		//CHANGE Bring lines to top (doesn't work)
-		q.seriesContainer.selectAll(".seriesGroup").sort(function(a,b){
-			if(a.data.type == "line") {
-				return -1
-			}
-			else if(b.data.type == "line") {
-				return 1
-			}
-			else {
-				return 0
-			}
-			
-		})
-		
 		
 		//remove current legends
 		q.legendItemContainer.selectAll("g.legendItem").remove()
 		
 		if(!q.isBargrid) {
-		//add legend to chart
-		var legendGroups = q.legendItemContainer.selectAll("g")
-			.data(q.series);
+			//add legend to chart
+			var legendGroups = q.legendItemContainer.selectAll("g")
+				.data(q.series);
 
-		var legItems = 	legendGroups.enter()
-			.append("g")
-			.attr("class","legendItem")
-			.attr("transform",function(d,i) {return "translate("+q.padding.left+",0)"});
+			var legItems = 	legendGroups.enter()
+				.append("g")
+				.attr("class","legendItem")
+				.attr("transform",function(d,i) {return "translate("+q.padding.left+",0)"});
 			
-		var legLabels = legItems.append("text")
-				.attr("class","legendLabel")
-				.attr("x",q.series.length > 1 ? 12 : 0)
-				.attr("y",q.series.length > 1 ? 18 : q.topAxisItem.y - 4)
-				.attr("fill",q.series.length > 1 ? function(d,i){return d.color? d.color : q.colors[i]} : "#666666")
-				.text(function(d,i){return d.name});
+			var legLabels = legItems.append("text")
+					.attr("class","legendLabel")
+					.attr("x",q.series.length > 1 ? 12 : 0)
+					.attr("y",q.series.length > 1 ? 18 : q.topAxisItem.y - 4)
+					.attr("fill",q.series.length > 1 ? function(d,i){return d.color? d.color : q.colors[i]} : "#666666")
+					.text(function(d,i){return d.name});
 				
 		
 					
-		//if there is more than one line
-		if(q.series.length > 1) {
+			//if there is more than one line
+			if(q.series.length > 1) {
 				legItems.append("rect")
 					.attr("width",10)
 					.attr("height",10)
@@ -1028,12 +1020,12 @@ var QuartzCharts = {
 						d3.select(this).attr("transform","translate("+x+","+legendItemY+")")
 					}
 				})
-			
+		
 				//test if the chart needs more top margin because of a large number of legend items
 				if (legendItemY > 0 && q.padding.top == 25) { //CHANGE
 					q.padding.top = legendItemY + 25;
 					this.q = q;				
-				
+			
 				};
 			}
 		}
