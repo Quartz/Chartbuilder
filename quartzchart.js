@@ -375,9 +375,9 @@ var QuartzCharts = {
 		for (var i = q.yAxis.length - 1; i >= 0; i--){
 			if(first || !q.yAxis[i].line) {
 						q.yAxis[i].line = d3.svg.line();
-						q.yAxis[i].line.y(function(d,j){return q.yAxis[yAxisIndex].scale(d)})
+						q.yAxis[i].line.y(function(d,j){return d?q.yAxis[yAxisIndex].scale(d):null})
 				//		if(q.xAxis.type == "date") {
-							q.yAxis[i].line.x(function(d,j){return q.xAxis.scale(q.xAxisRef[0].data[j])})
+							q.yAxis[i].line.x(function(d,j){return d?q.xAxis.scale(q.xAxisRef[0].data[j]):null})
 				//		}
 				//		else {
 				//			q.yAxis[i].line.x(function(d,j){return q.xAxis.scale(j)})
@@ -385,9 +385,9 @@ var QuartzCharts = {
 			}
 			else {
 				for (var i = q.yAxis.length - 1; i >= 0; i--){
-					q.yAxis[i].line.y(function(d,j){return q.yAxis[yAxisIndex].scale(d)})
+					q.yAxis[i].line.y(function(d,j){return d?q.yAxis[yAxisIndex].scale(d):null})
 					//if(q.xAxis.type == "date") {
-						q.yAxis[i].line.x(function(d,j){return q.xAxis.scale(q.xAxisRef[0].data[j])})
+						q.yAxis[i].line.x(function(d,j){return d?q.xAxis.scale(q.xAxisRef[0].data[j]):null})
 				//	}
 				//	else {
 				//		q.yAxis[i].line.x(function(d,j){return q.xAxis.scale(j)})
@@ -781,7 +781,7 @@ var QuartzCharts = {
 				lineSeries.data(sbt.line)
 					.enter()
 					.append("path")
-						.attr("d",function(d,j) { yAxisIndex = d.axis; pathString = q.yAxis[d.axis].line(d.data);  return pathString.indexOf("NaN")==-1?pathString:"M0,0"})
+						.attr("d",function(d,j) { yAxisIndex = d.axis; pathString = q.yAxis[d.axis].line(d.data).split("L0,0L").join("M");  return pathString.indexOf("NaN")==-1?pathString:"M0,0"})
 						.attr("class","seriesLine seriesGroup")
 						.attr("stroke",function(d,i){return d.color? d.color : q.colors[i]})
 						.attr("stroke-width",3)
@@ -827,9 +827,10 @@ var QuartzCharts = {
 						.attr("class","seriesColumn")
 						.attr("fill",function(d,i){return d.color? d.color : q.colors[i+q.series.length]})
 						.attr("transform",function(d,i){return "translate(0,"+q.padding.top+")"})
-						
-				var bargridLabel = seriesColumns.selectAll("text.bargridLabel")
-						.data(function(d,i){return d;})
+				
+				var bargridLabel = columnGroups.selectAll("text.bargridLabel")
+					.data(function(d,i){return [d]})
+				
 						
 				bargridLabel.enter()
 						.append("text")
@@ -837,11 +838,11 @@ var QuartzCharts = {
 						.text(function(d,i){return d.name})
 						.attr("x",q.padding.left)
 						.attr("y",15)
-						
+								
 				bargridLabel.transition()
-						.text(function(d,i){return d.name})
-						.attr("x",q.padding.left)
-						.attr("y",15)
+					.text(function(d,i){return d.name})
+					.attr("x",q.padding.left)
+					.attr("y",15)
 				
 				bargridLabel.exit().remove()
 				
@@ -936,7 +937,7 @@ var QuartzCharts = {
 
 				lineSeries.enter()
 					.append("path")
-						.attr("d",function(d,j) { yAxisIndex = d.axis; return q.yAxis[d.axis].line(d.data)})
+						.attr("d",function(d,j) { yAxisIndex = d.axis; pathString = q.yAxis[d.axis].line(d.data).split("L0,0L").join("M0,0L"); return pathString;})
 						.attr("class","seriesLine")
 						.attr("stroke",function(d,i){return d.color? d.color : q.colors[i]})
 						.attr("stroke-width",3)
@@ -946,7 +947,7 @@ var QuartzCharts = {
 
 				lineSeries.transition()
 					.duration(500)
-					.attr("d",function(d,j) { yAxisIndex = d.axis; return QuartzCharts.q.yAxis[d.axis].line(d.data)})
+					.attr("d",function(d,j) { yAxisIndex = d.axis; pathString = q.yAxis[d.axis].line(d.data).split("L0,0L").join("M0,0M"); return pathString;})
 
 				lineSeries.exit().remove()
 			
@@ -976,7 +977,7 @@ var QuartzCharts = {
 						yAxisIndex = d3.select(this.parentElement).data()[0].axis; 
 						return "translate("+(q.xAxis.type=="date" ?
 							q.xAxis.scale(QuartzCharts.q.xAxisRef[0].data[i]):
-							q.xAxis.scale(i)) + "," + q.yAxis[yAxisIndex].scale(d) + ")"
+							q.xAxis.scale(i)) + "," + (d?q.yAxis[yAxisIndex].scale(d):-100) + ")"
 						})
 			
 				lineSeriesDots.transition()
@@ -985,7 +986,7 @@ var QuartzCharts = {
 						yAxisIndex = d3.select(this.parentElement).data()[0].axis; 
 						return "translate("+(q.xAxis.type=="date" ?
 							q.xAxis.scale(QuartzCharts.q.xAxisRef[0].data[i]):
-							q.xAxis.scale(i)) + "," + q.yAxis[yAxisIndex].scale(d) + ")"
+							q.xAxis.scale(i)) + "," + (d?q.yAxis[yAxisIndex].scale(d):-100) + ")"
 						})
 			
 				lineSeriesDots.exit().remove()

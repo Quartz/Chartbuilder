@@ -288,12 +288,8 @@ ChartBuilder = {
 				var val = $(this).val(),
 				index = $(this).parent().data().index;
 				chart.q.series[index].type = val
-				if(val == "bargrid") {
-					$("#chartContainer").css("height",chart.q.series[index].data.length*20 + chart.q.padding.top + chart.q.padding.bottom)
-				}
-				else {
-					$("#chartContainer").css("height",338)
-				}
+				var hasBargrid = false;
+				ChartBuilder.setChartArea()
 				chart.resize()
 				ChartBuilder.redraw()
 			})
@@ -384,6 +380,22 @@ ChartBuilder = {
 		chart.q = q;
 		
 		ChartBuilder.inlineAllStyles();
+	},
+	setChartArea: function() {
+		var hasBargrid = false;
+		for (var i = chart.q.series.length - 1; i >= 0; i--){
+			if(chart.q.series[i].type == "bargrid") {
+				hasBargrid = true;
+				break;
+			}
+		};
+		
+		if(hasBargrid) {
+			$("#chartContainer").css("height",chart.q.series[0].data.length*20 + chart.q.padding.top + chart.q.padding.bottom)
+		}
+		else {
+			$("#chartContainer").css("height",338)
+		}
 	},
 	makeLegendAdjustable: function() {
 		
@@ -561,8 +573,9 @@ $(document).ready(function() {
 			chart.q.series=newData.data
 			//chart.setYScales();
 			//chart.setXScales();
+			ChartBuilder.setChartArea()
 			chart.setLineMakers();
-			ChartBuilder.redraw()
+			ChartBuilder.redraw();
 			ChartBuilder.inlineAllStyles();
 		}
 
