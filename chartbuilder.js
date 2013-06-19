@@ -494,7 +494,7 @@ $(document).ready(function() {
 		chartConfig.colors[i] = "#"+ ChartBuilder.allColors[i]
 	}
 	
-	chart = QuartzCharts.build(chartConfig)
+	chart = Gneiss.build(chartConfig)
 	$("#chart").attr("transform","scale(2)")
 	
 	ChartBuilder.redraw()
@@ -664,7 +664,7 @@ $(document).ready(function() {
 //window.onpopstate = function(e) {
 //	if(ChartBuilder.draws > 2) {
 //		chart.q.chart.remove()
-//		chart = QuartzCharts.build(e.state)
+//		chart = Gneiss.build(e.state)
 //		ChartBuilder.redraw()
 //		ChartBuilder.inlineAllStyles();
 //		

@@ -84,7 +84,7 @@ var chartConfig = {
 	creditline: "Quartz | qz.com"
 }
 
-var QuartzCharts = {
+var Gneiss = {
 	longMonths: ["January","February","March","April","May","June","July","August","September","October","November","December"],
 	shortMonths: ["Jan.","Feb.","March","April","May","June","July","Aug.","Sept.","Oct.","Nov.","Dec."],
 	dateParsers: {
@@ -98,7 +98,7 @@ var QuartzCharts = {
 				return d.getFullYear();
 			}
 			else {
-				return QuartzCharts.longMonths[d.getMonth()]
+				return Gneiss.longMonths[d.getMonth()]
 			}
 			
 		},
@@ -107,7 +107,7 @@ var QuartzCharts = {
 				return "’"+String(d.getFullYear()).split("").splice(2,2).join("")
 			} 
 			else { 
-				return QuartzCharts.shortMonths[d.getMonth()]
+				return Gneiss.shortMonths[d.getMonth()]
 			}
 		},
 		"hmm": function(d) {var hours = d.getHours(), min = d.getMinutes(); hours = hours==0 ? 12 : hours ; return (hours > 12 ? hours-12 : hours) + ":" + (min < 10 ? "0"+min : min)},
@@ -286,7 +286,7 @@ var QuartzCharts = {
 			if(q.xAxis.type == "date") {
 				dateExtent = d3.extent(q.xAxisRef[0].data);
 				q.xAxis.scale = d3.time.scale()
-					//.domain(QuartzCharts.multiextent(q.series,function(d){return d.data}))
+					//.domain(Gneiss.multiextent(q.series,function(d){return d.data}))
 					.domain(dateExtent)
 				
 				//calculate smallest gap between two dates
@@ -317,7 +317,7 @@ var QuartzCharts = {
 			if(q.xAxis.type == "date") {
 				dateExtent = d3.extent(q.xAxisRef[0].data);
 				q.xAxis.scale = d3.time.scale()
-					//.domain(QuartzCharts.multiextent(q.series,function(d){return d.data}))
+					//.domain(Gneiss.multiextent(q.series,function(d){return d.data}))
 					.domain(dateExtent)
 					
 				//calculate smallest gap between two dates
@@ -769,11 +769,11 @@ var QuartzCharts = {
 					.enter()
 						.append("rect")
 						.attr("width",columnWidth)
-						.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
+						.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
 						.attr("x", function(d,i) {
 							return q.xAxis.scale(q.xAxisRef[0].data[i])  - columnWidth/2
 							})
-						.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex]))) >= 0 ? q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])) : q.yAxis[yAxisIndex].scale(d)})
+						.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,q.yAxis[yAxisIndex]))) >= 0 ? q.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,q.yAxis[yAxisIndex])) : q.yAxis[yAxisIndex].scale(d)})
 				
 				
 				
@@ -805,7 +805,7 @@ var QuartzCharts = {
 						.attr("transform",function(d,i){
 							yAxisIndex = d3.select(this.parentElement).data()[0].axis; 
 							return "translate("+(q.xAxis.type=="date" ?
-								q.xAxis.scale(QuartzCharts.q.xAxisRef[0].data[i]):
+								q.xAxis.scale(Gneiss.q.xAxisRef[0].data[i]):
 								q.xAxis.scale(i)) + "," + q.yAxis[yAxisIndex].scale(d) + ")"
 							})
 		}
@@ -859,14 +859,14 @@ var QuartzCharts = {
 				columnRects.enter()
 						.append("rect")
 						.attr("height",20)
-						.attr("width", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
+						.attr("width", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
 						.attr("x",function(d,i){return d<0?q.padding.left - this.attr("width"):q.padding.left})
 						.attr("y",function(d,i) {return q.xAxis.scale(i) - 10})
 				
 				columnRects.transition()
 					.duration(500)
 					.attr("height",20)
-					.attr("width", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
+					.attr("width", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
 					.attr("x",q.padding.left + 3)
 					.attr("y",function(d,i) {return q.xAxis.scale(i) - 10})
 				
@@ -877,12 +877,12 @@ var QuartzCharts = {
 					.append("text")
 					.attr("class","barLabel")
 					.text(function(d,i){return d})
-					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return q.padding.left + 6 + Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
+					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return q.padding.left + 6 + Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
 					.attr("y",function(d,i) {return q.xAxis.scale(i) + 5})
 					
 				barLabels.transition()
 					.text(function(d,i){var yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (i==0?q.yAxis[yAxisIndex].prefix.value:"") + d + (i==0?q.yAxis[yAxisIndex].suffix.value:"")})
-					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return q.padding.left + 6 + Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
+					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return q.padding.left + 6 + Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
 					.attr("y",function(d,i) {return q.xAxis.scale(i) + 5})
 				
 				
@@ -914,19 +914,19 @@ var QuartzCharts = {
 				columnRects.enter()
 						.append("rect")
 						.attr("width",columnWidth)
-						.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
-						.attr("x",function(d,i) {return q.xAxis.scale(QuartzCharts.q.xAxisRef[0].data[i])  - columnWidth/2})
-						.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex]))) >= 0 ? q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])) : q.yAxis[yAxisIndex].scale(d)})
+						.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
+						.attr("x",function(d,i) {return q.xAxis.scale(Gneiss.q.xAxisRef[0].data[i])  - columnWidth/2})
+						.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,q.yAxis[yAxisIndex]))) >= 0 ? q.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,q.yAxis[yAxisIndex])) : q.yAxis[yAxisIndex].scale(d)})
 			
 				columnRects.transition()
 					.duration(500)
 					.attr("width",columnWidth)
-					.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
+					.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
 					.attr("x",q.xAxis.type =="date" ? 
-							function(d,i) {return q.xAxis.scale(QuartzCharts.q.xAxisRef[0].data[i])  - columnWidth/2}:
+							function(d,i) {return q.xAxis.scale(Gneiss.q.xAxisRef[0].data[i])  - columnWidth/2}:
 							function(d,i) {return q.xAxis.scale(i) - columnWidth/2}
 					)
-					.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex]))) >= 0 ? q.yAxis[yAxisIndex].scale(QuartzCharts.helper.columnXandHeight(d,q.yAxis[yAxisIndex])) : q.yAxis[yAxisIndex].scale(d)})
+					.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,q.yAxis[yAxisIndex]))) >= 0 ? q.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,q.yAxis[yAxisIndex])) : q.yAxis[yAxisIndex].scale(d)})
 				
 				columnRects.exit().remove()
 			
@@ -976,7 +976,7 @@ var QuartzCharts = {
 					.attr("transform",function(d,i){
 						yAxisIndex = d3.select(this.parentElement).data()[0].axis; 
 						return "translate("+(q.xAxis.type=="date" ?
-							q.xAxis.scale(QuartzCharts.q.xAxisRef[0].data[i]):
+							q.xAxis.scale(Gneiss.q.xAxisRef[0].data[i]):
 							q.xAxis.scale(i)) + "," + (d?q.yAxis[yAxisIndex].scale(d):-100) + ")"
 						})
 			
@@ -985,7 +985,7 @@ var QuartzCharts = {
 					.attr("transform",function(d,i){
 						yAxisIndex = d3.select(this.parentElement).data()[0].axis; 
 						return "translate("+(q.xAxis.type=="date" ?
-							q.xAxis.scale(QuartzCharts.q.xAxisRef[0].data[i]):
+							q.xAxis.scale(Gneiss.q.xAxisRef[0].data[i]):
 							q.xAxis.scale(i)) + "," + (d?q.yAxis[yAxisIndex].scale(d):-100) + ")"
 						})
 			
