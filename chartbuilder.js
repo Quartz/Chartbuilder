@@ -194,6 +194,11 @@ ChartBuilder = {
 		d3.selectAll("#interactiveContent svg text.barLabel, #interactiveContent svg text.bargridLabel")
 			.style("font-family",'PTSerif')
 			.style("font-size", "16px")
+			
+		d3.selectAll("#titleLine")
+			.style("font-family",'PTSerif')
+			.style("font-size", "16px")
+			.style("fill","#666666")
 	},
 	createChartImage: function() {
 		var canvas = document.getElementById("canvas")
@@ -228,7 +233,7 @@ ChartBuilder = {
 		$(".downloadLink").addClass("hide")
 		var q = chart.q, s, picker;
 		
-		var colIndex = q.sbt.line.length, lineIndex = 0, bargridIndex = 0;
+		var colIndex = q.sbt.line.length, lineIndex = 0, bargridIndex = 0, scatterIndex = 0;
 		var seriesContainer = $("#seriesItems")
 		var isMultiAxis = false;
 		for (var i=0; i < q.series.length; i++) {
@@ -240,6 +245,7 @@ ChartBuilder = {
 				<option '+(s.type=="line"?"selected":"")+' value="line">Line</option>\
 				<option '+(s.type=="column"?"selected":"")+' value="column">Column</option>\
 				<option '+(s.type=="bargrid"?"selected":"")+' value="bargrid">Bar Grid</option>\
+				<option '+(s.type=="scatter"?"selected":"")+' value="scatter">Scatter</option>\
 				<label for="'+this.idSafe(s.name)+'_check">2nd Axis</label>\
 				<input id="'+this.idSafe(s.name)+'_check" name="'+this.idSafe(s.name)+'_check" type="checkbox" />\
 				</select>\
@@ -259,6 +265,10 @@ ChartBuilder = {
 			else if(s.type =="bargrid") {
 				color = s.color ? s.color.replace("#","") : q.colors[bargridIndex].replace("#","")
 				bargridIndex++
+			}
+			else if(s.type =="scatter") {
+				color = s.color ? s.color.replace("#","") : q.colors[scatterIndex].replace("#","")
+				scatterIndex++
 			}
 			
 			seriesContainer.append(seriesItem);
@@ -363,6 +373,7 @@ ChartBuilder = {
 		var state = {
 			container: q.container,
 			colors: q.colors,
+			title: q.title,
 			padding : q.padding,
 			xAxis: xAxisObj,
 			yAxis: yAxisObj,
@@ -372,9 +383,12 @@ ChartBuilder = {
 			creditline: q.creditline
 		}
 		//console.log("pushState", state, "Chart Builder")
-		//	window.history.pushState(state, "Chart Builder", window.location.toString().split(".local")[1])
-			ChartBuilder.useState = true;
-			ChartBuilder.draws += 1;
+		// clearTimeout(ChartBuilder.stateUpdateID)
+		// ChartBuilder.stateUpdateID = setTimeout(function(){
+		// 	window.history.pushState(state, "Chart Builder", window.location.toString().split(".local")[1])
+		// 	ChartBuilder.useState = true;
+		// 	ChartBuilder.draws += 1;
+		// }, 1000)
 
 		
 		chart.q = q;
@@ -654,6 +668,12 @@ $(document).ready(function() {
 		chart.q.sourceLine.text(chart.q.sourceline)
 	})
 	
+	$("#chart_title").keyup(function() {
+		var val = $(this).val()
+		chart.q.title = val
+		chart.q.titleLine.text(chart.q.title)
+	})
+	
 	$(".downloadLink").click(function() {
 		$(".downloadLink").toggleClass("hide")
 	})
@@ -661,13 +681,17 @@ $(document).ready(function() {
 
 })
 // Revert to a previously saved state
-//window.onpopstate = function(e) {
-//	if(ChartBuilder.draws > 2) {
-//		chart.q.chart.remove()
-//		chart = Gneiss.build(e.state)
-//		ChartBuilder.redraw()
-//		ChartBuilder.inlineAllStyles();
-//		
-//	}
-//
-//};
+// window.onpopstate = function(e) {
+// 	if(ChartBuilder.draws > 2) {
+// 		var q = e.state
+// 		if(q.xAxis.type == "date") {
+// 			q.xAxisRef[0].data = ChartBuilder.dateAll(q.xAxisRef[0].data)
+// 		}
+// 		chart.q.chart.remove()
+// 		chart = Gneiss.build(q)
+// 		ChartBuilder.redraw()
+// 		ChartBuilder.inlineAllStyles();
+// 		
+// 	}
+// 
+// };
