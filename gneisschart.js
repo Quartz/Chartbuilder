@@ -18,6 +18,7 @@ Element.prototype.prependChild = function(child) { this.insertBefore(child, this
 var chartConfig = {
 	container: "#chartContainer",
 	editable: true,
+	legend: true,
 	title: "",
 	colors: ["#ff4cf4","#ffb3ff","#e69ce6","#cc87cc","#b373b3","#995f99","#804c80","#665266","#158eff","#99cdff","#9cc2e6","#87abcc","#7394b3","#5f7d99","#466780","#525c66"],
 	padding :{
@@ -153,6 +154,13 @@ var Gneiss = {
 		this.setYAxes(true);
 		this.setXAxis(true)
 		
+		
+		q.titleLine = q.chart.append("text")
+			.attr("y",18)
+			.attr("x", q.padding.left)
+			.attr("id","titleLine")
+			.text(q.title)
+		
 		this.drawSeriesAndLegend(true);
 		
 		q.metaInfo = q.chart.append("g")
@@ -169,16 +177,11 @@ var Gneiss = {
 			.attr("x",q.padding.left)
 			.attr("class","metaText")
 			.text(q.creditline)
-			
-		q.titleLine = q.chart.append("text")
-			.attr("y",18)
-			.attr("x", q.padding.left)
-			.attr("id","titleLine")
-			.text(q.title)
 					
 		this.q = q;
 		return this;
 	},
+	numberFormat: d3.format(","),
 	resize: function(){
 		var q = this.q
 		q.width = q.$container.width() //save the width in pixels
@@ -279,11 +282,21 @@ var Gneiss = {
 		
 		this.q = q;
 	},
-	setPadding: function() {
+	setPadding: function() {		
 		var q = this.q
 		padding_top = q.defaults.padding.top
-		q.padding.top += q.title ==""||q.series.length==1?0:25
-		q.padding.top += q.yAxis.length==1?0:25
+		if(!q.legend) {
+			padding_top = 5;
+		}
+		padding_top += q.title ==""||q.series.length==1?0:25
+		padding_top += q.yAxis.length==1&&!q.isBargrid?0:25
+		
+		if(q.isBargrid) {
+			padding_top += 12
+		}
+		
+		q.padding.top = padding_top
+		
 		
 		this.q = q
 	},
@@ -590,7 +603,7 @@ var Gneiss = {
 			}
 			else {
 				try{
-					q.titleLine.attr("y",0)
+					q.titleLine.attr("y",q.padding.top - 36)
 				}catch(e){} //fail silently
 			}
 		}
@@ -934,12 +947,12 @@ var Gneiss = {
 				barLabels.enter()
 					.append("text")
 					.attr("class","barLabel")
-					.text(function(d,i){return d})
+					.text(function(d,i){return q.all.numberFormat(d)})
 					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return q.padding.left + 6 + Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
 					.attr("y",function(d,i) {return q.xAxis.scale(i) + 5})
 					
 				barLabels.transition()
-					.text(function(d,i){var yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (i==0?q.yAxis[yAxisIndex].prefix.value:"") + d + (i==0?q.yAxis[yAxisIndex].suffix.value:"")})
+					.text(function(d,i){var yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (i==0?q.yAxis[yAxisIndex].prefix.value:"") + q.all.numberFormat(d) + (i==0?q.yAxis[yAxisIndex].suffix.value:"")})
 					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return q.padding.left + 6 + Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
 					.attr("y",function(d,i) {return q.xAxis.scale(i) + 5})
 				
@@ -1205,11 +1218,9 @@ var Gneiss = {
 		
 		if(o.bargrid.length > 0) {
 			this.q.isBargrid = true;
-			this.q.padding.top = this.q.defaults.padding.top + 12
 		}
 		else {
 			this.q.isBargrid = false;
-			this.q.padding.top = this.q.defaults.padding.top
 		}
 		
 		return o

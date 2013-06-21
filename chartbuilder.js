@@ -232,7 +232,7 @@ ChartBuilder = {
 		$(".seriesItemGroup").detach()
 		$(".downloadLink").addClass("hide")
 		var q = chart.q, s, picker;
-		
+		this.customLegendLocaion = false;
 		var colIndex = q.sbt.line.length, lineIndex = 0, bargridIndex = 0, scatterIndex = 0;
 		var seriesContainer = $("#seriesItems")
 		var isMultiAxis = false;
@@ -392,7 +392,6 @@ ChartBuilder = {
 
 		
 		chart.q = q;
-		
 		ChartBuilder.inlineAllStyles();
 	},
 	setChartArea: function() {
@@ -418,11 +417,12 @@ ChartBuilder = {
 			.on("dragstart",function(d){
 				elem = d3.select(this)
 				d3.select(elem[0][0].parentElement).selectAll("rect").style("display","none")
-				if(chart.q.padding.top != 10) {
-					chart.q.padding.top = 10;
+				if(!ChartBuilder.customLegendLocaion) {
+					chart.q.legend = false;
 					chart.redraw()
 					ChartBuilder.inlineAllStyles()
 					ChartBuilder.makeLegendAdjustable()
+					ChartBuilder.customLegendLocaion = true;
 				}
 				
 			})
@@ -433,7 +433,6 @@ ChartBuilder = {
 					
 				
 		});
-		
 		d3.selectAll("text.legendLabel").call(legendLabelDrag);
 		
 		
@@ -442,6 +441,7 @@ ChartBuilder = {
 		s = s.replace(/[^\w\d]+/gi,"-")
 		return s
 	},
+	customLegendLocaion:false,
 	useState: false,
 	draws: 0,
 	actions: {
@@ -672,8 +672,10 @@ $(document).ready(function() {
 		var val = $(this).val()
 		chart.q.title = val
 		chart.setPadding();
+		ChartBuilder.setChartArea()
 		chart.setYScales();
 		chart.redraw()
+		ChartBuilder.makeLegendAdjustable()
 		
 		chart.q.titleLine.text(chart.q.title)
 	})
