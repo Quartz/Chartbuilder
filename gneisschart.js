@@ -13,8 +13,10 @@
 */
 var yAxisIndex
 
+//add prepend ability
 Element.prototype.prependChild = function(child) { this.insertBefore(child, this.firstChild); };
 
+//A default configuration //CHANGE to more d3esque methods
 var chartConfig = {
 	container: "#chartContainer",
 	editable: true,
@@ -120,6 +122,9 @@ var Gneiss = {
 		"hmm": function(d) {var hours = d.getHours(), min = d.getMinutes(); hours = hours==0 ? 12 : hours ; return (hours > 12 ? hours-12 : hours) + ":" + (min < 10 ? "0"+min : min)},
 	},
 	build: function(config) {
+		/*
+			Initializes the chart from a config object
+		*/
 		var q = config
 		this.q = config //CHANGE 
 		//set container as a jquery object
@@ -150,12 +155,10 @@ var Gneiss = {
 		//group the series by their type
 		this.q.sbt = this.splitSeriesByType(this.q.series);
 		this.calculateColumnWidths()
-		
-		this.setYScales(true);
-		this.setXScales(true);
-		
-		this.setYAxes(true);
-		this.setXAxis(true)
+			.setYScales(true)
+			.setXScales(true)
+			.setYAxes(true)
+			.setXAxis(true);
 		
 		
 		q.titleLine = q.chart.append("text")
@@ -186,6 +189,9 @@ var Gneiss = {
 	},
 	numberFormat: d3.format(","),
 	resize: function(){
+		/*
+			Adjusts the size dependent stored variables
+		*/
 		var q = this.q
 		q.width = q.$container.width() //save the width in pixels
 		q.height = q.$container.height() //save the height in pixels
@@ -197,8 +203,12 @@ var Gneiss = {
 		q.metaInfo.attr("transform","translate(0,"+(q.height-4)+")")
 		
 		this.q = q;
+		return this
 	},
 	setYScales: function(first) {
+		/*
+			calculates and saves the y-scales from the existing data
+		*/
 		var q = this.q
 		/*
 		*
@@ -284,8 +294,12 @@ var Gneiss = {
 		}
 		
 		this.q = q;
+		return this
 	},
-	setPadding: function() {		
+	setPadding: function() {
+		/*
+			calulates and stores the proper amount of extra padding beyond what the user specified (to account for axes, titles, legends)
+		*/
 		var q = this.q
 		padding_top = q.defaults.padding.top
 		if(!q.legend) {
@@ -302,8 +316,12 @@ var Gneiss = {
 		
 		
 		this.q = q
+		return this
 	},
 	setXScales: function(first) {
+		/*
+			calculate and store the x-scales
+		*/
 		var q = this.q
 		var dateExtent, shortestPeriod = Infinity;
 		if(first) {
@@ -400,6 +418,7 @@ var Gneiss = {
 		}
 		
 		this.q = q;
+		return this
 		
 	},
 	setLineMakers: function(first) {
@@ -430,6 +449,7 @@ var Gneiss = {
 
 		};
 		this.q = q
+		return this
 	},
 	setYAxes: function(first) {
 		/*
@@ -615,6 +635,7 @@ var Gneiss = {
 		d3.selectAll(".yAxis").each(function(){this.parentNode.prependChild(this);})
 		d3.selectAll("#ground").each(function(){this.parentNode.prependChild(this);})
 		this.q = q
+		return this
 		
 	},
 	setXAxis: function(first) {
@@ -669,7 +690,7 @@ var Gneiss = {
 		}
 		else {
 			q.xAxis.axis.scale(q.xAxis.scale)
-				.tickFormat(q.xAxis.formatter ? this.dateParsers[q.xAxis.formatter] : function(d) {return d + "hello"})
+				.tickFormat(q.xAxis.formatter ? this.dateParsers[q.xAxis.formatter] : function(d) {return d})
 				.ticks(q.isBargrid?q.series[0].data.length:q.xAxis.ticks)
 				.orient(q.isBargrid?"left":"bottom")
 			
@@ -746,8 +767,13 @@ var Gneiss = {
 			})
 		
 		this.q = q
+		return this
 	},
 	calculateColumnWidths: function() {
+		/*
+			Calculate the propper column width for column charts
+		*/
+		
 		var q = this.q
 		//store split by type for convenience
 		var sbt = q.sbt
@@ -764,8 +790,14 @@ var Gneiss = {
 		this.q.columnWidth = columnWidth;
 		this.q.columnGroupWidth = (columnWidth + 1) * sbt.column.length;
 		this.q.columnGroupShift = columnWidth +1;
+		
+		return this
 	},
 	drawSeriesAndLegend: function(first){
+		/*
+			Plots everything
+		*/
+		
 		/*
 		*
 		* Series Drawing Section
@@ -1199,10 +1231,14 @@ var Gneiss = {
 		
 		
 		this.q = q;
+		return this
 		
 		
 	},
 	splitSeriesByType: function(series) {
+		/*
+			splits the data by the way it is supposed to be displayed
+		*/
 		var o = {
 			"line":[],
 			"column":[],
@@ -1230,12 +1266,21 @@ var Gneiss = {
 		return o
 	},
 	update: function() {
-		
+		/*
+			Nothing yet
+		*/
+		return this
 	},
 	updateSeries: function() {
-		
+		/*
+			Nothing yet
+		*/
+		return this
 	},
 	redraw: function() {
+		/*
+			Redraw the chart
+		*/
 		var q = this.q
 		
 		//group the series by their type
@@ -1243,12 +1288,12 @@ var Gneiss = {
 		this.calculateColumnWidths()
 		
 		this.setPadding()
-		this.setYScales()
-		this.setXScales()
-		this.setYAxes()
-		this.setXAxis()
-		this.drawSeriesAndLegend();	
-		return "Redrawn"
+			.setYScales()
+			.setXScales()
+			.setYAxes()
+			.setXAxis()
+			.drawSeriesAndLegend();	
+		return this
 	},
 	randomizeData: function(d) {
 		delta = 10 * (Math.random() - 0.5)

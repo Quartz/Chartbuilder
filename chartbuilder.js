@@ -332,9 +332,9 @@ ChartBuilder = {
 					chart.q.yAxis.pop()
 				}
 				
-				chart.setYScales();
-				chart.setYAxes();
-				chart.setLineMakers()
+				chart.setYScales()
+					.setYAxes()
+					.setLineMakers();
 				ChartBuilder.redraw()
 			})
 			
@@ -676,8 +676,8 @@ $(document).ready(function() {
 		chart.q.title = val
 		chart.setPadding();
 		ChartBuilder.setChartArea()
-		chart.setYScales();
-		chart.redraw()
+		chart.setYScales()
+			.redraw();
 		ChartBuilder.makeLegendAdjustable()
 		
 		chart.q.titleLine.text(chart.q.title)
