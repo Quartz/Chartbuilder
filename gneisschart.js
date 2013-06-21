@@ -65,7 +65,7 @@ var chartConfig = {
 			name: "apples",
 			data: [5.5,10.2,6.1,3.8],
 			source: "Some Org",
-			type: "scatter",
+			type: "line",
 			axis: 0,
 			color: null
 		},
@@ -279,6 +279,14 @@ var Gneiss = {
 		
 		this.q = q;
 	},
+	setPadding: function() {
+		var q = this.q
+		padding_top = q.defaults.padding.top
+		q.padding.top += q.title ==""||q.series.length==1?0:25
+		q.padding.top += q.yAxis.length==1?0:25
+		
+		this.q = q
+	},
 	setXScales: function(first) {
 		var q = this.q
 		var dateExtent, shortestPeriod = Infinity;
@@ -419,12 +427,8 @@ var Gneiss = {
 		//CHANGE
 		if(q.yAxis.length == 1 ){
 			d3.select("#leftAxis").remove()
-			q.padding.top = q.defaults.padding.top
 		}
-		else {
-			q.padding.top = q.defaults.padding.top + 25;
-		}
-		
+
 		for (var i = q.yAxis.length - 1; i >= 0; i--){
 			curAxis = q.yAxis[i]
 			
@@ -576,6 +580,13 @@ var Gneiss = {
 		}
 		else {
 			d3.selectAll(".yAxis").style("display",null)
+			
+			if(q.yAxis.length==1) {
+				try{
+					q.titleLine.attr("y",q.topAxisItem.y - 4)
+				}catch(e){}
+					
+			}
 		}
 		
 		d3.selectAll(".yAxis").each(function(){this.parentNode.prependChild(this);})
@@ -1084,7 +1095,7 @@ var Gneiss = {
 			var legItems = 	legendGroups.enter()
 				.append("g")
 				.attr("class","legendItem")
-				.attr("transform",function(d,i) {return "translate("+q.padding.left+",0)"});
+				.attr("transform",function(d,i) {return "translate("+q.padding.left+","+(q.padding.top-25)+")"});
 			
 			var legLabels = legItems.append("text")
 					.filter(function(){return q.series.length > 1})
@@ -1105,7 +1116,7 @@ var Gneiss = {
 					.attr("y",8)
 					.attr("fill", function(d,i){return d.color? d.color : q.colors[i]})
 
-				var legendItemY = 0;
+				var legendItemY;
 				legendGroups.each(function(d,i) {
 					if(i > 0) {
 						var prev = d3.select(legendGroups[0][i-1])
@@ -1113,7 +1124,7 @@ var Gneiss = {
 
 						var cur = d3.select(this)
 						var curWidth = parseFloat(cur.select("text").style("width").split("p")[0])
-
+						legendItemY = cur.attr("transform").split(",")[1].split(")")[0];
 						var x = parseFloat(prev.attr("transform").split(",")[0].split("(")[1]) + prevWidth + 20
 
 						if(x + curWidth > q.width) {
@@ -1208,6 +1219,7 @@ var Gneiss = {
 		this.q.sbt = this.splitSeriesByType(this.q.series);
 		this.calculateColumnWidths()
 		
+		this.setPadding()
 		this.setYScales()
 		this.setXScales()
 		this.setYAxes()

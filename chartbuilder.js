@@ -671,6 +671,10 @@ $(document).ready(function() {
 	$("#chart_title").keyup(function() {
 		var val = $(this).val()
 		chart.q.title = val
+		chart.setPadding();
+		chart.setYScales();
+		chart.redraw()
+		
 		chart.q.titleLine.text(chart.q.title)
 	})
 	
