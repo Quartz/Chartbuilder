@@ -175,6 +175,9 @@ ChartBuilder = {
 				
 		d3.selectAll("#interactiveContent svg #xAxis line")
 			.style("stroke","#e6e6e6")
+			
+		d3.selectAll("#interactiveContent svg #xAxis text")
+			.style("fill","#666666")
 
 		d3.selectAll("#interactiveContent svg .axis path")
 			.style("stroke", "none")
@@ -183,7 +186,6 @@ ChartBuilder = {
 		d3.selectAll("#interactiveContent svg .axis text")
 				.style("font-family",'PTSerif')
 				.style("font-size", "16px")
-				.style("fill","#666666")
 		
 		d3.selectAll("#interactiveContent svg .legendItem text")
 					.attr("style","font-family:'PTSerif';font-size: 16px;")

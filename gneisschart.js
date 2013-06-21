@@ -491,6 +491,7 @@ var Gneiss = {
 					axisItem.text = d3.select(this).select("text")
 						.attr("text-anchor",i==0?"end":"start")
 						.attr("fill",i==0?"#666666":q.yAxis[i].color)
+						.attr("x",function(){var elemx = Number(d3.select(this).attr("x")); return i==0?elemx:elemx+4})
 						.attr("y",-9)
 						
 					//store the line element of the axisItem	
