@@ -577,6 +577,7 @@ var Gneiss = {
 		
 		if(q.isBargrid){
 			d3.selectAll(".yAxis").style("display","none")
+			q.titleLine.attr("y",q.padding.top - 36)
 		}
 		else {
 			d3.selectAll(".yAxis").style("display",null)
@@ -584,8 +585,13 @@ var Gneiss = {
 			if(q.yAxis.length==1) {
 				try{
 					q.titleLine.attr("y",q.topAxisItem.y - 4)
-				}catch(e){}
+				}catch(e){} //fail silently
 					
+			}
+			else {
+				try{
+					q.titleLine.attr("y",0)
+				}catch(e){} //fail silently
 			}
 		}
 		
@@ -868,7 +874,7 @@ var Gneiss = {
 			var columnRects
 			
 			if(q.isBargrid) {
-				//add columns to chart
+				//add bars to chart
 				columnGroups = q.seriesContainer.selectAll("g.seriesColumn")
 					.data(sbt.bargrid)
 					.attr("fill",function(d,i){return d.color? d.color : q.colors[i+sbt.line.length]})
@@ -888,12 +894,12 @@ var Gneiss = {
 						.attr("class","bargridLabel")
 						.text(function(d,i){return d.name})
 						.attr("x",q.padding.left)
-						.attr("y",15)
+						.attr("y",q.padding.top-18)
 								
 				bargridLabel.transition()
 					.text(function(d,i){return d.name})
 					.attr("x",q.padding.left)
-					.attr("y",15)
+					.attr("y",q.padding.top-18)
 				
 				bargridLabel.exit().remove()
 				
@@ -921,6 +927,7 @@ var Gneiss = {
 					.attr("x",q.padding.left + 3)
 					.attr("y",function(d,i) {return q.xAxis.scale(i) - 10})
 				
+				//add label to each bar
 				var barLabels = columnGroups.selectAll("text.barLabel")
 					.data(function(d,i){return d.data})
 					
@@ -936,6 +943,7 @@ var Gneiss = {
 					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return q.padding.left + 6 + Math.abs(q.yAxis[yAxisIndex].scale(d)-q.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,q.yAxis[yAxisIndex])))})
 					.attr("y",function(d,i) {return q.xAxis.scale(i) + 5})
 				
+				//remove non bargrid stuff
 				scatterSeries.remove()
 				columnRects.exit().remove()
 				lineSeriesDotGroups.remove()
