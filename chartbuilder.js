@@ -282,7 +282,6 @@ ChartBuilder = {
 				axer.prop("checked",true)
 				if(!q.yAxis[1].color || !isMultiAxis) {
 					q.yAxis[1].color = q.series[i].color
-					q.padding.top = 40;
 				}
 				isMultiAxis = true;
 			}
@@ -301,6 +300,7 @@ ChartBuilder = {
 				index = $(this).parent().data().index;
 				chart.q.series[index].type = val
 				var hasBargrid = false;
+				chart.setPadding();
 				ChartBuilder.setChartArea()
 				chart.resize()
 				ChartBuilder.redraw()
@@ -589,6 +589,7 @@ $(document).ready(function() {
 			chart.q.series=newData.data
 			//chart.setYScales();
 			//chart.setXScales();
+			chart.setPadding();
 			ChartBuilder.setChartArea()
 			chart.setLineMakers();
 			ChartBuilder.redraw();

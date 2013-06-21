@@ -32,7 +32,7 @@ var chartConfig = {
 		prefix: "",
 		suffix: "",
 		type: "linear",
-		formatter: "m",
+		formatter: null,
 		mixed: true,
 		ticks: 5
 	},
@@ -94,6 +94,9 @@ var Gneiss = {
 	dateParsers: {
 		"mmddyyyy": function(d) {return [d.getMonth()+1,d.getDate(),d.getFullYear()].join("/");},
 		"mmdd": function(d) {return [d.getMonth()+1,d.getDate()].join("/")},
+		"Mdd": function(d){
+			return Gneiss.shortMonths[d.getMonth()] +" "+ Number(d.getDate())
+		},
 		"mmyy": function(d) {return [d.getMonth()+1,String(d.getFullYear()).split("").splice(2,2).join("")].join("/")},
 		"yy": function(d) {return "’"+String(d.getFullYear()).split("").splice(2,2).join("")},
 		"yyyy": function(d) {return d.getFullYear()},
