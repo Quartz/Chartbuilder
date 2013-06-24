@@ -795,7 +795,7 @@ var Gneiss = {
 	},
 	drawSeriesAndLegend: function(first){
 		/*
-			Plots everything
+			Plots everything...should probably be broken up
 		*/
 		
 		/*
@@ -1105,8 +1105,7 @@ var Gneiss = {
 						})
 			
 				lineSeriesDots.exit().remove()
-				
-				
+								
 				//add scatter
 				scatterGroups = q.seriesContainer.selectAll("g.seriesScatter")
 					.data(sbt.scatter)
