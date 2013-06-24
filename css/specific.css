@@ -18,12 +18,38 @@ License: /fonts/PTSerif/Paratype PT Sans Free Font License.txt
   font-style: normal;
 }
 
-input, select {
+input[type="text"], select {
 	display: block;
 	margin-bottom: 5px;
+	width: 100%;
+	font-family: 'PTSerif';
+	color: #666666;
+}
+
+input {
+	border: 1px solid #ccc;
+}
+
+input[type="text"] {
+	padding-left: 5px;
+}
+
+select.typePicker  {
+	width: 50%;
 }
 
 body {
+	overflow-y: scroll;
+	overflow-x: hidden;
+	line-height: 1.1em;
+}
+
+cite {
+	font-size: 10px;
+	color: #999;
+	margin-bottom: 5px;
+	line-height: 12px;
+	display:block;
 }
 
 h2 {
@@ -118,6 +144,10 @@ h2:not(:first-child) {
 }
 */
 
+#interactiveContent svg .legendItem text {
+	cursor: move;
+}
+
 #interactiveContent .interfaceCol {
 	width: 46%;
 	margin: 1%;
@@ -151,6 +181,7 @@ h2:not(:first-child) {
 	width: 600px;
 	font-family: Monaco, sans-serif;
 	font-size: 10px;
+	overflow-x: scroll;
 }
 
 #interactiveContent .hide {

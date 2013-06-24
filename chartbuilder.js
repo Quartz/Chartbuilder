@@ -63,13 +63,16 @@ ChartBuilder = {
 				parseFunc = this.dateAll
 				//this.config.dateseries = true;
 			}
+			else if (i == 0) {
+				parseFunc = this.doNothing
+			}
 			else {
 				//this.config.dateseries = false;
 				parseFunc = this.floatAll
 			}
 			
 			d.push({
-				"name": a[i].shift(),
+				"name": a[i].shift().split("..").join("\n"),
 				"data":parseFunc(a[i]),
 			});
 			
@@ -158,32 +161,46 @@ ChartBuilder = {
 		};
 		return a
 	},
+	doNothing: function(a) {
+		return a
+	},
 	inlineAllStyles: function() {
 		
 		d3.selectAll("#interactiveContent svg .axis line")
-			.attr("fill","none")
-			.attr("shape-rendering","crispEdges")
+			.style("fill","none")
+			.style("shape-rendering","crispEdges")
 			
 		d3.selectAll("#interactiveContent svg .axis line#zeroLine")
-				.attr("stroke", "#ff4cf4");
+				.style("stroke", "#ff4cf4");
 				
 		d3.selectAll("#interactiveContent svg #xAxis line")
-			.attr("stroke","#e6e6e6")
+			.style("stroke","#e6e6e6")
+			
+		d3.selectAll("#interactiveContent svg #xAxis text")
+			.style("fill","#666666")
 
 		d3.selectAll("#interactiveContent svg .axis path")
-			.attr("stroke", "none")
-			.attr("fill","none");
+			.style("stroke", "none")
+			.style("fill","none");
 			
 		d3.selectAll("#interactiveContent svg .axis text")
-				.attr("style","font-family:'PTSerif';font-size: 16px;")
-				.attr("fill","#666666")
+				.style("font-family",'PTSerif')
+				.style("font-size", "16px")
 		
 		d3.selectAll("#interactiveContent svg .legendItem text")
 					.attr("style","font-family:'PTSerif';font-size: 16px;")
 
 		d3.selectAll("#interactiveContent svg text.metaText")
 			.attr("style","font-family:'PTSerif';font-size: 12px; text-rendering:  optimizeLegibility; fill: #999999;") 
-				
+		
+		d3.selectAll("#interactiveContent svg text.barLabel, #interactiveContent svg text.bargridLabel")
+			.style("font-family",'PTSerif')
+			.style("font-size", "16px")
+			
+		d3.selectAll("#titleLine")
+			.style("font-family",'PTSerif')
+			.style("font-size", "16px")
+			.style("fill","#666666")
 	},
 	createChartImage: function() {
 		var canvas = document.getElementById("canvas")
@@ -217,9 +234,10 @@ ChartBuilder = {
 		$(".seriesItemGroup").detach()
 		$(".downloadLink").addClass("hide")
 		var q = chart.q, s, picker;
-		
-		var colIndex = q.sbt.line.length, lineIndex = 0;
+		this.customLegendLocaion = false;
+		var colIndex = q.sbt.line.length, lineIndex = 0, bargridIndex = 0, scatterIndex = 0;
 		var seriesContainer = $("#seriesItems")
+		var isMultiAxis = false;
 		for (var i=0; i < q.series.length; i++) {
 			s = q.series[i]
 			seriesItem = $('<div class="seriesItemGroup">\
@@ -228,6 +246,10 @@ ChartBuilder = {
 				<select class="typePicker" id="'+this.idSafe(s.name)+'_type">\
 				<option '+(s.type=="line"?"selected":"")+' value="line">Line</option>\
 				<option '+(s.type=="column"?"selected":"")+' value="column">Column</option>\
+				<option '+(s.type=="bargrid"?"selected":"")+' value="bargrid">Bar Grid</option>\
+				<option '+(s.type=="scatter"?"selected":"")+' value="scatter">Scatter</option>\
+				<label for="'+this.idSafe(s.name)+'_check">2nd Axis</label>\
+				<input id="'+this.idSafe(s.name)+'_check" name="'+this.idSafe(s.name)+'_check" type="checkbox" />\
 				</select>\
 				<div class="clearfix"></div>\
 			</div>');
@@ -242,10 +264,30 @@ ChartBuilder = {
 				color = s.color ? s.color.replace("#","") : q.colors[colIndex].replace("#","")
 				colIndex++
 			}
+			else if(s.type =="bargrid") {
+				color = s.color ? s.color.replace("#","") : q.colors[bargridIndex].replace("#","")
+				bargridIndex++
+			}
+			else if(s.type =="scatter") {
+				color = s.color ? s.color.replace("#","") : q.colors[scatterIndex].replace("#","")
+				scatterIndex++
+			}
 			
 			seriesContainer.append(seriesItem);
 			var picker = seriesItem.find("#"+this.idSafe(s.name)+"_color").colorPicker({pickerDefault: color, colors:this.allColors});
 			var typer = seriesItem.find("#"+this.idSafe(s.name)+"_type")
+			var axer = seriesItem.find("#"+this.idSafe(s.name)+"_check")
+			
+			if(q.series[i].axis == 1) {
+				axer.prop("checked",true)
+				if(!q.yAxis[1].color || !isMultiAxis) {
+					q.yAxis[1].color = q.series[i].color
+				}
+				isMultiAxis = true;
+			}
+			else {
+				axer.prop("checked",false)
+			}
 												
 			seriesItem.data("index",i)
 			picker.change(function() {
@@ -254,11 +296,50 @@ ChartBuilder = {
 			})
 			
 			typer.change(function() {
-				chart.q.series[$(this).parent().data().index].type = $(this).val()
+				var val = $(this).val(),
+				index = $(this).parent().data().index;
+				chart.q.series[index].type = val
+				var hasBargrid = false;
+				chart.setPadding();
+				ChartBuilder.setChartArea()
+				chart.resize()
+				ChartBuilder.redraw()
+			})
+			
+			axer.change(function() {
+				var axis = $(this).is(':checked')?1:0;
+				chart.q.series[$(this).parent().data().index].axis = axis
+				
+				if(!chart.q.yAxis[axis]){
+					chart.q.yAxis[axis] = {
+											domain: [null,null],
+											tickValues: null,
+											prefix: {
+												value: "",
+												use: "top" //can be "top" "all" "positive" or "negative"
+											},
+											suffix: {
+												value: "",
+												use: "top"
+											},
+											ticks: 4,
+											formatter: null,
+											color: null,
+										}
+				}
+				
+				if(chart.q.yAxis.length > 1 && axis == 0) {
+					chart.q.yAxis.pop()
+				}
+				
+				chart.setYScales()
+					.setYAxes()
+					.setLineMakers();
 				ChartBuilder.redraw()
 			})
 			
 			chart.redraw()
+			this.makeLegendAdjustable()
 		}
 		
 		
@@ -283,24 +364,78 @@ ChartBuilder = {
 			formatter: q.xAxis.formatter
 		}
 		
+		if(isMultiAxis){
+			$("#leftAxisControls").removeClass("hidden")
+		}
+		else {
+			$("#leftAxisControls").addClass("hidden")
+		}
+		
+		
 		var state = {
 			container: q.container,
 			colors: q.colors,
+			title: q.title,
 			padding : q.padding,
 			xAxis: xAxisObj,
 			yAxis: yAxisObj,
 			series: q.series,
-			dateRef: q.dateRef,
+			xAxisRef: q.xAxisRef,
 			sourceline: q.sourceline,
 			creditline: q.creditline
 		}
 		//console.log("pushState", state, "Chart Builder")
-		//	window.history.pushState(state, "Chart Builder", window.location.toString().split(".local")[1])
-			ChartBuilder.useState = true;
-			ChartBuilder.draws += 1;
+		// clearTimeout(ChartBuilder.stateUpdateID)
+		// ChartBuilder.stateUpdateID = setTimeout(function(){
+		// 	window.history.pushState(state, "Chart Builder", window.location.toString().split(".local")[1])
+		// 	ChartBuilder.useState = true;
+		// 	ChartBuilder.draws += 1;
+		// }, 1000)
 
 		
 		chart.q = q;
+		ChartBuilder.inlineAllStyles();
+	},
+	setChartArea: function() {
+		var hasBargrid = false;
+		for (var i = chart.q.series.length - 1; i >= 0; i--){
+			if(chart.q.series[i].type == "bargrid") {
+				hasBargrid = true;
+				break;
+			}
+		};
+		
+		if(hasBargrid) {
+			$("#chartContainer").css("height",chart.q.series[0].data.length*22 + chart.q.padding.top + chart.q.padding.bottom)
+		}
+		else {
+			$("#chartContainer").css("height",338)
+		}
+	},
+	makeLegendAdjustable: function() {
+		
+		var legendLabelDrag = d3.behavior.drag()
+		    .origin(Object)
+			.on("dragstart",function(d){
+				elem = d3.select(this)
+				d3.select(elem[0][0].parentElement).selectAll("rect").style("display","none")
+				if(!ChartBuilder.customLegendLocaion) {
+					chart.q.legend = false;
+					chart.redraw()
+					ChartBuilder.inlineAllStyles()
+					ChartBuilder.makeLegendAdjustable()
+					ChartBuilder.customLegendLocaion = true;
+				}
+				
+			})
+		    .on("drag", function(d){
+				elem = d3.select(this)
+				elem.attr("x", Number(elem.attr("x")) + d3.event.dx)
+					.attr("y", Number(elem.attr("y")) + d3.event.dy);
+					
+				
+		});
+		d3.selectAll("text.legendLabel").call(legendLabelDrag);
 		
 		
 	},
@@ -308,8 +443,64 @@ ChartBuilder = {
 		s = s.replace(/[^\w\d]+/gi,"-")
 		return s
 	},
+	customLegendLocaion:false,
 	useState: false,
-	draws: 0
+	draws: 0,
+	actions: {
+		axis_prefix_change: function(index,that) {
+			chart.q.yAxis[index].prefix.value = $(that).val()
+			ChartBuilder.redraw()
+			ChartBuilder.inlineAllStyles();
+		},
+		axis_suffix_change: function(index,that) {
+			chart.q.yAxis[index].suffix.value = $(that).val()
+			ChartBuilder.redraw()
+			ChartBuilder.inlineAllStyles();
+		},
+		axis_tick_num_change: function(index,that) {
+			chart.q.yAxis[index].ticks = parseInt($(that).val())
+			ChartBuilder.redraw()
+			ChartBuilder.inlineAllStyles();
+		},
+		axis_max_change: function(index,that) {
+			var val = parseFloat($(that).val())
+			if(isNaN(val)) {
+				val = null
+			}
+			chart.q.yAxis[index].domain[1] = val;
+			chart.setYScales();
+			ChartBuilder.redraw()
+			ChartBuilder.inlineAllStyles();
+		},
+		axis_min_change: function(index,that) {
+			var val = $(that).val()
+			var val = parseFloat(val)
+			if(val == NaN) {
+				val == null
+			}
+
+			chart.q.yAxis[index].domain[0] = val;
+			chart.setYScales();
+			ChartBuilder.redraw()
+			ChartBuilder.inlineAllStyles();
+		},
+		axis_tick_override_change: function(index,that) {
+			var val = $(that).val()
+			val = val.split(",")
+			if(val.length > 1) {
+				for (var i = val.length - 1; i >= 0; i--){
+					val[i] = parseFloat(val[i])
+				};
+			}
+			else {
+				val = null
+			}
+			chart.q.yAxis[index].tickValues = val
+			chart.setYScales();
+			ChartBuilder.redraw()
+			ChartBuilder.inlineAllStyles();
+		}
+	}
 }
 
 $(document).ready(function() {
@@ -319,7 +510,7 @@ $(document).ready(function() {
 		chartConfig.colors[i] = "#"+ ChartBuilder.allColors[i]
 	}
 	
-	chart = QuartzCharts.build(chartConfig)
+	chart = Gneiss.build(chartConfig)
 	$("#chart").attr("transform","scale(2)")
 	
 	ChartBuilder.redraw()
@@ -364,92 +555,101 @@ $(document).ready(function() {
 			
 			var newData = ChartBuilder.getNewData()
 			
+			chart.q.series.unshift(chart.q.xAxisRef)
+			newData = ChartBuilder.mergeData(newData)
+			
 			if(newData.datetime) {
-				chart.q.series.unshift(chart.q.dateRef)
-				newData = ChartBuilder.mergeData(newData)
-				chart.q.dateRef = [newData.data.shift()]
 				chart.q.xAxis.type = "date";
 			}
 			else {
-				newData = ChartBuilder.mergeData(newData)
-				chart.q.xAxis.type = "linear";
+				chart.q.xAxis.type = "ordinal";
 			}
+			chart.q.xAxisRef = [newData.data.shift()]
 			
-			
+			//for (var i = newData.data.length - 1; i >= 0; i--){
+			//	if(!chart.q.yAxis[newData.data[i].axis]){
+			//		chart.q.yAxis.push({
+			//			domain: [null,null],
+			//			tickValues: null,
+			//			prefix: {
+			//				value: "",
+			//				use: "top" //can be "top" "all" "positive" or "negative"
+			//			},
+			//			suffix: {
+			//				value: "",
+			//				use: "top"
+			//			},
+			//			ticks: 4,
+			//			formatter: null,
+			//			color: null
+			//		})
+			//	}
+			//};
 			
 			chart.q.series=newData.data
 			//chart.setYScales();
 			//chart.setXScales();
+			chart.setPadding();
+			ChartBuilder.setChartArea()
 			chart.setLineMakers();
-			ChartBuilder.redraw()
+			ChartBuilder.redraw();
 			ChartBuilder.inlineAllStyles();
 		}
 
 	}).keyup()
 	
 	$("#right_axis_prefix").keyup(function() {
-		chart.q.yAxis[0].prefix.value = $(this).val()
-		ChartBuilder.redraw()
-		ChartBuilder.inlineAllStyles();
+		ChartBuilder.actions.axis_prefix_change(0,this)
 	})
 	
 	$("#right_axis_suffix").keyup(function() {
-		chart.q.yAxis[0].suffix.value = $(this).val()
-		ChartBuilder.redraw()
-		ChartBuilder.inlineAllStyles();
+		ChartBuilder.actions.axis_suffix_change(0,this)
 	})
 	
 	$("#right_axis_tick_num").change(function() {
-		chart.q.yAxis[0].ticks = parseInt($(this).val())
-		ChartBuilder.redraw()
-		ChartBuilder.inlineAllStyles();
+		ChartBuilder.actions.axis_tick_num_change(0,this)
 	})
 	
 	$("#right_axis_max").keyup(function() {
-		var val = parseFloat($(this).val())
-		if(isNaN(val)) {
-			val = null
-		}
-		chart.q.yAxis[0].domain[1] = val;
-		chart.setYScales();
-		ChartBuilder.redraw()
-		ChartBuilder.inlineAllStyles();
+		ChartBuilder.actions.axis_max_change(0,this)
 	})
 	
 	$("#right_axis_min").keyup(function() {
-		var val = $(this).val()
-		var val = parseFloat(val)
-		if(val == NaN) {
-			val == null
-		}
-		
-		chart.q.yAxis[0].domain[0] = val;
-		chart.setYScales();
-		ChartBuilder.redraw()
-		ChartBuilder.inlineAllStyles();
+		ChartBuilder.actions.axis_min_change(0,this)
 	})
 	
 	$("#right_axis_tick_override").keyup(function() {
-		var val = $(this).val()
-		val = val.split(",")
-		if(val.length > 1) {
-			for (var i = val.length - 1; i >= 0; i--){
-				val[i] = parseFloat(val[i])
-			};
-		}
-		else {
-			val = null
-		}
-		chart.q.yAxis[0].tickValues = val
-		chart.setYScales();
-		ChartBuilder.redraw()
-		ChartBuilder.inlineAllStyles();
+		ChartBuilder.actions.axis_tick_override_change(0,this)
 	})
 	
 	$("#x_axis_tick_num").change(function() {
 		chart.q.xAxis.ticks = parseInt($(this).val())
 		ChartBuilder.redraw()
 		ChartBuilder.inlineAllStyles();
+	})
+	
+	$("#left_axis_prefix").keyup(function() {
+		ChartBuilder.actions.axis_prefix_change(1,this)
+	})
+
+	$("#left_axis_suffix").keyup(function() {
+		ChartBuilder.actions.axis_suffix_change(1,this)
+	})
+
+	$("#left_axis_tick_num").change(function() {
+		ChartBuilder.actions.axis_tick_num_change(1,this)
+	})
+
+	$("#left_axis_max").keyup(function() {
+		ChartBuilder.actions.axis_max_change(1,this)
+	})
+
+	$("#left_axis_min").keyup(function() {
+		ChartBuilder.actions.axis_min_change(1,this)
+	})
+
+	$("#left_axis_tick_override").keyup(function() {
+		ChartBuilder.actions.axis_tick_override_change(1,this)
 	})
 	
 	$("#x_axis_date_format").change(function() {
@@ -471,6 +671,18 @@ $(document).ready(function() {
 		chart.q.sourceLine.text(chart.q.sourceline)
 	})
 	
+	$("#chart_title").keyup(function() {
+		var val = $(this).val()
+		chart.q.title = val
+		chart.setPadding();
+		ChartBuilder.setChartArea()
+		chart.setYScales()
+			.redraw();
+		ChartBuilder.makeLegendAdjustable()
+		
+		chart.q.titleLine.text(chart.q.title)
+	})
+	
 	$(".downloadLink").click(function() {
 		$(".downloadLink").toggleClass("hide")
 	})
@@ -478,13 +690,17 @@ $(document).ready(function() {
 
 })
 // Revert to a previously saved state
-//window.onpopstate = function(e) {
-//	if(ChartBuilder.draws > 2) {
-//		chart.q.chart.remove()
-//		chart = QuartzCharts.build(e.state)
-//		ChartBuilder.redraw()
-//		ChartBuilder.inlineAllStyles();
-//		
-//	}
-//
-//};
+// window.onpopstate = function(e) {
+// 	if(ChartBuilder.draws > 2) {
+// 		var q = e.state
+// 		if(q.xAxis.type == "date") {
+// 			q.xAxisRef[0].data = ChartBuilder.dateAll(q.xAxisRef[0].data)
+// 		}
+// 		chart.q.chart.remove()
+// 		chart = Gneiss.build(q)
+// 		ChartBuilder.redraw()
+// 		ChartBuilder.inlineAllStyles();
+// 		
+// 	}
+// 
+// };
