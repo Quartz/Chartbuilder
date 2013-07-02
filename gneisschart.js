@@ -699,7 +699,7 @@ var Gneiss = {
 				months = timeSpan/2592000000,
 				years = timeSpan/31536000000;
 				
-				if(years > 10) {
+				if(years > 20) {
 					yearGap = 5;
 				}
 				else {
