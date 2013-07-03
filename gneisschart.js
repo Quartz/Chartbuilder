@@ -184,7 +184,7 @@ var Gneiss = {
 			.attr("class","metaText")
 			.text(g.creditline)
 					
-		this.g = q;
+		this.g = g;
 		return this;
 	},
 	numberFormat: d3.format(","),
@@ -202,7 +202,7 @@ var Gneiss = {
 			
 		g.metaInfo.attr("transform","translate(0,"+(g.height-4)+")")
 		
-		this.g = q;
+		this.g = g;
 		return this
 	},
 	setYScales: function(first) {
@@ -293,7 +293,7 @@ var Gneiss = {
 			};
 		}
 		
-		this.g = q;
+		this.g = g;
 		return this
 	},
 	setPadding: function() {
@@ -315,7 +315,7 @@ var Gneiss = {
 		g.padding.top = padding_top
 		
 		
-		this.g = q
+		this.g = g
 		return this
 	},
 	setXScales: function(first) {
@@ -417,7 +417,7 @@ var Gneiss = {
 			g.xAxis.scale.rangePoints(rangeArray);
 		}
 		
-		this.g = q;
+		this.g = g;
 		return this
 		
 	},
@@ -448,7 +448,7 @@ var Gneiss = {
 			}
 
 		};
-		this.g = q
+		this.g = g
 		return this
 	},
 	setYAxes: function(first) {
@@ -634,7 +634,7 @@ var Gneiss = {
 		
 		d3.selectAll(".yAxis").each(function(){this.parentNode.prependChild(this);})
 		d3.selectAll("#ground").each(function(){this.parentNode.prependChild(this);})
-		this.g = q
+		this.g = g
 		return this
 		
 	},
@@ -766,7 +766,7 @@ var Gneiss = {
 				
 			})
 		
-		this.g = q
+		this.g = g
 		return this
 	},
 	calculateColumnWidths: function() {
@@ -1194,7 +1194,7 @@ var Gneiss = {
 				//test if the chart needs more top margin because of a large number of legend items
 				if (legendItemY > 0 && g.padding.top == 25) { //CHANGE
 					g.padding.top = legendItemY + 25;
-					this.g = q;				
+					this.g = g;				
 			
 				};
 			} else {
@@ -1229,7 +1229,7 @@ var Gneiss = {
 		
 		
 		
-		this.g = q;
+		this.g = g;
 		return this
 		
 		

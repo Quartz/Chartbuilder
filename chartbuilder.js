@@ -59,7 +59,7 @@ ChartBuilder = {
 		var d = []
 		var parseFunc;
 		for (var i=0; i < a.length; i++) {
-			if((/date/gi).test(a[i][0]) || (/time/gi).test(a[i][0])) {
+			if((/date/gi).test(a[i][0]) || (/time/gi).test(a[i][0]) || (/year/gi).test(a[i][0])){
 				parseFunc = this.dateAll
 				//this.config.dateseries = true;
 			}
@@ -88,18 +88,18 @@ ChartBuilder = {
 	},
 	mergeData: function(a) {
 		var d
-		//var dataLength = Math.min(a.data.length,chart.q.series.length)
+		//var dataLength = Math.min(a.data.length,chart.g.series.length)
 		for (var i=0; i < a.data.length; i++) {
 			d = a.data[i]
-			//d.prefix = chart.q.series[i].prefix
-			//d.suffix = chart.q.series[i].suffix
-			//d.axis = chart.q.series[i].axis
-			//d.type = chart.q.series[i].type
-			//d.color = chart.q.series[i].color
+			//d.prefix = chart.g.series[i].prefix
+			//d.suffix = chart.g.series[i].suffix
+			//d.axis = chart.g.series[i].axis
+			//d.type = chart.g.series[i].type
+			//d.color = chart.g.series[i].color
 			
 			//a.data[i] = d
-			if(i < chart.q.series.length) {
-				a.data[i] = $.extend({},chart.q.series[i],d)
+			if(i < chart.g.series.length) {
+				a.data[i] = $.extend({},chart.g.series[i],d)
 			}
 			else {
 				//defaults for new series
@@ -213,8 +213,8 @@ ChartBuilder = {
 		
 		
 		var filename = [];
-		for (var i=0; i < chart.q.series.length; i++) {
-			filename.push(chart.q.series[i].name);
+		for (var i=0; i < chart.g.series.length; i++) {
+			filename.push(chart.g.series[i].name);
 		};
 		filename = filename.join("-").replace(/[^\w\d]+/gi, '-');
 		
@@ -233,13 +233,13 @@ ChartBuilder = {
 	redraw: function() {
 		$(".seriesItemGroup").detach()
 		$(".downloadLink").addClass("hide")
-		var q = chart.q, s, picker;
+		var g = chart.g, s, picker;
 		this.customLegendLocaion = false;
-		var colIndex = q.sbt.line.length, lineIndex = 0, bargridIndex = 0, scatterIndex = 0;
+		var colIndex = g.sbt.line.length, lineIndex = 0, bargridIndex = 0, scatterIndex = 0;
 		var seriesContainer = $("#seriesItems")
 		var isMultiAxis = false;
-		for (var i=0; i < q.series.length; i++) {
-			s = q.series[i]
+		for (var i=0; i < g.series.length; i++) {
+			s = g.series[i]
 			seriesItem = $('<div class="seriesItemGroup">\
 				<label for="'+this.idSafe(s.name)+'_color">'+s.name+'</label>\
 				<input id="'+this.idSafe(s.name)+'_color" name="'+this.idSafe(s.name)+'" type="text" />\
@@ -257,19 +257,19 @@ ChartBuilder = {
 			var color = ""
 			
 			if(s.type == "line") {
-				color = s.color ? s.color.replace("#","") : q.colors[lineIndex].replace("#","")
+				color = s.color ? s.color.replace("#","") : g.colors[lineIndex].replace("#","")
 				lineIndex++
 			}
 			else if(s.type == "column") {
-				color = s.color ? s.color.replace("#","") : q.colors[colIndex].replace("#","")
+				color = s.color ? s.color.replace("#","") : g.colors[colIndex].replace("#","")
 				colIndex++
 			}
 			else if(s.type =="bargrid") {
-				color = s.color ? s.color.replace("#","") : q.colors[bargridIndex].replace("#","")
+				color = s.color ? s.color.replace("#","") : g.colors[bargridIndex].replace("#","")
 				bargridIndex++
 			}
 			else if(s.type =="scatter") {
-				color = s.color ? s.color.replace("#","") : q.colors[scatterIndex].replace("#","")
+				color = s.color ? s.color.replace("#","") : g.colors[scatterIndex].replace("#","")
 				scatterIndex++
 			}
 			
@@ -278,10 +278,10 @@ ChartBuilder = {
 			var typer = seriesItem.find("#"+this.idSafe(s.name)+"_type")
 			var axer = seriesItem.find("#"+this.idSafe(s.name)+"_check")
 			
-			if(q.series[i].axis == 1) {
+			if(g.series[i].axis == 1) {
 				axer.prop("checked",true)
 				if(!q.yAxis[1].color || !isMultiAxis) {
-					q.yAxis[1].color = q.series[i].color
+					q.yAxis[1].color = g.series[i].color
 				}
 				isMultiAxis = true;
 			}
@@ -291,14 +291,14 @@ ChartBuilder = {
 												
 			seriesItem.data("index",i)
 			picker.change(function() {
-				chart.q.series[$(this).parent().data().index].color = $(this).val()
+				chart.g.series[$(this).parent().data().index].color = $(this).val()
 				ChartBuilder.redraw()
 			})
 			
 			typer.change(function() {
 				var val = $(this).val(),
 				index = $(this).parent().data().index;
-				chart.q.series[index].type = val
+				chart.g.series[index].type = val
 				var hasBargrid = false;
 				chart.setPadding();
 				ChartBuilder.setChartArea()
@@ -308,10 +308,10 @@ ChartBuilder = {
 			
 			axer.change(function() {
 				var axis = $(this).is(':checked')?1:0;
-				chart.q.series[$(this).parent().data().index].axis = axis
+				chart.g.series[$(this).parent().data().index].axis = axis
 				
-				if(!chart.q.yAxis[axis]){
-					chart.q.yAxis[axis] = {
+				if(!chart.g.yAxis[axis]){
+					chart.g.yAxis[axis] = {
 											domain: [null,null],
 											tickValues: null,
 											prefix: {
@@ -328,8 +328,8 @@ ChartBuilder = {
 										}
 				}
 				
-				if(chart.q.yAxis.length > 1 && axis == 0) {
-					chart.q.yAxis.pop()
+				if(chart.g.yAxis.length > 1 && axis == 0) {
+					chart.g.yAxis.pop()
 				}
 				
 				chart.setYScales()
@@ -344,8 +344,8 @@ ChartBuilder = {
 		
 		
 		var yAxisObj = []
-		for (var i = q.yAxis.length - 1; i >= 0; i--){
-			var cur = q.yAxis[i]
+		for (var i = g.yAxis.length - 1; i >= 0; i--){
+			var cur = g.yAxis[i]
 			yAxisObj[i] = {
 				domain: cur.domain,
 				tickValues: cur.tickValues,
@@ -357,11 +357,11 @@ ChartBuilder = {
 		};
 		
 		var xAxisObj = {
-			domain: q.xAxis.domain,
-			prefix: q.xAxis.prefix,
-			suffix: q.xAxis.suffix,
-			type: q.xAxis.type,
-			formatter: q.xAxis.formatter
+			domain: g.xAxis.domain,
+			prefix: g.xAxis.prefix,
+			suffix: g.xAxis.suffix,
+			type: g.xAxis.type,
+			formatter: g.xAxis.formatter
 		}
 		
 		if(isMultiAxis){
@@ -373,16 +373,16 @@ ChartBuilder = {
 		
 		
 		var state = {
-			container: q.container,
-			colors: q.colors,
-			title: q.title,
-			padding : q.padding,
+			container: g.container,
+			colors: g.colors,
+			title: g.title,
+			padding : g.padding,
 			xAxis: xAxisObj,
 			yAxis: yAxisObj,
-			series: q.series,
-			xAxisRef: q.xAxisRef,
-			sourceline: q.sourceline,
-			creditline: q.creditline
+			series: g.series,
+			xAxisRef: g.xAxisRef,
+			sourceline: g.sourceline,
+			creditline: g.creditline
 		}
 		//console.log("pushState", state, "Chart Builder")
 		// clearTimeout(ChartBuilder.stateUpdateID)
@@ -393,20 +393,20 @@ ChartBuilder = {
 		// }, 1000)
 
 		
-		chart.q = q;
+		chart.g = g;
 		ChartBuilder.inlineAllStyles();
 	},
 	setChartArea: function() {
 		var hasBargrid = false;
-		for (var i = chart.q.series.length - 1; i >= 0; i--){
-			if(chart.q.series[i].type == "bargrid") {
+		for (var i = chart.g.series.length - 1; i >= 0; i--){
+			if(chart.g.series[i].type == "bargrid") {
 				hasBargrid = true;
 				break;
 			}
 		};
 		
 		if(hasBargrid) {
-			$("#chartContainer").css("height",chart.q.series[0].data.length*22 + chart.q.padding.top + chart.q.padding.bottom)
+			$("#chartContainer").css("height",chart.g.series[0].data.length*22 + chart.g.padding.top + chart.g.padding.bottom)
 		}
 		else {
 			$("#chartContainer").css("height",338)
@@ -420,7 +420,7 @@ ChartBuilder = {
 				elem = d3.select(this)
 				d3.select(elem[0][0].parentElement).selectAll("rect").style("display","none")
 				if(!ChartBuilder.customLegendLocaion) {
-					chart.q.legend = false;
+					chart.g.legend = false;
 					chart.redraw()
 					ChartBuilder.inlineAllStyles()
 					ChartBuilder.makeLegendAdjustable()
@@ -448,17 +448,17 @@ ChartBuilder = {
 	draws: 0,
 	actions: {
 		axis_prefix_change: function(index,that) {
-			chart.q.yAxis[index].prefix.value = $(that).val()
+			chart.g.yAxis[index].prefix.value = $(that).val()
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
 		},
 		axis_suffix_change: function(index,that) {
-			chart.q.yAxis[index].suffix.value = $(that).val()
+			chart.g.yAxis[index].suffix.value = $(that).val()
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
 		},
 		axis_tick_num_change: function(index,that) {
-			chart.q.yAxis[index].ticks = parseInt($(that).val())
+			chart.g.yAxis[index].ticks = parseInt($(that).val())
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
 		},
@@ -467,7 +467,7 @@ ChartBuilder = {
 			if(isNaN(val)) {
 				val = null
 			}
-			chart.q.yAxis[index].domain[1] = val;
+			chart.g.yAxis[index].domain[1] = val;
 			chart.setYScales();
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
@@ -479,7 +479,7 @@ ChartBuilder = {
 				val == null
 			}
 
-			chart.q.yAxis[index].domain[0] = val;
+			chart.g.yAxis[index].domain[0] = val;
 			chart.setYScales();
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
@@ -495,7 +495,7 @@ ChartBuilder = {
 			else {
 				val = null
 			}
-			chart.q.yAxis[index].tickValues = val
+			chart.g.yAxis[index].tickValues = val
 			chart.setYScales();
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
@@ -517,19 +517,19 @@ $(document).ready(function() {
 	ChartBuilder.inlineAllStyles();
 	$("#csvInput").val(function() {
 		var val = ""
-		for (var i=0; i < chart.q.series.length; i++) {
-			val += chart.q.series[i].name 
-			val += (i<chart.q.series.length-1) ? "\t" : "\n"
+		for (var i=0; i < chart.g.series.length; i++) {
+			val += chart.g.series[i].name 
+			val += (i<chart.g.series.length-1) ? "\t" : "\n"
 		};
-		for (var j=0; j < chart.q.series[0].data.length; j++) {
-			for (var i=0; i < chart.q.series.length; i++) {
-				val += chart.q.series[i].data[j] 
-				val += (i<chart.q.series.length-1) ? "\t" : "\n"
+		for (var j=0; j < chart.g.series[0].data.length; j++) {
+			for (var i=0; i < chart.g.series.length; i++) {
+				val += chart.g.series[i].data[j] 
+				val += (i<chart.g.series.length-1) ? "\t" : "\n"
 			};
 		};
 		return val
 		
-		//return chart.q.series[0].name + "\n" + chart.q.series[0].data.join("\n")
+		//return chart.g.series[0].name + "\n" + chart.g.series[0].data.join("\n")
 	})
 	
 	$("#createImageButton").click(function() {
@@ -540,8 +540,8 @@ $(document).ready(function() {
 	
 	$("#csvInput").bind("paste", function(e) {
 		if($("#right_axis_max").val().length == 0 && $("#right_axis_min").val().length == 0) {
-			for (var i = chart.q.yAxis.length - 1; i >= 0; i--){
-				chart.q.yAxis[i].domain = [null,null];
+			for (var i = chart.g.yAxis.length - 1; i >= 0; i--){
+				chart.g.yAxis[i].domain = [null,null];
 			};
 		}
 		
@@ -555,20 +555,20 @@ $(document).ready(function() {
 			
 			var newData = ChartBuilder.getNewData()
 			
-			chart.q.series.unshift(chart.q.xAxisRef)
+			chart.g.series.unshift(chart.g.xAxisRef)
 			newData = ChartBuilder.mergeData(newData)
 			
 			if(newData.datetime) {
-				chart.q.xAxis.type = "date";
+				chart.g.xAxis.type = "date";
 			}
 			else {
-				chart.q.xAxis.type = "ordinal";
+				chart.g.xAxis.type = "ordinal";
 			}
-			chart.q.xAxisRef = [newData.data.shift()]
+			chart.g.xAxisRef = [newData.data.shift()]
 			
 			//for (var i = newData.data.length - 1; i >= 0; i--){
-			//	if(!chart.q.yAxis[newData.data[i].axis]){
-			//		chart.q.yAxis.push({
+			//	if(!chart.g.yAxis[newData.data[i].axis]){
+			//		chart.g.yAxis.push({
 			//			domain: [null,null],
 			//			tickValues: null,
 			//			prefix: {
@@ -586,7 +586,7 @@ $(document).ready(function() {
 			//	}
 			//};
 			
-			chart.q.series=newData.data
+			chart.g.series=newData.data
 			//chart.setYScales();
 			//chart.setXScales();
 			chart.setPadding();
@@ -623,7 +623,7 @@ $(document).ready(function() {
 	})
 	
 	$("#x_axis_tick_num").change(function() {
-		chart.q.xAxis.ticks = parseInt($(this).val())
+		chart.g.xAxis.ticks = parseInt($(this).val())
 		ChartBuilder.redraw()
 		ChartBuilder.inlineAllStyles();
 	})
@@ -654,33 +654,33 @@ $(document).ready(function() {
 	
 	$("#x_axis_date_format").change(function() {
 		var val = $(this).val()
-		chart.q.xAxis.formatter = val
+		chart.g.xAxis.formatter = val
 		ChartBuilder.redraw()
 		ChartBuilder.inlineAllStyles();
 	})
 	
 	$("#creditLine").keyup(function() {
 		var val = $(this).val()
-		chart.q.creditline = val
-		chart.q.creditLine.text(chart.q.creditline)
+		chart.g.creditline = val
+		chart.g.creditLine.text(chart.g.creditline)
 	})
 	
 	$("#sourceLine").keyup(function() {
 		var val = $(this).val()
-		chart.q.sourceline = val
-		chart.q.sourceLine.text(chart.q.sourceline)
+		chart.g.sourceline = val
+		chart.g.sourceLine.text(chart.g.sourceline)
 	})
 	
 	$("#chart_title").keyup(function() {
 		var val = $(this).val()
-		chart.q.title = val
+		chart.g.title = val
 		chart.setPadding();
 		ChartBuilder.setChartArea()
 		chart.setYScales()
 			.redraw();
 		ChartBuilder.makeLegendAdjustable()
 		
-		chart.q.titleLine.text(chart.q.title)
+		chart.g.titleLine.text(chart.g.title)
 	})
 	
 	$(".downloadLink").click(function() {
@@ -692,11 +692,11 @@ $(document).ready(function() {
 // Revert to a previously saved state
 // window.onpopstate = function(e) {
 // 	if(ChartBuilder.draws > 2) {
-// 		var q = e.state
+// 		var g = e.state
 // 		if(q.xAxis.type == "date") {
 // 			q.xAxisRef[0].data = ChartBuilder.dateAll(q.xAxisRef[0].data)
 // 		}
-// 		chart.q.chart.remove()
+// 		chart.g.chart.remove()
 // 		chart = Gneiss.build(q)
 // 		ChartBuilder.redraw()
 // 		ChartBuilder.inlineAllStyles();
