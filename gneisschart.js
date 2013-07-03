@@ -309,12 +309,10 @@ var Gneiss = {
 		padding_top += g.yAxis.length==1&&!g.isBargrid?0:25
 		
 		if(g.isBargrid) {
-			padding_top += 12
+			//padding_top += 12
 		}
 		
 		g.padding.top = padding_top
-		
-		
 		this.g = g
 		return this
 	},
@@ -794,10 +792,10 @@ var Gneiss = {
 		return this
 	},
 	drawSeriesAndLegend: function(first){
-		/*
-			Plots everything...should probably be broken up
-		*/
-		
+		this.drawSeries(first)
+		this.drawLegend()
+	},
+	drawSeries: function(first) {
 		/*
 		*
 		* Series Drawing Section
@@ -1140,6 +1138,36 @@ var Gneiss = {
 			
 		}
 		
+		//arrange elements in propper order	
+		
+		//bring bars to front
+		if(g.sbt.column.length > 0) {
+			columnGroups.each(function(){this.parentNode.appendChild(this);})
+			columnSeries.each(function(){this.parentNode.appendChild(this);})
+		}
+		
+		
+		//bring lines to front
+		if(g.sbt.line.length > 0){
+			lineSeries.each(function(){if(this.parentNode){this.parentNode.appendChild(this);}})
+			//bring dots to front
+			lineSeriesDotGroups.each(function(){if(this.parentNode){this.parentNode.appendChild(this);}})
+		}
+		
+		//bring scatter to front
+		if(g.sbt.scatter.length > 0) {
+			scatterGroups.each(function(){this.parentNode.appendChild(this);})
+			scatterDots.each(function(){this.parentNode.appendChild(this);})
+		}
+		
+		this.g = g;
+		return this
+		
+		
+	},
+	drawLegend: function() {
+		var g = this.g
+		
 		//remove current legends
 		g.legendItemContainer.selectAll("g.legendItem").remove()
 		
@@ -1204,35 +1232,8 @@ var Gneiss = {
 			}
 		}
 		
-		//arrange elements in propper order	
-		
-		//bring bars to front
-		if(g.sbt.column.length > 0) {
-			columnGroups.each(function(){this.parentNode.appendChild(this);})
-			columnSeries.each(function(){this.parentNode.appendChild(this);})
-		}
-		
-		
-		//bring lines to front
-		if(g.sbt.line.length > 0){
-			lineSeries.each(function(){if(this.parentNode){this.parentNode.appendChild(this);}})
-			//bring dots to front
-			lineSeriesDotGroups.each(function(){if(this.parentNode){this.parentNode.appendChild(this);}})
-		}
-		
-		//bring scatter to front
-		if(g.sbt.scatter.length > 0) {
-			scatterGroups.each(function(){this.parentNode.appendChild(this);})
-			scatterDots.each(function(){this.parentNode.appendChild(this);})
-		}
-		
-		
-		
-		
-		this.g = g;
+		this.g = g
 		return this
-		
-		
 	},
 	splitSeriesByType: function(series) {
 		/*

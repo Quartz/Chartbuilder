@@ -587,11 +587,14 @@ $(document).ready(function() {
 			//};
 			
 			chart.g.series=newData.data
-			//chart.setYScales();
-			//chart.setXScales();
 			chart.setPadding();
+			
 			ChartBuilder.setChartArea()
-			chart.setLineMakers();
+			
+			chart.setYScales()
+				.setXScales()
+				.setLineMakers();
+				
 			ChartBuilder.redraw();
 			ChartBuilder.inlineAllStyles();
 		}
