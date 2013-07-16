@@ -216,6 +216,11 @@ ChartBuilder = {
 		for (var i=0; i < chart.g.series.length; i++) {
 			filename.push(chart.g.series[i].name);
 		};
+		
+		if(chart.g.title.length > 0) {
+			filename.unshift(chart.title)
+		}
+		
 		filename = filename.join("-").replace(/[^\w\d]+/gi, '-');
 		
 		
@@ -439,6 +444,24 @@ ChartBuilder = {
 		
 		
 	},
+	getAllInputData: function() {
+		var d = {}, $el;
+		var elems = $("input, textarea").each(function() {
+			$el = $(this)
+			d[$el.attr("id")] = $el.val()
+		})
+		return d
+	},
+	localStoreChart: function(name) {
+		localStorage[name] = JSON.stringify(this.getAllInputData());
+	},
+	localLoadChart: function(name) {
+		d = JSON.parse(localStorage[name])
+		for (var key in d) {
+			$("#"+key).val(d[key])
+		}
+		$("input, textarea").keyup().change()
+	},
 	idSafe: function(s) {
 		s = s.replace(/[^\w\d]+/gi,"-")
 		return s
@@ -560,6 +583,7 @@ $(document).ready(function() {
 			
 			if(newData.datetime) {
 				chart.g.xAxis.type = "date";
+				chart.g.xAxis.formatter = "Mdd"
 			}
 			else {
 				chart.g.xAxis.type = "ordinal";
