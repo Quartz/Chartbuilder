@@ -595,7 +595,7 @@ var Gneiss = {
 					topAxisLabel.text(g.yAxis[i].prefix.value + topAxisLabel.text() + g.yAxis[i].suffix.value)
 				}
 				else {
-					console.error("top label not found")
+					
 				}
 				
 			}
