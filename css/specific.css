@@ -17,7 +17,6 @@ License: /fonts/PTSerif/Paratype PT Sans Free Font License.txt
   font-weight: normal;
   font-style: normal;
 }
-
 input[type="text"], select {
 	display: block;
 	margin-bottom: 5px;
@@ -104,7 +103,7 @@ h2:not(:first-child) {
 	float: left;
 }
 
-#canvas {
+#canvas, #favicanvas {
 	display: none;
 }
 
