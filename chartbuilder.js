@@ -525,11 +525,15 @@ $(document).ready(function() {
 		chartConfig.colors[i] = "#"+ ChartBuilder.allColors[i]
 	}
 	
+	//construct a Gneisschart
 	chart = Gneiss.build(chartConfig)
+	
+	//scale it up so it looks good on retina displays
 	$("#chart").attr("transform","scale(2)")
 	
 	ChartBuilder.redraw()
 	ChartBuilder.inlineAllStyles();
+	
 	$("#csvInput").val(function() {
 		var val = ""
 		for (var i=0; i < chart.g.series.length; i++) {
@@ -562,7 +566,12 @@ $(document).ready(function() {
 		
 	})
 	
-	//add interactions to interface
+	/*
+	//
+	// add interactions to chartbuilder interface
+	//
+	*/
+	
 	$("#csvInput").keyup(function() {
 		
 		if( $(this).val() != ChartBuilder.curRaw) {
