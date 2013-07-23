@@ -165,42 +165,19 @@ ChartBuilder = {
 		return a
 	},
 	inlineAllStyles: function() {
+		var chartStyle, selector, cssText;
 		
-		d3.selectAll("#interactiveContent svg .axis line")
-			.style("fill","none")
-			.style("shape-rendering","crispEdges")
-			
-		d3.selectAll("#interactiveContent svg .axis line#zeroLine")
-				.style("stroke", "#ff4cf4");
-				
-		d3.selectAll("#interactiveContent svg #xAxis line")
-			.style("stroke","#e6e6e6")
-			
-		d3.selectAll("#interactiveContent svg #xAxis text")
-			.style("fill","#666666")
+		for (var i = document.styleSheets.length - 1; i >= 0; i--){
+			if(document.styleSheets[i].href.indexOf("gneisschart.css") != -1) {
+				chartStyle = document.styleSheets[i].rules
+			}
+		}
+		for (var i=0; i < chartStyle.length; i++) {
+			selector = chartStyle[i].selectorText;
+			cssText = chartStyle[i].style.cssText;
+			d3.selectAll(selector).attr("style",cssText)
+		};
 
-		d3.selectAll("#interactiveContent svg .axis path")
-			.style("stroke", "none")
-			.style("fill","none");
-			
-		d3.selectAll("#interactiveContent svg .axis text")
-				.style("font-family",'PTSerif')
-				.style("font-size", "16px")
-		
-		d3.selectAll("#interactiveContent svg .legendItem text")
-					.attr("style","font-family:'PTSerif';font-size: 16px;")
-
-		d3.selectAll("#interactiveContent svg text.metaText")
-			.attr("style","font-family:'PTSerif';font-size: 12px; text-rendering:  optimizeLegibility; fill: #999999;") 
-		
-		d3.selectAll("#interactiveContent svg text.barLabel, #interactiveContent svg text.bargridLabel")
-			.style("font-family",'PTSerif')
-			.style("font-size", "16px")
-			
-		d3.selectAll("#titleLine")
-			.style("font-family",'PTSerif')
-			.style("font-size", "16px")
-			.style("fill","#666666")
 	},
 	createChartImage: function() {
 		var canvas = document.getElementById("canvas")
@@ -233,6 +210,8 @@ ChartBuilder = {
 			.toggleClass("hide")
 			.attr("download",function(){ return filename + "_chart.svg"
 			})
+			
+		//set favicon
 	},
 
 	redraw: function() {
