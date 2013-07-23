@@ -426,22 +426,12 @@ var Gneiss = {
 			if(first || !g.yAxis[i].line) {
 						g.yAxis[i].line = d3.svg.line();
 						g.yAxis[i].line.y(function(d,j){return d?g.yAxis[yAxisIndex].scale(d):null})
-				//		if(g.xAxis.type == "date") {
-							g.yAxis[i].line.x(function(d,j){return d?g.xAxis.scale(g.xAxisRef[0].data[j]):null})
-				//		}
-				//		else {
-				//			g.yAxis[i].line.x(function(d,j){return g.xAxis.scale(j)})
-				//		}
+						g.yAxis[i].line.x(function(d,j){return d?g.xAxis.scale(g.xAxisRef[0].data[j]):null})
 			}
 			else {
 				for (var i = g.yAxis.length - 1; i >= 0; i--){
 					g.yAxis[i].line.y(function(d,j){return d?g.yAxis[yAxisIndex].scale(d):null})
-					//if(g.xAxis.type == "date") {
-						g.yAxis[i].line.x(function(d,j){return d?g.xAxis.scale(g.xAxisRef[0].data[j]):null})
-				//	}
-				//	else {
-				//		g.yAxis[i].line.x(function(d,j){return g.xAxis.scale(j)})
-				//	}
+					g.yAxis[i].line.x(function(d,j){return d?g.xAxis.scale(g.xAxisRef[0].data[j]):null})
 				};
 			}
 
@@ -935,6 +925,7 @@ var Gneiss = {
 							})
 		}
 		else {
+			//update don't create
 			
 			lineSeries = g.seriesContainer.selectAll("path");
 			columnSeries = g.seriesContainer.selectAll("g.seriesColumn")
@@ -1020,6 +1011,7 @@ var Gneiss = {
 				lineSeries.remove()
 			}
 			else {
+				//Not a bargrid
 				
 				//add columns to chart
 				columnGroups = g.seriesContainer.selectAll("g.seriesColumn")
@@ -1110,19 +1102,17 @@ var Gneiss = {
 					.append("circle")
 					.attr("r",4)
 					.attr("transform",function(d,i){
-						yAxisIndex = d3.select(this.parentElement).data()[0].axis; 
-						return "translate("+(g.xAxis.type=="date" ?
-							g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]):
-							g.xAxis.scale(i)) + "," + (d?g.yAxis[yAxisIndex].scale(d):-100) + ")"
+						yAxisIndex = d3.select(this.parentElement).data()[0].axis;
+							var y = d ? g.yAxis[yAxisIndex].scale(d) : -100;
+							return "translate("+ g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + y + ")";
 						})
 			
 				lineSeriesDots.transition()
 					.duration(500)
 					.attr("transform",function(d,i){
-						yAxisIndex = d3.select(this.parentElement).data()[0].axis; 
-						return "translate("+(g.xAxis.type=="date" ?
-							g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]):
-							g.xAxis.scale(i)) + "," + (d?g.yAxis[yAxisIndex].scale(d):-100) + ")"
+						yAxisIndex = d3.select(this.parentElement).data()[0].axis;
+							var y = d ? g.yAxis[yAxisIndex].scale(d) : -100;
+							return "translate("+ g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + y + ")";
 						})
 			
 				lineSeriesDots.exit().remove()
