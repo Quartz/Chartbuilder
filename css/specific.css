@@ -93,56 +93,6 @@ h2:not(:first-child) {
 #rightColumn {
 	margin-top: 10px;
 }
-/*
-#interactiveContent svg .nfpDeltaBarPos {
-	fill: #5F9973;
-}
-
-#interactiveContent svg .nfpDeltaBarNeg {
-	fill: #B37387;
-}
-
-#interactiveContent svg .axis line {
-	fill: none;
-	shape-rendering: crispEdges;
-}
-
-#interactiveContent svg .axis line#zeroLine {
-	stroke: #ff4cf4;
-}
-
-#interactiveContent svg #xAxis line {
-	stroke: #e6e6e6;
-}
-
-#interactiveContent svg .axis path {
-	stroke: none;
-	fill: none;
-}
-
-#interactiveContent svg .axis text {
-	font-family: "PTSerif";
-	font-size: 16px;
-	fill: #666666;
-}
-
-#interactiveContent svg .chartLine {
-	stroke-width: 3px;
-	fill: none;
-}
-
-#interactiveContent svg .legendItem text {
-	font-family: "PTSerif";
-	font-size: 16px;
-}
-
-#interactiveContent svg text.metaText {
-	font-family: "PTSerif";
-	font-size: 12px;
-	text-rendering:  optimizeLegibility;
-	fill: #999999;
-}
-*/
 
 #interactiveContent svg .legendItem text {
 	cursor: move;
