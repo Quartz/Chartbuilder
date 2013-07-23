@@ -180,6 +180,7 @@ ChartBuilder = {
 
 	},
 	createChartImage: function() {
+
 		var canvas = document.getElementById("canvas")
 		canvas.width =1200
 		canvas.height = 676
@@ -210,10 +211,22 @@ ChartBuilder = {
 			.toggleClass("hide")
 			.attr("download",function(){ return filename + "_chart.svg"
 			})
-			
-		//set favicon
+		
+		this.setFavicon()	
+		
 	},
-
+	setFavicon: function() {
+		//set favicon
+		var favicanvas = document.getElementById("favicanvas")
+		favicanvas.width = 64;
+		favicanvas.height = 64;
+		var faviCanvasContext = favicanvas.getContext("2d")
+		faviCanvasContext.translate(favicanvas.width / 2, favicanvas.height / 2);
+		var svg = $.trim(document.getElementById("chartContainer").innerHTML)
+		faviCanvasContext.drawSvg(svg,-16,-8,32,32)
+		
+		$("#favicon").attr("href",favicanvas.toDataURL("png"))
+	},
 	redraw: function() {
 		$(".seriesItemGroup").detach()
 		$(".downloadLink").addClass("hide")
