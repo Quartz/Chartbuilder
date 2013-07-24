@@ -195,3 +195,7 @@ h2:not(:first-child) {
 	margin-left: 5px;
 }
 
+a.downloadLink {
+	line-height: 24px;
+}
+
