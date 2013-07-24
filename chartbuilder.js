@@ -12,16 +12,16 @@ ChartBuilder = {
 	getNewData: function() {
 		
 		var csvString = $("#csvInput").val()
-		//check if more tabs or commas as a weak indicator of .tsv or .csv
 		var parseOptions = {
 			delimiter: "\"",
-			separator: ",",
+			separator: "|",
 			escaper:"\\",
 			skip:"0"
 		}
-		var tab = String.fromCharCode(9)
+		
         
 		/* JUST USE TAB DELIMETED OKAY
+		//check if more tabs or commas as a weak indicator of .tsv or .csv
 		if(csvString.split(tab).length < csvString.split(",").length) {
 			//more tabs than commas
 			
@@ -34,9 +34,9 @@ ChartBuilder = {
 		}
 		*/
 		
-		//swap tabs for pipes because of some bug in the csv library
+		var tab = String.fromCharCode(9)
+		//swap tabs for pipes because of some bug in the csv reading library
 		csvString = csvString.split(tab).join("|")
-		parseOptions.separator = "|"
 		
 		/*remove commas (but not from the header row)*/
 		csvString = csvString.split("\n")
@@ -59,15 +59,13 @@ ChartBuilder = {
 		var d = []
 		var parseFunc;
 		for (var i=0; i < a.length; i++) {
-			if((/date/gi).test(a[i][0])){
+			if((/date/gi).test(a[i][0])){ //relies on the word date 
 				parseFunc = this.dateAll
-				//this.config.dateseries = true;
 			}
 			else if (i == 0) {
 				parseFunc = this.doNothing
 			}
 			else {
-				//this.config.dateseries = false;
 				parseFunc = this.floatAll
 			}
 			
@@ -88,16 +86,8 @@ ChartBuilder = {
 	},
 	mergeData: function(a) {
 		var d
-		//var dataLength = Math.min(a.data.length,chart.g.series.length)
 		for (var i=0; i < a.data.length; i++) {
 			d = a.data[i]
-			//d.prefix = chart.g.series[i].prefix
-			//d.suffix = chart.g.series[i].suffix
-			//d.axis = chart.g.series[i].axis
-			//d.type = chart.g.series[i].type
-			//d.color = chart.g.series[i].color
-			
-			//a.data[i] = d
 			if(i < chart.g.series.length) {
 				a.data[i] = $.extend({},chart.g.series[i],d)
 			}
@@ -216,7 +206,7 @@ ChartBuilder = {
 		
 	},
 	setFavicon: function() {
-		//set favicon
+		//set favicon to image of chart
 		var favicanvas = document.getElementById("favicanvas")
 		favicanvas.width = 64;
 		favicanvas.height = 64;
@@ -381,13 +371,6 @@ ChartBuilder = {
 			sourceline: g.sourceline,
 			creditline: g.creditline
 		}
-		//console.log("pushState", state, "Chart Builder")
-		// clearTimeout(ChartBuilder.stateUpdateID)
-		// ChartBuilder.stateUpdateID = setTimeout(function(){
-		// 	window.history.pushState(state, "Chart Builder", window.location.toString().split(".local")[1])
-		// 	ChartBuilder.useState = true;
-		// 	ChartBuilder.draws += 1;
-		// }, 1000)
 
 		
 		chart.g = g;
@@ -525,7 +508,8 @@ $(document).ready(function() {
 		chartConfig.colors[i] = "#"+ ChartBuilder.allColors[i]
 	}
 	
-	//construct a Gneisschart
+	//construct a Gneisschart using default data
+	//this should change to be more like this http://bost.ocks.org/mike/chart/
 	chart = Gneiss.build(chartConfig)
 	
 	//scale it up so it looks good on retina displays
@@ -534,6 +518,7 @@ $(document).ready(function() {
 	ChartBuilder.redraw()
 	ChartBuilder.inlineAllStyles();
 	
+	//populate the input with the data that is in the chart
 	$("#csvInput").val(function() {
 		var val = ""
 		for (var i=0; i < chart.g.series.length; i++) {
@@ -547,14 +532,11 @@ $(document).ready(function() {
 			};
 		};
 		return val
-		
-		//return chart.g.series[0].name + "\n" + chart.g.series[0].data.join("\n")
 	})
 	
 	$("#createImageButton").click(function() {
 		ChartBuilder.inlineAllStyles();
 		ChartBuilder.createChartImage();
-		//$("#downloadLink").toggleClass("hide")
 	})
 	
 	$("#csvInput").bind("paste", function(e) {
@@ -573,8 +555,10 @@ $(document).ready(function() {
 	*/
 	
 	$("#csvInput").keyup(function() {
-		
+		//check if the data is different
 		if( $(this).val() != ChartBuilder.curRaw) {
+			
+			//cache the the raw textarea value
 			ChartBuilder.curRaw = $(this).val()
 			
 			var newData = ChartBuilder.getNewData()
@@ -590,26 +574,6 @@ $(document).ready(function() {
 				chart.g.xAxis.type = "ordinal";
 			}
 			chart.g.xAxisRef = [newData.data.shift()]
-			
-			//for (var i = newData.data.length - 1; i >= 0; i--){
-			//	if(!chart.g.yAxis[newData.data[i].axis]){
-			//		chart.g.yAxis.push({
-			//			domain: [null,null],
-			//			tickValues: null,
-			//			prefix: {
-			//				value: "",
-			//				use: "top" //can be "top" "all" "positive" or "negative"
-			//			},
-			//			suffix: {
-			//				value: "",
-			//				use: "top"
-			//			},
-			//			ticks: 4,
-			//			formatter: null,
-			//			color: null
-			//		})
-			//	}
-			//};
 			
 			chart.g.series=newData.data
 			chart.setPadding();

@@ -1,45 +1,49 @@
+svg #ground {
+	fill: #fff;
+	stroke: none;
+}
 
-#interactiveContent svg .axis line {
+svg .axis line {
 	fill: none;
 	shape-rendering: crispEdges;
 }
 
-#interactiveContent svg .axis line#zeroLine {
+svg .axis line#zeroLine {
 		stroke: #ff4cf4;
 }
 
-#interactiveContent svg #xAxis line {
+svg #xAxis line {
 	stroke: #e6e6e6;
 }
 
-#interactiveContent svg #xAxis{
+svg #xAxis{
 	fill: #666666;
 }
 
-#interactiveContent svg .axis path {
+svg .axis path {
 	stroke: none;
 	fill: none;
 }
 
-#interactiveContent svg .axis text {
+svg .axis text {
 	font-family: 'PTSerif';
 	font-size: 16px;
 }
 
-#interactiveContent svg .legendItem text {
+svg .legendItem text {
 	font-family: 'PTSerif';
 	font-size:  16px;
 }
 
-#interactiveContent svg text.metaText {
+svg text.metaText {
 	font-family: 'PTSerif';
 	font-size:  12px;
 	text-rendering:   optimizeLegibility;
 	fill:  #999999;
 }
 
-#interactiveContent svg text.barLabel, 
-#interactiveContent svg text.bargridLabel {
+svg text.barLabel, 
+svg text.bargridLabel {
 	font-family: 'PTSerif';
 	font-size: 16px
 }

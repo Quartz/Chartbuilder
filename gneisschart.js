@@ -16,7 +16,8 @@ var yAxisIndex
 //add prepend ability
 Element.prototype.prependChild = function(child) { this.insertBefore(child, this.firstChild); };
 
-//A default configuration //CHANGE to more d3esque methods
+//A default configuration 
+//Should change to more d3esque methods e.g. http://bost.ocks.org/mike/chart/
 var chartConfig = {
 	container: "#chartContainer",
 	editable: true,
@@ -126,7 +127,7 @@ var Gneiss = {
 			Initializes the chart from a config object
 		*/
 		var g = config
-		this.g = config //CHANGE 
+		this.g = config 
 		//set container as a jquery object
 		g.$container = $(g.container);
 		g.all = this;
@@ -143,13 +144,11 @@ var Gneiss = {
 		g.width = g.$container.width() //save the width in pixels
 		g.height = g.$container.height() //save the height in pixels
 		
-		//put a background rect to prevent transparency
+		//add rect, use as a background to prevent transparency
 		g.chart.append("rect")
 			.attr("id","ground")
 			.attr("width",g.width)
 			.attr("height",g.height)
-			.attr("fill","#ffffff")
-			.attr("stroke","none")
 				
 		
 		//group the series by their type
