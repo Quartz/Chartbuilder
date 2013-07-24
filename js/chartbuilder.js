@@ -12,16 +12,16 @@ ChartBuilder = {
 	getNewData: function() {
 		
 		var csvString = $("#csvInput").val()
-		//check if more tabs or commas as a weak indicator of .tsv or .csv
 		var parseOptions = {
 			delimiter: "\"",
-			separator: ",",
+			separator: "|",
 			escaper:"\\",
 			skip:"0"
 		}
-		var tab = String.fromCharCode(9)
+		
         
 		/* JUST USE TAB DELIMETED OKAY
+		//check if more tabs or commas as a weak indicator of .tsv or .csv
 		if(csvString.split(tab).length < csvString.split(",").length) {
 			//more tabs than commas
 			
@@ -34,9 +34,9 @@ ChartBuilder = {
 		}
 		*/
 		
-		//swap tabs for pipes because of some bug in the csv library
+		var tab = String.fromCharCode(9)
+		//swap tabs for pipes because of some bug in the csv reading library
 		csvString = csvString.split(tab).join("|")
-		parseOptions.separator = "|"
 		
 		/*remove commas (but not from the header row)*/
 		csvString = csvString.split("\n")
@@ -49,7 +49,7 @@ ChartBuilder = {
 		
 		var rawdata = $.csv.toArrays(csvString,parseOptions)
 		var data = this.parseData(this.pivotData(rawdata))
-		var output = {data: data, datetime: ((/date/gi).test(data[0].name) || (/time/gi).test(data[0].name))}
+		var output = {data: data, datetime: (/date/gi).test(data[0].name)}
 		this.createTable(rawdata,output)
 		return output
 		
@@ -59,15 +59,13 @@ ChartBuilder = {
 		var d = []
 		var parseFunc;
 		for (var i=0; i < a.length; i++) {
-			if((/date/gi).test(a[i][0]) || (/time/gi).test(a[i][0]) || (/year/gi).test(a[i][0])){
+			if((/date/gi).test(a[i][0])){ //relies on the word date 
 				parseFunc = this.dateAll
-				//this.config.dateseries = true;
 			}
 			else if (i == 0) {
 				parseFunc = this.doNothing
 			}
 			else {
-				//this.config.dateseries = false;
 				parseFunc = this.floatAll
 			}
 			
@@ -88,16 +86,8 @@ ChartBuilder = {
 	},
 	mergeData: function(a) {
 		var d
-		//var dataLength = Math.min(a.data.length,chart.g.series.length)
 		for (var i=0; i < a.data.length; i++) {
 			d = a.data[i]
-			//d.prefix = chart.g.series[i].prefix
-			//d.suffix = chart.g.series[i].suffix
-			//d.axis = chart.g.series[i].axis
-			//d.type = chart.g.series[i].type
-			//d.color = chart.g.series[i].color
-			
-			//a.data[i] = d
 			if(i < chart.g.series.length) {
 				a.data[i] = $.extend({},chart.g.series[i],d)
 			}
@@ -165,44 +155,22 @@ ChartBuilder = {
 		return a
 	},
 	inlineAllStyles: function() {
+		var chartStyle, selector, cssText;
 		
-		d3.selectAll("#interactiveContent svg .axis line")
-			.style("fill","none")
-			.style("shape-rendering","crispEdges")
-			
-		d3.selectAll("#interactiveContent svg .axis line#zeroLine")
-				.style("stroke", "#ff4cf4");
-				
-		d3.selectAll("#interactiveContent svg #xAxis line")
-			.style("stroke","#e6e6e6")
-			
-		d3.selectAll("#interactiveContent svg #xAxis text")
-			.style("fill","#666666")
+		for (var i = document.styleSheets.length - 1; i >= 0; i--){
+			if(document.styleSheets[i].href.indexOf("gneisschart.css") != -1) {
+				chartStyle = document.styleSheets[i].rules
+			}
+		}
+		for (var i=0; i < chartStyle.length; i++) {
+			selector = chartStyle[i].selectorText;
+			cssText = chartStyle[i].style.cssText;
+			d3.selectAll(selector).attr("style",cssText)
+		};
 
-		d3.selectAll("#interactiveContent svg .axis path")
-			.style("stroke", "none")
-			.style("fill","none");
-			
-		d3.selectAll("#interactiveContent svg .axis text")
-				.style("font-family",'PTSerif')
-				.style("font-size", "16px")
-		
-		d3.selectAll("#interactiveContent svg .legendItem text")
-					.attr("style","font-family:'PTSerif';font-size: 16px;")
-
-		d3.selectAll("#interactiveContent svg text.metaText")
-			.attr("style","font-family:'PTSerif';font-size: 12px; text-rendering:  optimizeLegibility; fill: #999999;") 
-		
-		d3.selectAll("#interactiveContent svg text.barLabel, #interactiveContent svg text.bargridLabel")
-			.style("font-family",'PTSerif')
-			.style("font-size", "16px")
-			
-		d3.selectAll("#titleLine")
-			.style("font-family",'PTSerif')
-			.style("font-size", "16px")
-			.style("fill","#666666")
 	},
 	createChartImage: function() {
+
 		var canvas = document.getElementById("canvas")
 		canvas.width =1200
 		canvas.height = 676
@@ -216,6 +184,11 @@ ChartBuilder = {
 		for (var i=0; i < chart.g.series.length; i++) {
 			filename.push(chart.g.series[i].name);
 		};
+		
+		if(chart.g.title.length > 0) {
+			filename.unshift(chart.g.title)
+		}
+		
 		filename = filename.join("-").replace(/[^\w\d]+/gi, '-');
 		
 		
@@ -228,8 +201,28 @@ ChartBuilder = {
 			.toggleClass("hide")
 			.attr("download",function(){ return filename + "_chart.svg"
 			})
+		
+		var icon = this.setFavicon()
+		this.storeLocalChart(filename)	
+		
 	},
-
+	setFavicon: function() {
+		//set favicon to image of chart
+		var favicanvas = document.getElementById("favicanvas")
+		favicanvas.width = 64;
+		favicanvas.height = 64;
+		
+		var faviCanvasContext = favicanvas.getContext("2d")
+		faviCanvasContext.translate(favicanvas.width / 2, favicanvas.height / 2);
+		
+		var svg = $.trim(document.getElementById("chartContainer").innerHTML)
+		faviCanvasContext.drawSvg(svg,-16,-8,32,32)
+		
+		var icon = favicanvas.toDataURL("png");
+		$("#favicon").attr("href",icon)
+		
+		return icon;
+	},
 	redraw: function() {
 		$(".seriesItemGroup").detach()
 		$(".downloadLink").addClass("hide")
@@ -280,8 +273,8 @@ ChartBuilder = {
 			
 			if(g.series[i].axis == 1) {
 				axer.prop("checked",true)
-				if(!q.yAxis[1].color || !isMultiAxis) {
-					q.yAxis[1].color = g.series[i].color
+				if(!g.yAxis[1].color || !isMultiAxis) {
+					g.yAxis[1].color = picker.val()
 				}
 				isMultiAxis = true;
 			}
@@ -302,7 +295,8 @@ ChartBuilder = {
 				var hasBargrid = false;
 				chart.setPadding();
 				ChartBuilder.setChartArea()
-				chart.resize()
+				chart.setXScales()
+					.resize()
 				ChartBuilder.redraw()
 			})
 			
@@ -384,13 +378,6 @@ ChartBuilder = {
 			sourceline: g.sourceline,
 			creditline: g.creditline
 		}
-		//console.log("pushState", state, "Chart Builder")
-		// clearTimeout(ChartBuilder.stateUpdateID)
-		// ChartBuilder.stateUpdateID = setTimeout(function(){
-		// 	window.history.pushState(state, "Chart Builder", window.location.toString().split(".local")[1])
-		// 	ChartBuilder.useState = true;
-		// 	ChartBuilder.draws += 1;
-		// }, 1000)
 
 		
 		chart.g = g;
@@ -406,7 +393,11 @@ ChartBuilder = {
 		};
 		
 		if(hasBargrid) {
-			$("#chartContainer").css("height",chart.g.series[0].data.length*22 + chart.g.padding.top + chart.g.padding.bottom)
+			$("#chartContainer").css("height",
+				chart.g.series[0].data.length*22 + 
+				chart.g.padding.top + 
+				chart.g.padding.bottom
+				)
 		}
 		else {
 			$("#chartContainer").css("height",338)
@@ -438,6 +429,46 @@ ChartBuilder = {
 		d3.selectAll("text.legendLabel").call(legendLabelDrag);
 		
 		
+	},
+	getAllInputData: function() {
+		var d = {}, $el;
+		var elems = $("input, textarea, select:not(#previous_charts)").each(function() {
+			$el = $(this)
+			d[$el.attr("id")] = $el.val()
+		})
+		return d
+	},
+	storeLocalChart: function(name) {
+		try {
+			localStorage["savedCharts"][0]
+		}
+		catch(e) {
+			localStorage["savedCharts"] = JSON.stringify([])
+		}
+		
+		var allcharts = JSON.parse(localStorage["savedCharts"])
+		newChart = this.getAllInputData()
+		newChart.name = name
+		allcharts.push(newChart)
+		localStorage["savedCharts"] = JSON.stringify(allcharts);
+	},
+	getLocalCharts: function() {
+		var charts = []
+		try {
+			charts = JSON.parse(localStorage["savedCharts"])
+		}
+		catch(e){ /* Fail Silently */}
+		
+		return charts
+	},
+	loadLocalChart: function(d) {
+		for (var key in d) {
+			if(key != "name") {
+				$("#"+key).val(d[key])
+				//$("#"+key).text(d[key])
+			}
+		}
+		$("input, textarea, select:not(#previous_charts)").keyup().change()
 	},
 	idSafe: function(s) {
 		s = s.replace(/[^\w\d]+/gi,"-")
@@ -510,11 +541,17 @@ $(document).ready(function() {
 		chartConfig.colors[i] = "#"+ ChartBuilder.allColors[i]
 	}
 	
+	//construct a Gneisschart using default data
+	//this should change to be more like this http://bost.ocks.org/mike/chart/
 	chart = Gneiss.build(chartConfig)
+	
+	//scale it up so it looks good on retina displays
 	$("#chart").attr("transform","scale(2)")
 	
 	ChartBuilder.redraw()
 	ChartBuilder.inlineAllStyles();
+	
+	//populate the input with the data that is in the chart
 	$("#csvInput").val(function() {
 		var val = ""
 		for (var i=0; i < chart.g.series.length; i++) {
@@ -528,14 +565,25 @@ $(document).ready(function() {
 			};
 		};
 		return val
-		
-		//return chart.g.series[0].name + "\n" + chart.g.series[0].data.join("\n")
 	})
+	
+	//load previously made charts
+	var savedCharts = ChartBuilder.getLocalCharts();
+	var chartSelect = d3.select("#previous_charts")
+					.on("change",function() {
+						ChartBuilder.loadLocalChart(d3.select(this.selectedOptions[0]).data()[0])
+					})
+	
+	chartSelect.selectAll("option")
+			.data(savedCharts)
+			.enter()
+			.append("option")
+			.text(function(d){return d.name?d.name:"Untitled Chart"})
+			
 	
 	$("#createImageButton").click(function() {
 		ChartBuilder.inlineAllStyles();
 		ChartBuilder.createChartImage();
-		//$("#downloadLink").toggleClass("hide")
 	})
 	
 	$("#csvInput").bind("paste", function(e) {
@@ -547,10 +595,17 @@ $(document).ready(function() {
 		
 	})
 	
-	//add interactions to interface
+	/*
+	//
+	// add interactions to chartbuilder interface
+	//
+	*/
+	
 	$("#csvInput").keyup(function() {
-		
+		//check if the data is different
 		if( $(this).val() != ChartBuilder.curRaw) {
+			
+			//cache the the raw textarea value
 			ChartBuilder.curRaw = $(this).val()
 			
 			var newData = ChartBuilder.getNewData()
@@ -560,31 +615,12 @@ $(document).ready(function() {
 			
 			if(newData.datetime) {
 				chart.g.xAxis.type = "date";
+				chart.g.xAxis.formatter = "Mdd"
 			}
 			else {
 				chart.g.xAxis.type = "ordinal";
 			}
 			chart.g.xAxisRef = [newData.data.shift()]
-			
-			//for (var i = newData.data.length - 1; i >= 0; i--){
-			//	if(!chart.g.yAxis[newData.data[i].axis]){
-			//		chart.g.yAxis.push({
-			//			domain: [null,null],
-			//			tickValues: null,
-			//			prefix: {
-			//				value: "",
-			//				use: "top" //can be "top" "all" "positive" or "negative"
-			//			},
-			//			suffix: {
-			//				value: "",
-			//				use: "top"
-			//			},
-			//			ticks: 4,
-			//			formatter: null,
-			//			color: null
-			//		})
-			//	}
-			//};
 			
 			chart.g.series=newData.data
 			chart.setPadding();
@@ -677,7 +713,8 @@ $(document).ready(function() {
 	$("#chart_title").keyup(function() {
 		var val = $(this).val()
 		chart.g.title = val
-		chart.setPadding();
+		chart.resize()
+			.setPadding();
 		ChartBuilder.setChartArea()
 		chart.setYScales()
 			.redraw();
@@ -692,18 +729,3 @@ $(document).ready(function() {
 
 
 })
-// Revert to a previously saved state
-// window.onpopstate = function(e) {
-// 	if(ChartBuilder.draws > 2) {
-// 		var g = e.state
-// 		if(q.xAxis.type == "date") {
-// 			q.xAxisRef[0].data = ChartBuilder.dateAll(q.xAxisRef[0].data)
-// 		}
-// 		chart.g.chart.remove()
-// 		chart = Gneiss.build(q)
-// 		ChartBuilder.redraw()
-// 		ChartBuilder.inlineAllStyles();
-// 		
-// 	}
-// 
-// };
