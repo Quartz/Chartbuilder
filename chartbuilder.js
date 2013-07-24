@@ -186,7 +186,7 @@ ChartBuilder = {
 		};
 		
 		if(chart.g.title.length > 0) {
-			filename.unshift(chart.title)
+			filename.unshift(chart.g.title)
 		}
 		
 		filename = filename.join("-").replace(/[^\w\d]+/gi, '-');
@@ -202,7 +202,8 @@ ChartBuilder = {
 			.attr("download",function(){ return filename + "_chart.svg"
 			})
 		
-		this.setFavicon()	
+		var icon = this.setFavicon()
+		this.storeLocalChart(filename)	
 		
 	},
 	setFavicon: function() {
@@ -210,12 +211,17 @@ ChartBuilder = {
 		var favicanvas = document.getElementById("favicanvas")
 		favicanvas.width = 64;
 		favicanvas.height = 64;
+		
 		var faviCanvasContext = favicanvas.getContext("2d")
 		faviCanvasContext.translate(favicanvas.width / 2, favicanvas.height / 2);
+		
 		var svg = $.trim(document.getElementById("chartContainer").innerHTML)
 		faviCanvasContext.drawSvg(svg,-16,-8,32,32)
 		
-		$("#favicon").attr("href",favicanvas.toDataURL("png"))
+		var icon = favicanvas.toDataURL("png");
+		$("#favicon").attr("href",icon)
+		
+		return icon;
 	},
 	redraw: function() {
 		$(".seriesItemGroup").detach()
@@ -426,21 +432,43 @@ ChartBuilder = {
 	},
 	getAllInputData: function() {
 		var d = {}, $el;
-		var elems = $("input, textarea").each(function() {
+		var elems = $("input, textarea, select:not(#previous_charts)").each(function() {
 			$el = $(this)
 			d[$el.attr("id")] = $el.val()
 		})
 		return d
 	},
-	localStoreChart: function(name) {
-		localStorage[name] = JSON.stringify(this.getAllInputData());
-	},
-	localLoadChart: function(name) {
-		d = JSON.parse(localStorage[name])
-		for (var key in d) {
-			$("#"+key).val(d[key])
+	storeLocalChart: function(name) {
+		try {
+			localStorage["savedCharts"][0]
 		}
-		$("input, textarea").keyup().change()
+		catch(e) {
+			localStorage["savedCharts"] = JSON.stringify([])
+		}
+		
+		var allcharts = JSON.parse(localStorage["savedCharts"])
+		newChart = this.getAllInputData()
+		newChart.name = name
+		allcharts.push(newChart)
+		localStorage["savedCharts"] = JSON.stringify(allcharts);
+	},
+	getLocalCharts: function() {
+		var charts = []
+		try {
+			charts = JSON.parse(localStorage["savedCharts"])
+		}
+		catch(e){ /* Fail Silently */}
+		
+		return charts
+	},
+	loadLocalChart: function(d) {
+		for (var key in d) {
+			if(key != "name") {
+				$("#"+key).val(d[key])
+				//$("#"+key).text(d[key])
+			}
+		}
+		$("input, textarea, select:not(#previous_charts)").keyup().change()
 	},
 	idSafe: function(s) {
 		s = s.replace(/[^\w\d]+/gi,"-")
@@ -538,6 +566,20 @@ $(document).ready(function() {
 		};
 		return val
 	})
+	
+	//load previously made charts
+	var savedCharts = ChartBuilder.getLocalCharts();
+	var chartSelect = d3.select("#previous_charts")
+					.on("change",function() {
+						ChartBuilder.loadLocalChart(d3.select(this.selectedOptions[0]).data()[0])
+					})
+	
+	chartSelect.selectAll("option")
+			.data(savedCharts)
+			.enter()
+			.append("option")
+			.text(function(d){return d.name?d.name:"Untitled Chart"})
+			
 	
 	$("#createImageButton").click(function() {
 		ChartBuilder.inlineAllStyles();
@@ -687,18 +729,3 @@ $(document).ready(function() {
 
 
 })
-// Revert to a previously saved state
-// window.onpopstate = function(e) {
-// 	if(ChartBuilder.draws > 2) {
-// 		var g = e.state
-// 		if(q.xAxis.type == "date") {
-// 			q.xAxisRef[0].data = ChartBuilder.dateAll(q.xAxisRef[0].data)
-// 		}
-// 		chart.g.chart.remove()
-// 		chart = Gneiss.build(q)
-// 		ChartBuilder.redraw()
-// 		ChartBuilder.inlineAllStyles();
-// 		
-// 	}
-// 
-// };
