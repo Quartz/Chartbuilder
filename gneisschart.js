@@ -462,8 +462,8 @@ var Gneiss = {
 					.scale(g.yAxis[i].scale)
 					.orient(i==0?"right":"left")
 					.tickSize(g.width - g.padding.left - g.padding.right)
-					.ticks(g.yAxis[0].ticks)
-					.tickValues(g.yAxis[i].tickValues)
+					//.ticks(g.yAxis[0].ticks) // I'm not using built in ticks because it is too opinionated
+					.tickValues(g.yAxis[i].tickValues?g.yAxis[i].tickValues:this.helper.exactTicks(g.yAxis[i].scale.domain(),g.yAxis[i].ticks))
 					
 				//append axis container
 
@@ -474,8 +474,8 @@ var Gneiss = {
 					.call(g.yAxis[i].axis)
 			}
 			else {
-				g.yAxis[i].axis.ticks(g.yAxis[0].ticks)
-					.tickValues(g.yAxis[i].tickValues);
+				g.yAxis[i].axis//.ticks(g.yAxis[0].ticks) // I'm not using built in ticks because it is too opinionated
+					.tickValues(g.yAxis[i].tickValues?g.yAxis[i].tickValues:this.helper.exactTicks(g.yAxis[i].scale.domain(),g.yAxis[i].ticks))
 					
 				axisGroup = g.chart.selectAll(i==0?"#rightAxis":"#leftAxis")
 					.call(g.yAxis[i].axis)
@@ -1346,6 +1346,17 @@ var Gneiss = {
 			}
 			
 			return 0
+		},
+		exactTicks: function(domain,numticks) {
+			numticks -= 1;
+			var ticks = []
+			var delta = domain[1] - domain[0];
+			ticks.push(domain[0])
+			for (var i=0; i < numticks; i++) {
+				ticks.push(domain[0] + (delta/numticks)*i);
+			};
+			ticks.push(domain[1])
+			return ticks;
 		}
 	},
 	q: {}
