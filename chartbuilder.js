@@ -289,7 +289,8 @@ ChartBuilder = {
 				var hasBargrid = false;
 				chart.setPadding();
 				ChartBuilder.setChartArea()
-				chart.resize()
+				chart.setXScales()
+					.resize()
 				ChartBuilder.redraw()
 			})
 			
@@ -386,7 +387,11 @@ ChartBuilder = {
 		};
 		
 		if(hasBargrid) {
-			$("#chartContainer").css("height",chart.g.series[0].data.length*22 + chart.g.padding.top + chart.g.padding.bottom)
+			$("#chartContainer").css("height",
+				chart.g.series[0].data.length*22 + 
+				chart.g.padding.top + 
+				chart.g.padding.bottom
+				)
 		}
 		else {
 			$("#chartContainer").css("height",338)
@@ -666,7 +671,8 @@ $(document).ready(function() {
 	$("#chart_title").keyup(function() {
 		var val = $(this).val()
 		chart.g.title = val
-		chart.setPadding();
+		chart.resize()
+			.setPadding();
 		ChartBuilder.setChartArea()
 		chart.setYScales()
 			.redraw();
