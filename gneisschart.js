@@ -931,7 +931,7 @@ var Gneiss = {
 			
 			lineSeries = g.seriesContainer.selectAll("path");
 			columnSeries = g.seriesContainer.selectAll("g.seriesColumn")
-			scatterSeries = g.seriesContainer.selectAll("g.seriesScatter circle")
+			scatterSeries = g.seriesContainer.selectAll("g.seriesScatter")
 			lineSeriesDotGroups = g.seriesContainer.selectAll("g.lineSeriesDots")
 			var columnGroups
 			var columnRects
@@ -1124,30 +1124,32 @@ var Gneiss = {
 					.data(sbt.scatter)
 					.attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
 				
+				scatterGroups.enter()
+					.append("g")
+					.attr("class","seriesScatter")
+					.attr("fill",function(d,i){return d.color? d.color : g.colors[i+sbt.line.length+sbt.column.length]})
+				
+				scatterGroups.exit().remove()
+				
 				scatterDots = scatterGroups
 					.selectAll("circle")
-					.data(function(d){ return d.data})
+					.data(function(d){return d.data})
 					
-				scatterDots.transition()
-						.duration(500)
+				scatterDots.enter()
+						.append("circle")
 						.attr("r",4)
 						.attr("stroke","#fff")
 						.attr("stroke-width","1")
 						.attr("transform",function(d,i){
-							yAxisIndex = d3.select(this.parentElement).data()[0].axis; 
-							return "translate("+(g.xAxis.type=="date" ?
-								g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]):
-								g.xAxis.scale(i)) + "," + g.yAxis[yAxisIndex].scale(d) + ")"
+							yAxisIndex = d3.select(this.parentElement).data()[0].axis;
+							return "translate("+g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + g.yAxis[yAxisIndex].scale(d) + ")"
 							})
-							
-				scatterDots.enter()
-						.append("circle")
-						.attr("r",4)
+					
+				scatterDots.transition()
+						.duration(500)
 						.attr("transform",function(d,i){
-							yAxisIndex = d3.select(this.parentElement).data()[0].axis; 
-							return "translate("+(g.xAxis.type=="date" ?
-								g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]):
-								g.xAxis.scale(i)) + "," + g.yAxis[yAxisIndex].scale(d) + ")"
+							yAxisIndex = d3.select(this.parentElement).data()[0].axis;
+							return "translate("+g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + g.yAxis[yAxisIndex].scale(d) + ")"
 							})
 			}
 			
