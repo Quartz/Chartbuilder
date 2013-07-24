@@ -1,0 +1,55 @@
+svg #ground {
+	fill: #fff;
+	stroke: none;
+}
+
+svg .axis line {
+	fill: none;
+	shape-rendering: crispEdges;
+}
+
+svg .axis line#zeroLine {
+		stroke: #ff4cf4;
+}
+
+svg #xAxis line {
+	stroke: #e6e6e6;
+}
+
+svg #xAxis{
+	fill: #666666;
+}
+
+svg .axis path {
+	stroke: none;
+	fill: none;
+}
+
+svg .axis text {
+	font-family: 'PTSerif';
+	font-size: 16px;
+}
+
+svg .legendItem text {
+	font-family: 'PTSerif';
+	font-size:  16px;
+}
+
+svg text.metaText {
+	font-family: 'PTSerif';
+	font-size:  12px;
+	text-rendering:   optimizeLegibility;
+	fill:  #999999;
+}
+
+svg text.barLabel, 
+svg text.bargridLabel {
+	font-family: 'PTSerif';
+	font-size: 16px
+}
+	
+#titleLine {
+	font-family: 'PTSerif';
+	font-size: 16px;
+	fill: #666666;
+}
