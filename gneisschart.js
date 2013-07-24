@@ -297,21 +297,25 @@ var Gneiss = {
 	},
 	setPadding: function() {
 		/*
-			calulates and stores the proper amount of extra padding beyond what the user specified (to account for axes, titles, legends)
+			calulates and stores the proper amount of extra padding beyond what the user specified (to account for axes, titles, legends, meta)
 		*/
 		var g = this.g
-		padding_top = g.defaults.padding.top
+		var padding_top = g.defaults.padding.top,
+		padding_bottom = g.defaults.padding.bottom;
+		
 		if(!g.legend) {
 			padding_top = 5;
 		}
-		padding_top += g.title ==""||g.series.length==1?0:25
-		padding_top += g.yAxis.length==1&&!g.isBargrid?0:25
+		padding_top += g.title == "" || g.series.length == 1 ? 0:25
+		padding_top += (g.yAxis.length == 1 && !g.isBargrid) ? 0:25
 		
 		if(g.isBargrid) {
-			//padding_top += 12
+			padding_top += -15
+			padding_bottom -= 15 
 		}
 		
 		g.padding.top = padding_top
+		g.padding.bottom = padding_bottom
 		this.g = g
 		return this
 	},
@@ -602,13 +606,19 @@ var Gneiss = {
 		if(g.isBargrid){
 			d3.selectAll(".yAxis").style("display","none")
 			g.titleLine.attr("y",g.padding.top - 36)
+			
 		}
 		else {
 			d3.selectAll(".yAxis").style("display",null)
 			
 			if(g.yAxis.length==1) {
 				try{
-					g.titleLine.attr("y",g.topAxisItem.y - 4)
+					if(!g.legend) {
+						g.titleLine.attr("y",g.topAxisItem.y - 4)
+					}
+					else {
+						g.titleLine.attr("y",g.topAxisItem.y - 25)
+					}
 				}catch(e){} //fail silently
 					
 			}
@@ -626,29 +636,7 @@ var Gneiss = {
 		
 	},
 	customYAxisFormat: function(axisGroup,i) {
-		var g = this.g
-		axisGroup.selectAll("g")
-			.each(function(d,j) {
-				//create an object to store axisItem info
-				var axisItem = {}
-				
-				//store the position of the axisItem
-				//(figure it out by parsing the transfrom attribute)
-				axisItem.y = parseFloat(d3.select(this)
-					.attr("transform")
-						.split(")")[0]
-							.split(",")[1]
-					)
-				
-				//store the text element of the axisItem
-				//align the text right position it on top of the line
-				axisItem.text = d3.select(this).select("text")
-					.attr("text-anchor",i==0?"end":"start")
-					.attr("fill",i==0?"#666666":g.yAxis[i].color)
-					.attr("x",function(){var elemx = Number(d3.select(this).attr("x")); return i==0?elemx:elemx+4})
-					.attr("y",-9)
-				})
-		this.g = g;
+		//replace at your whim
 	},
 	setXAxis: function(first) {
 		var g = this.g
@@ -808,6 +796,7 @@ var Gneiss = {
 	drawSeriesAndLegend: function(first){
 		this.drawSeries(first)
 		this.drawLegend()
+		return this
 	},
 	drawSeries: function(first) {
 		/*
@@ -1259,6 +1248,12 @@ var Gneiss = {
 		this.g = g
 		return this
 	},
+	updateMetaAndTitle: function() {
+		var g = this.g
+		g.metaInfo.attr("transform","translate(0,"+(g.height-4)+")")
+		this.g = g
+		return this
+	},
 	splitSeriesByType: function(series) {
 		/*
 			splits the data by the way it is supposed to be displayed
@@ -1316,7 +1311,8 @@ var Gneiss = {
 			.setXScales()
 			.setYAxes()
 			.setXAxis()
-			.drawSeriesAndLegend();	
+			.drawSeriesAndLegend()
+			.updateMetaAndTitle();	
 		return this
 	},
 	randomizeData: function(d) {
