@@ -627,6 +627,7 @@ var Gneiss = {
 		
 	},
 	customYAxisFormat: function(axisGroup,i) {
+		var g = this.g
 		axisGroup.selectAll("g")
 			.each(function(d,j) {
 				//create an object to store axisItem info
@@ -648,6 +649,7 @@ var Gneiss = {
 					.attr("x",function(){var elemx = Number(d3.select(this).attr("x")); return i==0?elemx:elemx+4})
 					.attr("y",-9)
 				})
+		this.g = g;
 	},
 	setXAxis: function(first) {
 		var g = this.g
@@ -1192,7 +1194,15 @@ var Gneiss = {
 			var legItems = 	legendGroups.enter()
 				.append("g")
 				.attr("class","legendItem")
-				.attr("transform",function(d,i) {return "translate("+g.padding.left+","+(g.padding.top-25)+")"});
+				.attr("transform",function(d,i) {
+					if(g.yAxis.length == 1) {
+						return "translate("+g.padding.left+","+(g.padding.top-25)+")"
+					}
+					else {
+						return "translate("+g.padding.left+","+(g.padding.top-50)+")"
+					}
+					
+				});
 			
 			var legLabels = legItems.append("text")
 					.filter(function(){return g.series.length > 1})
