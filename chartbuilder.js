@@ -278,7 +278,7 @@ ChartBuilder = {
 			if(g.series[i].axis == 1) {
 				axer.prop("checked",true)
 				if(!g.yAxis[1].color || !isMultiAxis) {
-					g.yAxis[1].color = g.series[i].color
+					g.yAxis[1].color = picker.val()
 				}
 				isMultiAxis = true;
 			}
