@@ -7,10 +7,10 @@ Chartbuilder is the user and export interface. Gneisschart is the charting frame
 
 What Chartbuilder is not
 -------------------------
-+A replacement for Excel
-+A replacement for Google Spreadsheet
-+A data analysis tool
-+A data transformation tool
++ A replacement for Excel
++ A replacement for Google Spreadsheet
++ A data analysis tool
++ A data transformation tool
 
 What Chartbuiler is
 --------------------
