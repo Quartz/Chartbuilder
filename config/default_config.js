@@ -5,7 +5,7 @@ ChartBuilder.allColors = ["BF0053","FF70B0","E15D98","C44B81","A63869","882551",
 						"006DBF","70B8FF","5DA1E1","4B89C4","3871A6","255A88","13436B","002B4D",
 						"9300BF","E770FF","CB5DE1","AE4BC4","9238A6","752588","59136B","3C004D"]
 
-chartConfig.creditline = "Made with Charbuilder"
+chartConfig.creditline = "Made with Chartbuilder"
 chartConfig.colors = ["#ff4cf4","#ffb3ff","#e69ce6","#cc87cc","#b373b3","#995f99","#804c80","#665266","#158eff","#99cdff","#9cc2e6","#87abcc","#7394b3","#5f7d99","#466780","#525c66"]
 
 Gneiss.customYAxisFormat = function(axisGroup,i) {
