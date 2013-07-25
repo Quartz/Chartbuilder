@@ -7,6 +7,7 @@ ChartBuilder.allColors = ["BF0053","FF70B0","E15D98","C44B81","A63869","882551",
 
 chartConfig.creditline = "Made with Charbuilder"
 chartConfig.colors = ["#ff4cf4","#ffb3ff","#e69ce6","#cc87cc","#b373b3","#995f99","#804c80","#665266","#158eff","#99cdff","#9cc2e6","#87abcc","#7394b3","#5f7d99","#466780","#525c66"]
+
 Gneiss.customYAxisFormat = function(axisGroup,i) {
 	var g = this.g
 	axisGroup.selectAll("g")
