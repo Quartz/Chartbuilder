@@ -1,22 +1,5 @@
-@font-face {
-    font-family: 'AdelleSansWeb';
-    src:
-        url('http://app.qz.com/fonts/AdelleSansWeb/AdelleSansBasic_Bold.eot?#iefix') format('embedded-opentype'),
-        url('http://app.qz.com/fonts/AdelleSansWeb/AdelleSansBasic_Bold.woff')       format('woff'),
-        url('http://app.qz.com/fonts/AdelleSansWeb/AdelleSansBasic_Bold.ttf')        format('truetype');
-    font-weight: 700;
-}
+@import url(http://fonts.googleapis.com/css?family=Cutive);
 
-/*
-Source: http://www.fontsquirrel.com/fonts/pt-serif
-License: /fonts/PTSerif/Paratype PT Sans Free Font License.txt
-*/
-@font-face {
-  font-family: 'PTSerif';
-  src: url('http://app.qz.com/fonts/PTSerif/PTF55F.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
 input[type="text"], select {
 	display: block;
 	margin-bottom: 5px;
@@ -147,7 +130,7 @@ h2:not(:first-child) {
 }
 
 #interactiveContent .updateButton p {
-	font-family: "AdelleSansWeb",Arial, "MS Trebuchet", sans-serif;
+	font-family: Arial, "MS Trebuchet", sans-serif;
 	padding: 5px;
 	background-color: #999;
 	color: #ffffff;
@@ -169,7 +152,7 @@ h2:not(:first-child) {
 }
 
 #interactiveContent label {
-	font-family: "AdelleSansWeb",Arial, "MS Trebuchet", sans-serif;
+	font-family: Arial, "MS Trebuchet", sans-serif;
 	color: #666666;
 	display: block;
 	font-size: 12px;
