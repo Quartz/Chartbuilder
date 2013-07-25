@@ -26,30 +26,30 @@ svg .axis path {
 }
 
 svg .axis text {
-	font-family: 'PTSerif';
-	font-size: 16px;
+	font-family: 'Cutive',Helvetica, sans-serif;
+	font-size: 12px;
 }
 
 svg .legendItem text {
-	font-family: 'PTSerif';
-	font-size:  16px;
+	font-family: 'Cutive',Helvetica, sans-serif;
+	font-size:  12px;
 }
 
 svg text.metaText {
-	font-family: 'PTSerif';
-	font-size:  12px;
+	font-family: 'Cutive',Helvetica, sans-serif;
+	font-size:  10px;
 	text-rendering:   optimizeLegibility;
 	fill:  #999999;
 }
 
 svg text.barLabel, 
 svg text.bargridLabel {
-	font-family: 'PTSerif';
-	font-size: 16px
+	font-family: 'Cutive',Helvetica, sans-serif;
+	font-size: 12px
 }
 	
 #titleLine {
-	font-family: 'PTSerif';
-	font-size: 16px;
+	font-family: 'Cutive',Helvetica, sans-serif;
+	font-size: 12px;
 	fill: #666666;
 }
