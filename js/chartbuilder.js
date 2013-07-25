@@ -194,12 +194,12 @@ ChartBuilder = {
 		
 		$("#downloadImageLink").attr("href",canvas.toDataURL("png"))
 			.toggleClass("hide")
-			.attr("download",function(){ return filename + "_chart.png"
+			.attr("download",function(){ return filename + "_chartbuilder.png"
 			});
 			
 		$("#downloadSVGLink").attr("href","data:text/svg,"+ encodeURI($("#chartContainer").html().split("PTSerif").join("PT Serif")) )
 			.toggleClass("hide")
-			.attr("download",function(){ return filename + "_chart.svg"
+			.attr("download",function(){ return filename + "_chartbuilder.svg"
 			})
 		
 		var icon = this.setFavicon()

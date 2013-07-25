@@ -609,11 +609,14 @@ var Gneiss = {
 			
 		}
 		else {
+			//isn't a bargrid
 			d3.selectAll(".yAxis").style("display",null)
 			
 			if(g.yAxis.length==1) {
+				//only has one axis
 				try{
-					if(!g.legend) {
+					if(!g.legend || g.series.length == 1) {
+						//no legend or only one seriesgit 
 						g.titleLine.attr("y",g.topAxisItem.y - 4)
 					}
 					else {
@@ -851,11 +854,11 @@ var Gneiss = {
 					.enter()
 						.append("rect")
 						.attr("width",columnWidth)
-						.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex])))})
+						.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())))})
 						.attr("x", function(d,i) {
 							return g.xAxis.scale(g.xAxisRef[0].data[i])  - columnWidth/2
 							})
-						.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex]))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex])) : g.yAxis[yAxisIndex].scale(d)})
+						.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
 				
 				
 				
@@ -944,12 +947,12 @@ var Gneiss = {
 						.append("text")
 						.attr("class","bargridLabel")
 						.text(function(d,i){return d.name})
-						.attr("x",g.padding.left)
+						.attr("x",g.yAxis[0].scale(0))
 						.attr("y",g.padding.top-18)
 								
 				bargridLabel.transition()
 					.text(function(d,i){return d.name})
-					.attr("x",g.padding.left)
+					.attr("x",g.yAxis[0].scale(0))
 					.attr("y",g.padding.top-18)
 				
 				bargridLabel.exit().remove()
@@ -967,15 +970,15 @@ var Gneiss = {
 				columnRects.enter()
 						.append("rect")
 						.attr("height",20)
-						.attr("width", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex])))})
-						.attr("x",function(d,i){return d<0?g.padding.left - this.attr("width"):g.padding.left})
+						.attr("width", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
+						.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d)):0)})
 						.attr("y",function(d,i) {return g.xAxis.scale(i) - 10})
 				
 				columnRects.transition()
 					.duration(500)
 					.attr("height",20)
-					.attr("width", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex])))})
-					.attr("x",g.padding.left + 3)
+					.attr("width", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
+					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)):0)})
 					.attr("y",function(d,i) {return g.xAxis.scale(i) - 10})
 				
 				//add label to each bar
@@ -986,12 +989,12 @@ var Gneiss = {
 					.append("text")
 					.attr("class","barLabel")
 					.text(function(d,i){return g.all.numberFormat(d)})
-					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return g.padding.left + 6 + Math.abs(g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex])))})
+					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
 					.attr("y",function(d,i) {return g.xAxis.scale(i) + 5})
 					
 				barLabels.transition()
 					.text(function(d,i){var yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (i==0?g.yAxis[yAxisIndex].prefix.value:"") + g.all.numberFormat(d) + (i==0?g.yAxis[yAxisIndex].suffix.value:"")})
-					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return g.padding.left + 6 + Math.abs(g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex])))})
+					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return 3 + g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)):0) + Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
 					.attr("y",function(d,i) {return g.xAxis.scale(i) + 5})
 				
 				//remove non bargrid stuff
@@ -1029,19 +1032,19 @@ var Gneiss = {
 				columnRects.enter()
 						.append("rect")
 						.attr("width",columnWidth)
-						.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex])))})
+						.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())))})
 						.attr("x",function(d,i) {return g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i])  - columnWidth/2})
-						.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex]))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex])) : g.yAxis[yAxisIndex].scale(d)})
+						.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
 			
 				columnRects.transition()
 					.duration(500)
 					.attr("width",columnWidth)
-					.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex])))})
+					.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())))})
 					.attr("x",g.xAxis.type =="date" ? 
 							function(d,i) {return g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i])  - columnWidth/2}:
 							function(d,i) {return g.xAxis.scale(i) - columnWidth/2}
 					)
-					.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex]))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex])) : g.yAxis[yAxisIndex].scale(d)})
+					.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
 				
 				columnRects.exit().remove()
 			
@@ -1343,26 +1346,41 @@ var Gneiss = {
 			}
 			return d3.extent(data)
 		},
-		columnXandHeight: function(d,axis) {
+		columnXandHeight: function(d,domain) {
 			//a function to find the propper value to cut off a column
-			if(d > 0 && axis.domain[0] > 0) {
-				return axis.domain[0]
+			if(d > 0 && domain[0] > 0) {
+				return domain[0]
 			}
-			else if (d < 0 && axis.domain[1] < 0) {
-				return axis.domain[1]
+			else if (d < 0 && domain[1] < 0) {
+				return domain[1]
 			}
 			
 			return 0
 		},
 		exactTicks: function(domain,numticks) {
 			numticks -= 1;
-			var ticks = []
+			var ticks = [];
 			var delta = domain[1] - domain[0];
 			ticks.push(domain[0])
 			for (var i=0; i < numticks; i++) {
 				ticks.push(domain[0] + (delta/numticks)*i);
 			};
 			ticks.push(domain[1])
+			
+			if(domain[1]*domain[0] < 0) {
+				//if the domain crosses zero, make sure there is a zero line
+				var hasZero = false;
+				for (var i = ticks.length - 1; i >= 0; i--){
+					//check if there is already a zero line
+					if(ticks[i] == 0) {
+						hasZero = true;
+					}
+				};
+				if(!hasZero) {
+					ticks.push(0)
+				}
+			}
+			
 			return ticks;
 		}
 	},
