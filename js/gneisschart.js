@@ -609,11 +609,14 @@ var Gneiss = {
 			
 		}
 		else {
+			//isn't a bargrid
 			d3.selectAll(".yAxis").style("display",null)
 			
 			if(g.yAxis.length==1) {
+				//only has one axis
 				try{
-					if(!g.legend) {
+					if(!g.legend || g.series.length == 1) {
+						//no legend or only one series
 						g.titleLine.attr("y",g.topAxisItem.y - 4)
 					}
 					else {
