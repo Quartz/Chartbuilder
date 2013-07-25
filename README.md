@@ -20,28 +20,29 @@ How to use Chartbuilder
 ------------------------
 ###Getting started
 1. Download source
-2. from the terminal navigate to the source folder run python -m SimpleHTTPServer
-3. Open Google Chrome, navigate to http://localhost:8000/
+2. from the terminal navigate to the source folder run `python -m SimpleHTTPServer`
+3. Open Google Chrome, navigate to [http://localhost:8000/](http://localhost:8000/)
 
 ####Charting time Series Data
-1. Find some time series data (may I suggest this)
+1. Find some time series data (may I suggest [this](https://docs.google.com/a/qz.com/spreadsheet/ccc?key=0AtrPfe-ScVhJdGg0a2hKZU1JaWZ4ZGMxY3NKbWozYUE#gid=0))
 2. Make sure the first column is your dates, and the heading on the first column is "date"
 3. Copy and paste into chart builder
 
 ####Charting ordinal series data
-1. Find some ordinal series data (may I suggest this)
+1. Find some ordinal series data (may I suggest [this](https://docs.google.com/a/qz.com/spreadsheet/ccc?key=0AtrPfe-ScVhJdDZrODFnM3Q1TTlfSHA2Z3lrSjJrUmc#gid=0))
 2. Make sure the first column are your categories, and the heading on the first column _isn't_ "date"
 3. Copy and paste into chartbuilder
 
 ####Finishing up
-_steps 1-4 are optional_
+_steps 2-4 are optional_
 
-1. Set a title
-2. Set your units using the axis prefix and suffix field
-3. Adjust your max and min (if you so choose)
+1. Pick your series types
+2. Set a title
+3. Set your units using the axis prefix and suffix field
+4. Adjust your max and min (if you so choose)
 4. Add a credit line and/or a source line
-5. Click create chart
-6. Select to download an svg or png
+6. Click create chart
+7. Select to download an svg or png
 
 ###Examples of charts made with Chartbuilder
 ####Line charts
@@ -70,9 +71,9 @@ The output formats are accepted anywhere images and svgs are accepted. There's n
 
 There are fewer excuses to use screenshots from analyst reports or charts in Excel.
 
-More about that here yanofsky.info/demos/chartbuilder/slides/
+More about that here http://yanofsky.info/demos/chartbuilder/slides/
 
 Gneisschart was created to assist in the above as well as establish the starting point for a touch focused responsive charting library.
 
 ###Styling the chart
-Chart styles are contained in css/gneisschart.css. The color palette is defined in config/default_config.js
+Chart styles are contained in `css/gneisschart.css`. The color palette is defined in `config/default_config.js`
