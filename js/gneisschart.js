@@ -616,7 +616,7 @@ var Gneiss = {
 				//only has one axis
 				try{
 					if(!g.legend || g.series.length == 1) {
-						//no legend or only one series
+						//no legend or only one seriesgit 
 						g.titleLine.attr("y",g.topAxisItem.y - 4)
 					}
 					else {
@@ -1359,13 +1359,28 @@ var Gneiss = {
 		},
 		exactTicks: function(domain,numticks) {
 			numticks -= 1;
-			var ticks = []
+			var ticks = [];
 			var delta = domain[1] - domain[0];
 			ticks.push(domain[0])
 			for (var i=0; i < numticks; i++) {
 				ticks.push(domain[0] + (delta/numticks)*i);
 			};
 			ticks.push(domain[1])
+			
+			if(domain[1]*domain[0] < 0) {
+				//if the domain crosses zero, make sure there is a zero line
+				var hasZero = false;
+				for (var i = ticks.length - 1; i >= 0; i--){
+					//check if there is already a zero line
+					if(ticks[i] == 0) {
+						hasZero = true;
+					}
+				};
+				if(!hasZero) {
+					ticks.push(0)
+				}
+			}
+			
 			return ticks;
 		}
 	},
