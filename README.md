@@ -66,7 +66,7 @@ _steps 2-4 are optional_
 
 Why Chartbuilder / Gneisschart
 -----------------
-+ You're a writer, blogger, reporter who hates the way screenshots of excel charts look in your stories
++ You're a writer, blogger, reporter who hates the way screenshotted research reports and excel charts look in your stories
 + You're a graphic designer or graphics editor spending too much time making simple charts in the same style
 + You're a developer at an organization looking to add consistency to employee generated charts
 
