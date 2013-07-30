@@ -67,7 +67,7 @@ _steps 2-4 are optional_
 Why Chartbuilder / Gneisschart
 -----------------
 + You're a writer, blogger, reporter who hates the way screenshotted and excel charts look in your stories
-+ You're a graphic designer or graphics editor who spends too much time making simple charts in the same style
++ You're a graphic designer or graphics editor spending too much time making simple charts in the same style
 + You're a developer at an organization looking to add consitency to employee generated charts
 
 Chartbuilder was created to speed workflow in a newsroom and give reporters more responsibility over their content. It allows someone to create simple graphics quickly within a pre-specified style guide without needing specialized design software.
