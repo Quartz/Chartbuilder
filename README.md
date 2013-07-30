@@ -12,7 +12,7 @@ What Chartbuilder is not
 + A data analysis tool
 + A data transformation tool
 
-What Chartbuiler is
+What Chartbuilder is
 --------------------
 Chartbuilder is the final step in charting. Paste data into it and export an svg or png chart.
 
