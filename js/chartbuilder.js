@@ -13,7 +13,7 @@ ChartBuilder = {
 		
 		var csvString = $("#csvInput").val()
 		var parseOptions = {
-			delimiter: "",
+			delimiter: "\"",
 			separator: "|",
 			escaper:"\\",
 			skip:"0"
