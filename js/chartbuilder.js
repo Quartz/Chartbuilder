@@ -158,7 +158,7 @@ ChartBuilder = {
 		var chartStyle, selector, cssText;
 		
 		for (var i = document.styleSheets.length - 1; i >= 0; i--){
-			if(document.styleSheets[i].href.indexOf("gneisschart.css") != -1) {
+			if(document.styleSheets[i].href && document.styleSheets[i].href.indexOf("gneisschart.css") != -1) {
 				chartStyle = document.styleSheets[i].rules
 			}
 		}
