@@ -13,7 +13,7 @@ ChartBuilder = {
 		
 		var csvString = $("#csvInput").val()
 		var parseOptions = {
-			delimiter: "\"",
+			delimiter: "",
 			separator: "|",
 			escaper:"\\",
 			skip:"0"
@@ -159,7 +159,12 @@ ChartBuilder = {
 		
 		for (var i = document.styleSheets.length - 1; i >= 0; i--){
 			if(document.styleSheets[i].href && document.styleSheets[i].href.indexOf("gneisschart.css") != -1) {
-				chartStyle = document.styleSheets[i].rules
+        if (document.styleSheets[i].rules != undefined) {
+				  chartStyle = document.styleSheets[i].rules 
+        }
+        else {
+          chartStyle = document.styleSheets[i].cssRules
+          }
 			}
 		}
 		for (var i=0; i < chartStyle.length; i++) {
