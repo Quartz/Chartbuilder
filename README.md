@@ -20,6 +20,11 @@ How to use Chartbuilder
 ------------------------
 ###Getting started
 1. [Download source](https://github.com/Quartz/Chartbuilder/archive/master.zip) (and unzip)
+2. Run the Chartbuilder.sh script in the directory (double-clicking on Mac)
+3. A browser window will open on [http://localhost:8000](http://localhost:8000)
+
+Alternatively 
+
 3. from the terminal navigate to the source folder (on a Mac: `cd ~/Downloads/Chartbuilder-master/`) 
 4. run `python -m SimpleHTTPServer`
 5. Open Google Chrome, Apple Safari, or Opera and navigate to [http://localhost:8000/](http://localhost:8000/)
