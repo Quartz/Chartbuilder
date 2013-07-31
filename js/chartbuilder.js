@@ -120,6 +120,8 @@ ChartBuilder = {
 	createTable: function(r,d){
 		$table = $("#dataTable table")
 		$table.text("")
+
+
 		$table.append("<tr><th>"+r[0].join("</th><th>")+"</th></tr>")
 		for (var i=1; i < r.length; i++) {
 			if(r[i]) {
@@ -129,11 +131,24 @@ ChartBuilder = {
 				$("<tr><td>"+r[i].join("</td><td>")+"</td></tr>")
 					.addClass(i%2 == 0? "otherrow":"row")
 					.appendTo($table)
-			}
-			
-				
+			}				
 		};
+
+		// append to 
+		this.outputTableAsHtml($table);
 	},
+
+
+	// table_el is a jQuery element
+	outputTableAsHtml: function(table_el){
+		var html_str = table_el.parent().html();
+		// throw in some sloppy newline subbing
+		html_str = html_str.replace(/(<(?:tr|tbody|thead))/g, "\n$1");
+		$('#table-html').val(html_str);
+	},
+
+
+
 	floatAll: function(a) {
 		for (var i=0; i < a.length; i++) {
 			if(a[i] && a[i].length > 0 && (/[\d\.]+/).test(a[i])) {
