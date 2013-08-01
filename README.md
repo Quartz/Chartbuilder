@@ -14,7 +14,7 @@ What Chartbuilder is not
 
 What Chartbuilder is
 --------------------
-Chartbuilder is the final step in charting. Paste data into it and export an svg or png chart.
+Chartbuilder is the final step in charting. Paste data into it and export an svg or png chart in a style that has been predefined.
 
 How to use Chartbuilder
 ------------------------
