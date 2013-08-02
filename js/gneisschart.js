@@ -428,13 +428,13 @@ var Gneiss = {
 		for (var i = g.yAxis.length - 1; i >= 0; i--){
 			if(first || !g.yAxis[i].line) {
 						g.yAxis[i].line = d3.svg.line();
-						g.yAxis[i].line.y(function(d,j){return d?g.yAxis[yAxisIndex].scale(d):null})
-						g.yAxis[i].line.x(function(d,j){return d?g.xAxis.scale(g.xAxisRef[0].data[j]):null})
+						g.yAxis[i].line.y(function(d,j){return d||d===0?g.yAxis[yAxisIndex].scale(d):null})
+						g.yAxis[i].line.x(function(d,j){return d||d===0?g.xAxis.scale(g.xAxisRef[0].data[j]):null})
 			}
 			else {
 				for (var i = g.yAxis.length - 1; i >= 0; i--){
-					g.yAxis[i].line.y(function(d,j){return d?g.yAxis[yAxisIndex].scale(d):null})
-					g.yAxis[i].line.x(function(d,j){return d?g.xAxis.scale(g.xAxisRef[0].data[j]):null})
+					g.yAxis[i].line.y(function(d,j){return d||d===0?g.yAxis[yAxisIndex].scale(d):null})
+					g.yAxis[i].line.x(function(d,j){return d||d===0?g.xAxis.scale(g.xAxisRef[0].data[j]):null})
 				};
 			}
 
@@ -1096,7 +1096,7 @@ var Gneiss = {
 					.attr("r",4)
 					.attr("transform",function(d,i){
 						yAxisIndex = d3.select(this.parentElement).data()[0].axis;
-							var y = d ? g.yAxis[yAxisIndex].scale(d) : -100;
+							var y = d || d ===0 ? g.yAxis[yAxisIndex].scale(d) : -100;
 							return "translate("+ g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + y + ")";
 						})
 			
@@ -1104,7 +1104,7 @@ var Gneiss = {
 					.duration(500)
 					.attr("transform",function(d,i){
 						yAxisIndex = d3.select(this.parentElement).data()[0].axis;
-							var y = d ? g.yAxis[yAxisIndex].scale(d) : -100;
+							var y = d || d ===0 ? g.yAxis[yAxisIndex].scale(d) : -100;
 							return "translate("+ g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + y + ")";
 						})
 			
