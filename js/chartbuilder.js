@@ -525,12 +525,10 @@ ChartBuilder = {
 			ChartBuilder.inlineAllStyles();
 		},
 		axis_min_change: function(index,that) {
-			var val = $(that).val()
-			var val = parseFloat(val)
-			if(val == NaN) {
-				val == null
+			var val = parseFloat($(that).val())
+			if(isNaN(val)) {
+				val = null
 			}
-
 			chart.g.yAxis[index].domain[0] = val;
 			chart.setYScales();
 			ChartBuilder.redraw()
