@@ -55,10 +55,6 @@ table {
   margin: 0 1em;
 }
 
-#cbHeader {
-  
-}
-
 #interactiveContent {
 	width: 100%;
   margin: 0;
@@ -78,6 +74,10 @@ table {
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
 	border-left: 1px dashed #666666;
+}
+
+#leftColumn .cbInner {
+  margin-top: 1em;
 }
 
 #rightColumn .cbInner {
@@ -163,6 +163,7 @@ textarea {
   width: 90%;
 	font-size: .85em;
 	overflow-x: scroll;
+	border: 1px solid #ccc;
 }
 
 #dataTable th {
