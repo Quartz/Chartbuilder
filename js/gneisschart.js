@@ -16,6 +16,8 @@ var yAxisIndex
 //add prepend ability
 Element.prototype.prependChild = function(child) { this.insertBefore(child, this.firstChild); };
 
+Date.setLocale('fr');
+
 //A default configuration 
 //Should change to more d3esque methods e.g. http://bost.ocks.org/mike/chart/
 var chartConfig = {
@@ -92,33 +94,41 @@ var chartConfig = {
 }
 
 var Gneiss = {
-	longMonths: ["January","February","March","April","May","June","July","August","September","October","November","December"],
-	shortMonths: ["Jan.","Feb.","March","April","May","June","July","Aug.","Sept.","Oct.","Nov.","Dec."],
 	dateParsers: {
 		"mmddyyyy": function(d) {return [d.getMonth()+1,d.getDate(),d.getFullYear()].join("/")},
 		"ddmmyyyy": function(d) {return [d.getDate(),d.getMonth()+1,d.getFullYear()].join("/")},
 		"mmdd": function(d) {return [d.getMonth()+1,d.getDate()].join("/")},
 		"Mdd": function(d){
-			return Gneiss.shortMonths[d.getMonth()] +" "+ Number(d.getDate())
+			var g = d.getMonth()+1;
+			if(g == 5){
+				return d.format('{Mon}') +" "+ Number(d.getDate())
+			} 
+			else { 
+				return d.format('{Mon}.') +" "+ Number(d.getDate())
+			}
 		},
 		"mmyy": function(d) {return [d.getMonth()+1,String(d.getFullYear()).split("").splice(2,2).join("")].join("/")},
 		"yy": function(d) {return "’"+String(d.getFullYear()).split("").splice(2,2).join("")},
 		"yyyy": function(d) {return d.getFullYear()},
 		"MM": function(d) {
-			if(d.getMonth() == 0) {
-				return d.getFullYear();
+			var g = d.getMonth()+1;
+			if(g == 1) {
+				return d.getFullYear()
 			}
 			else {
-				return Gneiss.longMonths[d.getMonth()]
+				return d.format('{Month}')
 			}
-			
 		},
 		"M": function(d) {	
-			if(d.getMonth() == 0){
+			var g = d.getMonth()+1;
+			if(g == 1){
 				return "’"+String(d.getFullYear()).split("").splice(2,2).join("")
 			} 
+			else if(g == 5){ 
+				return d.format('{Mon}')
+			}
 			else { 
-				return Gneiss.shortMonths[d.getMonth()]
+				return d.format('{Mon}.')
 			}
 		},
 		"hmm": function(d) {var hours = d.getHours(), min = d.getMinutes(); hours = hours==0 ? 12 : hours ; return (hours > 12 ? hours-12 : hours) + ":" + (min < 10 ? "0"+min : min)},
@@ -1292,6 +1302,7 @@ var Gneiss = {
 		/*
 			Nothing yet
 		*/
+		Date.setLocale(fr);
 		return this
 	},
 	updateSeries: function() {
