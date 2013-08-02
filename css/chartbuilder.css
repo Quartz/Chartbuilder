@@ -1,27 +1,12 @@
+/**
+ * Main CSS for ChartBuiler
+ */
+
 @import url(http://fonts.googleapis.com/css?family=Cutive);
 
-#chartOptions input,
-input[type="text"],
-select {
-	display: block;
-	margin-bottom: 5px;
-	width: 100%;
-	font-family: 'PTSerif';
-	color: #666666;
-}
-
-input {
-	border: 1px solid #ccc;
-}
-
-input[type="text"] {
-	padding-left: 5px;
-}
-
-select.typePicker  {
-	width: 50%;
-}
-
+/**
+ * General
+ */
 body {
 	overflow-y: scroll;
 	overflow-x: hidden;
@@ -29,78 +14,124 @@ body {
 }
 
 cite {
-	font-size: 10px;
+	font-size: .85em;
 	color: #999;
-	margin-bottom: 5px;
-	line-height: 12px;
-	display:block;
+	margin-bottom: 1em;
+	line-height: 1em;
+	display: block;
+}
+
+h1 {
+	font-size: 2em;
+	line-height: 1.5em;
 }
 
 h2 {
-	margin: 0px;
-	font-size: 18px;
+	font-size: 1.5em;
+	line-height: 1.5em;
+	margin-top: 0;
 }
 
-h2:not(:first-child) {
-	margin-top: 20px;
+h3 {
+	font-size: 1.25em;
 }
 
 h4 {
-	font-size: 14px;
-	margin: 0px;
-	margin-bottom: 6px;
+	font-size: 1em;
 }
 
+table {
+  width: 100%;
+}
+
+.hide {
+  display: none;
+}
+ 
+/**
+ * Layout
+ */
+.cbInner {
+  margin: 0 1em;
+}
+
+#cbHeader {
+  
+}
 
 #interactiveContent {
-	margin-top: 5px;
-	margin-left: auto;
-	margin-right: auto;
-	width: 3000px;
-	padding: 25px;
+	width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-#interactiveContent .cbColumn{
-	float:left;
+#leftColumn {
+	width: 70%;
+	float: left;
+	min-height: 5em;
 }
 
-#interactiveContent #leftColumn {
-	width: 620px;
-	height: 1000px;
+#rightColumn {
+  width: 30%;
+	float: left;
 }
 
-#interactiveContent #rightColumn {
-	width:400px
+#rightColumn .cbInner {
+  margin-bottom: 2em;
+}
+
+/**
+ * Chart
+ */
+#staticContainer {
+	position: fixed;
+	margin-top: 0.5;
+	margin-left: 0.5;
 }
 
 #chartContainer {
 	width: 600px;
 	height: 338px;
 	border: 1px solid #efefef;
-	
-}
-
-#staticStuff {
-	position: fixed;
-	margin-top:10px;
-	margin-left:10px;
-}
-
-#rightColumn {
-	margin-top: 10px;
 }
 
 #interactiveContent svg .legendItem text {
 	cursor: move;
 }
 
-#interactiveContent .interfaceCol {
-	margin: 0 25px;
-	float: left;
-}
-
 #canvas, #favicanvas {
 	display: none;
+}
+
+/**
+ * Form items.
+ */
+input,
+textarea,
+select {
+	display: block;
+	margin-bottom: 1em;
+	width: 90%;
+	font-family: 'PTSerif';
+	color: #666666;
+	border: 1px solid #ccc;
+}
+
+input[type="text"] {
+	padding: .25em .5em;
+}
+
+label {
+	font-family: Arial, "MS Trebuchet", sans-serif;
+	color: #666666;
+	display: block;
+	font-size: 1em;
+	font-weight: bold;
+	margin-bottom: .25em;
+}
+
+textarea {
+  font-size: .75em;
 }
 
 .input-box {
@@ -108,19 +139,16 @@ h4 {
 	overflow: scroll;
 }
 
-#datainput {
-	margin: 18px 0;
+#rightColumn cite {
+  margin-top: -.85em;
 }
 
+/**
+ * Data input
+ */
 #datainput textarea,
-textarea#table-html {
-	width: 100%;
-	height: 100%;
+#datainput table {
 	font-family: Monaco, sans-serif;
-	font-size: 10px;
-	box-sizing:border-box;
-	-moz-box-sizing:border-box; /* Firefox */
-	-webkit-box-sizing:border-box; /* Safari */
 }
 
 #dataTable .otherrow {
@@ -128,22 +156,56 @@ textarea#table-html {
 }
 
 #dataTable {
-	width: 600px;
-	font-family: Monaco, sans-serif;
-	font-size: 10px;
+  width: 90%;
+	font-size: .85em;
 	overflow-x: scroll;
+}
+
+#dataTable th {
+	font-weight: bold;
 }
 
 #dataTable td {
 	text-align: center;
-	padding: 2px 3px;
+	padding: .25em .5em;
 }
 
-#interactiveContent .hide {
-	display: none;
+/**
+ * Chart options
+ */
+
+
+/**
+ * Series items
+ */
+#seriesItems {
+	margin-bottom: 1em;
 }
 
-#interactiveContent .updateButton {
+#seriesItems .seriesItemGroup input, 
+#seriesItems .seriesItemGroup select,
+#seriesItems .seriesItemGroup .colorPicker-picker {
+	float: left;
+	margin-left: .5em;
+	width: 5%;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+#seriesItems .seriesItem p {
+	margin: 0;
+	margin-left: .5em;
+}
+
+#seriesItems select.typePicker  {
+	width: 50%;
+}
+ 
+/**
+ * Export/update buttons
+ */
+.updateButton {
 	margin-top: 20px;
 	clear: both;
 	cursor: pointer;
@@ -151,7 +213,7 @@ textarea#table-html {
 	height: 30px;
 }
 
-#interactiveContent .updateButton p {
+.updateButton p {
 	font-family: Arial, "MS Trebuchet", sans-serif;
 	padding: 5px;
 	background-color: #999;
@@ -162,38 +224,10 @@ textarea#table-html {
 	border-radius: 4px;
 }
 
-#interactiveContent .seriesItem {
-	margin-bottom: 12px;
-}
-
-#interactiveContent label {
-	font-family: Arial, "MS Trebuchet", sans-serif;
-	color: #666666;
-	display: block;
-	font-size: 12px;
-	font-weight: bold;
-}
-
-#interactiveContent .seriesItemGroup input, 
-#interactiveContent .seriesItemGroup select,
-#interactiveContent .seriesItemGroup .colorPicker-picker {
-	float: left;
-	margin-right: 5px;
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-}
-
-#interactiveContent .seriesItem label {
-	margin: 6px 3px 0 6px;
-} 
-
-#interactiveContent .seriesItem p {
-	margin: 0px;
-	margin-left: 5px;
+.downloadLinks {
+  margin-bottom: 1em;
 }
 
 a.downloadLink {
-	line-height: 24px;
+	line-height: 2em;
 }
-
