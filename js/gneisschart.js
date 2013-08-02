@@ -107,6 +107,15 @@ var Gneiss = {
 				return d.format('{Mon}.') +" "+ Number(d.getDate())
 			}
 		},
+		"ddM": function(d){
+			var g = d.getMonth()+1;
+			if(g == 5){
+				return Number(d.getDate()) +" "+ d.format('{mon}')
+			} 
+			else { 
+				return Number(d.getDate()) +" "+ d.format('{mon}.')
+			}
+		},
 		"mmyy": function(d) {return [d.getMonth()+1,String(d.getFullYear()).split("").splice(2,2).join("")].join("/")},
 		"yy": function(d) {return "’"+String(d.getFullYear()).split("").splice(2,2).join("")},
 		"yyyy": function(d) {return d.getFullYear()},
