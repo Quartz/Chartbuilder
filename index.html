@@ -127,9 +127,18 @@
 		<script src="js/vendor/sugar-1.3.9-custom.min.js"></script>
 		<script src="js/gneisschart.js" charset="utf-8"></script>
 		<script src="js/chartbuilder.js"></script>
-		<script src="config/default_config.js"></script>
 
 		<script src="js/vendor/canvg.js"></script>
 		<script src="js/vendor/rgbcolor.js" charset="utf-8"></script>
+		
+		<script type="text/javascript">
+		  (function() {
+		    // This starts Chartbuilder and can be passed a configuration
+		    // object.  See the Gneiss charting options.
+  		  ChartBuilder.start({
+    		  
+  		  });
+		  })();
+		</script>
 	</body>
 </html>
