@@ -608,12 +608,7 @@ $(document).ready(function() {
 	})
 	
 	$("#csvInput").bind("paste", function(e) {
-		if($("#right_axis_max").val().length == 0 && $("#right_axis_min").val().length == 0) {
-			for (var i = chart.g.yAxis.length - 1; i >= 0; i--){
-				chart.g.yAxis[i].domain = [null,null];
-			};
-		}
-		
+		//do nothing special
 	})
 	
 	/*
@@ -629,6 +624,14 @@ $(document).ready(function() {
 			//cache the the raw textarea value
 			ChartBuilder.curRaw = $(this).val()
 			
+			if($("#right_axis_max").val().length == 0 && $("#right_axis_min").val().length == 0) {
+					chart.g.yAxis[0].domain = [null,null];
+			}
+			
+			if(chart.g.yAxis.length > 1 && $("#left_axis_max").val().length == 0 && $("#left_axis_min").val().length == 0) {
+					chart.g.yAxis[1].domain = [null,null];
+			}
+			
 			var newData = ChartBuilder.getNewData()
 			
 			chart.g.series.unshift(chart.g.xAxisRef)
@@ -636,7 +639,7 @@ $(document).ready(function() {
 			
 			if(newData.datetime) {
 				chart.g.xAxis.type = "date";
-				chart.g.xAxis.formatter = "Mdd"
+				chart.g.xAxis.formatter = chart.g.xAxis.formatter?chart.g.xAxis.formatter:"Mdd";
 			}
 			else {
 				chart.g.xAxis.type = "ordinal";
