@@ -95,7 +95,8 @@ var Gneiss = {
 	longMonths: ["January","February","March","April","May","June","July","August","September","October","November","December"],
 	shortMonths: ["Jan.","Feb.","March","April","May","June","July","Aug.","Sept.","Oct.","Nov.","Dec."],
 	dateParsers: {
-		"mmddyyyy": function(d) {return [d.getMonth()+1,d.getDate(),d.getFullYear()].join("/");},
+		"mmddyyyy": function(d) {return [d.getMonth()+1,d.getDate(),d.getFullYear()].join("/")},
+		"ddmmyyyy": function(d) {return [d.getDate(),d.getMonth()+1,d.getFullYear()].join("/")},
 		"mmdd": function(d) {return [d.getMonth()+1,d.getDate()].join("/")},
 		"Mdd": function(d){
 			return Gneiss.shortMonths[d.getMonth()] +" "+ Number(d.getDate())
