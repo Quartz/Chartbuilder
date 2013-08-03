@@ -285,3 +285,4 @@ function RGBColor(color_string)
     }
 
 }
+
