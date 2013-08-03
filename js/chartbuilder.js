@@ -1,13 +1,11 @@
 var chart;
 ChartBuilder = {
-	allColors: ["ff4cf4","ffb3ff","e69ce6","cc87cc","b373b3","995f99","804c80","665266", //purples
-				"158eff","99cdff","9cc2e6","87abcc","7394b3","5f7d99","466780","525c66", //blues
-				"000000","f2f2f2","e6e6e6","cccccc","b3b3b3","999999","808080","666666", //grays
-				"15ff67","b3ffcc","9ce6b5","87cc9e","73b389","5f9973","4c805d","526659", //greens
-				"FFFF03","fbffb3","e2e69c","c9cc87","b0b373","96995F","7e804c","656652", //yellows
-				"FF4200","ffb899","e6b39c","cc9c87","b38673","99715f","805c4c","665852", //oranges
-				"FF005C","ff99b9","e69cb3","cc879d","b37387","995f71","804c5d","665258"  //reds
-				],
+	allColors: ["BF0053","FF70B0","E15D98","C44B81","A63869","882551","6B133A","4D0022",
+						"BF600A","FFC07E","E1A76A","C48D55","A67341","885A2D","6B4118","4D2704",
+						"BFAA00","FFF270","E1D55D","C4B84B","A69C38","887F25","6B6213","4D4500",
+						"00BFA5","70FFF7","5DE1D9","4BC4BC","38A69E","258880","136B63","004D45",
+						"006DBF","70B8FF","5DA1E1","4B89C4","3871A6","255A88","13436B","002B4D",
+						"9300BF","E770FF","CB5DE1","AE4BC4","9238A6","752588","59136B","3C004D"],
 	curRaw: "",
 	getNewData: function() {
 		
@@ -553,201 +551,246 @@ ChartBuilder = {
 	}
 }
 
-$(document).ready(function() {
-	
-	chartConfig.colors = []
-	for (var i=0; i < ChartBuilder.allColors.length; i++) {
-		chartConfig.colors[i] = "#"+ ChartBuilder.allColors[i]
-	}
-	
-	//construct a Gneisschart using default data
-	//this should change to be more like this http://bost.ocks.org/mike/chart/
-	chart = Gneiss.build(chartConfig)
-	
-	//scale it up so it looks good on retina displays
-	$("#chart").attr("transform","scale(2)")
-	
-	ChartBuilder.redraw()
-	ChartBuilder.inlineAllStyles();
-	
-	//populate the input with the data that is in the chart
-	$("#csvInput").val(function() {
-		var val = ""
-		for (var i=0; i < chart.g.series.length; i++) {
-			val += chart.g.series[i].name 
-			val += (i<chart.g.series.length-1) ? "\t" : "\n"
-		};
-		for (var j=0; j < chart.g.series[0].data.length; j++) {
-			for (var i=0; i < chart.g.series.length; i++) {
-				val += chart.g.series[i].data[j] 
-				val += (i<chart.g.series.length-1) ? "\t" : "\n"
-			};
-		};
-		return val
-	})
-	
-	//load previously made charts
-	var savedCharts = ChartBuilder.getLocalCharts();
-	var chartSelect = d3.select("#previous_charts")
-					.on("change",function() {
-						ChartBuilder.loadLocalChart(d3.select(this.selectedOptions[0]).data()[0])
-					})
-	
-	chartSelect.selectAll("option")
-			.data(savedCharts)
-			.enter()
-			.append("option")
-			.text(function(d){return d.name?d.name:"Untitled Chart"})
+// Overwrite Gneiss yaxis formating
+Gneiss.customYAxisFormat = function(axisGroup,i) {
+	var g = this.g
+	axisGroup.selectAll("g")
+		.each(function(d,j) {
+			//create an object to store axisItem info
+			var axisItem = {}
 			
-	
-	$("#createImageButton").click(function() {
-		ChartBuilder.inlineAllStyles();
-		ChartBuilder.createChartImage();
-	})
-	
-	$("#csvInput").bind("paste", function(e) {
-		//do nothing special
-	})
-	
-	/*
-	//
-	// add interactions to chartbuilder interface
-	//
-	*/
-	
-	$("#csvInput").keyup(function() {
-		//check if the data is different
-		if( $(this).val() != ChartBuilder.curRaw) {
+			//store the position of the axisItem
+			//(figure it out by parsing the transfrom attribute)
+			axisItem.y = parseFloat(d3.select(this)
+				.attr("transform")
+					.split(")")[0]
+						.split(",")[1]
+				)
 			
-			//cache the the raw textarea value
-			ChartBuilder.curRaw = $(this).val()
-			
-			if($("#right_axis_max").val().length == 0 && $("#right_axis_min").val().length == 0) {
-					chart.g.yAxis[0].domain = [null,null];
-			}
-			
-			if(chart.g.yAxis.length > 1 && $("#left_axis_max").val().length == 0 && $("#left_axis_min").val().length == 0) {
-					chart.g.yAxis[1].domain = [null,null];
-			}
-			
-			var newData = ChartBuilder.getNewData()
-			
-			chart.g.series.unshift(chart.g.xAxisRef)
-			newData = ChartBuilder.mergeData(newData)
-			
-			if(newData.datetime) {
-				chart.g.xAxis.type = "date";
-				chart.g.xAxis.formatter = chart.g.xAxis.formatter?chart.g.xAxis.formatter:"Mdd";
-			}
-			else {
-				chart.g.xAxis.type = "ordinal";
-			}
-			chart.g.xAxisRef = [newData.data.shift()]
-			
-			chart.g.series=newData.data
-			chart.setPadding();
-			
-			ChartBuilder.setChartArea()
-			
-			chart.setYScales()
-				.setXScales()
-				.setLineMakers();
-				
-			ChartBuilder.redraw();
-			ChartBuilder.inlineAllStyles();
-		}
+			//store the text element of the axisItem
+			//align the text right position it on top of the line
+			axisItem.text = d3.select(this).select("text")
+				.attr("text-anchor",i==0?"end":"start")
+				.attr("fill",i==0?"#666666":g.yAxis[i].color)
+				.attr("x",function(){var elemx = Number(d3.select(this).attr("x")); return i==0?elemx:elemx+4})
+				.attr("y",-9)
+			})
+	this.g = g;
+}
 
-	}).keyup()
-	
-	$("#right_axis_prefix").keyup(function() {
-		ChartBuilder.actions.axis_prefix_change(0,this)
-	})
-	
-	$("#right_axis_suffix").keyup(function() {
-		ChartBuilder.actions.axis_suffix_change(0,this)
-	})
-	
-	$("#right_axis_tick_num").change(function() {
-		ChartBuilder.actions.axis_tick_num_change(0,this)
-	})
-	
-	$("#right_axis_max").keyup(function() {
-		ChartBuilder.actions.axis_max_change(0,this)
-	})
-	
-	$("#right_axis_min").keyup(function() {
-		ChartBuilder.actions.axis_min_change(0,this)
-	})
-	
-	$("#right_axis_tick_override").keyup(function() {
-		ChartBuilder.actions.axis_tick_override_change(0,this)
-	})
-	
-	$("#x_axis_tick_num").change(function() {
-		chart.g.xAxis.ticks = parseInt($(this).val())
-		ChartBuilder.redraw()
-		ChartBuilder.inlineAllStyles();
-	})
-	
-	$("#left_axis_prefix").keyup(function() {
-		ChartBuilder.actions.axis_prefix_change(1,this)
-	})
+// Create default config for chartbuilder
+ChartBuilder.getDefaultConfig = function() {
+  var chartConfig = {};
+  
+  chartConfig.colors = ["#BF0053","#FF70B0","#E15D98","#C44B81","#A63869","#882551","#6B133A","#4D0022",
+						"#BF600A","#FFC07E","#E1A76A","#C48D55","#A67341","#885A2D","#6B4118","#4D2704",
+						"#BFAA00","#FFF270","#E1D55D","#C4B84B","#A69C38","#887F25","#6B6213","#4D4500",
+						"#00BFA5","#70FFF7","#5DE1D9","#4BC4BC","#38A69E","#258880","#136B63","#004D45",
+						"#006DBF","#70B8FF","#5DA1E1","#4B89C4","#3871A6","#255A88","#13436B","#002B4D",
+						"#9300BF","#E770FF","#CB5DE1","#AE4BC4","#9238A6","#752588","#59136B","#3C004D"]
+  chartConfig.creditline = "Made with Chartbuilder";
+  
+  return chartConfig;
+}
 
-	$("#left_axis_suffix").keyup(function() {
-		ChartBuilder.actions.axis_suffix_change(1,this)
-	})
+// Starts applicatoin given config object
+ChartBuilder.start = function(config) {
 
-	$("#left_axis_tick_num").change(function() {
-		ChartBuilder.actions.axis_tick_num_change(1,this)
-	})
+  // Create config
+  var chartbuilderDefaultConfig = ChartBuilder.getDefaultConfig();
+  var chartConfig = $.extend(defaultGneissChartConfig, chartbuilderDefaultConfig, config);
 
-	$("#left_axis_max").keyup(function() {
-		ChartBuilder.actions.axis_max_change(1,this)
-	})
-
-	$("#left_axis_min").keyup(function() {
-		ChartBuilder.actions.axis_min_change(1,this)
-	})
-
-	$("#left_axis_tick_override").keyup(function() {
-		ChartBuilder.actions.axis_tick_override_change(1,this)
-	})
-	
-	$("#x_axis_date_format").change(function() {
-		var val = $(this).val()
-		chart.g.xAxis.formatter = val
-		ChartBuilder.redraw()
-		ChartBuilder.inlineAllStyles();
-	})
-	
-	$("#creditLine").keyup(function() {
-		var val = $(this).val()
-		chart.g.creditline = val
-		chart.g.creditLine.text(chart.g.creditline)
-	})
-	
-	$("#sourceLine").keyup(function() {
-		var val = $(this).val()
-		chart.g.sourceline = val
-		chart.g.sourceLine.text(chart.g.sourceline)
-	})
-	
-	$("#chart_title").keyup(function() {
-		var val = $(this).val()
-		chart.g.title = val
-		chart.resize()
-			.setPadding();
-		ChartBuilder.setChartArea()
-		chart.setYScales()
-			.redraw();
-		ChartBuilder.makeLegendAdjustable()
-		
-		chart.g.titleLine.text(chart.g.title)
-	})
-	
-	$(".downloadLink").click(function() {
-		$(".downloadLink").toggleClass("hide")
-	})
-
-
-})
+  $(document).ready(function() {
+  	
+  	//construct a Gneisschart using default data
+  	//this should change to be more like this http://bost.ocks.org/mike/chart/
+  	chart = Gneiss.build(chartConfig)
+  	
+  	//scale it up so it looks good on retina displays
+  	$("#chart").attr("transform","scale(2)")
+  	
+  	ChartBuilder.redraw()
+  	ChartBuilder.inlineAllStyles();
+  	
+  	//populate the input with the data that is in the chart
+  	$("#csvInput").val(function() {
+  		var val = ""
+  		for (var i=0; i < chart.g.series.length; i++) {
+  			val += chart.g.series[i].name 
+  			val += (i<chart.g.series.length-1) ? "\t" : "\n"
+  		};
+  		for (var j=0; j < chart.g.series[0].data.length; j++) {
+  			for (var i=0; i < chart.g.series.length; i++) {
+  				val += chart.g.series[i].data[j] 
+  				val += (i<chart.g.series.length-1) ? "\t" : "\n"
+  			};
+  		};
+  		return val
+  	})
+  	
+  	//load previously made charts
+  	var savedCharts = ChartBuilder.getLocalCharts();
+  	var chartSelect = d3.select("#previous_charts")
+  					.on("change",function() {
+  						ChartBuilder.loadLocalChart(d3.select(this.selectedOptions[0]).data()[0])
+  					})
+  	
+  	chartSelect.selectAll("option")
+  			.data(savedCharts)
+  			.enter()
+  			.append("option")
+  			.text(function(d){return d.name?d.name:"Untitled Chart"})
+  			
+  	
+  	$("#createImageButton").click(function() {
+  		ChartBuilder.inlineAllStyles();
+  		ChartBuilder.createChartImage();
+  	})
+  	
+  	$("#csvInput").bind("paste", function(e) {
+  		//do nothing special
+  	})
+  	
+  	/*
+  	//
+  	// add interactions to chartbuilder interface
+  	//
+  	*/
+  	
+  	$("#csvInput").keyup(function() {
+  		//check if the data is different
+  		if( $(this).val() != ChartBuilder.curRaw) {
+  			
+  			//cache the the raw textarea value
+  			ChartBuilder.curRaw = $(this).val()
+  			
+  			if($("#right_axis_max").val().length == 0 && $("#right_axis_min").val().length == 0) {
+  					chart.g.yAxis[0].domain = [null,null];
+  			}
+  			
+  			if(chart.g.yAxis.length > 1 && $("#left_axis_max").val().length == 0 && $("#left_axis_min").val().length == 0) {
+  					chart.g.yAxis[1].domain = [null,null];
+  			}
+  			
+  			var newData = ChartBuilder.getNewData()
+  			
+  			chart.g.series.unshift(chart.g.xAxisRef)
+  			newData = ChartBuilder.mergeData(newData)
+  			
+  			if(newData.datetime) {
+  				chart.g.xAxis.type = "date";
+  				chart.g.xAxis.formatter = chart.g.xAxis.formatter?chart.g.xAxis.formatter:"Mdd";
+  			}
+  			else {
+  				chart.g.xAxis.type = "ordinal";
+  			}
+  			chart.g.xAxisRef = [newData.data.shift()]
+  			
+  			chart.g.series=newData.data
+  			chart.setPadding();
+  			
+  			ChartBuilder.setChartArea()
+  			
+  			chart.setYScales()
+  				.setXScales()
+  				.setLineMakers();
+  				
+  			ChartBuilder.redraw();
+  			ChartBuilder.inlineAllStyles();
+  		}
+  
+  	}).keyup()
+  	
+  	$("#right_axis_prefix").keyup(function() {
+  		ChartBuilder.actions.axis_prefix_change(0,this)
+  	})
+  	
+  	$("#right_axis_suffix").keyup(function() {
+  		ChartBuilder.actions.axis_suffix_change(0,this)
+  	})
+  	
+  	$("#right_axis_tick_num").change(function() {
+  		ChartBuilder.actions.axis_tick_num_change(0,this)
+  	})
+  	
+  	$("#right_axis_max").keyup(function() {
+  		ChartBuilder.actions.axis_max_change(0,this)
+  	})
+  	
+  	$("#right_axis_min").keyup(function() {
+  		ChartBuilder.actions.axis_min_change(0,this)
+  	})
+  	
+  	$("#right_axis_tick_override").keyup(function() {
+  		ChartBuilder.actions.axis_tick_override_change(0,this)
+  	})
+  	
+  	$("#x_axis_tick_num").change(function() {
+  		chart.g.xAxis.ticks = parseInt($(this).val())
+  		ChartBuilder.redraw()
+  		ChartBuilder.inlineAllStyles();
+  	})
+  	
+  	$("#left_axis_prefix").keyup(function() {
+  		ChartBuilder.actions.axis_prefix_change(1,this)
+  	})
+  
+  	$("#left_axis_suffix").keyup(function() {
+  		ChartBuilder.actions.axis_suffix_change(1,this)
+  	})
+  
+  	$("#left_axis_tick_num").change(function() {
+  		ChartBuilder.actions.axis_tick_num_change(1,this)
+  	})
+  
+  	$("#left_axis_max").keyup(function() {
+  		ChartBuilder.actions.axis_max_change(1,this)
+  	})
+  
+  	$("#left_axis_min").keyup(function() {
+  		ChartBuilder.actions.axis_min_change(1,this)
+  	})
+  
+  	$("#left_axis_tick_override").keyup(function() {
+  		ChartBuilder.actions.axis_tick_override_change(1,this)
+  	})
+  	
+  	$("#x_axis_date_format").change(function() {
+  		var val = $(this).val()
+  		chart.g.xAxis.formatter = val
+  		ChartBuilder.redraw()
+  		ChartBuilder.inlineAllStyles();
+  	})
+  	
+  	$("#creditLine").keyup(function() {
+  		var val = $(this).val()
+  		chart.g.creditline = val
+  		chart.g.creditLine.text(chart.g.creditline)
+  	})
+  	
+  	$("#sourceLine").keyup(function() {
+  		var val = $(this).val()
+  		chart.g.sourceline = val
+  		chart.g.sourceLine.text(chart.g.sourceline)
+  	})
+  	
+  	$("#chart_title").keyup(function() {
+  		var val = $(this).val()
+  		chart.g.title = val
+  		chart.resize()
+  			.setPadding();
+  		ChartBuilder.setChartArea()
+  		chart.setYScales()
+  			.redraw();
+  		ChartBuilder.makeLegendAdjustable()
+  		
+  		chart.g.titleLine.text(chart.g.title)
+  	})
+  	
+  	$(".downloadLink").click(function() {
+  		$(".downloadLink").toggleClass("hide")
+  	})
+  
+  
+  })
+};
