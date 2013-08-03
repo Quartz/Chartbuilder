@@ -99,8 +99,8 @@ var Gneiss = {
 		"ddmmyyyy": function(d) {return [d.getDate(),d.getMonth()+1,d.getFullYear()].join("/")},
 		"mmdd": function(d) {return [d.getMonth()+1,d.getDate()].join("/")},
 		"Mdd": function(d){
-			var g = d.getMonth()+1;
-			if(g == 5){
+			var month = d.getMonth()+1;
+			if(month == 5){
 				return d.format('{Mon}') +" "+ Number(d.getDate())
 			} 
 			else { 
@@ -108,8 +108,8 @@ var Gneiss = {
 			}
 		},
 		"ddM": function(d){
-			var g = d.getMonth()+1;
-			if(g == 5){
+			var month = d.getMonth()+1;
+			if(month == 5){
 				return Number(d.getDate()) +" "+ d.format('{mon}')
 			} 
 			else { 
@@ -120,8 +120,8 @@ var Gneiss = {
 		"yy": function(d) {return "’"+String(d.getFullYear()).split("").splice(2,2).join("")},
 		"yyyy": function(d) {return d.getFullYear()},
 		"MM": function(d) {
-			var g = d.getMonth()+1;
-			if(g == 1) {
+			var month = d.getMonth()+1;
+			if(month == 1) {
 				return d.getFullYear()
 			}
 			else {
@@ -129,11 +129,11 @@ var Gneiss = {
 			}
 		},
 		"M": function(d) {	
-			var g = d.getMonth()+1;
-			if(g == 1){
+			var month = d.getMonth()+1;
+			if(month == 1){
 				return "’"+String(d.getFullYear()).split("").splice(2,2).join("")
 			} 
-			else if(g == 5){ 
+			else if(month == 5){ 
 				return d.format('{Mon}')
 			}
 			else { 
