@@ -140,7 +140,13 @@ var Gneiss = {
 				return d.format('{Mon}.')
 			}
 		},
-		"hmm": function(d) {var hours = d.getHours(), min = d.getMinutes(); hours = hours==0 ? 12 : hours ; return (hours > 12 ? hours-12 : hours) + ":" + (min < 10 ? "0"+min : min)},
+		"hmm": function(d) {
+			if(Date.getLocale().code == 'en'){
+				return d.format('{12hr}:{mm}')
+			} else {
+				return d.format('{24hr}:{mm}')
+			}
+		},
 	},
 	build: function(config) {
 		/*
