@@ -41,30 +41,23 @@ if (!(window.console && console.log)) {
 
 /**
  * jQuery-csv (jQuery Plugin)
- * version: 0.64 (2012-10-06)
+ * version: 0.71 (2012-11-19)
  *
  * This document is licensed as free software under the terms of the
  * MIT License: http://www.opensource.org/licenses/mit-license.php
  *
  * Acknowledgements:
- * This plugin was originally designed to assist in parsing CSV files loaded
- * from client-side javascript. It's influenced by jQuery.json and the original
- *
- * The original core RegEx comes directly from the following answer posted by a
- * StackOverflow.com user named Ridgerunner.
- * Source:
- * - http://stackoverflow.com/q/8493195/290340
+ * The original design and influence to implement this library as a jquery
+ * plugin is influenced by jquery-json (http://code.google.com/p/jquery-json/).
+ * If you're looking to use native JSON.Stringify but want additional backwards
+ * compatibility for browsers that don't support it, I highly recommend you
+ * check it out.
  *
  * A special thanks goes out to rwk@acm.org for providing a lot of valuable
  * feedback to the project including the core for the new FSM
- * (Finite State Machine) parser. If you're looking for a stable TSV parser
- * take a look at jquery-tsv (http://code.google.com/p/jquery-tsv/).
- *
- * Experimental:
- * A new line splitting function has been added that can properly handle values
- * that contain newlines. To enable it, set the experimental parameter to true
- * in the options.
-
+ * (Finite State Machine) parsers. If you're looking for a stable TSV parser
+ * be sure to take a look at jquery-tsv (http://code.google.com/p/jquery-tsv/).
+ 
  * For legal purposes I'll include the "NO WARRANTY EXPRESSED OR IMPLIED.
  * USE AT YOUR OWN RISK.". Which, in 'layman's terms' means, by using this
  * library you are accepting responsibility if it breaks your code.
@@ -75,16 +68,18 @@ if (!(window.console && console.log)) {
  * Copyrighted 2012 by Evan Plaice.
  */
 
-RegExp.escape=function(d){return d.replace(/[-\/\\^$*+?.()|[\]{}]/g,"\\$&")};
-(function(d){d.csv={defaults:{separator:",",delimiter:'"',escaper:'"',skip:0,headerLine:1,dataLine:2},hooks:{castToScalar:function(e){var a=/^[\d\.]+$/,c=/\./;if(e.length)if(isNaN(e))return e;else if(a.test(e))return c.test(e)?parseFloat(e):parseInt(e)}},splitLines:function(e){function a(){g.push(b);b="";c=0}var c=0,b="",g=[];e.replace(/(\"|\n|\r|[^\"\r\n]+)/gm,function(f){switch(c){case 0:if(f==='"')c=1;else if(f==="\n")a();else if(!/^\r$/.test(f)){if(b)throw Error("Illegal initial state");b=f;c=
-3}break;case 1:if(f==='"')c=2;else{b+=f;c=1}break;case 2:if(f==='"'&&b.substr(b.length-1)==='"'){b+=f;c=1}else if(f===","){b+=f;c=0}else if(f==="\n")a();else if(f!=="\r")throw Error("Illegal state");break;case 3:if(m1==='"')throw Error("Unquoted delimiter found in string");else if(f==="\n")a();else if(f!=="\r")throw Error("Two values, no separator?");break;default:throw Error("Unknown state");}return""});c!=0&&a();return g},toArray:function(e,a,c){a=a!==undefined?a:{};var b={};b.callback=c!==undefined&&
-typeof c==="function"?c:false;b.separator="separator"in a?RegExp.escape(a.separator):d.csv.defaults.separator;b.delimiter="delimiter"in a?RegExp.escape(a.delimiter):d.csv.defaults.delimiter;b.escaper="escaper"in a?RegExp.escape(a.escaper):d.csv.defaults.escaper;if(a.reValue===undefined){c=/(?!\s*$)\s*(?:Y([^YZ]*(?:ZY[^YZ]*)*)Y|([^XYZ\s]*(?:\s+[^XYZ\s]+)*))\s*(?:X|$)/;c=c.source;c=c.replace(/X/g,b.separator);c=c.replace(/Y/g,b.delimiter);c=c.replace(/Z/g,b.escaper);a.reValue=RegExp(c,"g")}if(a.reUnescape===
-undefined){var g=/ED/;c=g.source;c=c.replace(/E/,b.escaper);c=c.replace(/D/,b.delimiter);a.reUnescape=RegExp(c,"g")}if(a.reEmptyLast===undefined){var f=/S\s*$/;a.reEmptyLast=RegExp(f.source.replace(/S/,b.separator))}if(e==="")if(b.callback)b.callback("",h);else return h;c=a.reValue;g=a.reUnescape;f=a.reEmptyLast;var h=[];e.replace(c,function(j,k,l){if(typeof k==="string"&&k.length){j=k.replace(g,b.delimiter);a.onParseValue===undefined?h.push(j):h.push(a.onParseValue(j))}else if(typeof k==="string"&&
-k.length===0){j="";a.onParseValue===undefined?h.push(j):h.push(a.onParseValue(j))}else if(l!==undefined){j=l;a.onParseValue===undefined?h.push(j):h.push(a.onParseValue(j))}return""});f.test(e)&&h.push("");if(b.callback)b.callback("",h);else return h},toArrays:function(e,a,c){a=a!==undefined?a:{};var b={};b.callback=c!==undefined&&typeof c==="function"?c:false;b.separator="separator"in a?a.separator:d.csv.defaults.separator;b.delimiter="delimiter"in a?a.delimiter:d.csv.defaults.delimiter;b.escaper=
-"escaper"in a?a.escaper:d.csv.defaults.escaper;b.skip="skip"in a?a.skip:d.csv.defaults.skip;b.experimental="experimental"in a?a.experimental:false;c=[];var g=[];a={delimiter:b.delimiter,separator:b.separator,escaper:b.escaper,onParseValue:a.onParseValue};c=b.experimental?d.csv.splitLines(e,b.delimiter):e.split(/\r\n|\r|\n/g);for(var f in c)if(!(f<b.skip)){e=d.csv.toArray(c[f],a);g.push(e)}if(b.callback)b.callback("",g);else return g},toObjects:function(e,a,c){a=a!==undefined?a:{};var b={};b.callback=
-c!==undefined&&typeof c==="function"?c:false;b.separator="separator"in a?a.separator:d.csv.defaults.separator;b.delimiter="delimiter"in a?a.delimiter:d.csv.defaults.delimiter;b.escaper="escaper"in a?a.escaper:d.csv.defaults.escaper;b.headerLine="headerLine"in a?a.headerLine:d.csv.defaults.headerLine;b.dataLine="dataLine"in a?a.dataLine:d.csv.defaults.dataLine;b.experimental="experimental"in a?a.experimental:false;c=[];var g=[];a={delimiter:b.delimiter,separator:b.separator,escaper:b.escaper,onParseValue:a.onParseValue};
-c=b.experimental?this.splitLines(e,b.delimiter):e.split(/\r\n|\r|\n/g);e=d.csv.toArray(c[b.headerLine-1]);for(var f in c)if(!(f<b.dataLine-1)){var h=d.csv.toArray(c[f],a),j={},k;for(k in e)j[e[k]]=h[k];g.push(j)}if(b.callback)b.callback("",g);else return g},fromArrays:function(e,a,c){a=a!==undefined?a:{};var b={};b.callback=c!==undefined&&typeof c==="function"?c:false;b.separator="separator"in a?a.separator:d.csv.defaults.separator;b.delimiter="delimiter"in a?a.delimiter:d.csv.defaults.delimiter;
-b.escaper="escaper"in a?a.escaper:d.csv.defaults.escaper;b.experimental="experimental"in a?a.experimental:false;if(!b.experimental)throw Error("not implemented");a=[];for(i in e)a.push(e[i]);if(b.callback)b.callback("",a);else return a},fromObjects2CSV:function(e,a,c){a=a!==undefined?a:{};var b={};b.callback=c!==undefined&&typeof c==="function"?c:false;b.separator="separator"in a?a.separator:d.csv.defaults.separator;b.delimiter="delimiter"in a?a.delimiter:d.csv.defaults.delimiter;b.escaper="escaper"in
-a?a.escaper:d.csv.defaults.escaper;b.experimental="experimental"in a?a.experimental:false;if(!b.experimental)throw Error("not implemented");a=[];for(i in e)a.push(arrays[i]);if(b.callback)b.callback("",a);else return a}};d.csvEntry2Array=d.csv.toArray;d.csv2Array=d.csv.toArrays;d.csv2Dictionary=d.csv.toObjects})(jQuery);
-
-
+RegExp.escape=function(b){return b.replace(/[-\/\\^$*+?.()|[\]{}]/g,"\\$&")};
+(function(b){b.csv={defaults:{separator:",",delimiter:'"',headers:!0},hooks:{castToScalar:function(f,a){if(isNaN(f))return f;if(/\./.test(f))return parseFloat(f);var e=parseInt(f);return isNaN(e)?null:e}},parsers:{parse:function(f,a){function e(){m=0;h="";if(a.start&&a.state.rowNum<a.start)d=[];else{if(void 0===a.onParseEntry)g.push(d);else{var c=a.onParseEntry(d,a.state);!1!==c&&g.push(c)}d=[];a.end&&a.state.rowNum>=a.end&&(p=!0)}a.state.rowNum++;a.state.colNum=1}function c(){if(void 0===a.onParseValue)d.push(h);
+else{var c=a.onParseValue(h,a.state);!1!==c&&d.push(c)}h="";m=0;a.state.colNum++}var b=a.separator,l=a.delimiter;a.state.rowNum||(a.state.rowNum=1);a.state.colNum||(a.state.colNum=1);var g=[],d=[],m=0,h="",p=!1,n=RegExp.escape(b),r=RegExp.escape(l),q=/(D|S|\n|\r|[^DS\r\n]+)/,q=q.source,q=q.replace(/S/g,n),q=q.replace(/D/g,r),q=RegExp(q,"gm");f.replace(q,function(d){if(!p)switch(m){case 0:if(d===b){h+="";c();break}if(d===l){m=1;break}if("\n"===d){c();e();break}if(/^\r$/.test(d))break;h+=d;m=3;break;
+case 1:if(d===l){m=2;break}h+=d;m=1;break;case 2:if(d===l){h+=d;m=1;break}if(d===b){c();break}if("\n"===d){c();e();break}if(/^\r$/.test(d))break;throw Error("CSVDataError: Illegal State [Row:"+a.state.rowNum+"][Col:"+a.state.colNum+"]");case 3:if(d===b){c();break}if("\n"===d){c();e();break}if(/^\r$/.test(d))break;if(d===l)throw Error("CSVDataError: Illegal Quote [Row:"+a.state.rowNum+"][Col:"+a.state.colNum+"]");throw Error("CSVDataError: Illegal Data [Row:"+a.state.rowNum+"][Col:"+a.state.colNum+
+"]");default:throw Error("CSVDataError: Unknown State [Row:"+a.state.rowNum+"][Col:"+a.state.colNum+"]");}});0!==d.length&&(c(),e());return g},splitLines:function(b,a){function e(){g=0;if(a.start&&a.state.rowNum<a.start)d="";else{if(void 0===a.onParseEntry)l.push(d);else{var c=a.onParseEntry(d,a.state);!1!==c&&l.push(c)}d="";a.end&&a.state.rowNum>=a.end&&(m=!0)}a.state.rowNum++}var c=a.separator,k=a.delimiter;a.state.rowNum||(a.state.rowNum=1);var l=[],g=0,d="",m=!1,h=RegExp.escape(c),p=RegExp.escape(k),
+n=/(D|S|\n|\r|[^DS\r\n]+)/,n=n.source,n=n.replace(/S/g,h),n=n.replace(/D/g,p),n=RegExp(n,"gm");b.replace(n,function(b){if(!m)switch(g){case 0:if(b===c){d+=b;g=0;break}if(b===k){d+=b;g=1;break}if("\n"===b){e();break}if(/^\r$/.test(b))break;d+=b;g=3;break;case 1:if(b===k){d+=b;g=2;break}d+=b;g=1;break;case 2:var n=d.substr(d.length-1);if(b===k&&n===k){d+=b;g=1;break}if(b===c){d+=b;g=0;break}if("\n"===b){e();break}if("\r"===b)break;throw Error("CSVDataError: Illegal state [Row:"+a.state.rowNum+"]");
+case 3:if(b===c){d+=b;g=0;break}if("\n"===b){e();break}if("\r"===b)break;if(b===k)throw Error("CSVDataError: Illegal quote [Row:"+a.state.rowNum+"]");throw Error("CSVDataError: Illegal state [Row:"+a.state.rowNum+"]");default:throw Error("CSVDataError: Unknown state [Row:"+a.state.rowNum+"]");}});""!==d&&e();return l},parseEntry:function(b,a){function e(){if(void 0===a.onParseValue)l.push(d);else{var c=a.onParseValue(d,a.state);!1!==c&&l.push(c)}d="";g=0;a.state.colNum++}var c=a.separator,k=a.delimiter;
+a.state.rowNum||(a.state.rowNum=1);a.state.colNum||(a.state.colNum=1);var l=[],g=0,d="";if(!a.match){var m=RegExp.escape(c),h=RegExp.escape(k),p=/(D|S|\n|\r|[^DS\r\n]+)/.source,p=p.replace(/S/g,m),p=p.replace(/D/g,h);a.match=RegExp(p,"gm")}b.replace(a.match,function(b){switch(g){case 0:if(b===c){d+="";e();break}if(b===k){g=1;break}if("\n"===b||"\r"===b)break;d+=b;g=3;break;case 1:if(b===k){g=2;break}d+=b;g=1;break;case 2:if(b===k){d+=b;g=1;break}if(b===c){e();break}if("\n"===b||"\r"===b)break;throw Error("CSVDataError: Illegal State [Row:"+
+a.state.rowNum+"][Col:"+a.state.colNum+"]");case 3:if(b===c){e();break}if("\n"===b||"\r"===b)break;if(b===k)throw Error("CSVDataError: Illegal Quote [Row:"+a.state.rowNum+"][Col:"+a.state.colNum+"]");throw Error("CSVDataError: Illegal Data [Row:"+a.state.rowNum+"][Col:"+a.state.colNum+"]");default:throw Error("CSVDataError: Unknown State [Row:"+a.state.rowNum+"][Col:"+a.state.colNum+"]");}});e();return l}},toArray:function(f,a,e){a=void 0!==a?a:{};var c={};c.callback=void 0!==e&&"function"===typeof e?
+e:!1;c.separator="separator"in a?a.separator:b.csv.defaults.separator;c.delimiter="delimiter"in a?a.delimiter:b.csv.defaults.delimiter;a={delimiter:c.delimiter,separator:c.separator,onParseEntry:a.onParseEntry,onParseValue:a.onParseValue,state:void 0!==a.state?a.state:{}};f=b.csv.parsers.parseEntry(f,a);if(c.callback)c.callback("",f);else return f},toArrays:function(f,a,e){a=void 0!==a?a:{};var c={};c.callback=void 0!==e&&"function"===typeof e?e:!1;c.separator="separator"in a?a.separator:b.csv.defaults.separator;
+c.delimiter="delimiter"in a?a.delimiter:b.csv.defaults.delimiter;e=[];a={delimiter:c.delimiter,separator:c.separator,onParseEntry:a.onParseEntry,onParseValue:a.onParseValue,start:a.start,end:a.end,state:{rowNum:1,colNum:1}};e=b.csv.parsers.parse(f,a);if(c.callback)c.callback("",e);else return e},toObjects:function(f,a,e){a=void 0!==a?a:{};var c={};c.callback=void 0!==e&&"function"===typeof e?e:!1;c.separator="separator"in a?a.separator:b.csv.defaults.separator;c.delimiter="delimiter"in a?a.delimiter:
+b.csv.defaults.delimiter;c.headers="headers"in a?a.headers:b.csv.defaults.headers;a.start="start"in a?a.start:1;c.headers&&a.start++;a.end&&c.headers&&a.end++;var k=[];e=[];a={delimiter:c.delimiter,separator:c.separator,onParseEntry:a.onParseEntry,onParseValue:a.onParseValue,start:a.start,end:a.end,state:{rowNum:1,colNum:1},match:!1};var k=b.csv.parsers.splitLines(f,{delimiter:c.delimiter,separator:c.separator,start:1,end:1,state:{rowNum:1,colNum:1}}),l=b.csv.toArray(k[0],a),k=b.csv.parsers.splitLines(f,
+a);a.state.colNum=1;a.state.rowNum=l?2:1;f=0;for(var g=k.length;f<g;f++){var d=b.csv.toArray(k[f],a),m={},h;for(h in l)m[l[h]]=d[h];e.push(m);a.state.rowNum++}if(c.callback)c.callback("",e);else return e},fromArrays:function(f,a,e){a=void 0!==a?a:{};var c={};c.callback=void 0!==e&&"function"===typeof e?e:!1;c.separator="separator"in a?a.separator:b.csv.defaults.separator;c.delimiter="delimiter"in a?a.delimiter:b.csv.defaults.delimiter;c.escaper="escaper"in a?a.escaper:b.csv.defaults.escaper;c.experimental=
+"experimental"in a?a.experimental:!1;if(!c.experimental)throw Error("not implemented");a=[];for(i in f)a.push(f[i]);if(c.callback)c.callback("",a);else return a},fromObjects2CSV:function(f,a,e){a=void 0!==a?a:{};var c={};c.callback=void 0!==e&&"function"===typeof e?e:!1;c.separator="separator"in a?a.separator:b.csv.defaults.separator;c.delimiter="delimiter"in a?a.delimiter:b.csv.defaults.delimiter;c.experimental="experimental"in a?a.experimental:!1;if(!c.experimental)throw Error("not implemented");
+a=[];for(i in f)a.push(arrays[i]);if(c.callback)c.callback("",a);else return a}};b.csvEntry2Array=b.csv.toArray;b.csv2Array=b.csv.toArrays;b.csv2Dictionary=b.csv.toObjects})(jQuery);
