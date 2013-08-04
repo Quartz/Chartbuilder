@@ -11,6 +11,8 @@ body {
 	overflow-y: scroll;
 	overflow-x: hidden;
 	line-height: 1.1em;
+	font-size: 0.75em;
+	color: #666;
 }
 
 cite {
@@ -62,7 +64,7 @@ table {
 }
 
 #leftColumn {
-	width: 70%;
+	width: 640px;
 	float: left;
 	min-height: 5em;
 }
@@ -84,13 +86,14 @@ table {
   margin-bottom: 2em;
 }
 
+
+
 /**
  * Chart
  */
 #staticContainer {
 	position: fixed;
 	margin-top: 0.5;
-	margin-left: 0.5;
 }
 
 #chartContainer {
@@ -110,6 +113,15 @@ table {
 /**
  * Form items.
  */
+#rightColumn .cbInner .optionGroup {
+	max-width: 200px;
+	float: left;
+}
+
+#rightColumn .cbInner h2 {
+	clear: both;
+}
+
 input,
 textarea,
 select {
@@ -150,6 +162,7 @@ textarea {
 /**
  * Data input
  */
+
 #datainput textarea,
 #datainput table {
 	font-family: Monaco, sans-serif;

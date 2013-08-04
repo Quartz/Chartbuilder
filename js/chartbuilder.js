@@ -749,5 +749,9 @@ $(document).ready(function() {
 		$(".downloadLink").toggleClass("hide")
 	})
 
+	$(window).resize(function(){
+
+		$("#rightColumn").css("width",$(this).width() - 650)
+	}).resize()
 
 })
