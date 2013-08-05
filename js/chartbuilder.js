@@ -592,8 +592,6 @@ $(document).ready(function() {
 		for (var i = 0; i < data.length; i++) {
 			data[i] = data[i].join("\t")
 		}; 
-		
-		console.log(data)
 		return data.join("\n")
 	})
 
