@@ -621,19 +621,24 @@ ChartBuilder.start = function(config) {
   	
   	//populate the input with the data that is in the chart
   	$("#csvInput").val(function() {
-  		var val = ""
-  		for (var i=0; i < chart.g.series.length; i++) {
-  			val += chart.g.series[i].name 
-  			val += (i<chart.g.series.length-1) ? "\t" : "\n"
-  		};
-  		for (var j=0; j < chart.g.series[0].data.length; j++) {
-  			for (var i=0; i < chart.g.series.length; i++) {
-  				val += chart.g.series[i].data[j] 
-  				val += (i<chart.g.series.length-1) ? "\t" : "\n"
-  			};
-  		};
-  		return val
-  	})
+		var data = []
+		var val = ""
+
+		data[0] = chart.g.xAxisRef[0].data
+		data[0].unshift(chart.g.xAxisRef[0].name)
+
+		for (var i = 0; i < chart.g.series.length; i++) {
+			data[i+1] = chart.g.series[i].data
+			data[i+1].unshift(chart.g.series[i].name)
+		};
+
+		data = ChartBuilder.pivotData(data)
+
+		for (var i = 0; i < data.length; i++) {
+			data[i] = data[i].join("\t")
+		}; 
+		return data.join("\n")
+	})
   	
   	//load previously made charts
   	var savedCharts = ChartBuilder.getLocalCharts();
