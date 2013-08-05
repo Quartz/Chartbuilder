@@ -175,20 +175,22 @@ ChartBuilder = {
 		
 		for (var i = document.styleSheets.length - 1; i >= 0; i--){
 			if(document.styleSheets[i].href && document.styleSheets[i].href.indexOf("gneisschart.css") != -1) {
-        if (document.styleSheets[i].rules != undefined) {
-				  chartStyle = document.styleSheets[i].rules 
-        }
-        else {
-          chartStyle = document.styleSheets[i].cssRules
-          }
+				if (document.styleSheets[i].rules != undefined) {
+					chartStyle = document.styleSheets[i].rules 
+				}
+				else {
+					chartStyle = document.styleSheets[i].cssRules
+				}
 			}
 		}
-		for (var i=0; i < chartStyle.length; i++) {
-			selector = chartStyle[i].selectorText;
-			cssText = chartStyle[i].style.cssText;
-			d3.selectAll(selector).attr("style",cssText)
-		};
-
+		if(chartStyle != null && chartStyle != undefined)
+		{
+			for (var i=0; i < chartStyle.length; i++) {
+				selector = chartStyle[i].selectorText;
+				cssText = chartStyle[i].style.cssText;
+				d3.selectAll(selector).attr("style",cssText)
+			};
+		}
 	},
 	createChartImage: function() {
 
