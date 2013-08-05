@@ -10,7 +10,7 @@ ChartBuilder = {
 				],
 	curRaw: "",
 	getNewData: function(csv) {
-        // Split the csv information be lines
+        // Split the csv information by lines
         var csv_array = csv.split("\n");
 
         // Split the first element of the array by the designated separator
@@ -23,24 +23,26 @@ ChartBuilder = {
         var cols_num = csv_matrix[0].length;
 
         // If there aren't at least two columns, return null
-        if(cols_num < 2)
+        if(cols_num < 2) {
             return null;
+        }
 
         // Knowing the number of columns that every line should have, split
         // those lines by the designated separator. While doing this, count
         // the number of rows
         var rows_num = 0;
-        for(var i=1; i<csv_array.length; i++)
-        {
+        for(var i=1; i<csv_array.length; i++) {
             // If the row is empty, that is, if it is just an \n symbol, continue
-            if(csv_array[i] == "")
+            if(csv_array[i] == "") {
                 continue;
+            }
 
             // Split the row. If the row doesn't have the right amount of cols
             // then the csv is not well formated, therefore, return null
             var row = csv_array[i].split(tab);
-            if(row.length != cols_num)
+            if(row.length != cols_num) {
                 return null;
+            }
 
             // Push row to matrix, increment row count, loop
             csv_matrix.push(row);
@@ -48,8 +50,9 @@ ChartBuilder = {
         }
 
         // If there aren't at least two non empty rows, return null
-        if(rows_num < 2)
+        if(rows_num < 2) {
             return null;
+        }
 
         return csv_matrix;
     },
@@ -58,31 +61,26 @@ ChartBuilder = {
     makeDataObj: function(csv_matrix) {
         // Make the data array
         var data = [];
-        for(var i=0; i<csv_matrix[0].length; i++)
-        {
+        for(var i=0; i<csv_matrix[0].length; i++) {
             // Object for a single column
-            var obj = {}
-            obj.name = csv_matrix[0][i];
-            obj.data = [];
+            var obj = {name: csv_matrix[0][i], obj.data: []};
 
             // Make the obj
-            for(var j=1; j<csv_matrix.length; j++)
-            {
+            for(var j=1; j<csv_matrix.length; j++) {
                 // If this is a date column
-                if((/date/gi).test(obj.name))
-                {
+                if((/date/gi).test(obj.name)) {
                     var value = Date.create(csv_matrix[j][i]);
-                    if(value == "Invalid Date")
+                    if(value == "Invalid Date") {
                         return null;
-                    console.log(value);
+                    }
                     obj.data.push(value);
                 }
                 // If it is the first column, containing the names
-                else if(i == 0)
+                else if(i == 0) {
                     obj.data.push(csv_matrix[j][i]);
+                }
                 // If the value is actually a number for the graph
-                else
-                {
+                else {
                     var value = parseFloat(csv_matrix[j][i]);
                     if(isNaN(value))
                         return null;
@@ -672,16 +670,14 @@ $(document).ready(function() {
 			}
 			
             var csv = $("#csvInput").val();
-			var newData = ChartBuilder.getNewData(csv);
-            if(newData == null)
-            {
+            var newData = ChartBuilder.getNewData(csv);
+            if(newData == null) {
                 ChartBuilder.curRaw = ChartBuilder.oldRaw;
                 return;
             }
 
             dataObj = ChartBuilder.makeDataObj(newData);
-            if(dataObj == null)
-            {
+            if(dataObj == null) {
                 ChartBuilder.curRaw = ChartBuilder.oldRaw;
                 return;
             }
