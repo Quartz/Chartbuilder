@@ -559,6 +559,10 @@ ChartBuilder = {
 }
 
 // Overwrite Gneiss yaxis formating
+/*
+  Presently removing this will push your y-axis
+  labels off the edge of the chart
+*/
 Gneiss.customYAxisFormat = function(axisGroup,i) {
 	var g = this.g
 	axisGroup.selectAll("g")
