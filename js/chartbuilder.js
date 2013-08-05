@@ -220,7 +220,12 @@ ChartBuilder = {
 			.attr("download",function(){ return filename + "_chartbuilder.png"
 			});
 			
-		$("#downloadSVGLink").attr("href","data:text/svg,"+ encodeURI($("#chartContainer").html().split("PTSerif").join("PT Serif")) )
+			
+			var svgString = $("#chartContainer").html()
+			//add in all the things that validate SVG
+			svgString = '<?xml version="1.1" encoding="UTF-8" standalone="no"?> <svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg"' + svgString.split("<svg ")[1]
+			
+		$("#downloadSVGLink").attr("href","data:text/svg,"+ encodeURI(svgString.split("PTSerif").join("PT Serif")) )
 			.toggleClass("hide")
 			.attr("download",function(){ return filename + "_chartbuilder.svg"
 			})
@@ -569,25 +574,30 @@ $(document).ready(function() {
 	//scale it up so it looks good on retina displays
 	$("#chart").attr("transform","scale(2)")
 	
-	ChartBuilder.redraw()
-	ChartBuilder.inlineAllStyles();
-	
 	//populate the input with the data that is in the chart
 	$("#csvInput").val(function() {
+		var data = []
 		var val = ""
-		for (var i=0; i < chart.g.series.length; i++) {
-			val += chart.g.series[i].name 
-			val += (i<chart.g.series.length-1) ? "\t" : "\n"
+
+		data[0] = chart.g.xAxisRef[0].data
+		data[0].unshift(chart.g.xAxisRef[0].name)
+
+		for (var i = 0; i < chart.g.series.length; i++) {
+			data[i+1] = chart.g.series[i].data
+			data[i+1].unshift(chart.g.series[i].name)
 		};
-		for (var j=0; j < chart.g.series[0].data.length; j++) {
-			for (var i=0; i < chart.g.series.length; i++) {
-				val += chart.g.series[i].data[j] 
-				val += (i<chart.g.series.length-1) ? "\t" : "\n"
-			};
-		};
-		return val
+
+		data = ChartBuilder.pivotData(data)
+
+		for (var i = 0; i < data.length; i++) {
+			data[i] = data[i].join("\t")
+		}; 
+		
+		console.log(data)
+		return data.join("\n")
 	})
-	
+
+
 	//load previously made charts
 	var savedCharts = ChartBuilder.getLocalCharts();
 	var chartSelect = d3.select("#previous_charts")
@@ -659,7 +669,7 @@ $(document).ready(function() {
 			ChartBuilder.inlineAllStyles();
 		}
 
-	}).keyup()
+	}).keyup() 
 	
 	$("#right_axis_prefix").keyup(function() {
 		ChartBuilder.actions.axis_prefix_change(0,this)

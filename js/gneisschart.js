@@ -58,14 +58,6 @@ var chartConfig = {
 	],
 	series: [
 		{
-			name: "names",
-			data: ["juicyness","color","flavor","travelability"],
-			source: "Some Org",
-			type: "line",
-			axis: 0,
-			color: null
-		},
-		{
 			name: "apples",
 			data: [5.5,10.2,6.1,3.8],
 			source: "Some Org",
@@ -84,7 +76,8 @@ var chartConfig = {
 	],
 	xAxisRef: [
 		{
-			data: []
+			name: "names",
+			data: ["juicyness","color","flavor","travelability"],
 		}
 	],
 	sourceline: "",
@@ -1185,6 +1178,13 @@ var Gneiss = {
 			var legendGroups = g.legendItemContainer.selectAll("g")
 				.data(g.series);
 
+			if(g.series.length > 2) {
+				console.error("too many series")
+			}
+			else {
+				console.error("propper series")
+			}
+
 			var legItems = 	legendGroups.enter()
 				.append("g")
 				.attr("class","legendItem")
@@ -1196,7 +1196,9 @@ var Gneiss = {
 						return "translate("+g.padding.left+","+(g.padding.top-50)+")"
 					}
 				});
-			
+
+			legendGroups.exit().remove()
+
 			var legLabels = legItems.append("text")
 					.filter(function(){return g.series.length > 1})
 					.attr("class","legendLabel")
@@ -1223,8 +1225,7 @@ var Gneiss = {
 						var cur = d3.select(this)
 						var curWidth = parseFloat(cur.node().getBBox().width)
 						legendItemY = cur.attr("transform").split(",")[1].split(")")[0];
-						var x = parseFloat(prev.attr("transform").split(",")[0].split("(")[1]) + prevWidth + 20
-
+						var x = parseFloat(prev.attr("transform").split(",")[0].split("(")[1]) + prevWidth + 5
 						if(x + curWidth > g.width) {
 							x = g.padding.left
 							legendItemY += 15;						
