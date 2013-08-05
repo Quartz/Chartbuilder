@@ -58,20 +58,26 @@ table {
 }
 
 #interactiveContent {
-	width: 100%;
+  width: 100%;
   margin: 0;
-  padding: 0;
+  padding-left: 650px;
+}
+
+#interactiveContent .columns {
+	float:left;
+	position: relative;
 }
 
 #leftColumn {
-	width: 640px;
-	float: left;
+	width: 650px;
 	min-height: 5em;
+	margin-left: -100%;
+	right: 650px;
 }
 
 #rightColumn {
-  width: 30%;
-	float: left;
+  	min-width: 100px;
+	width: 100%;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
@@ -93,6 +99,7 @@ table {
  */
 #staticContainer {
 	position: fixed;
+	left: 1em;
 	margin-top: 0.5;
 }
 

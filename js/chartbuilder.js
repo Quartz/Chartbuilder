@@ -751,7 +751,7 @@ $(document).ready(function() {
 
 	$(window).resize(function(){
 
-		$("#rightColumn").css("width",$(this).width() - 650)
+		//$("#rightColumn").css("width",$(this).width() - 650)
 	}).resize()
 
 })
