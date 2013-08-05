@@ -1178,13 +1178,6 @@ var Gneiss = {
 			var legendGroups = g.legendItemContainer.selectAll("g")
 				.data(g.series);
 
-			if(g.series.length > 2) {
-				console.error("too many series")
-			}
-			else {
-				console.error("propper series")
-			}
-
 			var legItems = 	legendGroups.enter()
 				.append("g")
 				.attr("class","legendItem")
@@ -1217,9 +1210,12 @@ var Gneiss = {
 					.attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
 
 				var legendItemY;
-				legendGroups.each(function(d,i) {
-					if(i > 0) {
-						var prev = d3.select(legendGroups[0][i-1])
+				legendGroups.filter(function(d){return d != g.series[0]})
+					.transition()
+					.delay(100)
+					.attr("transform",function(d,i) {
+						//label isn't for the first series
+						var prev = d3.select(legendGroups[0][i])
 						var prevWidth = parseFloat(prev.node().getBBox().width)
 
 						var cur = d3.select(this)
@@ -1230,10 +1226,8 @@ var Gneiss = {
 							x = g.padding.left
 							legendItemY += 15;						
 						}
-						d3.select(this).attr("transform","translate("+x+","+legendItemY+")")
-					}
-				})
-		
+						return "translate("+x+","+legendItemY+")"
+				})		
 				//test if the chart needs more top margin because of a large number of legend items
 				if (legendItemY > 0 && g.padding.top == 25) { //CHANGE
 					g.padding.top = legendItemY + 25;
