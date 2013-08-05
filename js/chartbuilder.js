@@ -9,6 +9,9 @@ ChartBuilder = {
 				"FF005C","ff99b9","e69cb3","cc879d","b37387","995f71","804c5d","665258"  //reds
 				],
 	curRaw: "",
+	customLegendLocaion:false,
+	useState: false,
+	draws: 0,
 	getNewData: function() {
 		
 		var csvString = $("#csvInput").val()
@@ -128,6 +131,12 @@ ChartBuilder = {
 				if(d.datetime) {
 					r[i][0] = Date.create(r[i][0]).format("{M}/{d}/{yy} {hh}:{mm}")
 				}
+				
+				//add commas to the numbers
+				for (var j = 0; j < r[i].length; j++) {
+					r[i][j] = this.addCommas(r[i][j])
+				};
+
 				$("<tr><td>"+r[i].join("</td><td>")+"</td></tr>")
 					.addClass(i%2 == 0? "otherrow":"row")
 					.appendTo($table)
@@ -502,9 +511,18 @@ ChartBuilder = {
 		s = s.replace(/[^\w\d]+/gi,"-")
 		return s
 	},
-	customLegendLocaion:false,
-	useState: false,
-	draws: 0,
+	addCommas: function(nStr)
+	{
+		nStr += '';
+		x = nStr.split('.');
+		x1 = x[0];
+		x2 = x.length > 1 ? '.' + x[1] : '';
+		var rgx = /(\d+)(\d{3})/;
+		while (rgx.test(x1)) {
+			x1 = x1.replace(rgx, '$1' + ',' + '$2'); //TODO localize this
+		}
+		return x1 + x2;
+	},
 	actions: {
 		axis_prefix_change: function(index,that) {
 			chart.g.yAxis[index].prefix.value = $(that).val()
