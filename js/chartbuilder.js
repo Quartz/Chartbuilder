@@ -10,86 +10,86 @@ ChartBuilder = {
 				],
 	curRaw: "",
 	getNewData: function(csv) {
-        // Split the csv information by lines
-        var csv_array = csv.split("\n");
+		// Split the csv information by lines
+		var csv_array = csv.split("\n");
 
-        // Split the first element of the array by the designated separator
-        // tab in this case
-        var csv_matrix = [];
-        var tab = String.fromCharCode(9);
-        csv_matrix.push(csv_array[0].split(tab));
+		// Split the first element of the array by the designated separator
+		// tab in this case
+		var csv_matrix = [];
+		var tab = String.fromCharCode(9);
+		csv_matrix.push(csv_array[0].split(tab));
 
-        // Get the number of columns
-        var cols_num = csv_matrix[0].length;
+		// Get the number of columns
+		var cols_num = csv_matrix[0].length;
 
-        // If there aren't at least two columns, return null
-        if(cols_num < 2) {
-            return null;
-        }
+		// If there aren't at least two columns, return null
+		if(cols_num < 2) {
+			return null;
+		}
 
-        // Knowing the number of columns that every line should have, split
-        // those lines by the designated separator. While doing this, count
-        // the number of rows
-        var rows_num = 0;
-        for(var i=1; i<csv_array.length; i++) {
-            // If the row is empty, that is, if it is just an \n symbol, continue
-            if(csv_array[i] == "") {
-                continue;
-            }
+		// Knowing the number of columns that every line should have, split
+		// those lines by the designated separator. While doing this, count
+		// the number of rows
+		var rows_num = 0;
+		for(var i=1; i<csv_array.length; i++) {
+			// If the row is empty, that is, if it is just an \n symbol, continue
+			if(csv_array[i] == "") {
+				continue;
+			}
 
-            // Split the row. If the row doesn't have the right amount of cols
-            // then the csv is not well formated, therefore, return null
-            var row = csv_array[i].split(tab);
-            if(row.length != cols_num) {
-                return null;
-            }
+			// Split the row. If the row doesn't have the right amount of cols
+			// then the csv is not well formated, therefore, return null
+			var row = csv_array[i].split(tab);
+			if(row.length != cols_num) {
+				return null;
+			}
 
-            // Push row to matrix, increment row count, loop
-            csv_matrix.push(row);
-            rows_num++; 
-        }
+			// Push row to matrix, increment row count, loop
+			csv_matrix.push(row);
+			rows_num++; 
+		}
 
-        // If there aren't at least two non empty rows, return null
-        if(rows_num < 2) {
-            return null;
-        }
+		// If there aren't at least two non empty rows, return null
+		if(rows_num < 2) {
+			return null;
+		}
 
-        return csv_matrix;
-    },
-    // Given the matrix containing the well formated csv, create the object that
-    // is going to be used later
-    makeDataObj: function(csv_matrix) {
-        // Make the data array
-        var data = [];
-        for(var i=0; i<csv_matrix[0].length; i++) {
-            // Object for a single column
-            var obj = {name: csv_matrix[0][i], obj.data: []};
+		return csv_matrix;
+	},
+	// Given the matrix containing the well formated csv, create the object that
+	// is going to be used later
+	makeDataObj: function(csv_matrix) {
+		// Make the data array
+		var data = [];
+		for(var i=0; i<csv_matrix[0].length; i++) {
+			// Object for a single column
+			var obj = {name: csv_matrix[0][i], obj.data: []};
 
-            // Make the obj
-            for(var j=1; j<csv_matrix.length; j++) {
-                // If this is a date column
-                if((/date/gi).test(obj.name)) {
-                    var value = Date.create(csv_matrix[j][i]);
-                    if(value == "Invalid Date") {
-                        return null;
-                    }
-                    obj.data.push(value);
-                }
-                // If it is the first column, containing the names
-                else if(i == 0) {
-                    obj.data.push(csv_matrix[j][i]);
-                }
-                // If the value is actually a number for the graph
-                else {
-                    var value = parseFloat(csv_matrix[j][i]);
-                    if(isNaN(value))
-                        return null;
-                    obj.data.push(value);
-                }
-            }
+			// Make the obj
+			for(var j=1; j<csv_matrix.length; j++) {
+				// If this is a date column
+				if((/date/gi).test(obj.name)) {
+					var value = Date.create(csv_matrix[j][i]);
+					if(value == "Invalid Date") {
+						return null;
+					}
+					obj.data.push(value);
+				}
+				// If it is the first column, containing the names
+				else if(i == 0) {
+					obj.data.push(csv_matrix[j][i]);
+				}
+				// If the value is actually a number for the graph
+				else {
+					var value = parseFloat(csv_matrix[j][i]);
+					if(isNaN(value))
+						return null;
+					obj.data.push(value);
+				}
+			}
 
-            data.push(obj);
-        }
+			data.push(obj);
+		}
 
 		return {data: data, datetime: (/date/gi).test(data[0].name)};
 	},
@@ -213,12 +213,12 @@ ChartBuilder = {
 		
 		for (var i = document.styleSheets.length - 1; i >= 0; i--){
 			if(document.styleSheets[i].href && document.styleSheets[i].href.indexOf("gneisschart.css") != -1) {
-        if (document.styleSheets[i].rules != undefined) {
+		if (document.styleSheets[i].rules != undefined) {
 				  chartStyle = document.styleSheets[i].rules 
-        }
-        else {
-          chartStyle = document.styleSheets[i].cssRules
-          }
+		}
+		else {
+		  chartStyle = document.styleSheets[i].cssRules
+		  }
 			}
 		}
 		for (var i=0; i < chartStyle.length; i++) {
@@ -465,7 +465,7 @@ ChartBuilder = {
 	makeLegendAdjustable: function() {
 		
 		var legendLabelDrag = d3.behavior.drag()
-		    .origin(Object)
+			.origin(Object)
 			.on("dragstart",function(d){
 				elem = d3.select(this)
 				d3.select(elem[0][0].parentElement).selectAll("rect").style("display","none")
@@ -478,7 +478,7 @@ ChartBuilder = {
 				}
 				
 			})
-		    .on("drag", function(d){
+			.on("drag", function(d){
 				elem = d3.select(this)
 				elem.attr("x", Number(elem.attr("x")) + d3.event.dx)
 					.attr("y", Number(elem.attr("y")) + d3.event.dy);
@@ -669,20 +669,20 @@ $(document).ready(function() {
 					chart.g.yAxis[1].domain = [null,null];
 			}
 			
-            var csv = $("#csvInput").val();
-            var newData = ChartBuilder.getNewData(csv);
-            if(newData == null) {
-                ChartBuilder.curRaw = ChartBuilder.oldRaw;
-                return;
-            }
+			var csv = $("#csvInput").val();
+			var newData = ChartBuilder.getNewData(csv);
+			if(newData == null) {
+				ChartBuilder.curRaw = ChartBuilder.oldRaw;
+				return;
+			}
 
-            dataObj = ChartBuilder.makeDataObj(newData);
-            if(dataObj == null) {
-                ChartBuilder.curRaw = ChartBuilder.oldRaw;
-                return;
-            }
+			dataObj = ChartBuilder.makeDataObj(newData);
+			if(dataObj == null) {
+				ChartBuilder.curRaw = ChartBuilder.oldRaw;
+				return;
+			}
 
-            ChartBuilder.createTable(newData, dataObj.datetime);
+			ChartBuilder.createTable(newData, dataObj.datetime);
 			
 			chart.g.series.unshift(chart.g.xAxisRef)
 			dataObj = ChartBuilder.mergeData(dataObj)
