@@ -616,9 +616,6 @@ ChartBuilder.start = function(config) {
   	//scale it up so it looks good on retina displays
   	$("#chart").attr("transform","scale(2)")
   	
-  	ChartBuilder.redraw()
-  	ChartBuilder.inlineAllStyles();
-  	
   	//populate the input with the data that is in the chart
   	$("#csvInput").val(function() {
 		var data = []
@@ -657,10 +654,6 @@ ChartBuilder.start = function(config) {
   	$("#createImageButton").click(function() {
   		ChartBuilder.inlineAllStyles();
   		ChartBuilder.createChartImage();
-  	})
-  	
-  	$("#csvInput").bind("paste", function(e) {
-  		//do nothing special
   	})
   	
   	/*
@@ -711,6 +704,8 @@ ChartBuilder.start = function(config) {
   			ChartBuilder.inlineAllStyles();
   		}
   
+  	}).bind("paste", function(e) {
+  		//do nothing special
   	}).keyup()
   	
   	$("#right_axis_prefix").keyup(function() {
