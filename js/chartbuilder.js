@@ -16,8 +16,8 @@ ChartBuilder = {
         // Split the first element of the array by the designated separator
         // tab in this case
         var csv_matrix = [];
-        var tab = String.fromCharCode(9);
-        csv_matrix.push(csv_array[0].split(tab));
+        var delim = String.fromCharCode(9);
+        csv_matrix.push(csv_array[0].split(delim));
 
         // Get the number of columns
         var cols_num = csv_matrix[0].length;
