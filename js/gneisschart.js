@@ -1188,9 +1188,10 @@ var Gneiss = {
 					else {
 						return "translate("+g.padding.left+","+(g.padding.top-50)+")"
 					}
-					
 				});
-			
+
+			legendGroups.exit().remove()
+
 			var legLabels = legItems.append("text")
 					.filter(function(){return g.series.length > 1})
 					.attr("class","legendLabel")
@@ -1198,9 +1199,7 @@ var Gneiss = {
 					.attr("y",18)
 					.attr("fill",function(d,i){return d.color? d.color : g.colors[i]})
 					.text(function(d,i){return d.name});
-				
-		
-					
+			
 			//if there is more than one line
 			if(g.series.length > 1) {
 				legItems.append("rect")
@@ -1211,24 +1210,24 @@ var Gneiss = {
 					.attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
 
 				var legendItemY;
-				legendGroups.each(function(d,i) {
-					if(i > 0) {
-						var prev = d3.select(legendGroups[0][i-1])
-						var prevWidth = parseFloat(prev.select("text").style("width").split("p")[0])
+				legendGroups.filter(function(d){return d != g.series[0]})
+					.transition()
+					.delay(100)
+					.attr("transform",function(d,i) {
+						//label isn't for the first series
+						var prev = d3.select(legendGroups[0][i])
+						var prevWidth = parseFloat(prev.node().getBBox().width)
 
 						var cur = d3.select(this)
-						var curWidth = parseFloat(cur.select("text").style("width").split("p")[0])
+						var curWidth = parseFloat(cur.node().getBBox().width)
 						legendItemY = cur.attr("transform").split(",")[1].split(")")[0];
-						var x = parseFloat(prev.attr("transform").split(",")[0].split("(")[1]) + prevWidth + 20
-
+						var x = parseFloat(prev.attr("transform").split(",")[0].split("(")[1]) + prevWidth + 5
 						if(x + curWidth > g.width) {
 							x = g.padding.left
 							legendItemY += 15;						
 						}
-						d3.select(this).attr("transform","translate("+x+","+legendItemY+")")
-					}
-				})
-		
+						return "translate("+x+","+legendItemY+")"
+				})		
 				//test if the chart needs more top margin because of a large number of legend items
 				if (legendItemY > 0 && g.padding.top == 25) { //CHANGE
 					g.padding.top = legendItemY + 25;

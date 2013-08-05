@@ -173,20 +173,22 @@ ChartBuilder = {
 		
 		for (var i = document.styleSheets.length - 1; i >= 0; i--){
 			if(document.styleSheets[i].href && document.styleSheets[i].href.indexOf("gneisschart.css") != -1) {
-        if (document.styleSheets[i].rules != undefined) {
-				  chartStyle = document.styleSheets[i].rules 
-        }
-        else {
-          chartStyle = document.styleSheets[i].cssRules
-          }
+				if (document.styleSheets[i].rules != undefined) {
+					chartStyle = document.styleSheets[i].rules 
+				}
+				else {
+					chartStyle = document.styleSheets[i].cssRules
+				}
 			}
 		}
-		for (var i=0; i < chartStyle.length; i++) {
-			selector = chartStyle[i].selectorText;
-			cssText = chartStyle[i].style.cssText;
-			d3.selectAll(selector).attr("style",cssText)
-		};
-
+		if(chartStyle != null && chartStyle != undefined)
+		{
+			for (var i=0; i < chartStyle.length; i++) {
+				selector = chartStyle[i].selectorText;
+				cssText = chartStyle[i].style.cssText;
+				d3.selectAll(selector).attr("style",cssText)
+			};
+		}
 	},
 	createChartImage: function() {
 
@@ -216,7 +218,12 @@ ChartBuilder = {
 			.attr("download",function(){ return filename + "_chartbuilder.png"
 			});
 			
-		$("#downloadSVGLink").attr("href","data:text/svg,"+ encodeURI($("#chartContainer").html().split("PTSerif").join("PT Serif")) )
+			
+			var svgString = $("#chartContainer").html()
+			//add in all the things that validate SVG
+			svgString = '<?xml version="1.1" encoding="UTF-8" standalone="no"?> <svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg"' + svgString.split("<svg ")[1]
+			
+		$("#downloadSVGLink").attr("href","data:text/svg,"+ encodeURI(svgString.split("PTSerif").join("PT Serif")) )
 			.toggleClass("hide")
 			.attr("download",function(){ return filename + "_chartbuilder.svg"
 			})
