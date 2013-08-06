@@ -9,7 +9,7 @@
  */
 body {
 	overflow-y: scroll;
-	overflow-x: hidden;
+	min-width: 800px; 
 	line-height: 1.1em;
 	font-size: 0.75em;
 	color: #666;
@@ -58,9 +58,9 @@ table {
 }
 
 #interactiveContent {
-  width: 100%;
   margin: 0;
   padding-left: 650px;
+  padding-right: 0px
 }
 
 #interactiveContent .columns {
@@ -84,6 +84,11 @@ table {
 	border-left: 1px dashed #666666;
 }
 
+#blankColumn {
+	width: 0px;
+	margin-right: 0px;
+}
+
 #leftColumn .cbInner {
   margin-top: 1em;
 }
@@ -91,6 +96,8 @@ table {
 #rightColumn .cbInner {
   margin-bottom: 2em;
 }
+
+
 
 
 
