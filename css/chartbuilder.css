@@ -70,7 +70,6 @@ table {
 
 #leftColumn {
 	width: 650px;
-	min-height: 5em;
 	margin-left: -100%;
 	right: 650px;
 }
@@ -129,6 +128,8 @@ table {
  */
 #rightColumn .cbInner .optionGroup {
 	max-width: 200px;
+	margin-left: 5px;
+	margin-right: 5px;
 	float: left;
 }
 
@@ -141,7 +142,7 @@ textarea,
 select {
 	display: block;
 	margin-bottom: 1em;
-	width: 90%;
+	width: 95%;
 	font-family: 'PTSerif';
 	color: #666666;
 	border: 1px solid #ccc;
@@ -187,7 +188,7 @@ textarea {
 }
 
 #dataTable {
-  width: 90%;
+  width: 95%;
 	font-size: .85em;
 	overflow-x: scroll;
 	border: 1px solid #ccc;
@@ -216,10 +217,18 @@ textarea {
 
 #seriesItems .seriesItemGroup input, 
 #seriesItems .seriesItemGroup select,
-#seriesItems .seriesItemGroup .colorPicker-picker {
+{
 	float: left;
 	margin-left: .5em;
 	width: 5%;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+#seriesItems .seriesItemGroup .colorPicker-picker {
+	float: left;
+	margin-left: .5em;
+	margin-right: .5em;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
@@ -231,7 +240,8 @@ textarea {
 }
 
 #seriesItems select.typePicker  {
-	width: 50%;
+	width: 30%;
+	float: left;
 }
  
 /**
