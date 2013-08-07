@@ -1,0 +1,13 @@
+{
+  "name": "rgbcolor.js",
+  "_cacheHeaders": {
+    "ETag": "\"2352-40e5ab7108000\"",
+    "Last-Modified": "Mon, 06 Mar 2006 22:04:48 GMT",
+    "Content-Length": "9042",
+    "Content-Type": "application/javascript"
+  },
+  "_release": "e-tag:2352-40e5",
+  "main": "index.js",
+  "_source": "http://www.phpied.com/files/rgbcolor/rgbcolor.js",
+  "_target": "*"
+}

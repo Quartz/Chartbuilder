@@ -1,0 +1,12 @@
+{
+  "name": "really-cimple-solor-picker",
+  "homepage": "https://github.com/laktek/really-simple-color-picker",
+  "_release": "9a79b3df16",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "9a79b3df16092340083348fcf5459bff2e413d83"
+  },
+  "_source": "https://github.com/laktek/really-simple-color-picker.git",
+  "_target": "*"
+}
