@@ -20,7 +20,7 @@ Date.setLocale('en');
 
 //A default configuration 
 //Should change to more d3esque methods e.g. http://bost.ocks.org/mike/chart/
-var chartConfig = {
+var defaultGneissChartConfig = {
 	container: "#chartContainer",
 	editable: true,
 	legend: true,
@@ -83,7 +83,7 @@ var chartConfig = {
 		}
 	],
 	sourceline: "",
-	creditline: "Quartz | qz.com"
+	creditline: "Made with Chartbuilder"
 }
 
 var Gneiss = {
