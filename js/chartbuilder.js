@@ -315,7 +315,8 @@ ChartBuilder = {
 				<input id="'+this.idSafe(s.name)+'_check" name="'+this.idSafe(s.name)+'_check" type="checkbox" />\
 				</select>\
 				<div class="clearfix"></div>\
-			</div>');
+			</div>\
+			<div class="clearfix"></div>');
 			
 			var color = ""
 			
