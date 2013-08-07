@@ -39,7 +39,7 @@ ChartBuilder = {
 
 			// Split the row. If the row doesn't have the right amount of cols
 			// then the csv is not well formated, therefore, return null
-			var row = csv_array[i].split(tab);
+			var row = csv_array[i].split(delim);
 			if(row.length != cols_num) {
 				return null;
 			}
@@ -63,7 +63,7 @@ ChartBuilder = {
 		var data = [];
 		for(var i=0; i<csv_matrix[0].length; i++) {
 			// Object for a single column
-			var obj = {name: csv_matrix[0][i], obj.data: []};
+			var obj = {name: csv_matrix[0][i], data: []};
 
 			// Make the obj
 			for(var j=1; j<csv_matrix.length; j++) {
