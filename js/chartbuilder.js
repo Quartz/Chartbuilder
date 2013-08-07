@@ -7,51 +7,89 @@ ChartBuilder = {
 						"006DBF","70B8FF","5DA1E1","4B89C4","3871A6","255A88","13436B","002B4D",
 						"9300BF","E770FF","CB5DE1","AE4BC4","9238A6","752588","59136B","3C004D"],
 	curRaw: "",
-	getNewData: function() {
-		
-		var csvString = $("#csvInput").val()
-		var parseOptions = {
-			delimiter: "\"",
-			separator: "|",
-			escaper:"\\",
-			skip:"0"
+	getNewData: function(csv) {
+		// Split the csv information by lines
+		var csv_array = csv.split("\n");
+
+        // Split the first element of the array by the designated separator
+        // tab in this case
+        var csv_matrix = [];
+        var delim = String.fromCharCode(9);
+        csv_matrix.push(csv_array[0].split(delim));
+
+		// Get the number of columns
+		var cols_num = csv_matrix[0].length;
+
+		// If there aren't at least two columns, return null
+		if(cols_num < 2) {
+			return null;
 		}
-		
-        
-		/* JUST USE TAB DELIMETED OKAY
-		//check if more tabs or commas as a weak indicator of .tsv or .csv
-		if(csvString.split(tab).length < csvString.split(",").length) {
-			//more tabs than commas
-			
-			//swap tabs for pipes because of some bug in the csv library
-			csvString = csvString.split(tab).join("|")
-			parseOptions.separator = "|"
+
+		// Knowing the number of columns that every line should have, split
+		// those lines by the designated separator. While doing this, count
+		// the number of rows
+		var rows_num = 0;
+		for(var i=1; i<csv_array.length; i++) {
+			// If the row is empty, that is, if it is just an \n symbol, continue
+			if(csv_array[i] == "") {
+				continue;
+			}
+
+			// Split the row. If the row doesn't have the right amount of cols
+			// then the csv is not well formated, therefore, return null
+			var row = csv_array[i].split(delim);
+			if(row.length != cols_num) {
+				return null;
+			}
+
+			// Push row to matrix, increment row count, loop
+			csv_matrix.push(row);
+			rows_num++; 
 		}
-		else {
-			//more commas than tabs
+
+		// If there aren't at least two non empty rows, return null
+		if(rows_num < 2) {
+			return null;
 		}
-		*/
-		
-		var tab = String.fromCharCode(9)
-		//swap tabs for pipes because of some bug in the csv reading library
-		csvString = csvString.split(tab).join("|")
-		
-		/*remove commas (but not from the header row)*/
-		csvString = csvString.split("\n")
-		//cache the header row
-		var header = csvString[0] + ""
-		csvString = csvString.join("\n").split(",").join("")
-		csvString = csvString.split("\n")
-		csvString[0] = header;
-		csvString = csvString.join("\n")
-		
-		var rawdata = $.csv.toArrays(csvString,parseOptions)
-		var data = this.parseData(this.pivotData(rawdata))
-		var output = {data: data, datetime: (/date/gi).test(data[0].name)}
-		this.createTable(rawdata,output)
-		return output
-		
-		
+
+		return csv_matrix;
+	},
+	// Given the matrix containing the well formated csv, create the object that
+	// is going to be used later
+	makeDataObj: function(csv_matrix) {
+		// Make the data array
+		var data = [];
+		for(var i=0; i<csv_matrix[0].length; i++) {
+			// Object for a single column
+			var obj = {name: csv_matrix[0][i], data: []};
+
+			// Make the obj
+			for(var j=1; j<csv_matrix.length; j++) {
+				// If this is a date column
+				if((/date/gi).test(obj.name)) {
+					var value = Date.create(csv_matrix[j][i]);
+					if(value == "Invalid Date") {
+						return null;
+					}
+					obj.data.push(value);
+				}
+				// If it is the first column, containing the names
+				else if(i == 0) {
+					obj.data.push(csv_matrix[j][i]);
+				}
+				// If the value is actually a number for the graph
+				else {
+					var value = parseFloat(csv_matrix[j][i]);
+					if(isNaN(value))
+						return null;
+					obj.data.push(value);
+				}
+			}
+
+			data.push(obj);
+		}
+
+		return {data: data, datetime: (/date/gi).test(data[0].name)};
 	},
 	parseData: function(a) {
 		var d = []
@@ -123,9 +161,15 @@ ChartBuilder = {
 		$table.append("<tr><th>"+r[0].join("</th><th>")+"</th></tr>")
 		for (var i=1; i < r.length; i++) {
 			if(r[i]) {
-				if(d.datetime) {
+				if(d) {
 					r[i][0] = Date.create(r[i][0]).format("{M}/{d}/{yy} {hh}:{mm}")
 				}
+				
+				//add commas to the numbers
+				for (var j = 0; j < r[i].length; j++) {
+					r[i][j] = this.addCommas(r[i][j])
+				};
+
 				$("<tr><td>"+r[i].join("</td><td>")+"</td></tr>")
 					.addClass(i%2 == 0? "otherrow":"row")
 					.appendTo($table)
@@ -432,7 +476,7 @@ ChartBuilder = {
 	makeLegendAdjustable: function() {
 		
 		var legendLabelDrag = d3.behavior.drag()
-		    .origin(Object)
+			.origin(Object)
 			.on("dragstart",function(d){
 				elem = d3.select(this)
 				d3.select(elem[0][0].parentElement).selectAll("rect").style("display","none")
@@ -445,7 +489,7 @@ ChartBuilder = {
 				}
 				
 			})
-		    .on("drag", function(d){
+			.on("drag", function(d){
 				elem = d3.select(this)
 				elem.attr("x", Number(elem.attr("x")) + d3.event.dx)
 					.attr("y", Number(elem.attr("y")) + d3.event.dy);
@@ -500,9 +544,18 @@ ChartBuilder = {
 		s = s.replace(/[^\w\d]+/gi,"-")
 		return s
 	},
-	customLegendLocaion:false,
-	useState: false,
-	draws: 0,
+	addCommas: function(nStr)
+	{
+		nStr += '';
+		x = nStr.split('.');
+		x1 = x[0];
+		x2 = x.length > 1 ? '.' + x[1] : '';
+		var rgx = /(\d+)(\d{3})/;
+		while (rgx.test(x1)) {
+			x1 = x1.replace(rgx, '$1' + ',' + '$2'); //TODO localize this
+		}
+		return x1 + x2;
+	},
 	actions: {
 		axis_prefix_change: function(index,that) {
 			chart.g.yAxis[index].prefix.value = $(that).val()
@@ -640,168 +693,184 @@ ChartBuilder.start = function(config) {
 		}; 
 		return data.join("\n")
 	})
-  	
-  	//load previously made charts
-  	var savedCharts = ChartBuilder.getLocalCharts();
-  	var chartSelect = d3.select("#previous_charts")
-  					.on("change",function() {
-  						ChartBuilder.loadLocalChart(d3.select(this.selectedOptions[0]).data()[0])
-  					})
-  	
-  	chartSelect.selectAll("option")
-  			.data(savedCharts)
-  			.enter()
-  			.append("option")
-  			.text(function(d){return d.name?d.name:"Untitled Chart"})
-  			
-  	
-  	$("#createImageButton").click(function() {
-  		ChartBuilder.inlineAllStyles();
-  		ChartBuilder.createChartImage();
-  	})
-  	
-  	/*
-  	//
-  	// add interactions to chartbuilder interface
-  	//
-  	*/
-  	
-  	$("#csvInput").keyup(function() {
-  		//check if the data is different
-  		if( $(this).val() != ChartBuilder.curRaw) {
-  			
-  			//cache the the raw textarea value
-  			ChartBuilder.curRaw = $(this).val()
-  			
-  			if($("#right_axis_max").val().length == 0 && $("#right_axis_min").val().length == 0) {
-  					chart.g.yAxis[0].domain = [null,null];
-  			}
-  			
-  			if(chart.g.yAxis.length > 1 && $("#left_axis_max").val().length == 0 && $("#left_axis_min").val().length == 0) {
-  					chart.g.yAxis[1].domain = [null,null];
-  			}
-  			
-  			var newData = ChartBuilder.getNewData()
-  			
-  			chart.g.series.unshift(chart.g.xAxisRef)
-  			newData = ChartBuilder.mergeData(newData)
-  			
-  			if(newData.datetime) {
-  				chart.g.xAxis.type = "date";
-  				chart.g.xAxis.formatter = chart.g.xAxis.formatter?chart.g.xAxis.formatter:"Mdd";
-  			}
-  			else {
-  				chart.g.xAxis.type = "ordinal";
-  			}
-  			chart.g.xAxisRef = [newData.data.shift()]
-  			
-  			chart.g.series=newData.data
-  			chart.setPadding();
-  			
-  			ChartBuilder.setChartArea()
-  			
-  			chart.setYScales()
-  				.setXScales()
-  				.setLineMakers();
-  				
-  			ChartBuilder.redraw();
-  			ChartBuilder.inlineAllStyles();
-  		}
-  
-  	}).bind("paste", function(e) {
-  		//do nothing special
-  	}).keyup()
-  	
-  	$("#right_axis_prefix").keyup(function() {
-  		ChartBuilder.actions.axis_prefix_change(0,this)
-  	})
-  	
-  	$("#right_axis_suffix").keyup(function() {
-  		ChartBuilder.actions.axis_suffix_change(0,this)
-  	})
-  	
-  	$("#right_axis_tick_num").change(function() {
-  		ChartBuilder.actions.axis_tick_num_change(0,this)
-  	})
-  	
-  	$("#right_axis_max").keyup(function() {
-  		ChartBuilder.actions.axis_max_change(0,this)
-  	})
-  	
-  	$("#right_axis_min").keyup(function() {
-  		ChartBuilder.actions.axis_min_change(0,this)
-  	})
-  	
-  	$("#right_axis_tick_override").keyup(function() {
-  		ChartBuilder.actions.axis_tick_override_change(0,this)
-  	})
-  	
-  	$("#x_axis_tick_num").change(function() {
-  		chart.g.xAxis.ticks = parseInt($(this).val())
-  		ChartBuilder.redraw()
-  		ChartBuilder.inlineAllStyles();
-  	})
-  	
-  	$("#left_axis_prefix").keyup(function() {
-  		ChartBuilder.actions.axis_prefix_change(1,this)
-  	})
-  
-  	$("#left_axis_suffix").keyup(function() {
-  		ChartBuilder.actions.axis_suffix_change(1,this)
-  	})
-  
-  	$("#left_axis_tick_num").change(function() {
-  		ChartBuilder.actions.axis_tick_num_change(1,this)
-  	})
-  
-  	$("#left_axis_max").keyup(function() {
-  		ChartBuilder.actions.axis_max_change(1,this)
-  	})
-  
-  	$("#left_axis_min").keyup(function() {
-  		ChartBuilder.actions.axis_min_change(1,this)
-  	})
-  
-  	$("#left_axis_tick_override").keyup(function() {
-  		ChartBuilder.actions.axis_tick_override_change(1,this)
-  	})
-  	
-  	$("#x_axis_date_format").change(function() {
-  		var val = $(this).val()
-  		chart.g.xAxis.formatter = val
-  		ChartBuilder.redraw()
-  		ChartBuilder.inlineAllStyles();
-  	})
-  	
-  	$("#creditLine").keyup(function() {
-  		var val = $(this).val()
-  		chart.g.creditline = val
-  		chart.g.creditLine.text(chart.g.creditline)
-  	})
-  	
-  	$("#sourceLine").keyup(function() {
-  		var val = $(this).val()
-  		chart.g.sourceline = val
-  		chart.g.sourceLine.text(chart.g.sourceline)
-  	})
-  	
-  	$("#chart_title").keyup(function() {
-  		var val = $(this).val()
-  		chart.g.title = val
-  		chart.resize()
-  			.setPadding();
-  		ChartBuilder.setChartArea()
-  		chart.setYScales()
-  			.redraw();
-  		ChartBuilder.makeLegendAdjustable()
-  		
-  		chart.g.titleLine.text(chart.g.title)
-  	})
-  	
-  	$(".downloadLink").click(function() {
-  		$(".downloadLink").toggleClass("hide")
-  	})
-  
-  
-  })
-};
+
+
+	//load previously made charts
+	var savedCharts = ChartBuilder.getLocalCharts();
+	var chartSelect = d3.select("#previous_charts")
+					.on("change",function() {
+						ChartBuilder.loadLocalChart(d3.select(this.selectedOptions[0]).data()[0])
+					})
+	
+	chartSelect.selectAll("option")
+			.data(savedCharts)
+			.enter()
+			.append("option")
+			.text(function(d){return d.name?d.name:"Untitled Chart"})
+			
+	
+	$("#createImageButton").click(function() {
+		ChartBuilder.inlineAllStyles();
+		ChartBuilder.createChartImage();
+	})
+	
+	$("#csvInput").bind("paste", function(e) {
+		//do nothing special
+	})
+	
+	/*
+	//
+	// add interactions to chartbuilder interface
+	//
+	*/
+	
+	$("#csvInput").keyup(function() {
+		//check if the data is different
+		if( $(this).val() != ChartBuilder.curRaw) {
+			
+			//cache the the raw textarea value
+			ChartBuilder.oldRaw = ChartBuilder.curRaw;
+			ChartBuilder.curRaw = $(this).val()
+			
+			if($("#right_axis_max").val().length == 0 && $("#right_axis_min").val().length == 0) {
+					chart.g.yAxis[0].domain = [null,null];
+			}
+			
+			if(chart.g.yAxis.length > 1 && $("#left_axis_max").val().length == 0 && $("#left_axis_min").val().length == 0) {
+					chart.g.yAxis[1].domain = [null,null];
+			}
+			
+			var csv = $("#csvInput").val();
+			var newData = ChartBuilder.getNewData(csv);
+			if(newData == null) {
+				ChartBuilder.curRaw = ChartBuilder.oldRaw;
+				return;
+			}
+
+			dataObj = ChartBuilder.makeDataObj(newData);
+			if(dataObj == null) {
+				ChartBuilder.curRaw = ChartBuilder.oldRaw;
+				return;
+			}
+
+			ChartBuilder.createTable(newData, dataObj.datetime);
+			
+			chart.g.series.unshift(chart.g.xAxisRef)
+			dataObj = ChartBuilder.mergeData(dataObj)
+			
+			if(dataObj.datetime) {
+				chart.g.xAxis.type = "date";
+				chart.g.xAxis.formatter = chart.g.xAxis.formatter?chart.g.xAxis.formatter:"Mdd";
+			}
+			else {
+				chart.g.xAxis.type = "ordinal";
+			}
+			chart.g.xAxisRef = [dataObj.data.shift()]
+			
+			chart.g.series=dataObj.data
+			chart.setPadding();
+			
+			ChartBuilder.setChartArea()
+			
+			chart.setYScales()
+				.setXScales()
+				.setLineMakers();
+				
+			ChartBuilder.redraw();
+			ChartBuilder.inlineAllStyles();
+		}
+
+	}).keyup() 
+	
+	$("#right_axis_prefix").keyup(function() {
+		ChartBuilder.actions.axis_prefix_change(0,this)
+	})
+	
+	$("#right_axis_suffix").keyup(function() {
+		ChartBuilder.actions.axis_suffix_change(0,this)
+	})
+	
+	$("#right_axis_tick_num").change(function() {
+		ChartBuilder.actions.axis_tick_num_change(0,this)
+	})
+	
+	$("#right_axis_max").keyup(function() {
+		ChartBuilder.actions.axis_max_change(0,this)
+	})
+	
+	$("#right_axis_min").keyup(function() {
+		ChartBuilder.actions.axis_min_change(0,this)
+	})
+	
+	$("#right_axis_tick_override").keyup(function() {
+		ChartBuilder.actions.axis_tick_override_change(0,this)
+	})
+	
+	$("#x_axis_tick_num").change(function() {
+		chart.g.xAxis.ticks = parseInt($(this).val())
+		ChartBuilder.redraw()
+		ChartBuilder.inlineAllStyles();
+	})
+	
+	$("#left_axis_prefix").keyup(function() {
+		ChartBuilder.actions.axis_prefix_change(1,this)
+	})
+
+	$("#left_axis_suffix").keyup(function() {
+		ChartBuilder.actions.axis_suffix_change(1,this)
+	})
+
+	$("#left_axis_tick_num").change(function() {
+		ChartBuilder.actions.axis_tick_num_change(1,this)
+	})
+
+	$("#left_axis_max").keyup(function() {
+		ChartBuilder.actions.axis_max_change(1,this)
+	})
+
+	$("#left_axis_min").keyup(function() {
+		ChartBuilder.actions.axis_min_change(1,this)
+	})
+
+	$("#left_axis_tick_override").keyup(function() {
+		ChartBuilder.actions.axis_tick_override_change(1,this)
+	})
+	
+	$("#x_axis_date_format").change(function() {
+		var val = $(this).val()
+		chart.g.xAxis.formatter = val
+		ChartBuilder.redraw()
+		ChartBuilder.inlineAllStyles();
+	})
+	
+	$("#creditLine").keyup(function() {
+		var val = $(this).val()
+		chart.g.creditline = val
+		chart.g.creditLine.text(chart.g.creditline)
+	})
+	
+	$("#sourceLine").keyup(function() {
+		var val = $(this).val()
+		chart.g.sourceline = val
+		chart.g.sourceLine.text(chart.g.sourceline)
+	})
+	
+	$("#chart_title").keyup(function() {
+		var val = $(this).val()
+		chart.g.title = val
+		chart.resize()
+			.setPadding();
+		ChartBuilder.setChartArea()
+		chart.setYScales()
+			.redraw();
+		ChartBuilder.makeLegendAdjustable()
+		
+		chart.g.titleLine.text(chart.g.title)
+	})
+	
+	$(".downloadLink").click(function() {
+		$(".downloadLink").toggleClass("hide")
+	})
+
+
+})
