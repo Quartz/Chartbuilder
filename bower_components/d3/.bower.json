@@ -1,0 +1,14 @@
+{
+  "name": "d3",
+  "version": "2.10.3",
+  "main": "./d3.v2.js",
+  "homepage": "https://github.com/mbostock/d3",
+  "_release": "2.10.3",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.10.3",
+    "commit": "477060884ca45b3c318bfb46d275820325e7c566"
+  },
+  "_source": "git://github.com/mbostock/d3.git",
+  "_target": "~2.10.3"
+}
