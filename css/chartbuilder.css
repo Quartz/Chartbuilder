@@ -134,13 +134,46 @@ table {
 }
 
 #rightColumn .cbInner .optionBlock {
-	width: 100%;
-	max-width: 200px;
+	padding-right: 1%;
+	padding-left: 1%;
+	margin-right: 1%;
+	margin-left: 1%;
+	margin-top: 1em;
+	width: 96%;
 	float: left;
+	background-color: #f6f6f6;
 }
+#rightColumn .cbInner .optionBlock h2 {
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+#rightColumn .cbInner .optionBlock.topOptionBlock {
+	clear: both;
+}
+
+#rightColumn .cbInner .optionBlock.full {
+	width:100%;
+}
+
+@media (min-width: 950px) {
+	#rightColumn .cbInner .optionBlock {
+		width: 46%;
+	}
+
+}
+
+@media (min-width: 1250px) {
+	#rightColumn .cbInner .optionBlock {
+		width: 29%;
+	}
+
 
 #rightColumn .cbInner h2 {
 	clear: both;
+}
+
+
 }
 
 input,
@@ -152,11 +185,15 @@ select {
 	font-family: 'PTSerif';
 	color: #666666;
 	border: 1px solid #ccc;
-
+	box-sizing: border-box;
+     -webkit-box-sizing:border-box;
+     -moz-box-sizing: border-box;
 }
 
 input[type="text"] {
-	padding: .25em .5em;
+	padding: .25em 2%;
+	width: 96%;
+
 }
 
 label {
@@ -192,12 +229,21 @@ textarea {
 	font-family: Monaco, sans-serif;
 }
 
+@media (min-width: 1250px) {
+	#datainput .inputGroup {
+		float: left;
+		width: 46%;
+		padding-right: 2%;
+		padding-left: 2%;
+
+	}
+}
+
 #dataTable .otherrow {
 	background-color: #eee;
 }
 
 #dataTable {
-  width: 95%;
 	font-size: .85em;
 	overflow-x: scroll;
 	border: 1px solid #ccc;
@@ -290,3 +336,4 @@ a.downloadLink {
 div.colorPicker-swatch {
 	border: none;
 }
+

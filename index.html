@@ -41,19 +41,24 @@
 			    <h1>ChartBuilder</h1>
 			  
   				<div id="chartOptions" class="interfaceCol">
-             <div id="datainput" class="optionBlock">
-                <h2>1. Input your data</h2>
+             <div id="datainput">
+             	<div class="inputGroup">
+             		<h2>1. Input your data</h2>
                 <textarea id="csvInput" class="input-box" name="csvInput" rows="8"></textarea>
-            
-                <h4>Check the format of your data</h4>
+             	</div>
+             	<div class="inputGroup">
+             		<h4>Check the format of your data</h4>
                 <div id="dataTable" class="input-box">
                   <table border=0>
                     <tr><th>Header</th></tr>
                     <tr><td>Data</td></tr>
                   </table>
-              </div>
+              	</div>
+             	</div>
+             	<div class="clearfix"></div>
             </div>
-            <div class="optionBlock">
+
+            <div class="optionBlock topOptionBlock">
               <h2>2. Series Options</h2>
               <div id="seriesItems"></div>
             </div>
@@ -66,7 +71,7 @@
     						<cite>Something like "Data: Bureau of Labor Statistics" or "Data compiled by Factset"</cite></div>
     				</div>
     				<div class="optionBlock">
-   							<h2>3.1 Axis Options</h2>
+   							<h2>4. Right Axis Options</h2>
     						<div id="rightAxisControls">
     							<div class="optionGroup"><label for="right_axis_prefix">Right Axis Prefix</label><input type="text" name="right_axis_prefix" value="" id="right_axis_prefix"></div>
 	    						<div class="optionGroup"><label for="right_axis_suffix">Right Axis Suffix</label><input type="text" name="right_axis_suffix" value="" id="right_axis_suffix"></div>
@@ -81,16 +86,20 @@
     							<div class="optionGroup"><label for="right_axis_min">Right Axis Min</label><input type="text" name="right_axis_min" value="" id="right_axis_min"></div>
     							<div class="optionGroup"><label for="right_axis_tick_override">Right Axis Tick Override</label><input type="text" name="right_axis_tick_override" value="" id="right_axis_tick_override"></div>
     						</div>
-    
+    					</div>
+    					<div class="optionBlock">
     						<div id="leftAxisControls" class="hide">
+    							<h2>4+ Left Axis Options</h2>
     							<div class="optionGroup"><label for="left_axis_prefix">Left Axis Prefix</label><input type="text" name="left_axis_prefix" value="" id="left_axis_prefix"></div>
-    							<div class="optionGroup"><label for="left_axis_suffix">Left Axis Suffix</label><input type="text/submit/hidden/button" name="left_axis_suffix" value="" id="left_axis_suffix"></div>
+    							<div class="optionGroup"><label for="left_axis_suffix">Left Axis Suffix</label><input type="text" name="left_axis_suffix" value="" id="left_axis_suffix"></div>
     							<div class="optionGroup"><label for="left_axis_max">Left Axis Max</label><input type="text" name="left_axis_max" value="" id="left_axis_max"></div>
     							<div class="optionGroup"><label for="left_axis_min">Left Axis Min</label><input type="text" name="left_axis_min" value="" id="left_axis_min"></div>
     							<div class="optionGroup"><label for="left_axis_tick_override">Left Axis Tick Override</label><input type="text" name="left_axis_tick_override" value="" id="left_axis_tick_override" ></div>
     						</div>
-    
-    						
+  
+    					</div>
+    					<div class="optionBlock">
+    					<h2>5. Bottom Axis Options</h2>
     						<div class="optionGroup"><label for="x_axis_tick_num">Number of X Axis Ticks</label><select name="x_axis_tick_num" id="x_axis_tick_num" size="1">
     							<option>2</option>
     							<option>3</option>
@@ -120,7 +129,7 @@
     							<option value="hmm">3:27</option>
     						</select></div>
             </div>
-            <div class="optionBlock">
+            <div class="optionBlock full">
               <h2>4. Export</h2>
               <div class="updateButton" id="createImageButton">
                 <p>Create Image of Chart</p>
@@ -130,7 +139,7 @@
                 <a download="new_chart.svg" id="downloadSVGLink" class="hide downloadLink" href="#" target="_blank">Download SVG of Chart</a>
               </div>
             </div>
-            <div class="optionBlock">
+            <div class="optionBlock full">
               <h4>5. Copy the HTML table of your data (if you want)</h4>
               <textarea  class="input-box"  id="table-html" type="text" rows="10"></textarea>
               
