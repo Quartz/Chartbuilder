@@ -430,10 +430,10 @@ ChartBuilder = {
 		}
 		
 		if(isMultiAxis){
-			$("#leftAxisControls").removeClass("hidden")
+			$("#leftAxisControls").removeClass("hide")
 		}
 		else {
-			$("#leftAxisControls").addClass("hidden")
+			$("#leftAxisControls").addClass("hide")
 		}
 		
 		

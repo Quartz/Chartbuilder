@@ -127,9 +127,15 @@ table {
  * Form items.
  */
 #rightColumn .cbInner .optionGroup {
-	max-width: 200px;
+	width:100%;
 	margin-left: 5px;
 	margin-right: 5px;
+	float: left;
+}
+
+#rightColumn .cbInner .optionBlock {
+	width: 100%;
+	max-width: 200px;
 	float: left;
 }
 
@@ -140,12 +146,13 @@ table {
 input,
 textarea,
 select {
+	width: 100%;
 	display: block;
 	margin-bottom: 1em;
-	width: 95%;
 	font-family: 'PTSerif';
 	color: #666666;
 	border: 1px solid #ccc;
+
 }
 
 input[type="text"] {
@@ -168,6 +175,8 @@ textarea {
 .input-box {
 	max-height: 100px;
 	overflow: scroll;
+	white-space: nowrap;
+	tab-size: 20;
 }
 
 #rightColumn cite {
@@ -196,10 +205,11 @@ textarea {
 
 #dataTable th {
 	font-weight: bold;
+	text-align: right;
 }
 
 #dataTable td {
-	text-align: center;
+	text-align: right;
 	padding: .25em .5em;
 }
 
@@ -272,4 +282,11 @@ textarea {
 
 a.downloadLink {
 	line-height: 2em;
+}
+
+/**
+* Custom Picker Styles
+**/
+div.colorPicker-swatch {
+	border: none;
 }
