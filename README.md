@@ -66,6 +66,28 @@ _steps 2-4 are optional_
 <img src="http://farm4.staticflickr.com/3799/9368896286_97e8450c4b_b.jpg" />
 <img src="http://farm8.staticflickr.com/7330/9366163173_496ee2946f_b.jpg" />
 
+Deploying Chartbuilder
+------------------------
+ChartBuilder is meant to be deployed by an organization and then customized for the design consistency of that organization so that the reporters or other people in that organization can make charts.
+
+###Deploying
+ChartBuild is an HTML/CSS/JS application.  You can easy copy, fork, and install the files wherever.  It can be easily put up on Github Pages.
+
+###Configuration
+Once you deploy it, configuring is either through CSS overrides, custom HTML, or Javascript configuration.
+
+####Chart configuration
+Chart configuration is handled by passing a configuration object through to `ChartBuilder.start()`.
+
+    ChartBuilder.start({
+      colors: ["#ff4cf4","#ffb3ff","#e69ce6","#cc87cc","#b373b3","#995f99"],
+      creditline: 'NewsPost Inc.'
+    });
+
+You can see all the configuration options in the [Gneisschart.js library](https://github.com/Quartz/Chartbuilder/blob/master/js/gneisschart.js).
+
+###Getting started
+
 Why Chartbuilder / Gneisschart
 -----------------
 + You're a writer, blogger, reporter who hates the way screenshotted research reports and excel charts look in your stories
