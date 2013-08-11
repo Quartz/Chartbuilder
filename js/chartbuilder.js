@@ -185,7 +185,9 @@ ChartBuilder = {
 	outputTableAsHtml: function(table_el){
 		var html_str = table_el.parent().html();
 		// throw in some sloppy newline subbing
-		html_str = html_str.replace(/(<(?:tr|tbody|thead))/g, "\n$1");
+		html_str = html_str.replace(/(<(?:tbody|thead))/g, "\n$1");
+		html_str = html_str.replace(/(<\/(?:tr|tbody|thead)>)/g, "$1\n");
+		html_str = html_str.split("<tbody><tr>").join("<tbody>\n<tr>")
 		html_str = $.trim(html_str)
 		$('#table-html').val(html_str);
 	},
