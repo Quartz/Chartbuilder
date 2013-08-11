@@ -273,6 +273,8 @@ ChartBuilder = {
 			.toggleClass("hide")
 			.attr("download",function(){ return filename + "_chartbuilder.svg"
 			})
+
+		$(".downloadLinks").toggleClass("hide")
 		
 		var icon = this.setFavicon()
 		this.storeLocalChart(filename)	
