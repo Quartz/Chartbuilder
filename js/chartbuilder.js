@@ -307,16 +307,14 @@ ChartBuilder = {
 				<label for="'+this.idSafe(s.name)+'_color">'+s.name+'</label>\
 				<input id="'+this.idSafe(s.name)+'_color" name="'+this.idSafe(s.name)+'" type="text" />\
 				<select class="typePicker" id="'+this.idSafe(s.name)+'_type">\
-				<option '+(s.type=="line"?"selected":"")+' value="line">Line</option>\
-				<option '+(s.type=="column"?"selected":"")+' value="column">Column</option>\
-				<option '+(s.type=="bargrid"?"selected":"")+' value="bargrid">Bar Grid</option>\
-				<option '+(s.type=="scatter"?"selected":"")+' value="scatter">Scatter</option>\
-				<label for="'+this.idSafe(s.name)+'_check">2nd Axis</label>\
-				<input id="'+this.idSafe(s.name)+'_check" name="'+this.idSafe(s.name)+'_check" type="checkbox" />\
+					<option '+(s.type=="line"?"selected":"")+' value="line">Line</option>\
+					<option '+(s.type=="column"?"selected":"")+' value="column">Column</option>\
+					<option '+(s.type=="bargrid"?"selected":"")+' value="bargrid">Bar Grid</option>\
+					<option '+(s.type=="scatter"?"selected":"")+' value="scatter">Scatter</option>\
 				</select>\
+				<input id="'+this.idSafe(s.name)+'_check" name="'+this.idSafe(s.name)+'_check" type="checkbox" />\
 				<div class="clearfix"></div>\
-			</div>\
-			<div class="clearfix"></div>');
+			</div>');
 			
 			var color = ""
 			
