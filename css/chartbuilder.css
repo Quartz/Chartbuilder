@@ -8,8 +8,10 @@
  * General
  */
 body {
-	overflow-y: scroll;
 	min-width: 800px; 
+	width: 100%;
+	overflow-y: scroll;
+	overflow-x: hidden;
 	line-height: 1.1em;
 	font-size: 0.75em;
 	color: #666;
@@ -153,7 +155,7 @@ table {
 }
 
 #rightColumn .cbInner .optionBlock.full {
-	width:100%;
+	width:96%;
 }
 
 @media (min-width: 950px) {
