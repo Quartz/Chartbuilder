@@ -185,7 +185,9 @@ ChartBuilder = {
 	outputTableAsHtml: function(table_el){
 		var html_str = table_el.parent().html();
 		// throw in some sloppy newline subbing
-		html_str = html_str.replace(/(<(?:tr|tbody|thead))/g, "\n$1");
+		html_str = html_str.replace(/(<(?:tbody|thead))/g, "\n$1");
+		html_str = html_str.replace(/(<\/(?:tr|tbody|thead)>)/g, "$1\n");
+		html_str = html_str.split("<tbody><tr>").join("<tbody>\n<tr>")
 		html_str = $.trim(html_str)
 		$('#table-html').val(html_str);
 	},
@@ -271,6 +273,8 @@ ChartBuilder = {
 			.toggleClass("hide")
 			.attr("download",function(){ return filename + "_chartbuilder.svg"
 			})
+
+		$(".downloadLinks").toggleClass("hide")
 		
 		var icon = this.setFavicon()
 		this.storeLocalChart(filename)	
@@ -307,16 +311,14 @@ ChartBuilder = {
 				<label for="'+this.idSafe(s.name)+'_color">'+s.name+'</label>\
 				<input id="'+this.idSafe(s.name)+'_color" name="'+this.idSafe(s.name)+'" type="text" />\
 				<select class="typePicker" id="'+this.idSafe(s.name)+'_type">\
-				<option '+(s.type=="line"?"selected":"")+' value="line">Line</option>\
-				<option '+(s.type=="column"?"selected":"")+' value="column">Column</option>\
-				<option '+(s.type=="bargrid"?"selected":"")+' value="bargrid">Bar Grid</option>\
-				<option '+(s.type=="scatter"?"selected":"")+' value="scatter">Scatter</option>\
-				<label for="'+this.idSafe(s.name)+'_check">2nd Axis</label>\
-				<input id="'+this.idSafe(s.name)+'_check" name="'+this.idSafe(s.name)+'_check" type="checkbox" />\
+					<option '+(s.type=="line"?"selected":"")+' value="line">Line</option>\
+					<option '+(s.type=="column"?"selected":"")+' value="column">Column</option>\
+					<option '+(s.type=="bargrid"?"selected":"")+' value="bargrid">Bar Grid</option>\
+					<option '+(s.type=="scatter"?"selected":"")+' value="scatter">Scatter</option>\
 				</select>\
+				<input id="'+this.idSafe(s.name)+'_check" name="'+this.idSafe(s.name)+'_check" type="checkbox" />\
 				<div class="clearfix"></div>\
-			</div>\
-			<div class="clearfix"></div>');
+			</div>');
 			
 			var color = ""
 			
@@ -430,10 +432,10 @@ ChartBuilder = {
 		}
 		
 		if(isMultiAxis){
-			$("#leftAxisControls").removeClass("hidden")
+			$("#leftAxisControls").removeClass("hide")
 		}
 		else {
-			$("#leftAxisControls").addClass("hidden")
+			$("#leftAxisControls").addClass("hide")
 		}
 		
 		
