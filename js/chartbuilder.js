@@ -7,6 +7,7 @@ ChartBuilder = {
 						"006DBF","70B8FF","5DA1E1","4B89C4","3871A6","255A88","13436B","002B4D",
 						"9300BF","E770FF","CB5DE1","AE4BC4","9238A6","752588","59136B","3C004D"],
 	curRaw: "",
+	currentlyShowingOptionBlock: 0,	
 	getNewData: function(csv) {
 		// Split the csv information by lines
 		var csv_array = csv.split("\n");
@@ -304,7 +305,7 @@ ChartBuilder = {
 		this.customLegendLocaion = false;
 		var colIndex = g.sbt.line.length, lineIndex = 0, bargridIndex = 0, scatterIndex = 0;
 		var seriesContainer = $("#seriesItems")
-		var isMultiAxis = false;
+		this.isMultiAxis = false;
 		for (var i=0; i < g.series.length; i++) {
 			s = g.series[i]
 			seriesItem = $('<div class="seriesItemGroup">\
@@ -346,10 +347,10 @@ ChartBuilder = {
 			
 			if(g.series[i].axis == 1) {
 				axer.prop("checked",true)
-				if(!g.yAxis[1].color || !isMultiAxis) {
+				if(!g.yAxis[1].color || !this.isMultiAxis) {
 					g.yAxis[1].color = picker.val()
 				}
-				isMultiAxis = true;
+				this.isMultiAxis = true;
 			}
 			else {
 				axer.prop("checked",false)
@@ -430,14 +431,6 @@ ChartBuilder = {
 			type: g.xAxis.type,
 			formatter: g.xAxis.formatter
 		}
-		
-		if(isMultiAxis){
-			$("#leftAxisControls").removeClass("hide")
-		}
-		else {
-			$("#leftAxisControls").addClass("hide")
-		}
-		
 		
 		var state = {
 			container: g.container,
@@ -546,6 +539,66 @@ ChartBuilder = {
 	idSafe: function(s) {
 		s = s.replace(/[^\w\d]+/gi,"-")
 		return s
+	},
+	maybeShowHideOptionNavigationButtons: function () {
+		var blocks = jQuery(".optionBlock");
+		if(this.currentlyShowingOptionBlock > 0 && this.currentlyShowingOptionBlock <= blocks.length - 1) {
+			jQuery("#previousOption").show();
+		}
+		else {
+			jQuery("#previousOption").hide();
+		}
+		
+		if(this.currentlyShowingOptionBlock >= 0 && this.currentlyShowingOptionBlock < blocks.length - 1) {
+			jQuery("#nextOption").show();
+		}
+		else {
+			jQuery("#nextOption").hide();
+		}
+	},
+	showNextOptionBlock: function() {
+		var blocks = jQuery(".optionBlock");
+	
+		if(this.currentlyShowingOptionBlock < blocks.length - 1) {
+			this.currentlyShowingOptionBlock++;
+		}
+		
+		blocks.css("display", "none");
+		var option = blocks.slice(this.currentlyShowingOptionBlock, this.currentlyShowingOptionBlock + 1);
+		if(!this.isMultiAxis)
+		{
+			while(option.attr('id') === "leftAxisControls")
+			{
+				this.currentlyShowingOptionBlock++;
+				option = blocks.slice(this.currentlyShowingOptionBlock, this.currentlyShowingOptionBlock + 1);
+			}								
+		}
+		option.css("display", "block");
+
+		this.maybeShowHideOptionNavigationButtons();
+	},
+	showPreviousOptionBlock: function() {
+		var blocks = jQuery(".optionBlock");
+		
+		if(this.currentlyShowingOptionBlock >= 1) {
+			this.currentlyShowingOptionBlock--;
+		}
+		
+		blocks.css("display", "none");
+		
+		var option = blocks.slice(this.currentlyShowingOptionBlock, this.currentlyShowingOptionBlock + 1);
+		
+		if(!this.isMultiAxis)
+		{
+			while(option.attr('id') === "leftAxisControls")
+			{
+				this.currentlyShowingOptionBlock--;
+				option = blocks.slice(this.currentlyShowingOptionBlock, this.currentlyShowingOptionBlock + 1);
+			}								
+		}
+		option.css("display", "block");
+		
+		this.maybeShowHideOptionNavigationButtons();
 	},
 	addCommas: function(nStr)
 	{
@@ -671,10 +724,10 @@ ChartBuilder.start = function(config) {
   	
   	//construct a Gneisschart using default data
   	//this should change to be more like this http://bost.ocks.org/mike/chart/
-  	chart = Gneiss.build(chartConfig)
+  	chart = Gneiss.build(chartConfig);
   	
   	//scale it up so it looks good on retina displays
-  	$("#chart").attr("transform","scale(2)")
+  	$("#chart").attr("transform","scale(2)");
   	
   	//populate the input with the data that is in the chart
   	$("#csvInput").val(function() {
@@ -695,7 +748,7 @@ ChartBuilder.start = function(config) {
   			data[i] = data[i].join("\t")
   		}; 
   		return data.join("\n")
-  	})
+  	});
   
   
   	//load previously made charts
@@ -703,25 +756,25 @@ ChartBuilder.start = function(config) {
   	var chartSelect = d3.select("#previous_charts")
   					.on("change",function() {
   						ChartBuilder.loadLocalChart(d3.select(this.selectedOptions[0]).data()[0])
-  					})
+  					});
   	
   	chartSelect.selectAll("option")
   			.data(savedCharts)
   			.enter()
   			.append("option")
-  			.text(function(d){return d.name?d.name:"Untitled Chart"})
+  			.text(function(d){return d.name?d.name:"Untitled Chart"});
   			
   	
   	$("#createImageButton").click(function() {
   		ChartBuilder.inlineAllStyles();
   		ChartBuilder.createChartImage();
-  	})
+  	});
   	
   	$("#csvInput").bind("paste", function(e) {
   		//do nothing special
-  	})
-  	
-  	/*
+  	});
+										
+	  /*
   	//
   	// add interactions to chartbuilder interface
   	//
@@ -783,74 +836,74 @@ ChartBuilder.start = function(config) {
   			ChartBuilder.inlineAllStyles();
   		}
   
-  	}).keyup() 
+  	}).keyup();
   	
   	$("#right_axis_prefix").keyup(function() {
   		ChartBuilder.actions.axis_prefix_change(0,this)
-  	})
+  	});
   	
   	$("#right_axis_suffix").keyup(function() {
   		ChartBuilder.actions.axis_suffix_change(0,this)
-  	})
+  	});
   	
   	$("#right_axis_tick_num").change(function() {
   		ChartBuilder.actions.axis_tick_num_change(0,this)
-  	})
+  	});
   	
   	$("#right_axis_max").keyup(function() {
   		ChartBuilder.actions.axis_max_change(0,this)
-  	})
+  	});
   	
   	$("#right_axis_min").keyup(function() {
   		ChartBuilder.actions.axis_min_change(0,this)
-  	})
+  	});
   	
   	$("#right_axis_tick_override").keyup(function() {
   		ChartBuilder.actions.axis_tick_override_change(0,this)
-  	})
+  	});
   	
   	$("#x_axis_tick_num").change(function() {
   		chart.g.xAxis.ticks = parseInt($(this).val())
   		ChartBuilder.redraw()
   		ChartBuilder.inlineAllStyles();
-  	})
+  	});
   	
   	$("#left_axis_prefix").keyup(function() {
   		ChartBuilder.actions.axis_prefix_change(1,this)
-  	})
+  	});
   
   	$("#left_axis_suffix").keyup(function() {
   		ChartBuilder.actions.axis_suffix_change(1,this)
-  	})
+  	});
   
   	$("#left_axis_tick_num").change(function() {
   		ChartBuilder.actions.axis_tick_num_change(1,this)
-  	})
+  	});
   
   	$("#left_axis_max").keyup(function() {
   		ChartBuilder.actions.axis_max_change(1,this)
-  	})
+  	});
   
   	$("#left_axis_min").keyup(function() {
   		ChartBuilder.actions.axis_min_change(1,this)
-  	})
+  	});
   
   	$("#left_axis_tick_override").keyup(function() {
   		ChartBuilder.actions.axis_tick_override_change(1,this)
-  	})
+  	});
   	
   	$("#x_axis_date_format").change(function() {
   		var val = $(this).val()
   		chart.g.xAxis.formatter = val
   		ChartBuilder.redraw()
   		ChartBuilder.inlineAllStyles();
-  	})
+  	});
   	
   	$("#creditLine").keyup(function() {
   		var val = $(this).val()
   		chart.g.creditline = val
   		chart.g.creditLine.text(chart.g.creditline)
-  	})
+  	});
   	
   	$("#sourceLine").keyup(function() {
   		var val = $(this).val()
@@ -869,12 +922,10 @@ ChartBuilder.start = function(config) {
   		ChartBuilder.makeLegendAdjustable()
   		
   		chart.g.titleLine.text(chart.g.title)
-  	})
+  	});
   	
   	$(".downloadLink").click(function() {
   		$(".downloadLink").toggleClass("hide")
-  	})
-  
-  
+  	}); 
   })
 };

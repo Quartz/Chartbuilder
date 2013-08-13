@@ -42,12 +42,12 @@
 			    <h1>ChartBuilder</h1>
 			  
   				<div id="chartOptions" class="interfaceCol">
-             <div id="datainput">
+             <div id="datainput" class="optionBlock full">
              	<div class="inputGroup">
-             		<h2>1. Input your data</h2>
+             		<h2>Input your data</h2>
                 <textarea id="csvInput" class="input-box" name="csvInput" rows="8"></textarea>
              	</div>
-             	<div class="inputGroup">
+             	<div class="inputGroup" class="optionBlock full">
              		<h4>Check the format of your data</h4>
                 <div id="dataTable" class="input-box">
                   <table border=0>
@@ -57,78 +57,96 @@
               	</div>
              	</div>
              	<div class="clearfix"></div>
+							
+              <div class="previousCharts">
+                <div class="optionGroup">
+                  <label for="previous_charts">Previously Created Charts</label>
+                  <select name="previous_charts" id="previous_charts"></select>
+                </div>
+              </div>
             </div>
+						            
+            <div class="optionBlock full hide">
+              <h2>Chart Options</h2>
+              <div class="optionGroup"><label for="chart_title">Title</label><input type="text" name="chart_title" value="" id="chart_title"></div>
+              <div class="optionGroup"><label for="credit">Credit</label><input id="creditLine" type="text" name="credit" value="Made with Chartbuilder"></div>
+              <div class="optionGroup"><label for="source">Source</label><input id="sourceLine" type="text" name="source" value="Data: ">
+                <cite>Something like "Data: Bureau of Labor Statistics" or "Data compiled by Factset"</cite>
+              </div>
+    				</div>
 
-            <div class="optionBlock topOptionBlock">
-              <h2>2. Series Options</h2>
+            <div class="optionBlock full hide">
+              <h2>Series Options</h2>
               <div id="seriesItems"></div>
             </div>
-  					
-  					<div class="optionBlock">
-    					<h2>3. Chart Options</h2>
-    						<div class="optionGroup"><label for="chart_title">Title</label><input type="text" name="chart_title" value="" id="chart_title"></div>
-    						<div class="optionGroup"><label for="credit">Credit</label><input id="creditLine" type="text" name="credit" value="Made with Chartbuilder"></div>
-    						<div class="optionGroup"><label for="source">Source</label><input id="sourceLine" type="text" name="source" value="Data: ">
-    						<cite>Something like "Data: Bureau of Labor Statistics" or "Data compiled by Factset"</cite></div>
-    				</div>
-    				<div class="optionBlock">
-   							<h2>4. Right Axis Options</h2>
-    						<div id="rightAxisControls">
-    							<div class="optionGroup"><label for="right_axis_prefix">Right Axis Prefix</label><input type="text" name="right_axis_prefix" value="" id="right_axis_prefix"></div>
-	    						<div class="optionGroup"><label for="right_axis_suffix">Right Axis Suffix</label><input type="text" name="right_axis_suffix" value="" id="right_axis_suffix"></div>
-	    						<div class="optionGroup"><label for="right_axis_tick_num">Number of Y Axis Ticks</label><select name="right_axis_tick_num" id="right_axis_tick_num" size="1">
-	    							<option>2</option>
-	    							<option>3</option>
-	    							<option selected >4</option>
-	    							<option>5</option>
-	    							<option>6</option>
-	    						</select></div>
-    							<div class="optionGroup"><label for="right_axis_max">Right Axis Max</label><input type="text" name="right_axis_max" value="" id="right_axis_max"></div>
-    							<div class="optionGroup"><label for="right_axis_min">Right Axis Min</label><input type="text" name="right_axis_min" value="" id="right_axis_min"></div>
-    							<div class="optionGroup"><label for="right_axis_tick_override">Right Axis Tick Override</label><input type="text" name="right_axis_tick_override" value="" id="right_axis_tick_override"></div>
-    						</div>
-    					</div>
-    					<div id="leftAxisControls" class="optionBlock hide">
-  							<h2>4+ Left Axis Options</h2>
-  							<div class="optionGroup"><label for="left_axis_prefix">Left Axis Prefix</label><input type="text" name="left_axis_prefix" value="" id="left_axis_prefix"></div>
-  							<div class="optionGroup"><label for="left_axis_suffix">Left Axis Suffix</label><input type="text" name="left_axis_suffix" value="" id="left_axis_suffix"></div>
-  							<div class="optionGroup"><label for="left_axis_max">Left Axis Max</label><input type="text" name="left_axis_max" value="" id="left_axis_max"></div>
-  							<div class="optionGroup"><label for="left_axis_min">Left Axis Min</label><input type="text" name="left_axis_min" value="" id="left_axis_min"></div>
-  							<div class="optionGroup"><label for="left_axis_tick_override">Left Axis Tick Override</label><input type="text" name="left_axis_tick_override" value="" id="left_axis_tick_override" ></div>
-    					</div>
-    					<div class="optionBlock">
-    					<h2>5. Bottom Axis Options</h2>
-    						<div class="optionGroup"><label for="x_axis_tick_num">Number of X Axis Ticks</label><select name="x_axis_tick_num" id="x_axis_tick_num" size="1">
-    							<option>2</option>
-    							<option>3</option>
-    							<option>4</option>
-    							<option selected>5</option>
-    							<option>6</option>
-    							<option>7</option>
-    							<option>8</option>
-    							<option>9</option>
-    							<option>10</option>
-    							<option>11</option>
-    							<option>12</option>
-    							<option>13</option>
-    							<option>14</option>
-    							<option>15</option>
-    						</select></div>
-    						<div class="optionGroup"><label for="x_axis_date_format">X Axis Date Format</label><select name="x_axis_date_format" id="x_axis_date_format">
-    							<option value="mmddyyyy">2/25/2012</option>
-    							<option value="ddmmyyyy">25/2/2012</option>
-    							<option value="mmdd">2/25</option>
-    							<option value="Mdd">Feb. 25</option>
-    							<option value="mmyy">2/13</option>
-    							<option value="yy">'13</option>
-    							<option value="yyyy">2013</option>
-    							<option value="MM">February</option>
-    							<option selected value="M">Feb.</option>
-    							<option value="hmm">3:27</option>
-    						</select></div>
+						
+            <div class="optionBlock full hide">
+              <h2>Right Axis Options</h2>
+              <div id="rightAxisControls">
+                <div class="optionGroup"><label for="right_axis_prefix">Right Axis Prefix</label><input type="text" name="right_axis_prefix" value="" id="right_axis_prefix"></div>
+                <div class="optionGroup"><label for="right_axis_suffix">Right Axis Suffix</label><input type="text" name="right_axis_suffix" value="" id="right_axis_suffix"></div>
+                <div class="optionGroup"><label for="right_axis_tick_num">Number of Y Axis Ticks</label><select name="right_axis_tick_num" id="right_axis_tick_num" size="1">
+                  <option>2</option>
+                  <option>3</option>
+                  <option selected >4</option>
+                  <option>5</option>
+                  <option>6</option>
+                </select></div>
+                <div class="optionGroup"><label for="right_axis_max">Right Axis Max</label><input type="text" name="right_axis_max" value="" id="right_axis_max"></div>
+                <div class="optionGroup"><label for="right_axis_min">Right Axis Min</label><input type="text" name="right_axis_min" value="" id="right_axis_min"></div>
+                <div class="optionGroup"><label for="right_axis_tick_override">Right Axis Tick Override</label><input type="text" name="right_axis_tick_override" value="" id="right_axis_tick_override"></div>
+              </div>
             </div>
-            <div class="optionBlock full">
-              <h2>4. Export</h2>
+						
+            <div id="leftAxisControls" class="optionBlock hide full">
+              <h2>Left Axis Options</h2>
+              <div class="optionGroup"><label for="left_axis_prefix">Left Axis Prefix</label><input type="text" name="left_axis_prefix" value="" id="left_axis_prefix"></div>
+              <div class="optionGroup"><label for="left_axis_suffix">Left Axis Suffix</label><input type="text" name="left_axis_suffix" value="" id="left_axis_suffix"></div>
+              <div class="optionGroup"><label for="left_axis_max">Left Axis Max</label><input type="text" name="left_axis_max" value="" id="left_axis_max"></div>
+              <div class="optionGroup"><label for="left_axis_min">Left Axis Min</label><input type="text" name="left_axis_min" value="" id="left_axis_min"></div>
+              <div class="optionGroup"><label for="left_axis_tick_override">Left Axis Tick Override</label><input type="text" name="left_axis_tick_override" value="" id="left_axis_tick_override" ></div>
+            </div>
+						
+            <div class="optionBlock hide full">
+              <h2>Bottom Axis Options</h2>
+              <div class="optionGroup">
+                <label for="x_axis_tick_num">Number of X Axis Ticks</label>
+                <select name="x_axis_tick_num" id="x_axis_tick_num" size="1">
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option selected>5</option>
+                  <option>6</option>
+                  <option>7</option>
+                  <option>8</option>
+                  <option>9</option>
+                  <option>10</option>
+                  <option>11</option>
+                  <option>12</option>
+                  <option>13</option>
+                  <option>14</option>
+                  <option>15</option>
+                </select>
+              </div>
+              <div class="optionGroup">
+                <label for="x_axis_date_format">X Axis Date Format</label>
+                <select name="x_axis_date_format" id="x_axis_date_format">
+                  <option value="mmddyyyy">2/25/2012</option>
+                  <option value="ddmmyyyy">25/2/2012</option>
+                  <option value="mmdd">2/25</option>
+                  <option value="Mdd">Feb. 25</option>
+                  <option value="mmyy">2/13</option>
+                  <option value="yy">'13</option>
+                  <option value="yyyy">2013</option>
+                  <option value="MM">February</option>
+                  <option selected value="M">Feb.</option>
+                  <option value="hmm">3:27</option>
+                </select>
+              </div>
+            </div>
+						
+            <div class="optionBlock hide full">
+              <h2>Export</h2>
               <div class="updateButton" id="createImageButton">
                 <p>Create Image of Chart</p>
               </div>
@@ -136,20 +154,16 @@
                 <a download="new_chart.png" id="downloadImageLink" class="hide downloadLink" href="#" target="_blank">Download&nbsp;Image&nbsp;of&nbsp;Chart</a> or 
                 <a download="new_chart.svg" id="downloadSVGLink" class="hide downloadLink" href="#" target="_blank">Download&nbsp;SVG&nbsp;of&nbsp;Chart</a>
               </div>
-            </div>
-            <div class="optionBlock full">
               <h4>5. Copy the HTML table of your data (if you want)</h4>
               <textarea  class="input-box"  id="table-html" type="text" rows="10"></textarea>
-              
-              <div class="previousCharts">
-                <div class="optionGroup"><label for="previous_charts">Previously Created Charts</label>
-                <select name="previous_charts" id="previous_charts"></select>
-              </div>
             </div>
             <div class="clearfix"></div>
-  				</div>
-  				
-  				<div id="currentSeries" class="interfaceCol"></div>
+          </div>
+					
+          <button type="button" id="previousOption" style="display:none" onclick="ChartBuilder.showPreviousOptionBlock()">Previous</button>
+          <button type="button" id="nextOption" onclick="ChartBuilder.showNextOptionBlock()">Next</button>
+					
+          <div id="currentSeries" class="interfaceCol"></div>
   			</div>			
 			</div>
       <div id="blankColumn" class="column"></div>
