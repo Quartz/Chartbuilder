@@ -237,7 +237,7 @@ ChartBuilder = {
 		}
 	},
 	createChartImage: function() {
-
+		// Create PNG image
 		var canvas = document.getElementById("canvas")
 		canvas.width = $("#chartContainer").width() * 2
 		canvas.height = $("#chartContainer").height() *2
@@ -260,22 +260,19 @@ ChartBuilder = {
 		
 		
 		$("#downloadImageLink").attr("href",canvas.toDataURL("png"))
-			.toggleClass("hide")
 			.attr("download",function(){ return filename + "_chartbuilder.png"
 			});
 			
 			
-			var svgString = $("#chartContainer").html()
-			//add in all the things that validate SVG
-			svgString = '<?xml version="1.1" encoding="UTF-8" standalone="no"?> <svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg"' + svgString.split("<svg ")[1]
-			
-		$("#downloadSVGLink").attr("href","data:text/svg,"+ encodeURI(svgString.split("PTSerif").join("PT Serif")) )
-			.toggleClass("hide")
-			.attr("download",function(){ return filename + "_chartbuilder.svg"
-			})
-
-		$(".downloadLinks").toggleClass("hide")
+		// Create SVG image
+		var svgString = $("#chartContainer").html()
+		//add in all the things that validate SVG
+		svgString = '<?xml version="1.1" encoding="UTF-8" standalone="no"?> <svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg"' + svgString.split("<svg ")[1]
 		
+	$("#downloadSVGLink").attr("href","data:text/svg,"+ encodeURI(svgString.split("PTSerif").join("PT Serif")) )
+		.attr("download",function(){ return filename + "_chartbuilder.svg"
+		})
+
 		var icon = this.setFavicon()
 		this.storeLocalChart(filename)	
 		
@@ -299,7 +296,6 @@ ChartBuilder = {
 	},
 	redraw: function() {
 		$(".seriesItemGroup").detach()
-		$(".downloadLink").addClass("hide")
 		var g = chart.g, s, picker;
 		this.customLegendLocaion = false;
 		var colIndex = g.sbt.line.length, lineIndex = 0, bargridIndex = 0, scatterIndex = 0;
@@ -712,9 +708,14 @@ ChartBuilder.start = function(config) {
   			.text(function(d){return d.name?d.name:"Untitled Chart"})
   			
   	
-  	$("#createImageButton").click(function() {
+        $("#createImageButton").click(function() {
   		ChartBuilder.inlineAllStyles();
-  		ChartBuilder.createChartImage();
+
+		if($("#downloadLinksDiv").hasClass("hide")) {
+			ChartBuilder.createChartImage();
+		}
+
+		$("#downloadLinksDiv").toggleClass("hide");
   	})
   	
   	$("#csvInput").bind("paste", function(e) {
@@ -871,10 +872,5 @@ ChartBuilder.start = function(config) {
   		chart.g.titleLine.text(chart.g.title)
   	})
   	
-  	$(".downloadLink").click(function() {
-  		$(".downloadLink").toggleClass("hide")
-  	})
-  
-  
   })
 };
