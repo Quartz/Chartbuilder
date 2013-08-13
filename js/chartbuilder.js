@@ -708,7 +708,7 @@ ChartBuilder.start = function(config) {
   			.text(function(d){return d.name?d.name:"Untitled Chart"})
   			
   	
-        $("#createImageButton").click(function() {
+  		$("#createImageButton").click(function() {
   		ChartBuilder.inlineAllStyles();
 
 		if($("#downloadLinksDiv").hasClass("hide")) {
