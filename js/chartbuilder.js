@@ -607,6 +607,14 @@ ChartBuilder = {
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
 		}
+	},
+	showInvalidData: function() {
+		$("#inputDataHeading").addClass("inputDataHInvData");
+		$("#invalidDataSpan").removeClass("hide");
+	},
+	hideInvalidData: function() {
+		$("#inputDataHeading").removeClass("inputDataHInvData");
+		$("#invalidDataSpan").addClass("hide");
 	}
 }
 
@@ -731,9 +739,7 @@ ChartBuilder.start = function(config) {
   	$("#csvInput").keyup(function() {
   		//check if the data is different
   		if( $(this).val() != ChartBuilder.curRaw) {
-  			
   			//cache the the raw textarea value
-  			ChartBuilder.oldRaw = ChartBuilder.curRaw;
   			ChartBuilder.curRaw = $(this).val()
   			
   			if($("#right_axis_max").val().length == 0 && $("#right_axis_min").val().length == 0) {
@@ -747,15 +753,16 @@ ChartBuilder.start = function(config) {
   			var csv = $("#csvInput").val();
   			var newData = ChartBuilder.getNewData(csv);
   			if(newData == null) {
-  				ChartBuilder.curRaw = ChartBuilder.oldRaw;
+				ChartBuilder.showInvalidData();
   				return;
   			}
   
   			dataObj = ChartBuilder.makeDataObj(newData);
   			if(dataObj == null) {
-  				ChartBuilder.curRaw = ChartBuilder.oldRaw;
+				ChartBuilder.showInvalidData();
   				return;
   			}
+			ChartBuilder.hideInvalidData();
   
   			ChartBuilder.createTable(newData, dataObj.datetime);
   			
