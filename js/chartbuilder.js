@@ -267,7 +267,7 @@ ChartBuilder = {
 		// Create SVG image
 		var svgString = $("#chartContainer").html()
 		//add in all the things that validate SVG
-		svgString = '<?xml version="1.1" encoding="UTF-8" standalone="no"?> <svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg"' + svgString.split("<svg ")[1]
+		svgString = '<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n<svg ' + svgString.split("<svg ")[1]
 		
 	$("#downloadSVGLink").attr("href","data:text/svg,"+ encodeURI(svgString.split("PTSerif").join("PT Serif")) )
 		.attr("download",function(){ return filename + "_chartbuilder.svg"
