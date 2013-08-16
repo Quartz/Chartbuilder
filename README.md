@@ -105,4 +105,4 @@ More about that here http://yanofsky.info/demos/chartbuilder/slides/
 Gneisschart was created to assist in the above as well as establish the starting point for a touch focused responsive charting library.
 
 ###Styling the chart
-Chart styles are contained in `css/gneisschart.css`. The color palette is defined in `config/default_config.js`
+Chart styles are contained in `css/gneisschart.css`. The color palette is defined in the configuration object
