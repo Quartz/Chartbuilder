@@ -598,6 +598,9 @@ ChartBuilder = {
 	},
 	addCommas: function(nStr)
 	{
+		if(nStr.indexOf("/") >= 0 || nStr.indexOf("-") >= 0) {
+			return nStr;
+		}
 		nStr += '';
 		x = nStr.split('.');
 		x1 = x[0];
