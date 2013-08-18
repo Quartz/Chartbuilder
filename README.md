@@ -22,6 +22,7 @@ How to use Chartbuilder
 If you are not interested in customizing the styles of your charts use the hosted version: http://quartz.github.io/Chartbuilder/
 
 Alternatively: 
+
 1. [Download source](https://github.com/Quartz/Chartbuilder/archive/master.zip) (and unzip)
 3. from the terminal navigate to the source folder (on a Mac: `cd ~/Downloads/Chartbuilder-master/`) 
 4. run `python -m SimpleHTTPServer`
