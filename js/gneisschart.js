@@ -95,28 +95,28 @@ var Gneiss = {
 		"Mdd": function(d) {
 			var month = d.getMonth() + 1;
 			if(month == 5) {
-				return d.format('{Mon}') + " "+ Number(d.getDate());
+				return d.format('{Mon}') + " " + d.getDate();
 			} 
 			else { 
-				return d.format('{Mon}.') + " "+ Number(d.getDate());
+				return d.format('{Mon}.') + " " + d.getDate();
 			}
 		},
 		"ddM": function(d) {
 			var month = d.getMonth() + 1;
 			if(month == 5) {
-				return Number(d.getDate()) + " "+ d.format('{mon}');
+				return "" + d.getDate() + " " + d.format('{Mon}');
 			} 
 			else { 
-				return Number(d.getDate()) + " "+ d.format('{mon}.');
+				return "" + d.getDate() + " " + d.format('{Mon}.');
 			}
 		},
 		"mmyy": function(d) { return [d.getMonth() + 1, String(d.getFullYear()).split("").splice(2,2).join("")].join("/"); },
 		"yy": function(d) { return "’" + String(d.getFullYear()).split("").splice(2,2).join(""); },
-		"yyyy": function(d) { return d.getFullYear(); },
+		"yyyy": function(d) { return "" + d.getFullYear(); },
 		"MM": function(d) {
 			var month = d.getMonth() + 1;
 			if(month == 1) {
-				return d.getFullYear();
+				return "" + d.getFullYear();
 			}
 			else {
 				return d.format('{Month}');
