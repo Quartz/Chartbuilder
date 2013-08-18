@@ -44,7 +44,8 @@
   				<div id="chartOptions" class="interfaceCol">
              <div id="datainput" class="optionBlock full">
              	<div class="inputGroup">
-             		<h2>Input your data</h2>
+                <h2>Input your data</h2>
+                <span id="invalidDataSpan" class="hide">Warning: Data is Invalid</span>
                 <textarea id="csvInput" class="input-box" name="csvInput" rows="8"></textarea>
              	</div>
              	<div class="inputGroup" class="optionBlock full">
@@ -150,9 +151,9 @@
               <div class="updateButton" id="createImageButton">
                 <p>Create Image of Chart</p>
               </div>
-              <div class="downloadLinks hide">
-                <a download="new_chart.png" id="downloadImageLink" class="hide downloadLink" href="#" target="_blank">Download&nbsp;Image&nbsp;of&nbsp;Chart</a> or 
-                <a download="new_chart.svg" id="downloadSVGLink" class="hide downloadLink" href="#" target="_blank">Download&nbsp;SVG&nbsp;of&nbsp;Chart</a>
+              <div id="downloadLinksDiv" class="downloadLinks hide">
+                <a download="new_chart.png" id="downloadImageLink" class="downloadLink" href="#" target="_blank">Download&nbsp;Image&nbsp;of&nbsp;Chart</a> or 
+                <a download="new_chart.svg" id="downloadSVGLink" class="downloadLink" href="#" target="_blank">Download&nbsp;SVG&nbsp;of&nbsp;Chart</a>
               </div>
               <h4>5. Copy the HTML table of your data (if you want)</h4>
               <textarea  class="input-box"  id="table-html" type="text" rows="10"></textarea>
