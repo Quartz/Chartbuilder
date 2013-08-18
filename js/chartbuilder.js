@@ -371,7 +371,7 @@ ChartBuilder = {
 			})
 			
 			axer.change(function() {
-				var axis = $(this).is(':checked')?1:0;
+				var axis = $(this).is(':checked') ? 1 : 0;
 				chart.g.series[$(this).parent().data().index].axis = axis
 				
 				if(!chart.g.yAxis[axis]){
@@ -808,16 +808,16 @@ ChartBuilder.start = function(config) {
   			var csv = $("#csvInput").val();
   			var newData = ChartBuilder.getNewData(csv);
   			if(newData == null) {
-				ChartBuilder.showInvalidData();
+					ChartBuilder.showInvalidData();
   				return;
   			}
   
   			dataObj = ChartBuilder.makeDataObj(newData);
   			if(dataObj == null) {
-				ChartBuilder.showInvalidData();
+					ChartBuilder.showInvalidData();
   				return;
   			}
-			ChartBuilder.hideInvalidData();
+				ChartBuilder.hideInvalidData();
   
   			ChartBuilder.createTable(newData, dataObj.datetime);
   			
