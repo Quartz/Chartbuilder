@@ -19,12 +19,14 @@ Chartbuilder is the final step in charting. Paste data into it and export an svg
 How to use Chartbuilder
 ------------------------
 ###Getting started
+If you are not interested in customizing the styles of your charts use the hosted version: http://quartz.github.io/Chartbuilder/
+
+Alternatively: 
 1. [Download source](https://github.com/Quartz/Chartbuilder/archive/master.zip) (and unzip)
 3. from the terminal navigate to the source folder (on a Mac: `cd ~/Downloads/Chartbuilder-master/`) 
 4. run `python -m SimpleHTTPServer`
 5. Open Google Chrome, Apple Safari, or Opera and navigate to [http://localhost:8000/](http://localhost:8000/)
 
-Alternatively, you can try out this hosted version: http://quartz.github.io/Chartbuilder/
 
 ####Charting time Series Data
 1. Find some time series data (may I suggest [this](https://docs.google.com/a/qz.com/spreadsheet/ccc?key=0AtrPfe-ScVhJdGg0a2hKZU1JaWZ4ZGMxY3NKbWozYUE#gid=0))
