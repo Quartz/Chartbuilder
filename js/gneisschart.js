@@ -1193,7 +1193,8 @@ var Gneiss = {
 		
 	},
 	drawLegend: function() {
-		var g = this.g
+		var g = this.g;
+		var legendItemY;
 		
 		//remove current legends
 		g.legendItemContainer.selectAll("g.legendItem").remove()
@@ -1234,31 +1235,40 @@ var Gneiss = {
 					.attr("y",8)
 					.attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
 
-				var legendItemY;
 				legendGroups.filter(function(d){return d != g.series[0]})
 					.transition()
-					.delay(100)
+					.duration(50)
+					.delay(function(d,i){return i * 50 + 50})
 					.attr("transform",function(d,i) {
 						//label isn't for the first series
 						var prev = d3.select(legendGroups[0][i])
 						var prevWidth = parseFloat(prev.node().getBBox().width)
+						var prevCoords = g.all.helper.transformCoordOf(prev)
 
 						var cur = d3.select(this)
 						var curWidth = parseFloat(cur.node().getBBox().width)
-						legendItemY = cur.attr("transform").split(",")[1].split(")")[0];
-						var x = parseFloat(prev.attr("transform").split(",")[0].split("(")[1]) + prevWidth + 5
+						var curCoords = g.all.helper.transformCoordOf(cur)
+
+						legendItemY = prevCoords.y;
+						var x = prevCoords.x + prevWidth + 5
 						if(x + curWidth > g.width) {
 							x = g.padding.left
 							legendItemY += 15;						
 						}
 						return "translate("+x+","+legendItemY+")"
-				})		
+				})
+				//.filter(function(d,i){console.log(i,g.series.slice(0).pop()==d);return d == g.series.slice(0).pop()})
+				//.each("end", function(d,i) {
+				//	//the filter above makes sure this only hapens on the last one
+				//	if (legendItemY > 0 && g.defaults.padding.top != legendItemY + 25) { //CHANGE
+				//		g.defaults.padding.top = legendItemY + 25;
+				//		g.all.redraw();
+				//				
+				//	};
+				//})		
 				//test if the chart needs more top margin because of a large number of legend items
-				if (legendItemY > 0 && g.padding.top == 25) { //CHANGE
-					g.padding.top = legendItemY + 25;
-					this.g = g;				
-			
-				};
+				this.g = g;	
+				
 			} else {
 				if(g.title == "") {
 					g.titleLine.text(g.series[0].name)
@@ -1400,6 +1410,10 @@ var Gneiss = {
 			}
 			
 			return ticks;
+		},
+		transformCoordOf: function(elem){
+			var trans = elem.attr("transform").split(",")
+			return {x:parseFloat(trans[0].split("(")[1]) , y:parseFloat(trans[1].split(")")[0])}
 		}
 	},
 	q: {}
