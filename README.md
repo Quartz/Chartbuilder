@@ -52,22 +52,22 @@ _steps 2-4 are optional_
 
 ###Examples of charts made with Chartbuilder
 ####Line charts
-<img src="http://farm8.staticflickr.com/7367/9366053771_e78bd09a06_b.jpg" />
-<img src="http://farm8.staticflickr.com/7407/9366142529_afd5a411ba_b.jpg" />
+<img src="http://quartz.github.io/Chartbuilder/images/line1.jpeg" />
+<img src="http://quartz.github.io/Chartbuilder/images/line2.jpeg" />
 
 ####Column charts
-<img src="http://farm4.staticflickr.com/3674/9368655154_eeb1afcf0f_b.jpg" />
-<img src="http://farm4.staticflickr.com/3686/9368719962_44ee2cbe4b_b.jpg" />
-<img src="http://farm4.staticflickr.com/3668/9368863110_b0bb66d5c0_b.jpg" />
+<img src="http://quartz.github.io/Chartbuilder/images/column1.jpeg" />
+<img src="http://quartz.github.io/Chartbuilder/images/column2.jpeg" />
+<img src="http://quartz.github.io/Chartbuilder/images/column3.jpeg" />
 
 ####Bar grids
-<img src="http://farm3.staticflickr.com/2885/9365987309_388ef2e7e7_b.jpg" />
-<img src="http://farm6.staticflickr.com/5541/9368820052_ded4d077c1_b.jpg" />
+<img src="http://quartz.github.io/Chartbuilder/images/bargrid1.jpeg" />
+<img src="http://quartz.github.io/Chartbuilder/images/bargrid2.jpeg" />
 
 
 ####Mixed
-<img src="http://farm4.staticflickr.com/3799/9368896286_97e8450c4b_b.jpg" />
-<img src="http://farm8.staticflickr.com/7330/9366163173_496ee2946f_b.jpg" />
+<img src="http://quartz.github.io/Chartbuilder/images/mixed1.jpeg" />
+<img src="http://quartz.github.io/Chartbuilder/images/mixed2.jpeg" />
 
 Deploying Chartbuilder
 ------------------------
