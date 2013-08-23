@@ -67,7 +67,7 @@ _steps 2-4 are optional_
 
 ####Mixed
 <img src="http://quartz.github.io/Chartbuilder/images/mixed1.jpeg" />
-<img src="http://quartz.github.io/Chartbuilder/images/mixed2.jpeg" />
+<img src="http://quartz.github.io/Chartbuilder/images/mixed2.jpeg?cache=0" />
 
 Deploying Chartbuilder
 ------------------------
