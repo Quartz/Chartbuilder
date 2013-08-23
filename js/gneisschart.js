@@ -21,11 +21,11 @@ Date.setLocale('en');
 //A default configuration 
 //Should change to more d3esque methods e.g. http://bost.ocks.org/mike/chart/
 var defaultGneissChartConfig = {
-	container: "#chartContainer",
-	editable: true,
-	legend: true,
-	title: "",
-	colors: ["#ff4cf4","#ffb3ff","#e69ce6","#cc87cc","#b373b3","#995f99","#804c80","#665266","#158eff","#99cdff","#9cc2e6","#87abcc","#7394b3","#5f7d99","#466780","#525c66"],
+	container: "#chartContainer", //css id of target chart container
+	editable: true, // reserved for enabling or dissabling on chart editing
+	legend: true, // whether or not there should be a legend
+	title: "", // the chart title 
+	colors: ["#ff4cf4","#ffb3ff","#e69ce6","#cc87cc","#b373b3","#995f99","#804c80","#665266","#158eff","#99cdff","#9cc2e6","#87abcc","#7394b3","#5f7d99","#466780","#525c66"], //this is the order of colors that the 
 	padding :{
 		top: 25,
 		bottom: 50,
