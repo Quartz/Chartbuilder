@@ -230,9 +230,12 @@ ChartBuilder = {
 		if(chartStyle != null && chartStyle != undefined)
 		{
 			for (var i=0; i < chartStyle.length; i++) {
-				selector = chartStyle[i].selectorText;
-				cssText = chartStyle[i].style.cssText;
-				d3.selectAll(selector).attr("style",cssText)
+				if(chartStyle[i].type == 1) {
+					//cssRule is a style rule
+					selector = chartStyle[i].selectorText;
+					cssText = chartStyle[i].style.cssText;
+					d3.selectAll(selector).attr("style",cssText)
+				}
 			};
 		}
 	},
