@@ -21,11 +21,11 @@ Date.setLocale('en');
 //A default configuration 
 //Should change to more d3esque methods e.g. http://bost.ocks.org/mike/chart/
 var defaultGneissChartConfig = {
-	container: "#chartContainer",
-	editable: true,
-	legend: true,
-	title: "",
-	colors: ["#ff4cf4","#ffb3ff","#e69ce6","#cc87cc","#b373b3","#995f99","#804c80","#665266","#158eff","#99cdff","#9cc2e6","#87abcc","#7394b3","#5f7d99","#466780","#525c66"],
+	container: "#chartContainer", //css id of target chart container
+	editable: true, // reserved for enabling or dissabling on chart editing
+	legend: true, // whether or not there should be a legend
+	title: "", // the chart title 
+	colors: ["#ff4cf4","#ffb3ff","#e69ce6","#cc87cc","#b373b3","#995f99","#804c80","#665266","#158eff","#99cdff","#9cc2e6","#87abcc","#7394b3","#5f7d99","#466780","#525c66"], //this is the order of colors that the 
 	padding :{
 		top: 25,
 		bottom: 50,
@@ -592,11 +592,21 @@ var Gneiss = {
 						minY = axisItem.y
 					}
 					
-					//if the axisItem represents the zero line
-					//change it's color and make sure there's no decimal
+					
 					if(parseFloat(axisItem.text.text()) == 0) {
-						axisItem.line.attr("stroke","#666666")
-						axisItem.text.text("0")
+						if(d == 0) {
+							//if the axisItem represents the zero line
+							//change it's class and make sure there's no decimal
+							//axisItem.line.attr("stroke","#666666")
+							d3.select(this).classed("zero", true)
+							axisItem.text.text("0")
+						}
+						else {
+							// A non-zero value was rounded into a zero
+							// hide the whole group
+							this.style("display","none")
+						}
+						
 					}
 				})
 				
@@ -759,7 +769,7 @@ var Gneiss = {
 		}
 		
 		g.chart.selectAll("#xAxis text")
-			.attr("text-anchor", g.xAxis.type == "date" ? "start": (g.isBargrid ? "end":"middle"))
+			.attr("text-anchor", g.xAxis.type == "date" ? (g.sbt.column.length>0 && g.sbt.line.length == 0 && g.sbt.scatter.length == 0 ? "middle":"start"): (g.isBargrid ? "end":"middle"))
 			//.attr("text-anchor", g.isBargrid ? "end":"middle")
 			.each(function() {
 				var pwidth = this.parentNode.getBBox().width
@@ -1193,7 +1203,8 @@ var Gneiss = {
 		
 	},
 	drawLegend: function() {
-		var g = this.g
+		var g = this.g;
+		var legendItemY;
 		
 		//remove current legends
 		g.legendItemContainer.selectAll("g.legendItem").remove()
@@ -1234,31 +1245,40 @@ var Gneiss = {
 					.attr("y",8)
 					.attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
 
-				var legendItemY;
 				legendGroups.filter(function(d){return d != g.series[0]})
 					.transition()
-					.delay(100)
+					.duration(50)
+					.delay(function(d,i){return i * 50 + 50})
 					.attr("transform",function(d,i) {
 						//label isn't for the first series
 						var prev = d3.select(legendGroups[0][i])
 						var prevWidth = parseFloat(prev.node().getBBox().width)
+						var prevCoords = g.all.helper.transformCoordOf(prev)
 
 						var cur = d3.select(this)
 						var curWidth = parseFloat(cur.node().getBBox().width)
-						legendItemY = cur.attr("transform").split(",")[1].split(")")[0];
-						var x = parseFloat(prev.attr("transform").split(",")[0].split("(")[1]) + prevWidth + 5
+						var curCoords = g.all.helper.transformCoordOf(cur)
+
+						legendItemY = prevCoords.y;
+						var x = prevCoords.x + prevWidth + 5
 						if(x + curWidth > g.width) {
 							x = g.padding.left
 							legendItemY += 15;						
 						}
 						return "translate("+x+","+legendItemY+")"
-				})		
+				})
+				//.filter(function(d,i){console.log(i,g.series.slice(0).pop()==d);return d == g.series.slice(0).pop()})
+				//.each("end", function(d,i) {
+				//	//the filter above makes sure this only hapens on the last one
+				//	if (legendItemY > 0 && g.defaults.padding.top != legendItemY + 25) { //CHANGE
+				//		g.defaults.padding.top = legendItemY + 25;
+				//		g.all.redraw();
+				//				
+				//	};
+				//})		
 				//test if the chart needs more top margin because of a large number of legend items
-				if (legendItemY > 0 && g.padding.top == 25) { //CHANGE
-					g.padding.top = legendItemY + 25;
-					this.g = g;				
-			
-				};
+				this.g = g;	
+				
 			} else {
 				if(g.title == "") {
 					g.titleLine.text(g.series[0].name)
@@ -1379,7 +1399,7 @@ var Gneiss = {
 			numticks -= 1;
 			var ticks = [];
 			var delta = domain[1] - domain[0];
-			ticks.push(domain[0])
+			
 			for (var i=0; i < numticks; i++) {
 				ticks.push(domain[0] + (delta/numticks)*i);
 			};
@@ -1400,6 +1420,10 @@ var Gneiss = {
 			}
 			
 			return ticks;
+		},
+		transformCoordOf: function(elem){
+			var trans = elem.attr("transform").split(",")
+			return {x:parseFloat(trans[0].split("(")[1]) , y:parseFloat(trans[1].split(")")[0])}
 		}
 	},
 	q: {}

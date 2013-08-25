@@ -2,7 +2,6 @@
  * Main CSS for ChartBuiler
  */
 
-@import url(http://fonts.googleapis.com/css?family=Cutive);
 
 /**
  * General
@@ -98,9 +97,13 @@ table {
   margin-bottom: 2em;
 }
 
+.inputDataHInvData {
+	margin-bottom: 4px;
+}
 
-
-
+#invalidDataSpan {
+	color: #ff0000;
+}
 
 /**
  * Chart
