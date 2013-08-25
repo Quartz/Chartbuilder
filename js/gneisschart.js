@@ -592,11 +592,21 @@ var Gneiss = {
 						minY = axisItem.y
 					}
 					
-					//if the axisItem represents the zero line
-					//change it's color and make sure there's no decimal
+					
 					if(parseFloat(axisItem.text.text()) == 0) {
-						axisItem.line.attr("stroke","#666666")
-						axisItem.text.text("0")
+						if(d == 0) {
+							//if the axisItem represents the zero line
+							//change it's class and make sure there's no decimal
+							//axisItem.line.attr("stroke","#666666")
+							d3.select(this).classed("zero", true)
+							axisItem.text.text("0")
+						}
+						else {
+							// A non-zero value was rounded into a zero
+							// hide the whole group
+							this.style("display","none")
+						}
+						
 					}
 				})
 				

@@ -10,8 +10,8 @@ svg .axis line {
 	shape-rendering: crispEdges;
 }
 
-svg .axis line#zeroLine {
-		stroke: #ff4cf4;
+svg .axis g.zero line {
+		stroke: #666666;
 }
 
 svg #xAxis line {
