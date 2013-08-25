@@ -368,7 +368,7 @@ ChartBuilder = {
 				var hasBargrid = false;
 				chart.setPadding();
 				ChartBuilder.setChartArea()
-				chart.setXScales()
+				chart.setXScales(chart.g)
 					.resize()
 				ChartBuilder.redraw()
 			})
@@ -399,14 +399,14 @@ ChartBuilder = {
 					chart.g.yAxis.pop()
 				}
 				
-				chart.setYScales()
-					.setYAxes()
+				chart.setYScales(chart.g)
+					.setYAxes(chart.g)
 					.setLineMakers();
-				ChartBuilder.redraw()
+				ChartBuilder.redraw();
 			})
 			
-			chart.redraw()
-			this.makeLegendAdjustable()
+			chart.redraw();
+			this.makeLegendAdjustable();
 		}
 		
 		
@@ -636,7 +636,7 @@ ChartBuilder = {
 				val = null
 			}
 			chart.g.yAxis[index].domain[1] = val;
-			chart.setYScales();
+			chart.setYScales(chart.g);
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
 		},
@@ -646,7 +646,7 @@ ChartBuilder = {
 				val = null
 			}
 			chart.g.yAxis[index].domain[0] = val;
-			chart.setYScales();
+			chart.setYScales(chart.g);
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
 		},
@@ -662,7 +662,7 @@ ChartBuilder = {
 				val = null
 			}
 			chart.g.yAxis[index].tickValues = val
-			chart.setYScales();
+			chart.setYScales(chart.g);
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
 		}
@@ -836,13 +836,13 @@ ChartBuilder.start = function(config) {
   			}
   			chart.g.xAxisRef = [dataObj.data.shift()]
   			
-  			chart.g.series=dataObj.data
+  			chart.g.series = dataObj.data;
   			chart.setPadding();
   			
-  			ChartBuilder.setChartArea()
+  			ChartBuilder.setChartArea();
   			
-  			chart.setYScales()
-  				.setXScales()
+  			chart.setYScales(chart.g)
+  				.setXScales(chart.g)
   				.setLineMakers();
   				
   			ChartBuilder.redraw();
@@ -930,7 +930,7 @@ ChartBuilder.start = function(config) {
   		chart.resize()
   			.setPadding();
   		ChartBuilder.setChartArea()
-  		chart.setYScales()
+  		chart.setYScales(chart.g)
   			.redraw();
   		ChartBuilder.makeLegendAdjustable()
   		

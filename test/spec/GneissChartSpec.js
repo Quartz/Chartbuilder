@@ -138,4 +138,64 @@ describe("Gneiss", function() {
       expect(parser(new Date(2013, 7, 17, 18, 45))).toEqual("18:45");      
     });
   });
+	
+  describe("splitSeriesByType()", function() {
+    it("returns an hash of display type to array of series data", function() {
+      var lineSeries = {type: "line", data: [1,2,3]};
+      var columnSeries = {type: "column", testProperty: "asdf"};
+      
+      var series = [ {type: "column"}, {type: "bargrid"}, lineSeries,
+                     {type: "scatter"}, columnSeries, {type: "line"} ];
+      
+      var expected = { scatter: [{type: "scatter"}],
+                       line: [lineSeries, {type: "line"}], 
+                       bargrid: [{type: "bargrid"}],
+                       column: [{type: "column"}, columnSeries] };
+                       
+      var actual = Gneiss.splitSeriesByType(series);
+      
+      // Individual series must be in the correct order on a per-type basis
+      expect(actual["line"]).toEqual([lineSeries, {type: "line"}]);
+      expect(actual["column"]).toEqual([{type: "column"}, columnSeries]);
+      expect(actual["bargrid"]).toEqual([{type: "bargrid"}]);
+      expect(actual["scatter"]).toEqual([{type: "scatter"}]);
+      
+      expect(actual).toEqual(expected);
+    });
+  });
+  
+  describe("updateGraphPropertiesBasedOnSeriesType()", function() {
+    it("sets the 'hasColumns' property on the x-axis of a graph to true if a series of column data exists", function() {
+      var graph = { xAxis: {} };
+      
+      var seriesByType = { bargrid: ["bargrid"], column: ["column"] };
+      Gneiss.updateGraphPropertiesBasedOnSeriesType(graph, seriesByType);
+      
+      expect(graph.xAxis.hasColumns).toEqual(true);
+    });
+    it("sets the 'hasColumns' property on the x-axis of a graph to false if a series of column data exists", function() {
+      var graph = { xAxis: {} };
+      
+      var seriesByType = { bargrid: [], column: [] };
+      Gneiss.updateGraphPropertiesBasedOnSeriesType(graph, seriesByType);
+      
+      expect(graph.xAxis.hasColumns).toEqual(false);
+    });
+    it("sets the 'isBargrid' property on a graph to true if a series of bar graph data exists", function() {
+      var graph = { xAxis: {} };
+      
+      var seriesByType = { bargrid: ["bargrid"], column: ["column"] };
+      Gneiss.updateGraphPropertiesBasedOnSeriesType(graph, seriesByType);
+      
+      expect(graph.isBargrid).toEqual(true);
+    });
+    it("sets the 'isBargrid' property on a graph to false if a series of bar graph data does not exists", function() {
+      var graph = { xAxis: {} };      
+      
+      var seriesByType = { bargrid: [], column: [] };
+      Gneiss.updateGraphPropertiesBasedOnSeriesType(graph, seriesByType);
+      
+      expect(graph.isBargrid).toEqual(false);
+    });
+  });
 });
