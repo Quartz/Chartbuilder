@@ -1399,7 +1399,7 @@ var Gneiss = {
 			numticks -= 1;
 			var ticks = [];
 			var delta = domain[1] - domain[0];
-			ticks.push(domain[0])
+			
 			for (var i=0; i < numticks; i++) {
 				ticks.push(domain[0] + (delta/numticks)*i);
 			};
