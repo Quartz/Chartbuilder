@@ -231,9 +231,12 @@ ChartBuilder = {
 		if(chartStyle != null && chartStyle != undefined)
 		{
 			for (var i=0; i < chartStyle.length; i++) {
-				selector = chartStyle[i].selectorText;
-				cssText = chartStyle[i].style.cssText;
-				d3.selectAll(selector).attr("style",cssText)
+				if(chartStyle[i].type == 1) {
+					//cssRule is a style rule
+					selector = chartStyle[i].selectorText;
+					cssText = chartStyle[i].style.cssText;
+					d3.selectAll(selector).attr("style",cssText)
+				}
 			};
 		}
 	},
@@ -310,7 +313,7 @@ ChartBuilder = {
 				<select class="typePicker" id="'+this.idSafe(s.name)+'_type">\
 					<option '+(s.type=="line"?"selected":"")+' value="line">Line</option>\
 					<option '+(s.type=="column"?"selected":"")+' value="column">Column</option>\
-					<option '+(s.type=="bargrid"?"selected":"")+' value="bargrid">Bar Grid</option>\
+					<option '+(s.type=="bargrid"?"selected":"")+' '+(g.xAxis.type == "date"?"disabled":"")+' value="bargrid">Bar Grid</option>\
 					<option '+(s.type=="scatter"?"selected":"")+' value="scatter">Scatter</option>\
 				</select>\
 				<input id="'+this.idSafe(s.name)+'_check" name="'+this.idSafe(s.name)+'_check" type="checkbox" />\
