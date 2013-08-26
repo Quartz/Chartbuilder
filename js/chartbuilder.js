@@ -528,7 +528,7 @@ ChartBuilder = {
 			localStorage["savedCharts"] = JSON.stringify([])
 		}
 		
-		var allcharts = JSON.d(localStorage["savedCharts"])
+		var allcharts = JSON.parse(localStorage["savedCharts"])
 		newChart = this.getAllInputData()
 		newChart.name = name
 		allcharts.push(newChart)
