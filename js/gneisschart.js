@@ -11,7 +11,7 @@
 ```````````***`````**```````````***````````***`````````````***````***``````***`````````***```````````************````
 `````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
 */
-var yAxisIndex
+var yAxisIndex;
 
 //add prepend ability
 Element.prototype.prependChild = function(child) { this.insertBefore(child, this.firstChild); };
@@ -211,27 +211,26 @@ var Gneiss = {
 			.attr("x",g.padding.left)
 			.attr("class","metaText")
 			.text(g.creditline);
-					
+			
 		this.g = g;
 		return this;
 	},
 	numberFormat: d3.format(","),
-	resize: function(){
+	resize: function(graph){
 		/*
 			Adjusts the size dependent stored variables
 		*/
-		var g = this.g
+		var g = graph;
 		g.width = g.$container.width() //save the width in pixels
 		g.height = g.$container.height() //save the height in pixels
 		//put a background rect to prevent transparency
 		d3.select("rect#ground")
 			.attr("width",g.width)
-			.attr("height",g.height)
-			
-		g.metaInfo.attr("transform","translate(0,"+(g.height-4)+")")
+			.attr("height",g.height);
+      
+		g.metaInfo.attr("transform", "translate(0," + (g.height - 4) + ")");
 		
-		this.g = g;
-		return this
+		return this;
 	},
 	setYScales: function(graph, first) {
 		/*
@@ -316,29 +315,28 @@ var Gneiss = {
 		
 		return this;
 	},
-	setPadding: function() {
+	setPadding: function(graph) {
 		/*
 			calulates and stores the proper amount of extra padding beyond what the user specified (to account for axes, titles, legends, meta)
 		*/
-		var g = this.g
-		var padding_top = g.defaults.padding.top,
-		padding_bottom = g.defaults.padding.bottom;
+		var g = graph;
+		var padding_top = g.defaults.padding.top;
+		var padding_bottom = g.defaults.padding.bottom;
 		
 		if(!g.legend) {
 			padding_top = 5;
 		}
-		padding_top += g.title == "" || g.series.length == 1 ? 0:25
-		padding_top += (g.yAxis.length == 1 && !g.isBargrid) ? 0:25
+		padding_top += g.title == "" || g.series.length == 1 ? 0 : 25;
+		padding_top += (g.yAxis.length == 1 && !g.isBargrid) ? 0 : 25;
 		
 		if(g.isBargrid) {
-			padding_top += -15
-			padding_bottom -= 15 
+			padding_top += -15;
+			padding_bottom -= 15;
 		}
 		
-		g.padding.top = padding_top
-		g.padding.bottom = padding_bottom
-		this.g = g
-		return this
+		g.padding.top = padding_top;
+		g.padding.bottom = padding_bottom;
+		return this;
 	},
 	setXScales: function(graph, first) {
 		/*
@@ -443,8 +441,8 @@ var Gneiss = {
 		
 		return this;		
 	},
-	setLineMakers: function(first) {
-		var g = this.g
+	setLineMakers: function(graph, first) {
+		var g = graph;
 
 		for (var i = g.yAxis.length - 1; i >= 0; i--){
 			if(first || !g.yAxis[i].line) {
@@ -459,9 +457,8 @@ var Gneiss = {
 				};
 			}
 
-		};
-		this.g = g
-		return this
+		}
+		return this;
 	},
 	setYAxes: function(graph, first) {
 		/*
@@ -510,7 +507,8 @@ var Gneiss = {
 			//adjust label position and add prefix and suffix
 			var topAxisLabel, minY = Infinity;
 			
-			this.customYAxisFormat(axisGroup,i)
+			// TODO: This breaks encapsulation since we're calling a function defined in the same namespace in an external file
+			this.customYAxisFormat(g, axisGroup,i)
 			
 			
 			axisGroup
@@ -784,15 +782,13 @@ var Gneiss = {
 					//adjust padding for bargrid
 					if(g.padding.left - pwidth < g.defaults.padding.left) {
 						g.padding.left = pwidth + g.defaults.padding.left;
-						this.redraw() //CHANGE (maybe)
+						this.redraw(g) //CHANGE (maybe)
 					}
 					
 				}
-				
-			})
-		
-		this.g = g
-		return this
+			});
+      
+		return this;
 	},
 	calculateColumnWidths: function(graph) {
 		/*
@@ -831,17 +827,16 @@ var Gneiss = {
 		*/
 		var g = graph;
 		
-		var lineSeries;
-		
 		//construct line maker helper functions for each yAxis
-		this.setLineMakers(first);
+		this.setLineMakers(g, first);
 		
 		//store split by type for convenience
 		var sbt = g.sbt;
 		
-		var columnWidth = this.g.columnWidth;
-		var columnGroupShift = this.g.columnGroupShift;
+		var columnWidth = g.columnWidth;
+		var columnGroupShift = g.columnGroupShift;
 		
+		var lineSeries;
 		
 		if(first) {
 			
@@ -856,7 +851,6 @@ var Gneiss = {
 			var columnRects
 			var lineSeriesDots = g.seriesContainer.selectAll("g.lineSeriesDots")
 			var scatterSeries = g.seriesContainer.selectAll("g.seriesScatter")
-			
 			
 				
 			//create a group to contain the legend items
@@ -881,8 +875,7 @@ var Gneiss = {
 							return g.xAxis.scale(g.xAxisRef[0].data[i])  - columnWidth/2
 							})
 						.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
-				
-				
+								
 				
 				//add lines to chart
 				lineSeries.data(sbt.line)
@@ -1276,11 +1269,10 @@ var Gneiss = {
 		
 		return this;
 	},
-	updateMetaAndTitle: function() {
-		var g = this.g
-		g.metaInfo.attr("transform","translate(0,"+(g.height-4)+")")
-		this.g = g
-		return this
+	updateMetaAndTitle: function(graph) {
+		var g = graph;
+		g.metaInfo.attr("transform", "translate(0," + (g.height - 4) + ")");
+		return this;
 	},
 	splitSeriesByType: function(series) {
 		/*
@@ -1317,106 +1309,79 @@ var Gneiss = {
 			graph.isBargrid = false;
 		}
 	},
-	update: function() {
-		/*
-			Nothing yet
-		*/
-		return this
-	},
-	updateSeries: function() {
-		/*
-			Nothing yet
-		*/
-		return this
-	},
-	redraw: function() {
+	redraw: function(graph) {
 		/*
 			Redraw the chart
 		*/
 				
 		//group the series by their type
-		this.g.sbt = this.splitSeriesByType(this.g.series);
-		this.updateGraphPropertiesBasedOnSeriesType(this.g, this.g.sbt);
+		graph.sbt = this.splitSeriesByType(graph.series);
+		this.updateGraphPropertiesBasedOnSeriesType(graph, graph.sbt);
 		
-		this.calculateColumnWidths(this.g);
+		this.calculateColumnWidths(graph);
 		
-		this.setPadding()
-			.setYScales(this.g)
-			.setXScales(this.g)
-			.setYAxes(this.g)
-			.setXAxis(this.g)
-			.drawSeriesAndLegend(this.g)
-			.updateMetaAndTitle();
+		this.setPadding(graph)
+			.setYScales(graph)
+			.setXScales(graph)
+			.setYAxes(graph)
+			.setXAxis(graph)
+			.drawSeriesAndLegend(graph)
+			.updateMetaAndTitle(graph);
 		return this;
 	},
-	randomizeData: function(d) {
-		delta = 10 * (Math.random() - 0.5)
-		for (var i = d.length - 1; i >= 0; i--){
-			d[i] = d[i] + ((Math.random()-0.5)*5) + delta
-		};
-		return d
-	},
 	helper: {
-		multiextent: function(a,key) {
-			//a function to find the max and min of multiple arrays
-			var data = [],ext;
-			if(key) {
-				//if there is a key function
-				for (var i = a.length - 1; i >= 0; i--){
-					ext = d3.extent(key(a[i]))
-					data.push(ext[0])
-					data.push(ext[1])
-				}
-			}
-			else {
-				for (var i = a.length - 1; i >= 0; i--){
-					ext = d3.extent(a[i])
-					data.push(ext[0])
-					data.push(ext[1])
-				};
-			}
-			return d3.extent(data)
-		},
-		columnXandHeight: function(d,domain) {
-			//a function to find the propper value to cut off a column
-			if(d > 0 && domain[0] > 0) {
-				return domain[0]
-			}
-			else if (d < 0 && domain[1] < 0) {
-				return domain[1]
+		multiextent: function(a, key) {
+			// Find the min and max values of multiple arrays
+			var data = [];
+			var ext;
+      
+			for (var i = a.length - 1; i >= 0; i--) {
+				ext = d3.extent(key ? key(a[i]) : a[i]);
+				data.push(ext[0]);
+				data.push(ext[1]);
 			}
 			
-			return 0
+			return d3.extent(data);
+		},
+		columnXandHeight: function(d, domain) {
+			//a function to find the proper value to cut off a column
+			if(d > 0 && domain[0] > 0) {
+				return domain[0];
+			}
+			else if (d < 0 && domain[1] < 0) {
+				return domain[1];
+			}			
+			return 0;
 		},
 		exactTicks: function(domain,numticks) {
 			numticks -= 1;
 			var ticks = [];
 			var delta = domain[1] - domain[0];
-			ticks.push(domain[0])
+			ticks.push(domain[0]);
 			for (var i=0; i < numticks; i++) {
 				ticks.push(domain[0] + (delta/numticks)*i);
 			};
-			ticks.push(domain[1])
+			ticks.push(domain[1]);
 			
 			if(domain[1]*domain[0] < 0) {
 				//if the domain crosses zero, make sure there is a zero line
 				var hasZero = false;
-				for (var i = ticks.length - 1; i >= 0; i--){
+				for (var i = ticks.length - 1; i >= 0; i--) {
 					//check if there is already a zero line
 					if(ticks[i] == 0) {
 						hasZero = true;
 					}
 				};
 				if(!hasZero) {
-					ticks.push(0)
+					ticks.push(0);
 				}
 			}
 			
 			return ticks;
 		},
 		transformCoordOf: function(elem){
-			var trans = elem.attr("transform").split(",")
-			return {x:parseFloat(trans[0].split("(")[1]) , y:parseFloat(trans[1].split(")")[0])}
+			var trans = elem.attr("transform").split(",");
+			return { x: parseFloat(trans[0].split("(")[1]), y: parseFloat(trans[1].split(")")[0]) };
 		}
 	}
 }

@@ -300,11 +300,17 @@ ChartBuilder = {
 	},
 	redraw: function() {
 		$(".seriesItemGroup").detach()
-		var g = chart.g, s, picker;
+		var g = chart.g;
+		var s;
+		var picker;
 		this.customLegendLocaion = false;
-		var colIndex = g.sbt.line.length, lineIndex = 0, bargridIndex = 0, scatterIndex = 0;
+		var colIndex = g.sbt.line.length;
+		var lineIndex = 0;
+		var bargridIndex = 0;
+		var scatterIndex = 0;
 		var seriesContainer = $("#seriesItems")
 		this.isMultiAxis = false;
+    
 		for (var i=0; i < g.series.length; i++) {
 			s = g.series[i]
 			seriesItem = $('<div class="seriesItemGroup">\
@@ -362,15 +368,15 @@ ChartBuilder = {
 			})
 			
 			typer.change(function() {
-				var val = $(this).val(),
-				index = $(this).parent().data().index;
-				chart.g.series[index].type = val
+				var val = $(this).val();
+				var index = $(this).parent().data().index;
+				chart.g.series[index].type = val;
 				var hasBargrid = false;
-				chart.setPadding();
-				ChartBuilder.setChartArea()
+				chart.setPadding(chart.g);
+				ChartBuilder.setChartArea();
 				chart.setXScales(chart.g)
-					.resize()
-				ChartBuilder.redraw()
+					.resize(chart.g);
+				ChartBuilder.redraw();
 			})
 			
 			axer.change(function() {
@@ -401,11 +407,11 @@ ChartBuilder = {
 				
 				chart.setYScales(chart.g)
 					.setYAxes(chart.g)
-					.setLineMakers();
+					.setLineMakers(chart.g);
 				ChartBuilder.redraw();
 			})
 			
-			chart.redraw();
+			chart.redraw(chart.g);
 			this.makeLegendAdjustable();
 		}
 		
@@ -477,7 +483,7 @@ ChartBuilder = {
 				d3.select(elem[0][0].parentElement).selectAll("rect").style("display","none")
 				if(!ChartBuilder.customLegendLocaion) {
 					chart.g.legend = false;
-					chart.redraw()
+					chart.redraw(chart.g)
 					ChartBuilder.inlineAllStyles()
 					ChartBuilder.makeLegendAdjustable()
 					ChartBuilder.customLegendLocaion = true;
@@ -682,8 +688,8 @@ ChartBuilder = {
   Presently removing this will push your y-axis
   labels off the edge of the chart
 */
-Gneiss.customYAxisFormat = function(axisGroup,i) {
-	var g = this.g
+Gneiss.customYAxisFormat = function(graph, axisGroup, i) {
+	var g = graph;
 	axisGroup.selectAll("g")
 		.each(function(d,j) {
 			//create an object to store axisItem info
@@ -704,8 +710,7 @@ Gneiss.customYAxisFormat = function(axisGroup,i) {
 				.attr("fill",i==0?"#666666":g.yAxis[i].color)
 				.attr("x",function(){var elemx = Number(d3.select(this).attr("x")); return i==0?elemx:elemx+4})
 				.attr("y",-9)
-			})
-	this.g = g;
+			});
 }
 
 // Create default config for chartbuilder
@@ -837,13 +842,13 @@ ChartBuilder.start = function(config) {
   			chart.g.xAxisRef = [dataObj.data.shift()]
   			
   			chart.g.series = dataObj.data;
-  			chart.setPadding();
+  			chart.setPadding(chart.g);
   			
   			ChartBuilder.setChartArea();
   			
   			chart.setYScales(chart.g)
   				.setXScales(chart.g)
-  				.setLineMakers();
+  				.setLineMakers(chart.g);
   				
   			ChartBuilder.redraw();
   			ChartBuilder.inlineAllStyles();
@@ -925,16 +930,16 @@ ChartBuilder.start = function(config) {
   	})
   	
   	$("#chart_title").keyup(function() {
-  		var val = $(this).val()
-  		chart.g.title = val
-  		chart.resize()
-  			.setPadding();
-  		ChartBuilder.setChartArea()
+  		var val = $(this).val();
+  		chart.g.title = val;
+  		chart.resize(chart.g)
+  			.setPadding(chart.g);
+  		ChartBuilder.setChartArea();
   		chart.setYScales(chart.g)
-  			.redraw();
-  		ChartBuilder.makeLegendAdjustable()
+  			.redraw(chart.g);
+  		ChartBuilder.makeLegendAdjustable();
   		
-  		chart.g.titleLine.text(chart.g.title)
+  		chart.g.titleLine.text(chart.g.title);
   	});
   })
 };

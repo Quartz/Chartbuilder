@@ -11,6 +11,10 @@ describe("Gneiss", function() {
   it("contains a set of date parsers", function() {
     expect(Gneiss.dateParsers).not.toEqual(undefined);
   });
+    
+  it("contains a set of helper functions", function() {
+    expect(Gneiss.helper).not.toEqual(undefined);
+  });
   
   describe("#dateParsers", function() {
     it("contains various date parsers", function() {
@@ -196,6 +200,52 @@ describe("Gneiss", function() {
       Gneiss.updateGraphPropertiesBasedOnSeriesType(graph, seriesByType);
       
       expect(graph.isBargrid).toEqual(false);
+    });
+  });
+  
+  describe("#helper", function() {
+    it("contains a function multiextent()", function() {      
+      expect(Gneiss.helper.multiextent).not.toEqual(undefined);
+    });
+    
+    describe("multiextent()", function() {
+      it("returns the minimum and maximum values of arrays of one or more arrays", function() {
+        var singleData = [[1, 2, 3, 4]];
+        var multipleData = [[1, 2, 3, 4], [1, 2, 3, 4]];
+        var multipleData2 = [[1, 3, 5, 7, 9], [-1, -3, -5, -7, -9]];
+        expect(Gneiss.helper.multiextent(singleData)).toEqual([1, 4]);
+        expect(Gneiss.helper.multiextent(multipleData)).toEqual([1, 4]);
+        expect(Gneiss.helper.multiextent(multipleData2)).toEqual([-9, 9]);
+      });
+      
+      it("returns the minimum and maximum values of arrays of one or more arrays using a specified mapping function", function() {
+        var singleData = [[1, 2, 3, 4]];
+        var multipleData = [[1, 2, 3, 4], [1, 2, 3, 4]];
+        var multipleData2 = [[1, 3, 5, 7, 9], [-1, -3, -5, -7, -9]];
+				
+        var timesTwo = function(array) {
+          for(var i = 0; i < array.length; i++) {
+            array[i] *= 2;
+          }
+          return array;
+        };        
+        var square = function(array) {
+          for(var i = 0; i < array.length; i++) {
+            array[i] *= array[i];
+          }
+          return array;
+        };        
+        var negate = function(array) {
+          for(var i = 0; i < array.length; i++) {
+            array[i] *= -1;
+          }
+          return array;
+        };
+        
+        expect(Gneiss.helper.multiextent(singleData, timesTwo)).toEqual([2, 8]);
+        expect(Gneiss.helper.multiextent(multipleData, square)).toEqual([1, 16]);
+        expect(Gneiss.helper.multiextent(multipleData2, negate)).toEqual([-9, 9]);
+      });
     });
   });
 });
