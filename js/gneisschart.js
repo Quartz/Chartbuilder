@@ -151,8 +151,9 @@ var Gneiss = {
 		if(!config) {
 			throw new Error("build() must be called with a chart configuration");
 		}
-				
-		var g = config;
+		
+		$.extend(this, config);
+		var g = this;
 		 
 		// Set container as a jQuery object wrapping the DOM element specified in the config
 		if(!config.container) {
@@ -211,16 +212,17 @@ var Gneiss = {
 			.attr("x",g.padding.left)
 			.attr("class","metaText")
 			.text(g.creditline);
-			
-		this.g = g;
+
+    // TODO: Remove this assigment and fix the function scopes where this pretends to be necessary
+    this.g = g;
 		return this;
 	},
 	numberFormat: d3.format(","),
-	resize: function(graph){
+	resize: function(){
 		/*
 			Adjusts the size dependent stored variables
 		*/
-		var g = graph;
+		var g = this;
 		g.width = g.$container.width() //save the width in pixels
 		g.height = g.$container.height() //save the height in pixels
 		//put a background rect to prevent transparency
@@ -232,11 +234,11 @@ var Gneiss = {
 		
 		return this;
 	},
-	setYScales: function(graph, first) {
+	setYScales: function(first) {
 		/*
 			calculates and saves the y-scales from the existing data
 		*/
-		var g = graph;
+		var g = this;
 		/*
 		*
 		* Y AXIS SECTION
@@ -315,11 +317,11 @@ var Gneiss = {
 		
 		return this;
 	},
-	setPadding: function(graph) {
+	setPadding: function() {
 		/*
 			calulates and stores the proper amount of extra padding beyond what the user specified (to account for axes, titles, legends, meta)
 		*/
-		var g = graph;
+		var g = this;
 		var padding_top = g.defaults.padding.top;
 		var padding_bottom = g.defaults.padding.bottom;
 		
@@ -342,7 +344,7 @@ var Gneiss = {
 		/*
 			calculate and store the x-scales
 		*/
-		var g = graph;
+		var g = this;
 		var dateExtent;
 		var shortestPeriod = Infinity;
 		
@@ -442,7 +444,7 @@ var Gneiss = {
 		return this;		
 	},
 	setLineMakers: function(graph, first) {
-		var g = graph;
+		var g = this;
 
 		for (var i = g.yAxis.length - 1; i >= 0; i--){
 			if(first || !g.yAxis[i].line) {
@@ -466,7 +468,7 @@ var Gneiss = {
 		* Y-Axis Drawing Section
 		*
 		*/
-		var g = graph;
+		var g = this;
 		var curAxis;
 		var axisGroup;
 		
@@ -508,7 +510,7 @@ var Gneiss = {
 			var topAxisLabel, minY = Infinity;
 			
 			// TODO: This breaks encapsulation since we're calling a function defined in the same namespace in an external file
-			this.customYAxisFormat(g, axisGroup,i)
+			this.customYAxisFormat(axisGroup, i);
 			
 			
 			axisGroup
@@ -657,11 +659,12 @@ var Gneiss = {
 		
 		return this;
 	},
+	// TODO: This breaks encapsulation since we're calling a function defined in the same namespace but implemented in an external file
 	customYAxisFormat: function(axisGroup,i) {
 		//replace at your whim
 	},
 	setXAxis: function(graph, first) {
-		var g = graph;
+		var g = this;
     
 		if(first) {
 			/*
@@ -782,7 +785,7 @@ var Gneiss = {
 					//adjust padding for bargrid
 					if(g.padding.left - pwidth < g.defaults.padding.left) {
 						g.padding.left = pwidth + g.defaults.padding.left;
-						this.redraw(g) //CHANGE (maybe)
+						g.redraw() //CHANGE (maybe)
 					}
 					
 				}
@@ -790,12 +793,12 @@ var Gneiss = {
       
 		return this;
 	},
-	calculateColumnWidths: function(graph) {
+	calculateColumnWidths: function() {
 		/*
 			Calculate the propper column width for column charts
 		*/
 		
-		var g = graph;
+		var g = this;
 		//store split by type for convenience
 		var sbt = g.sbt;
 		
@@ -816,7 +819,7 @@ var Gneiss = {
 	},
 	drawSeriesAndLegend: function(graph, first){
 		this.drawSeries(graph, first);
-		this.drawLegend(graph);
+		this.drawLegend();
 		return this;
 	},
 	drawSeries: function(graph, first) {
@@ -825,7 +828,7 @@ var Gneiss = {
 		* Series Drawing Section
 		*
 		*/
-		var g = graph;
+		var g = this;
 		
 		//construct line maker helper functions for each yAxis
 		this.setLineMakers(g, first);
@@ -1003,12 +1006,12 @@ var Gneiss = {
 				barLabels.enter()
 					.append("text")
 					.attr("class","barLabel")
-					.text(function(d,i){return this.numberFormat(d)})
+					.text(function(d,i){return Gneiss.numberFormat(d)})
 					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
 					.attr("y",function(d,i) {return g.xAxis.scale(i) + 5})
 					
 				barLabels.transition()
-					.text(function(d,i){var yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (i==0?g.yAxis[yAxisIndex].prefix.value:"") + this.numberFormat(d) + (i==0?g.yAxis[yAxisIndex].suffix.value:"")})
+					.text(function(d,i){var yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (i==0?g.yAxis[yAxisIndex].prefix.value:"") + Gneiss.numberFormat(d) + (i==0?g.yAxis[yAxisIndex].suffix.value:"")})
 					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return 3 + g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)):0) + Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
 					.attr("y",function(d,i) {return g.xAxis.scale(i) + 5})
 				
@@ -1120,7 +1123,7 @@ var Gneiss = {
 					.attr("transform",function(d,i){
 						yAxisIndex = d3.select(this.parentElement).data()[0].axis;
 							var y = d || d ===0 ? g.yAxis[yAxisIndex].scale(d) : -100;
-							return "translate("+ g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + y + ")";
+							return "translate("+ g.xAxis.scale(g.xAxisRef[0].data[i]) + "," + y + ")";
 						})
 			
 				lineSeriesDots.exit().remove()
@@ -1185,8 +1188,8 @@ var Gneiss = {
 		
 		return this;
 	},
-	drawLegend: function(graph) {
-		var g = graph;
+	drawLegend: function() {
+		var g = this;
 		var legendItemY;
 		
 		//remove current legends
@@ -1269,8 +1272,8 @@ var Gneiss = {
 		
 		return this;
 	},
-	updateMetaAndTitle: function(graph) {
-		var g = graph;
+	updateMetaAndTitle: function() {
+		var g = this;
 		g.metaInfo.attr("transform", "translate(0," + (g.height - 4) + ")");
 		return this;
 	},
@@ -1309,24 +1312,24 @@ var Gneiss = {
 			graph.isBargrid = false;
 		}
 	},
-	redraw: function(graph) {
+	redraw: function() {
 		/*
 			Redraw the chart
 		*/
 				
 		//group the series by their type
-		graph.sbt = this.splitSeriesByType(graph.series);
-		this.updateGraphPropertiesBasedOnSeriesType(graph, graph.sbt);
+		this.sbt = this.splitSeriesByType(this.series);
+		this.updateGraphPropertiesBasedOnSeriesType(this, this.sbt);
 		
-		this.calculateColumnWidths(graph);
+		this.calculateColumnWidths();
 		
-		this.setPadding(graph)
-			.setYScales(graph)
-			.setXScales(graph)
-			.setYAxes(graph)
-			.setXAxis(graph)
-			.drawSeriesAndLegend(graph)
-			.updateMetaAndTitle(graph);
+		this.setPadding()
+			.setYScales()
+			.setXScales()
+			.setYAxes()
+			.setXAxis()
+			.drawSeriesAndLegend()
+			.updateMetaAndTitle();
 		return this;
 	},
 	helper: {
