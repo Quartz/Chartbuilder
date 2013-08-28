@@ -1,11 +1,13 @@
 describe("Gneiss", function() {
 
+  var gneiss;
   beforeEach(function() {
 	  // Run test setup here
+    gneiss = new Gneiss(Gneiss.defaultGneissChartConfig);
   });
 
   it("contains a default chart config", function() {
-    expect(defaultGneissChartConfig).not.toEqual(undefined);
+    expect(Gneiss.defaultGneissChartConfig).not.toEqual(undefined);
   });
   
   it("contains a set of date parsers", function() {
@@ -156,7 +158,7 @@ describe("Gneiss", function() {
                        bargrid: [{type: "bargrid"}],
                        column: [{type: "column"}, columnSeries] };
                        
-      var actual = Gneiss.splitSeriesByType(series);
+      var actual = gneiss.splitSeriesByType(series);
       
       // Individual series must be in the correct order on a per-type basis
       expect(actual["line"]).toEqual([lineSeries, {type: "line"}]);
@@ -173,7 +175,7 @@ describe("Gneiss", function() {
       var graph = { xAxis: {} };
       
       var seriesByType = { bargrid: ["bargrid"], column: ["column"] };
-      Gneiss.updateGraphPropertiesBasedOnSeriesType(graph, seriesByType);
+      gneiss.updateGraphPropertiesBasedOnSeriesType(graph, seriesByType);
       
       expect(graph.xAxis.hasColumns).toEqual(true);
     });
@@ -181,7 +183,7 @@ describe("Gneiss", function() {
       var graph = { xAxis: {} };
       
       var seriesByType = { bargrid: [], column: [] };
-      Gneiss.updateGraphPropertiesBasedOnSeriesType(graph, seriesByType);
+      gneiss.updateGraphPropertiesBasedOnSeriesType(graph, seriesByType);
       
       expect(graph.xAxis.hasColumns).toEqual(false);
     });
@@ -189,7 +191,7 @@ describe("Gneiss", function() {
       var graph = { xAxis: {} };
       
       var seriesByType = { bargrid: ["bargrid"], column: ["column"] };
-      Gneiss.updateGraphPropertiesBasedOnSeriesType(graph, seriesByType);
+      gneiss.updateGraphPropertiesBasedOnSeriesType(graph, seriesByType);
       
       expect(graph.isBargrid).toEqual(true);
     });
@@ -197,7 +199,7 @@ describe("Gneiss", function() {
       var graph = { xAxis: {} };      
       
       var seriesByType = { bargrid: [], column: [] };
-      Gneiss.updateGraphPropertiesBasedOnSeriesType(graph, seriesByType);
+      gneiss.updateGraphPropertiesBasedOnSeriesType(graph, seriesByType);
       
       expect(graph.isBargrid).toEqual(false);
     });

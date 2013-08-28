@@ -20,7 +20,7 @@ Date.setLocale('en');
 
 //A default configuration 
 //Should change to more d3esque methods e.g. http://bost.ocks.org/mike/chart/
-var defaultGneissChartConfig = {
+Gneiss.defaultGneissChartConfig = {
 	container: "#chartContainer", //css id of target chart container
 	editable: true, // reserved for enabling or dissabling on chart editing
 	legend: true, // whether or not there should be a legend
@@ -86,7 +86,7 @@ var defaultGneissChartConfig = {
 	creditline: "Made with Chartbuilder"
 };
 
-var dateParsers = {
+Gneiss.dateParsers = {
   "mmddyyyy": function(d) { return [d.getMonth() + 1, d.getDate(), d.getFullYear()].join("/"); },
   "ddmmyyyy": function(d) { return [d.getDate(), d.getMonth() + 1, d.getFullYear()].join("/"); },
   "mmdd": function(d) { return [d.getMonth() + 1, d.getDate()].join("/"); },
@@ -141,7 +141,7 @@ var dateParsers = {
   }
 };
 
-var helper = {
+Gneiss.helper = {
   multiextent: function(a, key) {
     // Find the min and max values of multiple arrays
     var data = [];
@@ -548,7 +548,7 @@ function Gneiss(config)
 					.orient(i==0?"right":"left")
 					.tickSize(g.width - g.padding.left - g.padding.right)
 					//.ticks(g.yAxis[0].ticks) // I'm not using built in ticks because it is too opinionated
-					.tickValues(g.yAxis[i].tickValues?g.yAxis[i].tickValues:helper.exactTicks(g.yAxis[i].scale.domain(),g.yAxis[0].ticks))
+					.tickValues(g.yAxis[i].tickValues?g.yAxis[i].tickValues:Gneiss.helper.exactTicks(g.yAxis[i].scale.domain(),g.yAxis[0].ticks))
 					
 				//append axis container
 
@@ -560,7 +560,7 @@ function Gneiss(config)
 			}
 			else {
 				g.yAxis[i].axis//.ticks(g.yAxis[0].ticks) // I'm not using built in ticks because it is too opinionated
-					.tickValues(g.yAxis[i].tickValues?g.yAxis[i].tickValues:helper.exactTicks(g.yAxis[i].scale.domain(),g.yAxis[0].ticks))
+					.tickValues(g.yAxis[i].tickValues?g.yAxis[i].tickValues:Gneiss.helper.exactTicks(g.yAxis[i].scale.domain(),g.yAxis[0].ticks))
 					
 				axisGroup = g.chart.selectAll(i==0?"#rightAxis":"#leftAxis")
 					.call(g.yAxis[i].axis)
@@ -738,7 +738,7 @@ function Gneiss(config)
 			g.xAxis.axis = d3.svg.axis()
 				.scale(g.xAxis.scale)
 				.orient(g.isBargrid?"left":"bottom")
-				.tickFormat(g.xAxis.formatter ? this.dateParsers[g.xAxis.formatter] : function(d) {return d})
+				.tickFormat(g.xAxis.formatter ? Gneiss.dateParsers[g.xAxis.formatter] : function(d) {return d})
 				.ticks(g.xAxis.ticks)
 				
 			if(g.xAxis.type == "date") {
@@ -779,7 +779,7 @@ function Gneiss(config)
 		}
 		else {
 			g.xAxis.axis.scale(g.xAxis.scale)
-				.tickFormat(g.xAxis.formatter ? this.dateParsers[g.xAxis.formatter] : function(d) {return d})
+				.tickFormat(g.xAxis.formatter ? Gneiss.dateParsers[g.xAxis.formatter] : function(d) {return d})
 				.ticks(g.isBargrid?g.series[0].data.length:g.xAxis.ticks)
 				.orient(g.isBargrid?"left":"bottom")
 			
@@ -896,7 +896,7 @@ function Gneiss(config)
 		*/
 		var g = this;
 		
-		//construct line maker helper functions for each yAxis
+		//construct line maker Gneiss.helper functions for each yAxis
 		this.setLineMakers(first);
 		
 		//store split by type for convenience
@@ -939,11 +939,11 @@ function Gneiss(config)
 					.enter()
 						.append("rect")
 						.attr("width",columnWidth)
-						.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())))})
+						.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())))})
 						.attr("x", function(d,i) {
 							return g.xAxis.scale(g.xAxisRef[0].data[i])  - columnWidth/2
 							})
-						.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
+						.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
 								
 				
 				//add lines to chart
@@ -1116,19 +1116,19 @@ function Gneiss(config)
 				columnRects.enter()
 						.append("rect")
 						.attr("width",columnWidth)
-						.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())))})
+						.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())))})
 						.attr("x",function(d,i) {return g.xAxis.scale(g.xAxisRef[0].data[i])  - columnWidth/2})
-						.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
+						.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
 			
 				columnRects.transition()
 					.duration(500)
 					.attr("width",columnWidth)
-					.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())))})
+					.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())))})
 					.attr("x",g.xAxis.type =="date" ? 
 							function(d,i) {return g.xAxis.scale(g.xAxisRef[0].data[i])  - columnWidth/2}:
 							function(d,i) {return g.xAxis.scale(i) - columnWidth/2}
 					)
-					.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
+					.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
 				
 				columnRects.exit().remove()
 			
@@ -1306,11 +1306,11 @@ function Gneiss(config)
 						//label isn't for the first series
 						var prev = d3.select(legendGroups[0][i]);
 						var prevWidth = parseFloat(prev.node().getBBox().width);
-						var prevCoords = helper.transformCoordOf(prev);
+						var prevCoords = Gneiss.helper.transformCoordOf(prev);
 
 						var cur = d3.select(this);
 						var curWidth = parseFloat(cur.node().getBBox().width);
-						var curCoords = helper.transformCoordOf(cur);
+						var curCoords = Gneiss.helper.transformCoordOf(cur);
 
 						legendItemY = prevCoords.y;
 						var x = prevCoords.x + prevWidth + 5;
