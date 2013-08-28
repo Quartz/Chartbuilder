@@ -279,12 +279,15 @@ function Gneiss(config)
 			Adjusts the size dependent stored variables
 		*/
 		var g = this;
-		g.width = g.$container.width() //save the width in pixels
-		g.height = g.$container.height() //save the height in pixels
-		//put a background rect to prevent transparency
+    
+		// Save the width and height in pixels
+		g.width = g.$container.width();
+		g.height = g.$container.height();
+    
+		// Insert a background rectangle to prevent transparency
 		d3.select("rect#ground")
-			.attr("width",g.width)
-			.attr("height",g.height);
+			.attr("width", g.width)
+			.attr("height", g.height);
       
 		g.metaInfo.attr("transform", "translate(0," + (g.height - 4) + ")");
 		

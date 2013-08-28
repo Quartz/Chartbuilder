@@ -1,9 +1,16 @@
 describe("Gneiss", function() {
 
+  var containerId;
   var gneiss;
+  
   beforeEach(function() {
-	  // Run test setup here
+	  containerId = Gneiss.defaultGneissChartConfig.container.slice(1);
+    $('<div id="' + containerId + '" style="display:none"></div>').appendTo('body');
+    
     gneiss = new Gneiss(Gneiss.defaultGneissChartConfig);
+  });
+  afterEach(function() {
+    $("#" + containerId).remove();
   });
 
   it("contains a default chart config", function() {
@@ -248,6 +255,67 @@ describe("Gneiss", function() {
         expect(Gneiss.helper.multiextent(multipleData, square)).toEqual([1, 16]);
         expect(Gneiss.helper.multiextent(multipleData2, negate)).toEqual([-9, 9]);
       });
+    });
+  });
+ 
+  describe("resize()", function() {
+    it("updates the width and height of the chart in response to container size changes", function() {      
+      $("#" + containerId).width("100px").height("100px");
+      gneiss.resize();
+      expect(gneiss.width).toEqual(100);
+      expect(gneiss.height).toEqual(100);    
+      
+      $("#" + containerId).width("1000px").height("5000px");
+      gneiss.resize();
+      expect(gneiss.width).toEqual(1000);
+      expect(gneiss.height).toEqual(5000);     
+    });
+    
+    it("sets a transform attribute on the metaInfo property", function() {      
+      $("#" + containerId).width("100px").height("100px");
+      gneiss.resize();
+      expect(gneiss.metaInfo.attr("transform")).toEqual("translate(0,96)");
+           
+      $("#" + containerId).width("1000px").height("5000px");
+      gneiss.resize();
+      expect(gneiss.metaInfo.attr("transform")).toEqual("translate(0,4996)");
+    });
+  });
+  
+  describe("setPadding()", function() {
+    it("updates the top padding correctly for default charts", function() {
+      gneiss.defaults.padding.top = 10;
+      gneiss.setPadding();
+      expect(gneiss.padding.top).toEqual(10);
+    });
+    it("updates the top padding correctly for charts without legends", function() {
+      gneiss.defaults.padding.top = 10;
+      gneiss.legend = undefined;
+      gneiss.setPadding();
+      expect(gneiss.padding.top).toEqual(5);
+    });
+    it("updates the top padding correctly for charts with titles", function() {
+      gneiss.defaults.padding.top = 10;
+      gneiss.title = "title";
+      gneiss.setPadding();
+      expect(gneiss.padding.top).toEqual(35);
+    });
+    it("updates the top padding correctly for charts that are bargrids", function() {
+      gneiss.defaults.padding.top = 10;
+      gneiss.isBargrid = true;
+      gneiss.setPadding();
+      expect(gneiss.padding.top).toEqual(20);
+    });
+    it("updates the bottom padding correctly for default charts", function() {
+      gneiss.defaults.padding.bottom = 10;
+      gneiss.setPadding();
+      expect(gneiss.padding.bottom).toEqual(10);
+    });
+    it("updates the bottom padding correctly for charts that are bargrids", function() {
+      gneiss.defaults.padding.bottom = 10;
+      gneiss.isBargrid = true;
+      gneiss.setPadding();
+      expect(gneiss.padding.bottom).toEqual(-5);
     });
   });
 });
