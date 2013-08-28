@@ -738,8 +738,8 @@ ChartBuilder.start = function(config) {
   	
   	//construct a Gneisschart using default data
   	//this should change to be more like this http://bost.ocks.org/mike/chart/
-  	chart = Gneiss.build(chartConfig);
-		
+    chart = new Gneiss(chartConfig);
+    
   	//scale it up so it looks good on retina displays
   	$("#chart").attr("transform","scale(2)");
   	
