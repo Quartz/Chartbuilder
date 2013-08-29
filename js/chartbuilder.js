@@ -77,11 +77,21 @@ ChartBuilder = {
 				else if(i == 0) {
 					obj.data.push(csv_matrix[j][i]);
 				}
-				// If the value is actually a number for the graph
+				// If it's a data point
 				else {
-					var value = parseFloat(csv_matrix[j][i]);
-					if(isNaN(value))
+					var value = csv_matrix[j][i];
+					if(value == "null" || value == "") {
+						//allow for nulls or blank cells
+						value = null
+					}
+					else if (isNaN(value)){
+						//data isn't valid
 						return null;
+					}
+					else {
+						value = parseFloat(value);
+					}
+					
 					obj.data.push(value);
 				}
 			}

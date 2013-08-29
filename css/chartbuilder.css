@@ -359,3 +359,7 @@ div.colorPicker-swatch {
 	border: none;
 }
 
+div.colorPicker_hexWrap {
+	display: none;
+}
+
