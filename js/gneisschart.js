@@ -573,7 +573,6 @@ function Gneiss(config)
 			//adjust label position and add prefix and suffix
 			var topAxisLabel, minY = Infinity;
 			
-			// TODO: This breaks encapsulation since we're calling a function defined in the same namespace in an external file
 			this.customYAxisFormat(axisGroup, i);
 			
 			
@@ -724,9 +723,28 @@ function Gneiss(config)
 		return this;
 	};
   
-	// TODO: This breaks encapsulation since we're calling a function defined in the same namespace but implemented in an external file
 	this.customYAxisFormat = function Gneiss$customYAxisFormat(axisGroup, i) {
-		//replace at your whim
+		axisGroup.selectAll("g")
+			.each(function(d,j) {
+				//create an object to store axisItem info
+				var axisItem = {}
+				
+				//store the position of the axisItem
+				//(figure it out by parsing the transfrom attribute)
+				axisItem.y = parseFloat(d3.select(this)
+					.attr("transform")
+						.split(")")[0]
+							.split(",")[1]
+					)
+				
+				//store the text element of the axisItem
+				//align the text right position it on top of the line
+				axisItem.text = d3.select(this).select("text")
+					.attr("text-anchor",i==0?"end":"start")
+					.attr("fill",i==0?"#666666":chart.yAxis[i].color)
+					.attr("x",function(){var elemx = Number(d3.select(this).attr("x")); return i==0?elemx:elemx+4})
+					.attr("y",-9)
+				});
 	};
   
   this.setXAxis = function Gneiss$setXAxis(first) {
