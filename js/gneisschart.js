@@ -240,19 +240,19 @@ function Gneiss(config)
 		g.sbt = this.splitSeriesByType(g.series);
 		this.updateGraphPropertiesBasedOnSeriesType(g, g.sbt);
 		
-		this.calculateColumnWidths(g)
-			.setYScales(g, true)
-			.setXScales(g, true)
-			.setYAxes(g, true)
-			.setXAxis(g, true);
-				
 		g.titleLine = g.chart.append("text")
 			.attr("y",18)
 			.attr("x", g.padding.left)
 			.attr("id","titleLine")
 			.text(g.title);
 		
-		this.drawSeriesAndLegend(g, true);
+		this.calculateColumnWidths()
+			.setYScales(true)
+			.setXScales(true)
+			.setYAxes(true)
+			.setXAxis(true);
+				
+		this.drawSeriesAndLegend(true);
 		
 		g.metaInfo = g.chart.append("g")
 			.attr("id","metaInfo")
