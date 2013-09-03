@@ -1,11 +1,13 @@
 var chart;
 ChartBuilder = {
-	allColors: ["BF0053","FF70B0","E15D98","C44B81","A63869","882551","6B133A","4D0022",
-						"BF600A","FFC07E","E1A76A","C48D55","A67341","885A2D","6B4118","4D2704",
-						"BFAA00","FFF270","E1D55D","C4B84B","A69C38","887F25","6B6213","4D4500",
-						"00BFA5","70FFF7","5DE1D9","4BC4BC","38A69E","258880","136B63","004D45",
-						"006DBF","70B8FF","5DA1E1","4B89C4","3871A6","255A88","13436B","002B4D",
-						"9300BF","E770FF","CB5DE1","AE4BC4","9238A6","752588","59136B","3C004D"],
+	allColors: ["00334e","194760","335C71","4D7083","668595","8099A6","99ADB8","B2C2CA",
+						"B70005","BE191E","C53337","CD4D50","D46669","DB8082","E2999B","E9B2B4",
+						"317023","467E39","5A8D4F","6F9B65","83A97B","98B891","ADC6A7","C1D4BD",
+						"ED8000","EF8D19","F19933","F2A64D","F4B366","F6C080","F8CC99","FAD9B2",
+						"3D8FA5","509AAE","64A5B7","77B1C0","8BBCC9","9EC7D2","B1D2DB","C5DDE4",
+						"CC3300","D14719","D65C33","DB704D","E08566","E69980","EBAD99","F0C2B2",
+						"8CC63F","98CC52","A3D165","AED779","BADD8C","C6E29F","D1E8B2","DCEEC5",
+						"F8981D","F9A234","F9AD4A","FAB761","FBC177","FCCC8E","FCD6A5","FDE0BB",],
 	curRaw: "",
 	getNewData: function(csv) {
 		// Split the csv information by lines
@@ -666,13 +668,13 @@ Gneiss.customYAxisFormat = function(axisGroup,i) {
 ChartBuilder.getDefaultConfig = function() {
   var chartConfig = {};
   
-  chartConfig.colors = ["#BF0053","#FF70B0","#E15D98","#C44B81","#A63869","#882551","#6B133A","#4D0022",
+  chartConfig.colors = ["#00334e","#006ea8","#79C8F2","#8899AA","#406980","#00324D","#6B133A","#ED8000",
 						"#BF600A","#FFC07E","#E1A76A","#C48D55","#A67341","#885A2D","#6B4118","#4D2704",
 						"#BFAA00","#FFF270","#E1D55D","#C4B84B","#A69C38","#887F25","#6B6213","#4D4500",
 						"#00BFA5","#70FFF7","#5DE1D9","#4BC4BC","#38A69E","#258880","#136B63","#004D45",
 						"#006DBF","#70B8FF","#5DA1E1","#4B89C4","#3871A6","#255A88","#13436B","#002B4D",
 						"#9300BF","#E770FF","#CB5DE1","#AE4BC4","#9238A6","#752588","#59136B","#3C004D"]
-  chartConfig.creditline = "Made with Chartbuilder";
+  chartConfig.creditline = "MPR News graphic";
   
   return chartConfig;
 }
