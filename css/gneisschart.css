@@ -28,17 +28,17 @@ svg .axis path {
 }
 
 svg .axis text {
-	font-family: 'Cutive',Helvetica, sans-serif;
+	font-family: Georgia, serif;
 	font-size: 12px;
 }
 
 svg .legendItem text {
-	font-family: 'Cutive',Helvetica, sans-serif;
+	font-family: Georgia, serif;
 	font-size:  12px;
 }
 
 svg text.metaText {
-	font-family: 'Cutive',Helvetica, sans-serif;
+	font-family: Georgia, serif;
 	font-size:  10px;
 	text-rendering:   optimizeLegibility;
 	fill:  #999999;
@@ -46,12 +46,12 @@ svg text.metaText {
 
 svg text.barLabel, 
 svg text.bargridLabel {
-	font-family: 'Cutive',Helvetica, sans-serif;
+	font-family: Georgia, serif;
 	font-size: 12px
 }
 	
 #titleLine {
-	font-family: 'Cutive',Helvetica, sans-serif;
+	font-family: Georgia, serif;
 	font-size: 12px;
 	fill: #666666;
 }
