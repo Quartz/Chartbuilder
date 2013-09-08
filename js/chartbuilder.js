@@ -313,7 +313,7 @@ ChartBuilder = {
 		var s;
 		var picker;
 		this.customLegendLocaion = false;
-		var colIndex = g.sbt.line.length;
+		var colIndex = g.seriesByType().line.length;
 		var lineIndex = 0;
 		var bargridIndex = 0;
 		var scatterIndex = 0;
