@@ -11,7 +11,7 @@
 ```````````***`````**```````````***````````***`````````````***````***``````***`````````***```````````************````
 `````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
 */
-var yAxisIndex
+var yAxisIndex;
 
 //add prepend ability
 Element.prototype.prependChild = function(child) { this.insertBefore(child, this.firstChild); };
@@ -20,7 +20,7 @@ Date.setLocale('en');
 
 //A default configuration 
 //Should change to more d3esque methods e.g. http://bost.ocks.org/mike/chart/
-var defaultGneissChartConfig = {
+Gneiss.defaultGneissChartConfig = {
 	container: "#chartContainer", //css id of target chart container
 	editable: true, // reserved for enabling or dissabling on chart editing
 	legend: true, // whether or not there should be a legend
@@ -84,150 +84,278 @@ var defaultGneissChartConfig = {
 	],
 	sourceline: "",
 	creditline: "Made with Chartbuilder"
-}
+};
 
-var Gneiss = {
-	dateParsers: {
-		"mmddyyyy": function(d) {return [d.getMonth()+1,d.getDate(),d.getFullYear()].join("/")},
-		"ddmmyyyy": function(d) {return [d.getDate(),d.getMonth()+1,d.getFullYear()].join("/")},
-		"mmdd": function(d) {return [d.getMonth()+1,d.getDate()].join("/")},
-		"Mdd": function(d){
-			var month = d.getMonth()+1;
-			if(month == 5){
-				return d.format('{Mon}') +" "+ Number(d.getDate())
-			} 
-			else { 
-				return d.format('{Mon}.') +" "+ Number(d.getDate())
-			}
-		},
-		"ddM": function(d){
-			var month = d.getMonth()+1;
-			if(month == 5){
-				return Number(d.getDate()) +" "+ d.format('{mon}')
-			} 
-			else { 
-				return Number(d.getDate()) +" "+ d.format('{mon}.')
-			}
-		},
-		"mmyy": function(d) {return [d.getMonth()+1,String(d.getFullYear()).split("").splice(2,2).join("")].join("/")},
-		"yy": function(d) {return "’"+String(d.getFullYear()).split("").splice(2,2).join("")},
-		"yyyy": function(d) {return d.getFullYear()},
-		"MM": function(d) {
-			var month = d.getMonth()+1;
-			if(month == 1) {
-				return d.getFullYear()
-			}
-			else {
-				return d.format('{Month}')
-			}
-		},
-		"M": function(d) {	
-			var month = d.getMonth()+1;
-			if(month == 1){
-				return "’"+String(d.getFullYear()).split("").splice(2,2).join("")
-			} 
-			else if(month == 5){ 
-				return d.format('{Mon}')
-			}
-			else { 
-				return d.format('{Mon}.')
-			}
-		},
-		"hmm": function(d) {
-			if(Date.getLocale().code == 'en'){
-				return d.format('{12hr}:{mm}')
-			} else {
-				return d.format('{24hr}:{mm}')
-			}
-		},
-	},
-	build: function(config) {
+Gneiss.dateParsers = {
+  "mmddyyyy": function(d) { return [d.getMonth() + 1, d.getDate(), d.getFullYear()].join("/"); },
+  "ddmmyyyy": function(d) { return [d.getDate(), d.getMonth() + 1, d.getFullYear()].join("/"); },
+  "mmdd": function(d) { return [d.getMonth() + 1, d.getDate()].join("/"); },
+  "Mdd": function(d) {
+    var month = d.getMonth() + 1;
+    if(month == 5) {
+      return d.format('{Mon}') + " " + d.getDate();
+    } 
+    else { 
+      return d.format('{Mon}.') + " " + d.getDate();
+    }
+  },
+  "ddM": function(d) {
+    var month = d.getMonth() + 1;
+    if(month == 5) {
+      return "" + d.getDate() + " " + d.format('{Mon}');
+    } 
+    else { 
+      return "" + d.getDate() + " " + d.format('{Mon}.');
+    }
+  },
+  "mmyy": function(d) { return [d.getMonth() + 1, String(d.getFullYear()).split("").splice(2,2).join("")].join("/"); },
+  "yy": function(d) { return "’" + String(d.getFullYear()).split("").splice(2,2).join(""); },
+  "yyyy": function(d) { return "" + d.getFullYear(); },
+  "MM": function(d) {
+    var month = d.getMonth() + 1;
+    if(month == 1) {
+      return "" + d.getFullYear();
+    }
+    else {
+      return d.format('{Month}');
+    }
+  },
+  "M": function(d) {	
+    var month = d.getMonth() + 1;
+    if(month == 1) {
+      return "’" + String(d.getFullYear()).split("").splice(2,2).join("");
+    } 
+    else if(month == 5) {
+      return d.format('{Mon}');
+    }
+    else {
+      return d.format('{Mon}.');
+    }
+  },
+  "hmm": function(d) {
+    if(Date.getLocale().code == 'en') {
+      return d.format('{12hr}:{mm}');
+    } else {
+      return d.format('{24hr}:{mm}');
+    }
+  }
+};
+
+Gneiss.helper = {
+  multiextent: function(a, key) {
+    // Find the min and max values of multiple arrays
+    var data = [];
+    var ext;
+    
+    for (var i = a.length - 1; i >= 0; i--) {
+      ext = d3.extent(key ? key(a[i]) : a[i]);
+      data.push(ext[0]);
+      data.push(ext[1]);
+    }
+    
+    return d3.extent(data);
+  },
+  columnXandHeight: function(d, domain) {
+    //a function to find the proper value to cut off a column
+    if(d > 0 && domain[0] > 0) {
+      return domain[0];
+    }
+    else if (d < 0 && domain[1] < 0) {
+      return domain[1];
+    }			
+    return 0;
+  },
+  exactTicks: function(domain,numticks) {
+    numticks -= 1;
+    var ticks = [];
+    var delta = domain[1] - domain[0];
+    for (var i=0; i < numticks; i++) {
+      ticks.push(domain[0] + (delta/numticks)*i);
+    };
+    ticks.push(domain[1]);
+    
+    if(domain[1]*domain[0] < 0) {
+      //if the domain crosses zero, make sure there is a zero line
+      var hasZero = false;
+      for (var i = ticks.length - 1; i >= 0; i--) {
+        //check if there is already a zero line
+        if(ticks[i] == 0) {
+          hasZero = true;
+        }
+      };
+      if(!hasZero) {
+        ticks.push(0);
+      }
+    }
+    
+    return ticks;
+  },  
+  transformCoordOf: function(elem){
+    var separator = elem.attr("transform").indexOf(",") > -1 ? "," : " ";
+    var trans = elem.attr("transform").split(separator);
+    return { x: (trans[0] ? parseFloat(trans[0].split("(")[1]) : 0), y: (trans[1] ? parseFloat(trans[1].split(")")[0] ): 0) };
+  }
+};
+
+function Gneiss(config)
+{ 	
+	var containerElement;
+	var defaultPadding;
+	var containerId;
+	var seriesByType;
+	var width;
+	var height;
+	var isBargrid;
+	
+	this.containerId = function Gneiss$containerId(elem) {
+		if (!arguments.length) {
+			return containerId;
+		}
+		containerId = elem;
+	};
+	
+	this.containerElement = function Gneiss$containerElement(elem) {
+		if (!arguments.length) {
+			return containerElement;
+		}
+		containerElement = elem;
+	};
+	
+	this.defaultPadding = function Gneiss$defaultPadding(padding) {
+		if (!arguments.length) {
+			return defaultPadding;
+		}
+		defaultPadding = padding;
+	};
+	
+	this.width = function Gneiss$width(w) {
+		if (!arguments.length) {
+			return width;
+		}
+		width = w;
+	};
+	
+	this.height = function Gneiss$height(h) {
+		if (!arguments.length) {
+			return height;
+		}
+		height = h;
+	};
+	
+	this.seriesByType = function Gneiss$seriesByType(sbt) {
+		if (!arguments.length) {
+			return seriesByType;
+		}
+		seriesByType = sbt;
+	};
+	
+	this.isBargrid = function Gneiss$isBargrid(b) {
+		if (!arguments.length) {
+			return isBargrid;
+		}
+		isBargrid = b;
+	};
+	
+	this.build = function Gneiss$build(config) {
 		/*
 			Initializes the chart from a config object
 		*/
-		var g = config
-		this.g = config 
-		//set container as a jquery object
-		g.$container = $(g.container);
-		g.all = this;
 		
-		g.defaults =  {}
-		g.defaults.padding = $.extend({}, config.padding); //change
+		if(!config) {
+			throw new Error("build() must be called with a chart configuration");
+		}
+		
+		$.extend(this, config);
+		var g = this;
+		 
+		// Set container as a jQuery object wrapping the DOM element specified in the config
+		if(!config.container) {
+			throw new Error("build() must be called with a chart configuration with a 'container' property");
+		}
+		
+		g.containerId(config.container);
+		g.containerElement($(g.containerId()));
+				
+		g.defaultPadding($.extend({}, config.padding)); // deep copy the padding configuration
 		
 		//append svg to container using svg
-		g.chart = d3.select(g.container).append("svg")
+		g.chart = d3.select(g.containerId()).append("svg")
 			.attr("id","chart")
 			.attr("width","100%") //set width to 100%
-			.attr("height","100%") //set height to 100%
+			.attr("height","100%"); //set height to 100%
 			
-		g.width = g.$container.width() //save the width in pixels
-		g.height = g.$container.height() //save the height in pixels
+		g.width(g.containerElement().width()); //save the width in pixels
+		g.height(g.containerElement().height()); //save the height in pixels
 		
 		//add rect, use as a background to prevent transparency
 		g.chart.append("rect")
 			.attr("id","ground")
-			.attr("width",g.width)
-			.attr("height",g.height)
-				
+			.attr("width", g.width())
+			.attr("height", g.height());				
 		
 		//group the series by their type
-		this.g.sbt = this.splitSeriesByType(this.g.series);
-		this.calculateColumnWidths()
-			.setYScales(true)
-			.setXScales(true)
-			.setYAxes(true)
-			.setXAxis(true);
-		
+		g.seriesByType(this.splitSeriesByType(g.series));
+		this.updateGraphPropertiesBasedOnSeriesType(g, g.seriesByType());
 		
 		g.titleLine = g.chart.append("text")
 			.attr("y",18)
 			.attr("x", g.padding.left)
 			.attr("id","titleLine")
-			.text(g.title)
+			.text(g.title);
 		
+		this.calculateColumnWidths()
+			.setYScales(true)
+			.setXScales(true)
+			.setYAxes(true)
+			.setXAxis(true);
+				
 		this.drawSeriesAndLegend(true);
 		
 		g.metaInfo = g.chart.append("g")
 			.attr("id","metaInfo")
-			.attr("transform","translate(0,"+(g.height-4)+")")
+			.attr("transform","translate(0," + (g.height() - 4) + ")");
 		
 		g.sourceLine = g.metaInfo.append("text")
-			.attr("text-anchor","end")
-			.attr("x",g.width-g.padding.right)
-			.attr("class","metaText")
-			.text(g.sourceline)
+			.attr("text-anchor", "end")
+			.attr("x", g.width() - g.padding.right)
+			.attr("class", "metaText")
+			.text(g.sourceline);
 		
 		g.creditLine = g.metaInfo.append("text")
-			.attr("x",g.padding.left)
-			.attr("class","metaText")
-			.text(g.creditline)
-					
-		this.g = g;
+			.attr("x", g.padding.left)
+			.attr("class", "metaText")
+			.text(g.creditline);
+      
 		return this;
-	},
-	numberFormat: d3.format(","),
-	resize: function(){
+	};
+  
+	this.numberFormat = d3.format(",");
+  
+	this.resize = function Gneiss$resize(){
 		/*
 			Adjusts the size dependent stored variables
 		*/
-		var g = this.g
-		g.width = g.$container.width() //save the width in pixels
-		g.height = g.$container.height() //save the height in pixels
-		//put a background rect to prevent transparency
+		var g = this;
+    
+		// Save the width and height in pixels
+		g.width(g.containerElement().width());
+		g.height(g.containerElement().height());
+    
+		// Insert a background rectangle to prevent transparency
 		d3.select("rect#ground")
-			.attr("width",g.width)
-			.attr("height",g.height)
-			
-		g.metaInfo.attr("transform","translate(0,"+(g.height-4)+")")
+			.attr("width", g.width())
+			.attr("height", g.height());
+      
+		g.metaInfo.attr("transform", "translate(0," + (g.height() - 4) + ")");
 		
-		this.g = g;
-		return this
-	},
-	setYScales: function(first) {
+		return this;
+	};
+  
+  this.setYScales = function Gneiss$setYScales(first) {
 		/*
 			calculates and saves the y-scales from the existing data
 		*/
-		var g = this.g
+		var g = this;
 		/*
 		*
 		* Y AXIS SECTION
@@ -235,115 +363,110 @@ var Gneiss = {
 		*/	
 		//calculate number of yaxes and their maxes and mins
 		var axisIndex = 0;
-		var extremes = [], ex;
+		var extremes = [];
+		var ex;
 		for (var i = g.series.length - 1; i >= 0; i--){
 			
 			//CHANGE if there is no axis set to 0
 			if(!g.series[i].axis) {
 				g.series[i].axis = 0;
 			}
-			
-			
-			axisIndex = g.series[i].axis;
-			
+					
+			axisIndex = g.series[i].axis;			
 			
 			//CHANGE check if there are any extremes for the current axis
 			if(extremes[axisIndex] === undefined) {
-				extremes[axisIndex] = []
-			}
-			
+				extremes[axisIndex] = [];
+			}			
 			
 			if(g.yAxis[axisIndex] === undefined) {
-				console.error(g.series[i].name + " ["+i+"] is associated with axis " + axisIndex + ", but that axis does not exist")
+				console.error(g.series[i].name + " ["+i+"] is associated with axis " + axisIndex + ", but that axis does not exist");
 			}
 			
 			//calculate extremes of current series and add them to extremes array
-			e = d3.extent(g.series[i].data)
-			extremes[axisIndex].push(e[0])
-			extremes[axisIndex].push(e[1])
+			e = d3.extent(g.series[i].data);
+			extremes[axisIndex].push(e[0]);
+			extremes[axisIndex].push(e[1]);
 		};
 		
 		for (var i = extremes.length - 1; i >= 0; i--){
 			var ex = d3.extent(extremes[i])
 			if(g.yAxis[i].domain[0] == null) {
-				g.yAxis[i].domain[0] = ex[0]
+				g.yAxis[i].domain[0] = ex[0];
 			}
 			
 			if(g.yAxis[i].domain[1]  == null) {
-				g.yAxis[i].domain[1] = ex[1]
+				g.yAxis[i].domain[1] = ex[1];
 			}
 		};
 		
-			//set extremes in y axis objects and create scales
-			for (var i = g.yAxis.length - 1; i >= 0; i--){
-				//g.yAxis[i].domain = d3.extent(extremes[i])
-				if(first || !g.yAxis[i].scale) {
-					g.yAxis[i].scale = d3.scale.linear()
-						.domain(g.yAxis[i].domain)
-				}
-				else {
-					//set extremes in y axis objects and update scales
-					g.yAxis[i].domain = d3.extent(g.yAxis[i].domain)
-					g.yAxis[i].scale
-						.domain(g.yAxis[i].domain)
-				}
-				
-					
-			};
-			
+		//set extremes in y axis objects and create scales
+		for (var i = g.yAxis.length - 1; i >= 0; i--) {
+			//g.yAxis[i].domain = d3.extent(extremes[i])
+			if(first || !g.yAxis[i].scale) {
+				g.yAxis[i].scale = d3.scale.linear()
+					.domain(g.yAxis[i].domain);
+			}
+			else {
+				//set extremes in y axis objects and update scales
+				g.yAxis[i].domain = d3.extent(g.yAxis[i].domain);
+				g.yAxis[i].scale.domain(g.yAxis[i].domain);
+			}	
+		};		
 		
-		if(g.isBargrid) {
+		if(g.isBargrid()) {
 			for (var i = g.yAxis.length - 1; i >= 0; i--){
-				g.yAxis[i].domain[0] = Math.min(g.yAxis[i].domain[0],0)
+				g.yAxis[i].domain[0] = Math.min(g.yAxis[i].domain[0],0);
 				g.yAxis[i].scale.range([
 					g.padding.left,
-					(g.width/g.sbt.bargrid.length) - g.padding.right
-					]).nice()
-					
+					(g.width() / g.seriesByType().bargrid.length) - g.padding.right
+					]).nice();				
 			};
 		}
 		else {
 			for (var i = g.yAxis.length - 1; i >= 0; i--){
 				g.yAxis[i].scale.range([
-					g.height - g.padding.bottom,
+					g.height() - g.padding.bottom,
 					g.padding.top
-					]).nice()
+					]).nice();
 			};
 		}
 		
-		this.g = g;
-		return this
-	},
-	setPadding: function() {
+		return this;
+	};
+  
+	this.setPadding = function Gneiss$setPadding() {
 		/*
 			calulates and stores the proper amount of extra padding beyond what the user specified (to account for axes, titles, legends, meta)
 		*/
-		var g = this.g
-		var padding_top = g.defaults.padding.top,
-		padding_bottom = g.defaults.padding.bottom;
+		var g = this;
+		var padding_top = g.defaultPadding().top;
+		var padding_bottom = g.defaultPadding().bottom;
 		
 		if(!g.legend) {
 			padding_top = 5;
 		}
-		padding_top += g.title == "" || g.series.length == 1 ? 0:25
-		padding_top += (g.yAxis.length == 1 && !g.isBargrid) ? 0:25
+		padding_top += g.title == "" || g.series.length == 1 ? 0 : 25;
+		padding_top += (g.yAxis.length == 1 && !g.isBargrid()) ? 0 : 25;
 		
-		if(g.isBargrid) {
-			padding_top += -15
-			padding_bottom -= 15 
+		if(g.isBargrid()) {
+			padding_top += -15;
+			padding_bottom -= 15;
 		}
 		
-		g.padding.top = padding_top
-		g.padding.bottom = padding_bottom
-		this.g = g
-		return this
-	},
-	setXScales: function(first) {
+		g.padding.top = padding_top;
+		g.padding.bottom = padding_bottom;
+		return this;
+	};
+  
+  this.setXScales = function Gneiss$setXScales(first) {
 		/*
 			calculate and store the x-scales
 		*/
-		var g = this.g
-		var dateExtent, shortestPeriod = Infinity;
+		var g = this;
+		var dateExtent;
+		var shortestPeriod = Infinity;
+		
 		if(first) {
 			//create x scales
 			
@@ -412,21 +535,21 @@ var Gneiss = {
 		}
 		var rangeArray = []
 		//set the range of the x axis
-		if(g.isBargrid) {
+		if(g.isBargrid()) {
 			rangeArray = [
 				g.padding.top,
-				g.height - g.padding.bottom
+				 g.height() - g.padding.bottom
 			]
 		}
 		else if (g.xAxis.hasColumns) {
 			rangeArray = [
-				g.padding.left + this.g.columnGroupWidth/2 + (g.yAxis.length==1?0:this.g.columnGroupWidth/2),
-				g.width - g.padding.right - this.g.columnGroupWidth
+				g.padding.left + g.columnGroupWidth/2 + (g.yAxis.length==1?0:g.columnGroupWidth/2),
+				g.width() - g.padding.right - g.columnGroupWidth
 				] 
 			//g.xAxis.scale.range([g.padding.left + this.g.columnGroupWidth/2,g.width - g.padding.right - (10* (Math.round(this.g.yAxis[0].domain[1]*3/4*100) + "").length )]) 
 		}
 		else {
-			rangeArray = [g.padding.left,g.width - g.padding.right]
+			rangeArray = [g.padding.left, g.width() - g.padding.right]
 			//g.xAxis.scale.range([g.padding.left,g.width - g.padding.right])
 		};
 		
@@ -437,12 +560,11 @@ var Gneiss = {
 			g.xAxis.scale.rangePoints(rangeArray);
 		}
 		
-		this.g = g;
-		return this
-		
-	},
-	setLineMakers: function(first) {
-		var g = this.g
+		return this;		
+	};
+  
+  this.setLineMakers = function Gneiss$setLineMakers(first) {
+		var g = this;
 
 		for (var i = g.yAxis.length - 1; i >= 0; i--){
 			if(first || !g.yAxis[i].line) {
@@ -457,18 +579,19 @@ var Gneiss = {
 				};
 			}
 
-		};
-		this.g = g
-		return this
-	},
-	setYAxes: function(first) {
+		}
+		return this;
+	};
+  
+  this.setYAxes = function Gneiss$setYAxes(first) {
 		/*
 		*
 		* Y-Axis Drawing Section
 		*
 		*/
-		var g = this.g;
-		var curAxis,axisGroup;
+		var g = this;
+		var curAxis;
+		var axisGroup;
 		
 		//CHANGE
 		if(g.yAxis.length == 1 ){
@@ -483,21 +606,21 @@ var Gneiss = {
 				g.yAxis[i].axis = d3.svg.axis()
 					.scale(g.yAxis[i].scale)
 					.orient(i==0?"right":"left")
-					.tickSize(g.width - g.padding.left - g.padding.right)
+					.tickSize(g.width() - g.padding.left - g.padding.right)
 					//.ticks(g.yAxis[0].ticks) // I'm not using built in ticks because it is too opinionated
-					.tickValues(g.yAxis[i].tickValues?g.yAxis[i].tickValues:this.helper.exactTicks(g.yAxis[i].scale.domain(),g.yAxis[0].ticks))
+					.tickValues(g.yAxis[i].tickValues?g.yAxis[i].tickValues:Gneiss.helper.exactTicks(g.yAxis[i].scale.domain(),g.yAxis[0].ticks))
 					
 				//append axis container
 
 				axisGroup = g.chart.append("g")
 					.attr("class","axis yAxis")
 					.attr("id",i==0?"rightAxis":"leftAxis")
-					.attr("transform",i==0?"translate("+g.padding.left+",0)":"translate("+(g.width-g.padding.right)+",0)")
+					.attr("transform",i==0?"translate("+g.padding.left+",0)":"translate("+( g.width()-g.padding.right)+",0)")
 					.call(g.yAxis[i].axis)
 			}
 			else {
 				g.yAxis[i].axis//.ticks(g.yAxis[0].ticks) // I'm not using built in ticks because it is too opinionated
-					.tickValues(g.yAxis[i].tickValues?g.yAxis[i].tickValues:this.helper.exactTicks(g.yAxis[i].scale.domain(),g.yAxis[0].ticks))
+					.tickValues(g.yAxis[i].tickValues?g.yAxis[i].tickValues:Gneiss.helper.exactTicks(g.yAxis[i].scale.domain(),g.yAxis[0].ticks))
 					
 				axisGroup = g.chart.selectAll(i==0?"#rightAxis":"#leftAxis")
 					.call(g.yAxis[i].axis)
@@ -507,7 +630,7 @@ var Gneiss = {
 			//adjust label position and add prefix and suffix
 			var topAxisLabel, minY = Infinity;
 			
-			this.customYAxisFormat(axisGroup,i)
+			this.customYAxisFormat(axisGroup, i);
 			
 			
 			axisGroup
@@ -632,7 +755,7 @@ var Gneiss = {
 			
 		};
 		
-		if(g.isBargrid){
+		if(g.isBargrid()){
 			d3.selectAll(".yAxis").style("display","none")
 			g.titleLine.attr("y",g.padding.top - 36)
 			
@@ -663,15 +786,37 @@ var Gneiss = {
 		
 		d3.selectAll(".yAxis").each(function(){this.parentNode.prependChild(this);})
 		d3.selectAll("#ground").each(function(){this.parentNode.prependChild(this);})
-		this.g = g
-		return this
 		
-	},
-	customYAxisFormat: function(axisGroup,i) {
-		//replace at your whim
-	},
-	setXAxis: function(first) {
-		var g = this.g
+		return this;
+	};
+  
+	this.customYAxisFormat = function Gneiss$customYAxisFormat(axisGroup, i) {
+		axisGroup.selectAll("g")
+			.each(function(d,j) {
+				//create an object to store axisItem info
+				var axisItem = {}
+				
+				//store the position of the axisItem
+				//(figure it out by parsing the transfrom attribute)
+				axisItem.y = parseFloat(d3.select(this)
+					.attr("transform")
+						.split(")")[0]
+							.split(",")[1]
+					)
+				
+				//store the text element of the axisItem
+				//align the text right position it on top of the line
+				axisItem.text = d3.select(this).select("text")
+					.attr("text-anchor",i==0?"end":"start")
+					.attr("fill",i==0?"#666666":chart.yAxis[i].color)
+					.attr("x",function(){var elemx = Number(d3.select(this).attr("x")); return i==0?elemx:elemx+4})
+					.attr("y",-9)
+				});
+	};
+  
+  this.setXAxis = function Gneiss$setXAxis(first) {
+		var g = this;
+    
 		if(first) {
 			/*
 			*
@@ -680,8 +825,8 @@ var Gneiss = {
 			*/
 			g.xAxis.axis = d3.svg.axis()
 				.scale(g.xAxis.scale)
-				.orient(g.isBargrid?"left":"bottom")
-				.tickFormat(g.xAxis.formatter ? this.dateParsers[g.xAxis.formatter] : function(d) {return d})
+				.orient(g.isBargrid() ? "left" : "bottom")
+				.tickFormat(g.xAxis.formatter ? Gneiss.dateParsers[g.xAxis.formatter] : function(d) {return d})
 				.ticks(g.xAxis.ticks)
 				
 			if(g.xAxis.type == "date") {
@@ -715,16 +860,14 @@ var Gneiss = {
 			g.chart.append("g")
 				.attr("class",'axis')
 				.attr("id","xAxis")
-				.attr("transform",g.isBargrid?"translate("+g.padding.left+",0)":"translate(0,"+(g.height - g.padding.bottom + 8)+")")
-				.call(g.xAxis.axis)
-				
-			
+				.attr("transform",g.isBargrid() ? "translate(" + g.padding.left + ",0)" : "translate(0," + (g.height() - g.padding.bottom + 8) + ")")
+				.call(g.xAxis.axis);			
 		}
 		else {
 			g.xAxis.axis.scale(g.xAxis.scale)
-				.tickFormat(g.xAxis.formatter ? this.dateParsers[g.xAxis.formatter] : function(d) {return d})
-				.ticks(g.isBargrid?g.series[0].data.length:g.xAxis.ticks)
-				.orient(g.isBargrid?"left":"bottom")
+				.tickFormat(g.xAxis.formatter ? Gneiss.dateParsers[g.xAxis.formatter] : function(d) { return d; })
+				.ticks(g.isBargrid() ? g.series[0].data.length : g.xAxis.ticks)
+				.orient(g.isBargrid() ? "left" : "bottom")
 			
 			if(g.xAxis.type == "date") {
 				var timeSpan = g.xAxis.scale.domain()[1]-g.xAxis.scale.domain()[0],
@@ -764,91 +907,91 @@ var Gneiss = {
 			}
 			
 			g.chart.selectAll("#xAxis")
-				.attr("transform",g.isBargrid?"translate("+g.padding.left+",0)":"translate(0,"+(g.height - g.padding.bottom + 8)+")")
+				.attr("transform",g.isBargrid() ? "translate(" + g.padding.left + ",0)" : "translate(0," + (g.height() - g.padding.bottom + 8) + ")")
 				.call(g.xAxis.axis)
 		}
 		
 		g.chart.selectAll("#xAxis text")
-			.attr("text-anchor", g.xAxis.type == "date" ? (g.sbt.column.length>0 && g.sbt.line.length == 0 && g.sbt.scatter.length == 0 ? "middle":"start"): (g.isBargrid ? "end":"middle"))
+			.attr("text-anchor", g.xAxis.type == "date" ? (g.seriesByType().column.length>0 && g.seriesByType().line.length == 0 && g.seriesByType().scatter.length == 0 ? "middle":"start"): (g.isBargrid() ? "end":"middle"))
 			//.attr("text-anchor", g.isBargrid ? "end":"middle")
 			.each(function() {
 				var pwidth = this.parentNode.getBBox().width
 				var attr = this.parentNode.getAttribute("transform")
 				var attrx = Number(attr.split("(")[1].split(",")[0])
 				var attry = Number(attr.split(")")[0].split(",")[1])
-				if(!g.isBargrid) {
+				if(!g.isBargrid()) {
 					// fix labels to not fall off edge when not bargrid
-					if (pwidth/2 + attrx > g.width) {
-						this.setAttribute("x",Number(this.getAttribute("x"))-(pwidth + attrx - g.width + g.padding.right))
+					if (pwidth/2 + attrx >  g.width()) {
+						this.setAttribute("x",Number(this.getAttribute("x"))-(pwidth + attrx -  g.width() + g.padding.right))
 						this.setAttribute("text-anchor","start")
 					}
 					else if (attrx - pwidth/2 < 0) {
 						this.setAttribute("text-anchor","start")
 					}
-					g.padding.left = g.defaults.padding.left
+					g.padding.left = g.defaultPadding().left
 				}
 				else {
 					//adjust padding for bargrid
-					if(g.padding.left - pwidth < g.defaults.padding.left) {
-						g.padding.left = pwidth + g.defaults.padding.left;
-						g.all.redraw() //CHANGE (maybe)
+					if(g.padding.left - pwidth < g.defaultPadding().left) {
+						g.padding.left = pwidth + g.defaultPadding().left;
+						g.redraw() //CHANGE (maybe)
 					}
 					
 				}
-				
-			})
-		
-		this.g = g
-		return this
-	},
-	calculateColumnWidths: function() {
+			});
+      
+		return this;
+	};
+  
+  this.calculateColumnWidths = function Gneiss$calculateColumnWidths() {
 		/*
 			Calculate the propper column width for column charts
 		*/
 		
-		var g = this.g
+		var g = this;
 		//store split by type for convenience
-		var sbt = g.sbt
+		var sbt = g.seriesByType();
 		
 		
 		//determine the propper column width
 		//								---- Width of chart area ----------     -Num Data pts-  -Num Column Series-
-		var columnWidth = Math.floor(((g.width-g.padding.right-g.padding.left) / g.maxLength) / sbt.column.length) - 3;
+		var columnWidth = Math.floor((( g.width()-g.padding.right-g.padding.left) / g.maxLength) / sbt.column.length) - 3;
 		//make sure width is >= 1
 		columnWidth = Math.max(columnWidth, 1);
-		columnWidth = Math.min(columnWidth, (g.width-g.padding.right-g.padding.left) * 0.075)
+		columnWidth = Math.min(columnWidth, ( g.width()-g.padding.right-g.padding.left) * 0.075)
 		var columnGroupShift = columnWidth + 1;
 		
-		this.g.columnWidth = columnWidth;
-		this.g.columnGroupWidth = (columnWidth + 1) * sbt.column.length;
-		this.g.columnGroupShift = columnWidth +1;
+		g.columnWidth = columnWidth;
+		g.columnGroupWidth = (columnWidth + 1) * sbt.column.length;
+		g.columnGroupShift = columnWidth +1;
 		
-		return this
-	},
-	drawSeriesAndLegend: function(first){
-		this.drawSeries(first)
-		this.drawLegend()
-		return this
-	},
-	drawSeries: function(first) {
+		return this;
+	};
+  
+  this.drawSeriesAndLegend = function Gneiss$drawSeriesAndLegend(first){
+		this.drawSeries(first);
+		this.drawLegend();
+		return this;
+	};
+  
+  this.drawSeries = function Gneiss$drawSeries(first) {
 		/*
 		*
 		* Series Drawing Section
 		*
 		*/
-		var g = this.g
+		var g = this;
 		
-		var lineSeries;
-		
-		//construct line maker helper functions for each yAxis
-		this.setLineMakers(first)
+		//construct line maker Gneiss.helper functions for each yAxis
+		this.setLineMakers(first);
 		
 		//store split by type for convenience
-		var sbt = g.sbt
+		var sbt = g.seriesByType();
 		
-		var columnWidth = this.g.columnWidth;
-		var columnGroupShift = this.g.columnGroupShift;
+		var columnWidth = g.columnWidth;
+		var columnGroupShift = g.columnGroupShift;
 		
+		var lineSeries;
 		
 		if(first) {
 			
@@ -863,7 +1006,6 @@ var Gneiss = {
 			var columnRects
 			var lineSeriesDots = g.seriesContainer.selectAll("g.lineSeriesDots")
 			var scatterSeries = g.seriesContainer.selectAll("g.seriesScatter")
-			
 			
 				
 			//create a group to contain the legend items
@@ -883,13 +1025,12 @@ var Gneiss = {
 					.enter()
 						.append("rect")
 						.attr("width",columnWidth)
-						.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())))})
+						.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())))})
 						.attr("x", function(d,i) {
 							return g.xAxis.scale(g.xAxisRef[0].data[i])  - columnWidth/2
 							})
-						.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
-				
-				
+						.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
+								
 				
 				//add lines to chart
 				lineSeries.data(sbt.line)
@@ -917,9 +1058,9 @@ var Gneiss = {
 						.append("circle")
 						.attr("r",4)
 						.attr("transform",function(d,i){
-							yAxisIndex = d3.select(this.parentElement).data()[0].axis; 
+							yAxisIndex = d3.select(this.parentNode).data()[0].axis; 
 							return "translate("+(g.xAxis.type=="date" ?
-								g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]):
+								g.xAxis.scale(g.xAxisRef[0].data[i]):
 								g.xAxis.scale(i)) + "," + g.yAxis[yAxisIndex].scale(d) + ")"
 							})
 							
@@ -940,9 +1081,9 @@ var Gneiss = {
 						.attr("stroke","#fff")
 						.attr("stroke-width","1")
 						.attr("transform",function(d,i){
-							yAxisIndex = d3.select(this.parentElement).data()[0].axis; 
+							yAxisIndex = d3.select(this.parentNode).data()[0].axis; 
 							return "translate("+(g.xAxis.type=="date" ?
-								g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]):
+								g.xAxis.scale(g.xAxisRef[0].data[i]):
 								g.xAxis.scale(i)) + "," + g.yAxis[yAxisIndex].scale(d) + ")"
 							})
 		}
@@ -956,7 +1097,7 @@ var Gneiss = {
 			var columnGroups
 			var columnRects
 			
-			if(g.isBargrid) {
+			if(g.isBargrid()) {
 				//add bars to chart
 				columnGroups = g.seriesContainer.selectAll("g.seriesColumn")
 					.data(sbt.bargrid)
@@ -988,7 +1129,7 @@ var Gneiss = {
 				
 				columnSeries.transition()
 					.duration(500)
-					.attr("transform",function(d,i){return "translate("+(i * (g.width-g.padding.left)/g.series.length)+",0)"})
+					.attr("transform",function(d,i){return "translate("+(i * ( g.width()-g.padding.left)/g.series.length)+",0)"})
 					
 				columnGroups.exit().remove()
 				
@@ -999,15 +1140,15 @@ var Gneiss = {
 				columnRects.enter()
 						.append("rect")
 						.attr("height",20)
-						.attr("width", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
-						.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d)):0)})
+						.attr("width", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
+						.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d)):0)})
 						.attr("y",function(d,i) {return g.xAxis.scale(i) - 10})
 				
 				columnRects.transition()
 					.duration(500)
 					.attr("height",20)
-					.attr("width", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
-					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)):0)})
+					.attr("width", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
+					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)):0)})
 					.attr("y",function(d,i) {return g.xAxis.scale(i) - 10})
 				
 				//add label to each bar
@@ -1017,13 +1158,13 @@ var Gneiss = {
 				barLabels.enter()
 					.append("text")
 					.attr("class","barLabel")
-					.text(function(d,i){return g.all.numberFormat(d)})
-					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
+					.text(function(d,i){return g.numberFormat(d)})
+					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
 					.attr("y",function(d,i) {return g.xAxis.scale(i) + 5})
 					
 				barLabels.transition()
-					.text(function(d,i){var yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (i==0?g.yAxis[yAxisIndex].prefix.value:"") + g.all.numberFormat(d) + (i==0?g.yAxis[yAxisIndex].suffix.value:"")})
-					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return 3 + g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)):0) + Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
+					.text(function(d,i){var yAxisIndex = d3.select(this.parentNode).data()[0].axis; return (i==0?g.yAxis[yAxisIndex].prefix.value:"") + g.numberFormat(d) + (i==0?g.yAxis[yAxisIndex].suffix.value:"")})
+					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return 3 + g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)):0) + Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
 					.attr("y",function(d,i) {return g.xAxis.scale(i) + 5})
 				
 				//remove non bargrid stuff
@@ -1061,19 +1202,19 @@ var Gneiss = {
 				columnRects.enter()
 						.append("rect")
 						.attr("width",columnWidth)
-						.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())))})
-						.attr("x",function(d,i) {return g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i])  - columnWidth/2})
-						.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
+						.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())))})
+						.attr("x",function(d,i) {return g.xAxis.scale(g.xAxisRef[0].data[i])  - columnWidth/2})
+						.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
 			
 				columnRects.transition()
 					.duration(500)
 					.attr("width",columnWidth)
-					.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())))})
+					.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())))})
 					.attr("x",g.xAxis.type =="date" ? 
-							function(d,i) {return g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i])  - columnWidth/2}:
+							function(d,i) {return g.xAxis.scale(g.xAxisRef[0].data[i])  - columnWidth/2}:
 							function(d,i) {return g.xAxis.scale(i) - columnWidth/2}
 					)
-					.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
+					.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
 				
 				columnRects.exit().remove()
 			
@@ -1124,17 +1265,17 @@ var Gneiss = {
 					.append("circle")
 					.attr("r",4)
 					.attr("transform",function(d,i){
-						yAxisIndex = d3.select(this.parentElement).data()[0].axis;
+						yAxisIndex = d3.select(this.parentNode).data()[0].axis;
 							var y = d || d ===0 ? g.yAxis[yAxisIndex].scale(d) : -100;
-							return "translate("+ g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + y + ")";
+							return "translate("+ g.xAxis.scale(g.xAxisRef[0].data[i]) + "," + y + ")";
 						})
 			
 				lineSeriesDots.transition()
 					.duration(500)
 					.attr("transform",function(d,i){
-						yAxisIndex = d3.select(this.parentElement).data()[0].axis;
+						yAxisIndex = d3.select(this.parentNode).data()[0].axis;
 							var y = d || d ===0 ? g.yAxis[yAxisIndex].scale(d) : -100;
-							return "translate("+ g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + y + ")";
+							return "translate("+ g.xAxis.scale(g.xAxisRef[0].data[i]) + "," + y + ")";
 						})
 			
 				lineSeriesDots.exit().remove()
@@ -1161,55 +1302,53 @@ var Gneiss = {
 						.attr("stroke","#fff")
 						.attr("stroke-width","1")
 						.attr("transform",function(d,i){
-							yAxisIndex = d3.select(this.parentElement).data()[0].axis;
-							return "translate("+g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + g.yAxis[yAxisIndex].scale(d) + ")"
+							yAxisIndex = d3.select(this.parentNode).data()[0].axis;
+							return "translate("+g.xAxis.scale(g.xAxisRef[0].data[i]) + "," + g.yAxis[yAxisIndex].scale(d) + ")"
 							})
 					
 				scatterDots.transition()
 						.duration(500)
 						.attr("transform",function(d,i){
-							yAxisIndex = d3.select(this.parentElement).data()[0].axis;
-							return "translate("+g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + g.yAxis[yAxisIndex].scale(d) + ")"
+							yAxisIndex = d3.select(this.parentNode).data()[0].axis;
+							return "translate("+g.xAxis.scale(g.xAxisRef[0].data[i]) + "," + g.yAxis[yAxisIndex].scale(d) + ")"
 							})
 			}
 			
 		}
 		
-		//arrange elements in propper order	
+		//arrange elements in proper order	
 		
 		//bring bars to front
-		if(g.sbt.column.length > 0) {
+		if(sbt.column.length > 0) {
 			columnGroups.each(function(){this.parentNode.appendChild(this);})
 			columnSeries.each(function(){this.parentNode.appendChild(this);})
 		}
 		
 		
 		//bring lines to front
-		if(g.sbt.line.length > 0){
+		if(sbt.line.length > 0){
 			lineSeries.each(function(){if(this.parentNode){this.parentNode.appendChild(this);}})
 			//bring dots to front
 			lineSeriesDotGroups.each(function(){if(this.parentNode){this.parentNode.appendChild(this);}})
 		}
 		
 		//bring scatter to front
-		if(g.sbt.scatter.length > 0) {
+		if(sbt.scatter.length > 0) {
 			scatterGroups.each(function(){this.parentNode.appendChild(this);})
 			scatterDots.each(function(){this.parentNode.appendChild(this);})
 		}
 		
-		this.g = g;
-		return this
-		
-		
-	},
-	drawLegend: function() {
-		var g = this.g;
+		return this;
+	};
+  
+  this.drawLegend = function Gneiss$drawLegend() {
+		var g = this;
 		var legendItemY;
 		
 		//remove current legends
 		g.legendItemContainer.selectAll("g.legendItem").remove()
 		
-		if(!g.isBargrid) {
+		if(!g.isBargrid()) {
 			//add legend to chart
 			var legendGroups = g.legendItemContainer.selectAll("g")
 				.data(g.series);
@@ -1251,21 +1390,21 @@ var Gneiss = {
 					.delay(function(d,i){return i * 50 + 50})
 					.attr("transform",function(d,i) {
 						//label isn't for the first series
-						var prev = d3.select(legendGroups[0][i])
-						var prevWidth = parseFloat(prev.node().getBBox().width)
-						var prevCoords = g.all.helper.transformCoordOf(prev)
+						var prev = d3.select(legendGroups[0][i]);
+						var prevWidth = parseFloat(prev.node().getBBox().width);
+						var prevCoords = Gneiss.helper.transformCoordOf(prev);
 
-						var cur = d3.select(this)
-						var curWidth = parseFloat(cur.node().getBBox().width)
-						var curCoords = g.all.helper.transformCoordOf(cur)
+						var cur = d3.select(this);
+						var curWidth = parseFloat(cur.node().getBBox().width);
+						var curCoords = Gneiss.helper.transformCoordOf(cur);
 
 						legendItemY = prevCoords.y;
-						var x = prevCoords.x + prevWidth + 5
-						if(x + curWidth > g.width) {
-							x = g.padding.left
+						var x = prevCoords.x + prevWidth + 5;
+						if(x + curWidth >  g.width()) {
+							x = g.padding.left;
 							legendItemY += 15;						
 						}
-						return "translate("+x+","+legendItemY+")"
+						return "translate("+x+","+legendItemY+")";
 				})
 				//.filter(function(d,i){console.log(i,g.series.slice(0).pop()==d);return d == g.series.slice(0).pop()})
 				//.each("end", function(d,i) {
@@ -1276,9 +1415,7 @@ var Gneiss = {
 				//				
 				//	};
 				//})		
-				//test if the chart needs more top margin because of a large number of legend items
-				this.g = g;	
-				
+				//test if the chart needs more top margin because of a large number of legend items				
 			} else {
 				if(g.title == "") {
 					g.titleLine.text(g.series[0].name)
@@ -1286,66 +1423,62 @@ var Gneiss = {
 			}
 		}
 		
-		this.g = g
-		return this
-	},
-	updateMetaAndTitle: function() {
-		var g = this.g
-		g.metaInfo.attr("transform","translate(0,"+(g.height-4)+")")
-		this.g = g
-		return this
-	},
-	splitSeriesByType: function(series) {
+		return this;
+	};
+  
+  this.updateMetaAndTitle = function Gneiss$updateMetaAndTitle() {
+		var g = this;
+		g.metaInfo.attr("transform", "translate(0," + ( g.height() - 4) + ")");
+		return this;
+	};
+  
+  this.splitSeriesByType = function Gneiss$splitSeriesByType(series) {
 		/*
-			splits the data by the way it is supposed to be displayed
+			Partition the data by the way it is supposed to be displayed
 		*/
-		var o = {
-			"line":[],
-			"column":[],
-			"bargrid":[],
-			"scatter":[]
-		}
-		for (var i=0; i < series.length; i++) {
-			o[series[i].type].push(series[i])
+		var seriesByType = {
+			"line": [],
+			"column": [],
+			"bargrid": [],
+			"scatter": []
+		};
+		
+		for (var i = 0; i < series.length; i++) {
+			seriesByType[series[i].type].push(series[i]);
 		}
 		
-		if(o.column.length > 0) {
-			this.g.xAxis.hasColumns = true;
+		return seriesByType;
+	};
+  
+  this.updateGraphPropertiesBasedOnSeriesType = function Gneiss$updateGraphPropertiesBasedOnSeriesType(graph, seriesByType) {
+		/* 
+		  Update graph properties based on the type of data series displayed 
+		*/
+		if(seriesByType.column.length > 0) {
+			graph.xAxis.hasColumns = true;
 		}
 		else {
-			this.g.xAxis.hasColumns = false;
+			graph.xAxis.hasColumns = false;
 		}
 		
-		if(o.bargrid.length > 0) {
-			this.g.isBargrid = true;
+		if(seriesByType.bargrid.length > 0) {
+			graph.isBargrid(true);
 		}
 		else {
-			this.g.isBargrid = false;
+			graph.isBargrid(false);
 		}
-		
-		return o
-	},
-	update: function() {
-		/*
-			Nothing yet
-		*/
-		return this
-	},
-	updateSeries: function() {
-		/*
-			Nothing yet
-		*/
-		return this
-	},
-	redraw: function() {
+	};
+  
+  this.redraw = function Gneiss$redraw() {
 		/*
 			Redraw the chart
 		*/
-		var g = this.g
-		
+				
 		//group the series by their type
-		this.g.sbt = this.splitSeriesByType(this.g.series);
-		this.calculateColumnWidths()
+		this.seriesByType(this.splitSeriesByType(this.series));
+		this.updateGraphPropertiesBasedOnSeriesType(this, this.seriesByType());
+		
+		this.calculateColumnWidths();
 		
 		this.setPadding()
 			.setYScales()
@@ -1353,78 +1486,10 @@ var Gneiss = {
 			.setYAxes()
 			.setXAxis()
 			.drawSeriesAndLegend()
-			.updateMetaAndTitle();	
-		return this
-	},
-	randomizeData: function(d) {
-		delta = 10 * (Math.random() - 0.5)
-		for (var i = d.length - 1; i >= 0; i--){
-			d[i] = d[i] + ((Math.random()-0.5)*5) + delta
-		};
-		return d
-	},
-	helper: {
-		multiextent: function(a,key) {
-			//a function to find the max and min of multiple arrays
-			var data = [],ext;
-			if(key) {
-				//if there is a key function
-				for (var i = a.length - 1; i >= 0; i--){
-					ext = d3.extent(key(a[i]))
-					data.push(ext[0])
-					data.push(ext[1])
-				}
-			}
-			else {
-				for (var i = a.length - 1; i >= 0; i--){
-					ext = d3.extent(a[i])
-					data.push(ext[0])
-					data.push(ext[1])
-				};
-			}
-			return d3.extent(data)
-		},
-		columnXandHeight: function(d,domain) {
-			//a function to find the propper value to cut off a column
-			if(d > 0 && domain[0] > 0) {
-				return domain[0]
-			}
-			else if (d < 0 && domain[1] < 0) {
-				return domain[1]
-			}
-			
-			return 0
-		},
-		exactTicks: function(domain,numticks) {
-			numticks -= 1;
-			var ticks = [];
-			var delta = domain[1] - domain[0];
-			
-			for (var i=0; i < numticks; i++) {
-				ticks.push(domain[0] + (delta/numticks)*i);
-			};
-			ticks.push(domain[1])
-			
-			if(domain[1]*domain[0] < 0) {
-				//if the domain crosses zero, make sure there is a zero line
-				var hasZero = false;
-				for (var i = ticks.length - 1; i >= 0; i--){
-					//check if there is already a zero line
-					if(ticks[i] == 0) {
-						hasZero = true;
-					}
-				};
-				if(!hasZero) {
-					ticks.push(0)
-				}
-			}
-			
-			return ticks;
-		},
-		transformCoordOf: function(elem){
-			var trans = elem.attr("transform").split(",")
-			return {x:parseFloat(trans[0].split("(")[1]) , y:parseFloat(trans[1].split(")")[0])}
-		}
-	},
-	q: {}
+			.updateMetaAndTitle();
+		return this;
+	};
+  
+  // Call build() when someone attempts to construct a new Gneiss object
+  return this.build(config);
 }
