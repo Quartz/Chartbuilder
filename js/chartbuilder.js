@@ -491,7 +491,7 @@ ChartBuilder = {
 			.origin(Object)
 			.on("dragstart",function(d){
 				elem = d3.select(this)
-				d3.select(elem[0][0].parentElement).selectAll("rect").style("display","none")
+				d3.select(elem[0][0].parentNode).selectAll("rect").style("display","none")
 				if(!ChartBuilder.customLegendLocaion) {
 					chart.g.legend = false;
 					chart.redraw()
