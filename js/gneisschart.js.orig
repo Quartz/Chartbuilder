@@ -1030,7 +1030,12 @@ function Gneiss(config)
 							return g.xAxis.scale(g.xAxisRef[0].data[i])  - columnWidth/2
 							})
 						.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
+<<<<<<< HEAD
+				
+				
+=======
 								
+>>>>>>> 4470050496d700604859fc722e38c031accb6d9b
 				
 				//add lines to chart
 				lineSeries.data(sbt.line)
@@ -1158,12 +1163,20 @@ function Gneiss(config)
 				barLabels.enter()
 					.append("text")
 					.attr("class","barLabel")
+<<<<<<< HEAD
+					.text(function(d,i){return g.all.numberFormat(d)})
+=======
 					.text(function(d,i){return g.numberFormat(d)})
+>>>>>>> 4470050496d700604859fc722e38c031accb6d9b
 					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
 					.attr("y",function(d,i) {return g.xAxis.scale(i) + 5})
 					
 				barLabels.transition()
+<<<<<<< HEAD
+					.text(function(d,i){var yAxisIndex = d3.select(this.parentNode).data()[0].axis; return (i==0?g.yAxis[yAxisIndex].prefix.value:"") + g.all.numberFormat(d) + (i==0?g.yAxis[yAxisIndex].suffix.value:"")})
+=======
 					.text(function(d,i){var yAxisIndex = d3.select(this.parentNode).data()[0].axis; return (i==0?g.yAxis[yAxisIndex].prefix.value:"") + g.numberFormat(d) + (i==0?g.yAxis[yAxisIndex].suffix.value:"")})
+>>>>>>> 4470050496d700604859fc722e38c031accb6d9b
 					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return 3 + g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)):0) + Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
 					.attr("y",function(d,i) {return g.xAxis.scale(i) + 5})
 				
@@ -1203,7 +1216,11 @@ function Gneiss(config)
 						.append("rect")
 						.attr("width",columnWidth)
 						.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())))})
+<<<<<<< HEAD
+						.attr("x",function(d,i) {return g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i])  - columnWidth/2})
+=======
 						.attr("x",function(d,i) {return g.xAxis.scale(g.xAxisRef[0].data[i])  - columnWidth/2})
+>>>>>>> 4470050496d700604859fc722e38c031accb6d9b
 						.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
 			
 				columnRects.transition()
@@ -1303,14 +1320,22 @@ function Gneiss(config)
 						.attr("stroke-width","1")
 						.attr("transform",function(d,i){
 							yAxisIndex = d3.select(this.parentNode).data()[0].axis;
+<<<<<<< HEAD
+							return "translate("+g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + g.yAxis[yAxisIndex].scale(d) + ")"
+=======
 							return "translate("+g.xAxis.scale(g.xAxisRef[0].data[i]) + "," + g.yAxis[yAxisIndex].scale(d) + ")"
+>>>>>>> 4470050496d700604859fc722e38c031accb6d9b
 							})
 					
 				scatterDots.transition()
 						.duration(500)
 						.attr("transform",function(d,i){
 							yAxisIndex = d3.select(this.parentNode).data()[0].axis;
+<<<<<<< HEAD
+							return "translate("+g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + g.yAxis[yAxisIndex].scale(d) + ")"
+=======
 							return "translate("+g.xAxis.scale(g.xAxisRef[0].data[i]) + "," + g.yAxis[yAxisIndex].scale(d) + ")"
+>>>>>>> 4470050496d700604859fc722e38c031accb6d9b
 							})
 			}
 			
@@ -1486,10 +1511,88 @@ function Gneiss(config)
 			.setYAxes()
 			.setXAxis()
 			.drawSeriesAndLegend()
+<<<<<<< HEAD
+			.updateMetaAndTitle();	
+		return this
+	},
+	randomizeData: function(d) {
+		delta = 10 * (Math.random() - 0.5)
+		for (var i = d.length - 1; i >= 0; i--){
+			d[i] = d[i] + ((Math.random()-0.5)*5) + delta
+		};
+		return d
+	},
+	helper: {
+		multiextent: function(a,key) {
+			//a function to find the max and min of multiple arrays
+			var data = [],ext;
+			if(key) {
+				//if there is a key function
+				for (var i = a.length - 1; i >= 0; i--){
+					ext = d3.extent(key(a[i]))
+					data.push(ext[0])
+					data.push(ext[1])
+				}
+			}
+			else {
+				for (var i = a.length - 1; i >= 0; i--){
+					ext = d3.extent(a[i])
+					data.push(ext[0])
+					data.push(ext[1])
+				};
+			}
+			return d3.extent(data)
+		},
+		columnXandHeight: function(d,domain) {
+			//a function to find the propper value to cut off a column
+			if(d > 0 && domain[0] > 0) {
+				return domain[0]
+			}
+			else if (d < 0 && domain[1] < 0) {
+				return domain[1]
+			}
+			
+			return 0
+		},
+		exactTicks: function(domain,numticks) {
+			numticks -= 1;
+			var ticks = [];
+			var delta = domain[1] - domain[0];
+			
+			for (var i=0; i < numticks; i++) {
+				ticks.push(domain[0] + (delta/numticks)*i);
+			};
+			ticks.push(domain[1])
+			
+			if(domain[1]*domain[0] < 0) {
+				//if the domain crosses zero, make sure there is a zero line
+				var hasZero = false;
+				for (var i = ticks.length - 1; i >= 0; i--){
+					//check if there is already a zero line
+					if(ticks[i] == 0) {
+						hasZero = true;
+					}
+				};
+				if(!hasZero) {
+					ticks.push(0)
+				}
+			}
+			
+			return ticks;
+		},
+		transformCoordOf: function(elem){
+			var separator = elem.attr("transform").indexOf(",") > -1 ? "," : " ";
+			var trans = elem.attr("transform").split(separator);
+			return { x: (trans[0] ? parseFloat(trans[0].split("(")[1]) : 0), y: (trans[1] ? parseFloat(trans[1].split(")")[0]) : 0) };
+		}
+	},
+	q: {}
+=======
 			.updateMetaAndTitle();
 		return this;
 	};
   
   // Call build() when someone attempts to construct a new Gneiss object
   return this.build(config);
+>>>>>>> 4470050496d700604859fc722e38c031accb6d9b
 }

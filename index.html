@@ -44,9 +44,9 @@
   				<div id="chartOptions" class="interfaceCol">
              <div id="datainput">
              	<div class="inputGroup">
-                    <h2 id="inputDataHeading">1. Input your data</h2>
-                    <span id="invalidDataSpan" class="hide">Warning: Data is Invalid</span>
-                    <textarea id="csvInput" class="input-box" name="csvInput" rows="8"></textarea>
+                <h2>1. Input your data</h2>
+                <span id="invalidDataSpan" class="hide">Warning: Data is Invalid</span>
+                <textarea id="csvInput" class="input-box" name="csvInput" rows="8"></textarea>
              	</div>
              	<div class="inputGroup">
              		<h4>Check the format of your data</h4>
@@ -100,33 +100,35 @@
     					<div class="optionBlock">
     					<h2>5. Bottom Axis Options</h2>
     						<div class="optionGroup"><label for="x_axis_tick_num">Number of X Axis Ticks</label><select name="x_axis_tick_num" id="x_axis_tick_num" size="1">
-    							<option>2</option>
-    							<option>3</option>
-    							<option>4</option>
-    							<option selected>5</option>
-    							<option>6</option>
-    							<option>7</option>
-    							<option>8</option>
-    							<option>9</option>
-    							<option>10</option>
-    							<option>11</option>
-    							<option>12</option>
-    							<option>13</option>
-    							<option>14</option>
-    							<option>15</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option selected>5</option>
+                  <option>6</option>
+                  <option>7</option>
+                  <option>8</option>
+                  <option>9</option>
+                  <option>10</option>
+                  <option>11</option>
+                  <option>12</option>
+                  <option>13</option>
+                  <option>14</option>
+                  <option>15</option>
     						</select></div>
     						<div class="optionGroup"><label for="x_axis_date_format">X Axis Date Format</label><select name="x_axis_date_format" id="x_axis_date_format">
     							<option value="mmddyyyy">2/25/2012</option>
     							<option value="ddmmyyyy">25/2/2012</option>
     							<option value="mmdd">2/25</option>
     							<option value="Mdd">Feb. 25</option>
+                  <option value="ddM">25 Feb.</option>
     							<option value="mmyy">2/13</option>
     							<option value="yy">'13</option>
     							<option value="yyyy">2013</option>
     							<option value="MM">February</option>
     							<option selected value="M">Feb.</option>
     							<option value="hmm">3:27</option>
-    						</select></div>
+    						</select>
+							</div>
             </div>
             <div class="optionBlock full">
               <h2>4. Export</h2>
@@ -151,7 +153,7 @@
             <div class="clearfix"></div>
   				</div>
   				
-  				<div id="currentSeries" class="interfaceCol"></div>
+          <div id="currentSeries" class="interfaceCol"></div>
   			</div>			
 			</div>
       <div id="blankColumn" class="column"></div>
