@@ -806,6 +806,23 @@ ChartBuilder.start = function(config) {
   
   	}).keyup() 
   	
+  	$("#transposeInputButton").click(function() {
+        var csv = $("#csvInput").val();
+        var newData = ChartBuilder.getNewData(csv);
+        if(newData == null) {
+            ChartBuilder.showInvalidData();
+            return;
+        }
+        
+        var pivoted = ChartBuilder.pivotData(newData);
+        var delim = String.fromCharCode(9);
+        var s = '';
+        for(var i = 0; i < pivoted.length; i++) {
+            s += pivoted[i].join(delim)+'\n';
+        }
+        $("#csvInput").val($.trim(s)).keyup();
+  	})
+  	
   	$("#right_axis_prefix").keyup(function() {
   		ChartBuilder.actions.axis_prefix_change(0,this)
   	})
