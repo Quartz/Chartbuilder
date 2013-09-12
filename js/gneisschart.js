@@ -1257,7 +1257,7 @@ function Gneiss(config)
 					.selectAll("circle")
 					.data(function(d,i){return d.data})
 					
-				lineSeriesDotGroups.filter(function(d){return d.data.length > 15})
+				lineSeriesDotGroups.filter(function(d){return d.data.length >= 15})
 					.remove()
 				
 				
