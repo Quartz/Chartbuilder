@@ -24,6 +24,7 @@ Gneiss.defaultGneissChartConfig = {
 	container: "#chartContainer", //css id of target chart container
 	editable: true, // reserved for enabling or dissabling on chart editing
 	lineDotsThreshold: 15,
+	primaryAxisPosition: "right",
 	legend: true, // whether or not there should be a legend
 	title: "", // the chart title 
 	colors: ["#ff4cf4","#ffb3ff","#e69ce6","#cc87cc","#b373b3","#995f99","#804c80","#665266","#158eff","#99cdff","#9cc2e6","#87abcc","#7394b3","#5f7d99","#466780","#525c66"], //this is the order of colors that the 
@@ -447,8 +448,17 @@ function Gneiss(config)
 		if(!g.legend) {
 			padding_top = 5;
 		}
-		padding_top += g.title == "" || g.series.length == 1 ? 0 : 25;
-		padding_top += (g.yAxis.length == 1 && !g.isBargrid()) ? 0 : 25;
+		
+		//Add the height of the title line to the padding, if the title line has a height
+		title_bottom_margin = 5;
+		title_height = g.titleLine[0][0].getBBox().height;
+		padding_top += title_height > 0? title_height + title_bottom_margin : 0
+		
+		//if there is more than one axis or the default axis is on the left and it isn't a bar grid 
+		//add enough space for the top axis label
+		
+		axis_label_height = d3.selectAll(".yAxis text")[0][0].getBBox().height;
+		padding_top += (g.yAxis.length == 1 && !g.isBargrid() || g.primaryAxisPosition == "left") ? 0 : axis_label_height + title_bottom_margin;
 		
 		if(g.isBargrid()) {
 			padding_top += -15;
@@ -1075,8 +1085,6 @@ function Gneiss(config)
 				scatterDots.enter()
 						.append("circle")
 						.attr("r",4)
-						.attr("stroke","#fff")
-						.attr("stroke-width","1")
 						.attr("transform",function(d,i){
 							yAxisIndex = d3.select(this.parentNode).data()[0].axis; 
 							return "translate("+(g.xAxis.type=="date" ?
@@ -1292,8 +1300,6 @@ function Gneiss(config)
 				scatterDots.enter()
 						.append("circle")
 						.attr("r",4)
-						.attr("stroke","#fff")
-						.attr("stroke-width","1")
 						.attr("transform",function(d,i){
 							yAxisIndex = d3.select(this.parentNode).data()[0].axis;
 							return "translate("+g.xAxis.scale(g.xAxisRef[0].data[i]) + "," + g.yAxis[yAxisIndex].scale(d) + ")"

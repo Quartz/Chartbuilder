@@ -50,11 +50,18 @@ svg text.bargridLabel {
 	font-size: 12px
 }
 
+/*Default styling of series*/
+
 svg path.seriesLine {
 	stroke-width: 3px;
 	stroke-linejoin: round;
 	stroke-linecap: round;
 	fill: none;
+}
+
+svg .seriesScatter circle {
+	stroke:#fff;
+	stroke-width":1;
 }
 	
 #titleLine {
