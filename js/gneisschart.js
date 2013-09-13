@@ -23,6 +23,7 @@ Date.setLocale('en');
 Gneiss.defaultGneissChartConfig = {
 	container: "#chartContainer", //css id of target chart container
 	editable: true, // reserved for enabling or dissabling on chart editing
+	lineDotsThreshold: 15,
 	legend: true, // whether or not there should be a legend
 	title: "", // the chart title 
 	colors: ["#ff4cf4","#ffb3ff","#e69ce6","#cc87cc","#b373b3","#995f99","#804c80","#665266","#158eff","#99cdff","#9cc2e6","#87abcc","#7394b3","#5f7d99","#466780","#525c66"], //this is the order of colors that the 
@@ -1039,10 +1040,6 @@ function Gneiss(config)
 						.attr("d",function(d,j) { yAxisIndex = d.axis; pathString = g.yAxis[d.axis].line(d.data).split("L0,0L").join("M");  return pathString.indexOf("NaN")==-1?pathString:"M0,0"})
 						.attr("class","seriesLine seriesGroup")
 						.attr("stroke",function(d,i){return d.color? d.color : g.colors[i]})
-						.attr("stroke-width",3)
-						.attr("stroke-linejoin","round")
-						.attr("stroke-linecap","round")
-						.attr("fill","none")
 				
 				lineSeriesDotGroups = lineSeriesDots.data(sbt.line)
 					.enter()
@@ -1051,7 +1048,7 @@ function Gneiss(config)
 					.attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
 				
 				lineSeriesDotGroups
-					.filter(function(d){return d.data.length < 15})
+					.filter(function(d){return d.data.length < g.lineDotsThreshold})
 					.selectAll("circle")
 					.data(function(d){ return d.data})
 					.enter()
@@ -1228,10 +1225,6 @@ function Gneiss(config)
 						.attr("d",function(d,j) { yAxisIndex = d.axis; pathString = g.yAxis[d.axis].line(d.data).split("L0,0L").join("M0,0L"); return pathString;})
 						.attr("class","seriesLine")
 						.attr("stroke",function(d,i){return d.color? d.color : g.colors[i]})
-						.attr("stroke-width",3)
-						.attr("stroke-linejoin","round")
-						.attr("stroke-linecap","round")
-						.attr("fill","none");
 
 				lineSeries.transition()
 					.duration(500)
@@ -1253,11 +1246,11 @@ function Gneiss(config)
 				
 				lineSeriesDotGroups.exit().remove()
 			
-				lineSeriesDots = lineSeriesDotGroups.filter(function(d){return d.data.length < 15})
+				lineSeriesDots = lineSeriesDotGroups.filter(function(d){return d.data.length < g.lineDotsThreshold})
 					.selectAll("circle")
 					.data(function(d,i){return d.data})
 					
-				lineSeriesDotGroups.filter(function(d){return d.data.length >= 15})
+				lineSeriesDotGroups.filter(function(d){return d.data.length >= g.lineDotsThreshold})
 					.remove()
 				
 				

@@ -49,6 +49,13 @@ svg text.bargridLabel {
 	font-family: 'Cutive',Helvetica, sans-serif;
 	font-size: 12px
 }
+
+svg path.seriesLine {
+	stroke-width: 3px;
+	stroke-linejoin: round;
+	stroke-linecap: round;
+	fill: none;
+}
 	
 #titleLine {
 	font-family: 'Cutive',Helvetica, sans-serif;
