@@ -134,8 +134,8 @@ ChartBuilder = {
 		var d
 		for (var i=0; i < a.data.length; i++) {
 			d = a.data[i]
-			if(i < chart.series.length) {
-				a.data[i] = $.extend({},chart.series[i],d)
+			if(i < chart.series().length) {
+				a.data[i] = $.extend({},chart.series()[i],d)
 			}
 			else {
 				//defaults for new series
@@ -261,12 +261,12 @@ ChartBuilder = {
 		
 		
 		var filename = [];
-		for (var i=0; i < chart.series.length; i++) {
-			filename.push(chart.series[i].name);
+		for (var i=0; i < chart.series().length; i++) {
+			filename.push(chart.series()[i].name);
 		};
 		
-		if(chart.title.length > 0) {
-			filename.unshift(chart.title)
+		if(chart.title().length > 0) {
+			filename.unshift(chart.title())
 		}
 		
 		filename = filename.join("-").replace(/[^\w\d]+/gi, '-');
@@ -319,16 +319,17 @@ ChartBuilder = {
 		var scatterIndex = 0;
 		var seriesContainer = $("#seriesItems");
 		var isMultiAxis = false;
+		var colors = g.colors();
 		
-		for (var i=0; i < g.series.length; i++) {
-			s = g.series[i]
+		for (var i=0; i < g.series().length; i++) {
+			s = g.series()[i]
 			seriesItem = $('<div class="seriesItemGroup">\
 				<label for="'+this.idSafe(s.name)+'_color">'+s.name+'</label>\
 				<input id="'+this.idSafe(s.name)+'_color" name="'+this.idSafe(s.name)+'" type="text" />\
 				<select class="typePicker" id="'+this.idSafe(s.name)+'_type">\
 					<option '+(s.type=="line"?"selected":"")+' value="line">Line</option>\
 					<option '+(s.type=="column"?"selected":"")+' value="column">Column</option>\
-					<option '+(s.type=="bargrid"?"selected":"")+' '+(g.xAxis.type == "date"?"disabled":"")+' value="bargrid">Bar Grid</option>\
+					<option '+(s.type=="bargrid"?"selected":"")+' '+(g.xAxis().type == "date"?"disabled":"")+' value="bargrid">Bar Grid</option>\
 					<option '+(s.type=="scatter"?"selected":"")+' value="scatter">Scatter</option>\
 				</select>\
 				<input id="'+this.idSafe(s.name)+'_check" name="'+this.idSafe(s.name)+'_check" type="checkbox" />\
@@ -338,19 +339,19 @@ ChartBuilder = {
 			var color = ""
 			
 			if(s.type == "line") {
-				color = s.color ? s.color.replace("#","") : g.colors[lineIndex].replace("#","")
+				color = s.color ? s.color.replace("#","") : colors[lineIndex].replace("#","")
 				lineIndex++
 			}
 			else if(s.type == "column") {
-				color = s.color ? s.color.replace("#","") : g.colors[colIndex].replace("#","")
+				color = s.color ? s.color.replace("#","") : colors[colIndex].replace("#","")
 				colIndex++
 			}
 			else if(s.type =="bargrid") {
-				color = s.color ? s.color.replace("#","") : g.colors[bargridIndex].replace("#","")
+				color = s.color ? s.color.replace("#","") : colors[bargridIndex].replace("#","")
 				bargridIndex++
 			}
 			else if(s.type =="scatter") {
-				color = s.color ? s.color.replace("#","") : g.colors[scatterIndex].replace("#","")
+				color = s.color ? s.color.replace("#","") : colors[scatterIndex].replace("#","")
 				scatterIndex++
 			}
 			
@@ -359,10 +360,10 @@ ChartBuilder = {
 			var typer = seriesItem.find("#"+this.idSafe(s.name)+"_type")
 			var axer = seriesItem.find("#"+this.idSafe(s.name)+"_check")
 			
-			if(g.series[i].axis == 1) {
+			if(g.series()[i].axis == 1) {
 				axer.prop("checked",true)
-				if(!g.yAxis[1].color || !isMultiAxis) {
-					g.yAxis[1].color = picker.val()
+				if(!g.yAxis()[1].color || !isMultiAxis) {
+					g.yAxis()[1].color = picker.val()
 				}
 				isMultiAxis = true;
 			}
@@ -372,14 +373,14 @@ ChartBuilder = {
 												
 			seriesItem.data("index",i)
 			picker.change(function() {
-				chart.series[$(this).parent().data().index].color = $(this).val()
+				chart.series()[$(this).parent().data().index].color = $(this).val()
 				ChartBuilder.redraw()
 			})
 			
 			typer.change(function() {
 				var val = $(this).val();
 				var index = $(this).parent().data().index;
-				chart.series[index].type = val;
+				chart.series()[index].type = val;
 				var hasBargrid = false;
 				chart.setPadding();
 				ChartBuilder.setChartArea();
@@ -390,10 +391,10 @@ ChartBuilder = {
 			
 			axer.change(function() {
 				var axis = $(this).is(':checked') ? 1 : 0;
-				chart.series[$(this).parent().data().index].axis = axis
+				chart.series()[$(this).parent().data().index].axis = axis
 				
-				if(!chart.yAxis[axis]){
-					chart.yAxis[axis] = {
+				if(!chart.yAxis()[axis]){
+					chart.yAxis()[axis] = {
 											domain: [null,null],
 											tickValues: null,
 											prefix: {
@@ -410,8 +411,8 @@ ChartBuilder = {
 										}
 				}
 				
-				if(chart.yAxis.length > 1 && axis == 0) {
-					chart.yAxis.pop()
+				if(chart.yAxis().length > 1 && axis == 0) {
+					chart.yAxis().pop()
 				}
 				
 				chart.setYScales()
@@ -426,8 +427,8 @@ ChartBuilder = {
 		
 		
 		var yAxisObj = []
-		for (var i = g.yAxis.length - 1; i >= 0; i--){
-			var cur = g.yAxis[i]
+		for (var i = g.yAxis().length - 1; i >= 0; i--){
+			var cur = g.yAxis()[i]
 			yAxisObj[i] = {
 				domain: cur.domain,
 				tickValues: cur.tickValues,
@@ -439,42 +440,40 @@ ChartBuilder = {
 		};
 		
 		var xAxisObj = {
-			domain: g.xAxis.domain,
-			prefix: g.xAxis.prefix,
-			suffix: g.xAxis.suffix,
-			type: g.xAxis.type,
-			formatter: g.xAxis.formatter
-		}
+			domain: g.xAxis().domain,
+			prefix: g.xAxis().prefix,
+			suffix: g.xAxis().suffix,
+			type: g.xAxis().type,
+			formatter: g.xAxis().formatter
+		};
 		
 		if(isMultiAxis){
 			$("#leftAxisControls").removeClass("hide")
 		}
 		else {
 			$("#leftAxisControls").addClass("hide")
-		}
-		
+		}		
 		
 		var state = {
-			container: g.container,
-			colors: g.colors,
-			title: g.title,
-			padding : g.padding,
+			container: g.containerElement(),
+			colors: g.colors(),
+			title: g.title(),
+			padding : g.padding(),
 			xAxis: xAxisObj,
 			yAxis: yAxisObj,
-			series: g.series,
-			xAxisRef: g.xAxisRef,
-			sourceline: g.sourceline,
-			creditline: g.creditline
-		}
-
+			series: g.series(),
+			xAxisRef: g.xAxisRef(),
+			sourceline: g.sourceLineText(),
+			creditline: g.creditLineText()
+		};
 		
 		chart = g;
 		ChartBuilder.inlineAllStyles();
 	},
 	setChartArea: function() {
 		var hasBargrid = false;
-		for (var i = chart.series.length - 1; i >= 0; i--){
-			if(chart.series[i].type == "bargrid") {
+		for (var i = chart.series().length - 1; i >= 0; i--){
+			if(chart.series()[i].type == "bargrid") {
 				hasBargrid = true;
 				break;
 			}
@@ -482,9 +481,9 @@ ChartBuilder = {
 		
 		if(hasBargrid) {
 			$("#chartContainer").css("height",
-				chart.series[0].data.length*22 + 
-				chart.padding.top + 
-				chart.padding.bottom
+				chart.series()[0].data.length*22 + 
+				chart.padding().top + 
+				chart.padding().bottom
 				)
 		}
 		else {
@@ -499,7 +498,7 @@ ChartBuilder = {
 				elem = d3.select(this)
 				d3.select(elem[0][0].parentNode).selectAll("rect").style("display","none")
 				if(!ChartBuilder.customLegendLocaion) {
-					chart.legend = false;
+					chart.legend(false);
 					chart.redraw()
 					ChartBuilder.inlineAllStyles()
 					ChartBuilder.makeLegendAdjustable()
@@ -579,17 +578,17 @@ ChartBuilder = {
 	},
 	actions: {
 		axis_prefix_change: function(index,that) {
-			chart.yAxis[index].prefix.value = $(that).val()
+			chart.yAxis()[index].prefix.value = $(that).val()
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
 		},
 		axis_suffix_change: function(index,that) {
-			chart.yAxis[index].suffix.value = $(that).val()
+			chart.yAxis()[index].suffix.value = $(that).val()
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
 		},
 		axis_tick_num_change: function(index,that) {
-			chart.yAxis[index].ticks = parseInt($(that).val())
+			chart.yAxis()[index].ticks = parseInt($(that).val())
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
 		},
@@ -598,7 +597,7 @@ ChartBuilder = {
 			if(isNaN(val)) {
 				val = null
 			}
-			chart.yAxis[index].domain[1] = val;
+			chart.yAxis()[index].domain[1] = val;
 			chart.setYScales();
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
@@ -608,7 +607,7 @@ ChartBuilder = {
 			if(isNaN(val)) {
 				val = null
 			}
-			chart.yAxis[index].domain[0] = val;
+			chart.yAxis()[index].domain[0] = val;
 			chart.setYScales();
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
@@ -624,7 +623,7 @@ ChartBuilder = {
 			else {
 				val = null
 			}
-			chart.yAxis[index].tickValues = val
+			chart.yAxis()[index].tickValues = val
 			chart.setYScales();
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
@@ -676,12 +675,12 @@ ChartBuilder.start = function(config) {
   		var data = []
   		var val = ""
   
-  		data[0] = chart.xAxisRef[0].data
-  		data[0].unshift(chart.xAxisRef[0].name)
+  		data[0] = chart.xAxisRef()[0].data
+  		data[0].unshift(chart.xAxisRef()[0].name)
   
-  		for (var i = 0; i < chart.series.length; i++) {
-  			data[i+1] = chart.series[i].data
-  			data[i+1].unshift(chart.series[i].name)
+  		for (var i = 0; i < chart.series().length; i++) {
+  			data[i+1] = chart.series()[i].data
+  			data[i+1].unshift(chart.series()[i].name)
   		};
   
   		data = ChartBuilder.pivotData(data)
@@ -733,11 +732,11 @@ ChartBuilder.start = function(config) {
   			ChartBuilder.curRaw = $(this).val()
   			
   			if($("#right_axis_max").val().length == 0 && $("#right_axis_min").val().length == 0) {
-  					chart.yAxis[0].domain = [null,null];
+  					chart.yAxis()[0].domain = [null,null];
   			}
   			
-  			if(chart.yAxis.length > 1 && $("#left_axis_max").val().length == 0 && $("#left_axis_min").val().length == 0) {
-  					chart.yAxis[1].domain = [null,null];
+  			if(chart.yAxis().length > 1 && $("#left_axis_max").val().length == 0 && $("#left_axis_min").val().length == 0) {
+  					chart.yAxis()[1].domain = [null,null];
   			}
   			
   			var csv = $("#csvInput").val();
@@ -756,19 +755,19 @@ ChartBuilder.start = function(config) {
   
   			ChartBuilder.createTable(newData, dataObj.datetime);
   			
-  			chart.series.unshift(chart.xAxisRef)
+  			chart.series().unshift(chart.xAxisRef)
   			dataObj = ChartBuilder.mergeData(dataObj)
   			
   			if(dataObj.datetime) {
-  				chart.xAxis.type = "date";
-  				chart.xAxis.formatter = chart.xAxis.formatter?chart.xAxis.formatter:"Mdd";
+  				chart.xAxis().type = "date";
+  				chart.xAxis().formatter = chart.xAxis().formatter ? chart.xAxis().formatter : "Mdd";
   			}
   			else {
-  				chart.xAxis.type = "ordinal";
+  				chart.xAxis().type = "ordinal";
   			}
-  			chart.xAxisRef = [dataObj.data.shift()]
+  			chart.xAxisRef([dataObj.data.shift()]);
   			
-  			chart.series = dataObj.data;
+  			chart.series(dataObj.data);
   			chart.setPadding();
   			
   			ChartBuilder.setChartArea();
@@ -808,7 +807,7 @@ ChartBuilder.start = function(config) {
   	})
   	
   	$("#x_axis_tick_num").change(function() {
-  		chart.xAxis.ticks = parseInt($(this).val())
+  		chart.xAxis().ticks = parseInt($(this).val())
   		ChartBuilder.redraw()
   		ChartBuilder.inlineAllStyles();
   	})
@@ -839,26 +838,26 @@ ChartBuilder.start = function(config) {
   	
   	$("#x_axis_date_format").change(function() {
   		var val = $(this).val()
-  		chart.xAxis.formatter = val
+  		chart.xAxis().formatter = val
   		ChartBuilder.redraw()
   		ChartBuilder.inlineAllStyles();
   	})
   	
   	$("#creditLine").keyup(function() {
-  		var val = $(this).val()
-  		chart.creditline = val
-  		chart.creditLine.text(chart.creditline)
+  		var val = $(this).val();
+  		chart.creditLineText(val);
+  		chart.creditLineElement.text(chart.creditLineText());
   	});
 		
   	$("#sourceLine").keyup(function() {
-  		var val = $(this).val()
-  		chart.sourceline = val
-  		chart.sourceLine.text(chart.sourceline)
-  	})
+  		var val = $(this).val();
+  		chart.sourceLineText(val);
+  		chart.sourceLineElement.text(chart.sourceLineText());
+  	});
   	
   	$("#chart_title").keyup(function() {
   		var val = $(this).val();
-  		chart.title = val;
+  		chart.title(val);
   		chart.resize()
   			.setPadding();
   		ChartBuilder.setChartArea();
@@ -866,7 +865,7 @@ ChartBuilder.start = function(config) {
   			.redraw();
   		ChartBuilder.makeLegendAdjustable();
   		
-  		chart.titleLine.text(chart.title);
+  		chart.titleLine.text(chart.title());
   	});
   	
   	$(".downloadLink").click(function() {

@@ -182,7 +182,7 @@ describe("Gneiss", function() {
       var seriesByType = { bargrid: ["bargrid"], column: ["column"] };
       gneiss.updateGraphPropertiesBasedOnSeriesType(gneiss, seriesByType);
       
-      expect(gneiss.xAxis.hasColumns).toEqual(true);
+      expect(gneiss.xAxis().hasColumns).toEqual(true);
     });
     it("sets the 'hasColumns' property on the x-axis of a graph to false if a series of column data exists", function() {
       var graph = { xAxis: {} };
@@ -190,7 +190,7 @@ describe("Gneiss", function() {
       var seriesByType = { bargrid: [], column: [] };
       gneiss.updateGraphPropertiesBasedOnSeriesType(gneiss, seriesByType);
       
-      expect(gneiss.xAxis.hasColumns).toEqual(false);
+      expect(gneiss.xAxis().hasColumns).toEqual(false);
     });
     it("sets the 'isBargrid' property on a graph to true if a series of bar graph data exists", function() {
       var graph = { xAxis: {} };
@@ -284,36 +284,36 @@ describe("Gneiss", function() {
     it("updates the top padding correctly for default charts", function() {
       gneiss.defaultPadding({top: 10});
       gneiss.setPadding();
-      expect(gneiss.padding.top).toEqual(10);
+      expect(gneiss.padding().top).toEqual(10);
     });
     it("updates the top padding correctly for charts without legends", function() {
       gneiss.defaultPadding({top: 10});
-      gneiss.legend = undefined;
+      gneiss.legend(undefined);
       gneiss.setPadding();
-      expect(gneiss.padding.top).toEqual(5);
+      expect(gneiss.padding().top).toEqual(5);
     });
     it("updates the top padding correctly for charts with titles", function() {
       gneiss.defaultPadding({top: 10});
-      gneiss.title = "title";
+      gneiss.title("title");
       gneiss.setPadding();
-      expect(gneiss.padding.top).toEqual(35);
+      expect(gneiss.padding().top).toEqual(35);
     });
     it("updates the top padding correctly for charts that are bargrids", function() {
       gneiss.defaultPadding({top: 10});
       gneiss.isBargrid(true);
       gneiss.setPadding();
-      expect(gneiss.padding.top).toEqual(20);
+      expect(gneiss.padding().top).toEqual(20);
     });
     it("updates the bottom padding correctly for default charts", function() {
       gneiss.defaultPadding({bottom: 10});
       gneiss.setPadding();
-      expect(gneiss.padding.bottom).toEqual(10);
+      expect(gneiss.padding().bottom).toEqual(10);
     });
     it("updates the bottom padding correctly for charts that are bargrids", function() {
       gneiss.defaultPadding({bottom: 10});
       gneiss.isBargrid(true);
       gneiss.setPadding();
-      expect(gneiss.padding.bottom).toEqual(-5);
+      expect(gneiss.padding().bottom).toEqual(-5);
     });
   });
 });
