@@ -407,28 +407,36 @@ ChartBuilder = {
 			
 			axer.change(function() {
 				var axis = $(this).is(':checked') ? 1 : 0;
-				chart.series()[$(this).parent().data().index].axis = axis
+				chart.series()[$(this).parent().data().index].axis = axis;
 				
-				if(!chart.yAxis()[axis]){
+				if(!chart.yAxis()[axis]) {
 					chart.yAxis()[axis] = {
-											domain: [null,null],
-											tickValues: null,
-											prefix: {
-												value: "",
-												use: "top" //can be "top" "all" "positive" or "negative"
-											},
-											suffix: {
-												value: "",
-												use: "top"
-											},
-											ticks: 4,
-											formatter: null,
-											color: null,
-										}
+						domain: [null, null],
+						tickValues: null,
+						prefix: {
+							value: "",
+							use: "top" //can be "top", "all", "positive", or "negative"
+						},
+						suffix: {
+							value: "",
+							use: "top"
+						},
+						ticks: 4,
+						formatter: null,
+						color: null
+					};
 				}
 				
-				if(chart.yAxis().length > 1 && axis == 0) {
-					chart.yAxis().pop()
+				var leftAxisIsUsed = false;
+				for(var i = 0; i < chart.series().length; i++) {
+					if(chart.series()[i].axis == 1) {
+						leftAxisIsUsed = true;
+					}
+				}
+				
+				if(chart.yAxis().length > 1 && !leftAxisIsUsed)
+				{
+					chart.yAxis().pop();
 				}
 				
 				chart.setYScales()

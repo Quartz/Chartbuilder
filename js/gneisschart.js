@@ -506,79 +506,74 @@ function Gneiss(config)
   
   this.setYScales = function Gneiss$setYScales(first) {
 		/*
-			calculates and saves the y-scales from the existing data
+		* Calculate and store the left and right y-axis scale information
 		*/
+    
 		var g = this;
-		/*
-		*
-		* Y AXIS SECTION
-		*
-		*/	
-		//calculate number of yaxes and their maxes and mins
-		var axisIndex = 0;
-		var extremes = [];
-		var ex;
-		for (var i = g.series().length - 1; i >= 0; i--){
-			
-			//CHANGE if there is no axis set to 0
-			if(!g.series()[i].axis) {
-				g.series()[i].axis = 0;
+		var y = g.yAxis();
+        
+		for (var i = series.length - 1; i >= 0; i--) {
+			// Plot this series against the right y-axis if no axis has been defined yet
+			if(series[i].axis === undefined) {
+				series[i].axis = 0;
 			}
+			
+			// This useLowestValueInAllSeries flag changes the independence
+			// of the y-axii significantly.
+			//
+			// Setting it to true means that the extents for the right y-axis
+			// use the smallest number in any series that will be graphed on either
+			// axis, regardless of whether or not the series containing that value
+			// is graphed against the right y-axis or not. 
+			//
+			// Setting it to false results in completely independent axii such that
+			// the extents are determined only by the values in the series charted 
+			// against the axis in question. The right y-axis extents will be
+			// dependent only on series graphed against the right y-axis.
+			// 
+			// 'true' preserves exisiting behavior, 'false' appears to be a better experience.
+			var useLowestValueInAllSeries = true;
+			
+			if(y[i]) {
+				y[i].domain = Gneiss.helper.multiextent(g.series(), function(a) {
+					if(a.axis === i || (useLowestValueInAllSeries && i == 0)) {
+						// This series is charted against this axis 
+						// OR
+						// This is the right y-axis and it should be rooted at
+						// the lowest value in any series regardless of axis
+						return a.data;
+					}
+					return [];
+				});
+			}
+		}
 					
-			axisIndex = g.series()[i].axis;			
-			
-			//CHANGE check if there are any extremes for the current axis
-			if(extremes[axisIndex] === undefined) {
-				extremes[axisIndex] = [];
-			}			
-			
-			if(g.yAxis()[axisIndex] === undefined) {
-				console.error(g.series()[i].name + " ["+i+"] is associated with axis " + axisIndex + ", but that axis does not exist");
-			}
-			
-			//calculate extremes of current series and add them to extremes array
-			e = d3.extent(g.series()[i].data);
-			extremes[axisIndex].push(e[0]);
-			extremes[axisIndex].push(e[1]);
-		};
-		
-		for (var i = extremes.length - 1; i >= 0; i--){
-			var ex = d3.extent(extremes[i])
-			if(g.yAxis()[i].domain[0] == null) {
-				g.yAxis()[i].domain[0] = ex[0];
-			}
-			
-			if(g.yAxis()[i].domain[1]  == null) {
-				g.yAxis()[i].domain[1] = ex[1];
-			}
-		};
-		
 		//set extremes in y axis objects and create scales
-		for (var i = g.yAxis().length - 1; i >= 0; i--) {
-			//g.yAxis()[i].domain = d3.extent(extremes[i])
-			if(first || !g.yAxis()[i].scale) {
-				g.yAxis()[i].scale = d3.scale.linear()
-					.domain(g.yAxis()[i].domain);
+		for (var i = y.length - 1; i >= 0; i--) {
+			//y[i].domain = d3.extent(extremes[i])
+			if(first || !y[i].scale) {
+				y[i].scale = d3.scale.linear()
+					.domain(y[i].domain);
 			}
 			else {
 				//set extremes in y axis objects and update scales
-				g.yAxis()[i].domain = d3.extent(g.yAxis()[i].domain);
-				g.yAxis()[i].scale.domain(g.yAxis()[i].domain);
+				y[i].domain = d3.extent(y[i].domain);
+				y[i].scale.domain(y[i].domain);
 			}	
 		};		
 		
 		if(g.isBargrid()) {
-			for (var i = g.yAxis().length - 1; i >= 0; i--){
-				g.yAxis()[i].domain[0] = Math.min(g.yAxis()[i].domain[0],0);
-				g.yAxis()[i].scale.range([
+			for (var i = y.length - 1; i >= 0; i--){
+				y[i].domain[0] = Math.min(y[i].domain[0],0);
+				y[i].scale.range([
 					g.padding().left,
 					(g.width() / g.seriesByType().bargrid.length) - g.padding().right
 					]).nice();				
 			};
 		}
 		else {
-			for (var i = g.yAxis().length - 1; i >= 0; i--){
-				g.yAxis()[i].scale.range([
+			for (var i = y.length - 1; i >= 0; i--){
+				y[i].scale.range([
 					g.height() - g.padding().bottom,
 					g.padding().top
 					]).nice();
@@ -695,16 +690,16 @@ function Gneiss(config)
 		}
 
 		for (var i = g.yAxis().length - 1; i >= 0; i--){
-			curAxis = g.yAxis()[i]
+			curAxis = g.yAxis()[i];
 			
 			//create svg axis
 			if(first || !g.yAxis()[i].axis) {	
-				g.yAxis()[i].axis = d3.svg.axis()
+				curAxis.axis = d3.svg.axis()
 					.scale(g.yAxis()[i].scale)
 					.orient(i==0?"right":"left")
 					.tickSize(g.width() - g.padding().left - g.padding().right)
 					//.ticks(g.yAxis()[0].ticks) // I'm not using built in ticks because it is too opinionated
-					.tickValues(g.yAxis()[i].tickValues?g.yAxis()[i].tickValues:Gneiss.helper.exactTicks(g.yAxis()[i].scale.domain(),g.yAxis()[0].ticks))
+					.tickValues(g.yAxis()[i].tickValues?curAxis.tickValues:Gneiss.helper.exactTicks(curAxis.scale.domain(),g.yAxis()[0].ticks))
 					
 				//append axis container
 
@@ -712,14 +707,14 @@ function Gneiss(config)
 					.attr("class","axis yAxis")
 					.attr("id",i==0?"rightAxis":"leftAxis")
 					.attr("transform",i==0?"translate("+g.padding().left+",0)":"translate("+( g.width()-g.padding().right)+",0)")
-					.call(g.yAxis()[i].axis)
+					.call(curAxis.axis)
 			}
 			else {
-				g.yAxis()[i].axis//.ticks(g.yAxis()[0].ticks) // I'm not using built in ticks because it is too opinionated
-					.tickValues(g.yAxis()[i].tickValues?g.yAxis()[i].tickValues:Gneiss.helper.exactTicks(g.yAxis()[i].scale.domain(),g.yAxis()[0].ticks))
+				curAxis.axis//.ticks(`)[0].ticks) // I'm not using built in ticks because it is too opinionated
+					.tickValues(curAxis.tickValues?curAxis.tickValues:Gneiss.helper.exactTicks(curAxis.scale.domain(),g.yAxis()[0].ticks))
 					
 				axisGroup = g.chartElement().selectAll(i==0?"#rightAxis":"#leftAxis")
-					.call(g.yAxis()[i].axis)
+					.call(curAxis.axis)
 				
 			}
 				
