@@ -479,8 +479,8 @@ ChartBuilder = {
 			yAxis: yAxisObj,
 			series: g.series(),
 			xAxisRef: g.xAxisRef(),
-			sourceline: g.sourceLineText(),
-			creditline: g.creditLineText()
+			sourceline: g.source(),
+			creditline: g.credit()
 		};
 		
 		chart = g;
@@ -866,14 +866,14 @@ ChartBuilder.start = function(config) {
   	
   	$("#creditLine").keyup(function() {
   		var val = $(this).val();
-  		chart.creditLineText(val);
-  		chart.creditLineElement.text(chart.creditLineText());
+  		chart.credit(val);
+  		chart.creditElement().text(chart.credit());
   	});
 		
   	$("#sourceLine").keyup(function() {
   		var val = $(this).val();
-  		chart.sourceLineText(val);
-  		chart.sourceLineElement.text(chart.sourceLineText());
+  		chart.source(val);
+  		chart.sourceElement().text(chart.source());
   	});
   	
   	$("#chart_title").keyup(function() {
@@ -886,7 +886,7 @@ ChartBuilder.start = function(config) {
   			.redraw();
   		ChartBuilder.makeLegendAdjustable();
   		
-  		chart.titleLine.text(chart.title());
+  		chart.titleElement().text(chart.title());
   	});
   	
   	$(".downloadLink").click(function() {

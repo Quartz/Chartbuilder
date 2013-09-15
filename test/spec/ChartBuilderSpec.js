@@ -56,7 +56,12 @@ describe("ChartBuilder", function() {
       expect(ChartBuilder.getNewData("column1\tcolumn header with spaces\nAug 23, 2013\trow1value2\nrow2vaue1\trow2 value2")).toEqual(
         [['column1', 'column header with spaces'], ['Aug 23, 2013', 'row1value2'], ['row2vaue1', 'row2 value2']]);
     });
-        
+       
+    it("preserves empty/missing values", function() {
+      expect(ChartBuilder.getNewData("column1\t\tcolumn3\nrow1value1\t\trow1value3\nrow2vaue1\trow2value2\trow2value3")).toEqual(
+        [['column1', '', 'column3'], ['row1value1', '', 'row1value3'], ['row2vaue1', 'row2value2', 'row2value3']]);
+    });
+     
     it("ignores empty rows and extra carriage returns", function() {
        expect(ChartBuilder.getNewData("column1\tcolumn2\n\n\nrow1value1\trow1value2\n\nrow2vaue1\trow2value2\n\n\n")).toEqual(
         [['column1', 'column2'], ['row1value1', 'row1value2'], ['row2vaue1', 'row2value2']]);

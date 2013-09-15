@@ -272,11 +272,11 @@ describe("Gneiss", function() {
     it("sets a transform attribute on the metaInfo property", function() {      
       $("#" + containerId).width("100px").height("100px");
       gneiss.resize();
-      expect(gneiss.metaInfo.attr("transform")).toEqual("translate(0,96)");
+      expect(gneiss.footerElement().attr("transform")).toEqual("translate(0,96)");
            
       $("#" + containerId).width("1000px").height("5000px");
       gneiss.resize();
-      expect(gneiss.metaInfo.attr("transform")).toEqual("translate(0,4996)");
+      expect(gneiss.footerElement().attr("transform")).toEqual("translate(0,4996)");
     });
   });
   

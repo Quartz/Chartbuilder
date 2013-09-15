@@ -200,6 +200,11 @@ function Gneiss(config)
 { 	
 	var containerElement;
 	var chartElement;
+	var titleElement;
+	var footerElement;
+	var sourceElement;
+	var creditElement;
+	
 	var defaultPadding;
 	var containerId;
 	var seriesByType;
@@ -216,6 +221,10 @@ function Gneiss(config)
 	var series;
 	var xAxisRef;
 	
+	var columnWidth;
+	var columnGroupWidth;
+	var columnGroupShift;
+			
 	this.containerId = function Gneiss$containerId(elem) {
 		if (!arguments.length) {
 			return containerId;
@@ -228,6 +237,27 @@ function Gneiss(config)
 			return containerElement;
 		}
 		containerElement = elem;
+	};
+	
+	this.footerElement = function Gneiss$footerElement(elem) {
+		if (!arguments.length) {
+			return footerElement;
+		}
+		footerElement = elem;
+	};
+	
+	this.sourceElement = function Gneiss$sourceElement(elem) {
+		if (!arguments.length) {
+			return sourceElement;
+		}
+		sourceElement = elem;
+	};
+	
+	this.creditElement = function Gneiss$creditElement(elem) {
+		if (!arguments.length) {
+			return creditElement;
+		}
+		creditElement = elem;
 	};
 	
 	this.defaultPadding = function Gneiss$defaultPadding(p) {
@@ -277,20 +307,27 @@ function Gneiss(config)
 			return title;
 		}
 		title = t;
+	};	
+		
+	this.titleElement = function Gneiss$titleElement(elem) {
+		if (!arguments.length) {
+			return titleElement;
+		}
+		titleElement = elem;
 	};
 	
-	this.sourceLineText = function Gneiss$sourceLineText(s) {
+	this.source = function Gneiss$sourceLineText(s) {
 		if (!arguments.length) {
-			return sourceLine;
+			return source;
 		}
-		sourceLine = s;
+		source = s;
 	};
 	
-	this.creditLineText = function Gneiss$creditLineText(c) {
+	this.credit = function Gneiss$credit(c) {
 		if (!arguments.length) {
-			return creditLine;
+			return credit;
 		}
-		creditLine = c;
+		credit = c;
 	};
 	
 	this.legend = function Gneiss$legend(l) {
@@ -342,6 +379,27 @@ function Gneiss(config)
 		series = s;
 	};
 	
+	this.columnWidth = function Gneiss$columnWidth(w) {
+		if (!arguments.length) {
+			return columnWidth;
+		}
+		columnWidth = w;
+	};
+	
+	this.columnGroupWidth = function Gneiss$columnGroupWidth(w) {
+		if (!arguments.length) {
+			return columnGroupWidth;
+		}
+		columnGroupWidth = w;
+	};
+	
+	this.columnGroupShift = function Gneiss$columnGroupShift(w) {
+		if (!arguments.length) {
+			return columnGroupShift;
+		}
+		columnGroupShift = w;
+	};
+	
 	this.build = function Gneiss$build(config) {
 		/*
 			Initializes the chart from a config object
@@ -362,8 +420,8 @@ function Gneiss(config)
 		g.containerElement($(g.containerId()));
 		
 		g.title(config.title);
-		g.sourceLineText(config.sourceline);
-		g.creditLineText(config.creditline);
+		g.source(config.sourceline);
+		g.credit(config.creditline);
 		g.legend(config.legend);
 		g.colors(config.colors);
 		g.xAxis(config.xAxis);
@@ -392,34 +450,34 @@ function Gneiss(config)
 		g.seriesByType(this.splitSeriesByType(g.series()));
 		this.updateGraphPropertiesBasedOnSeriesType(g, g.seriesByType());
 		
-		g.titleLine = g.chartElement().append("text")
+		g.titleElement(g.chartElement().append("text")
 			.attr("y",18)
 			.attr("x", g.padding().left)
 			.attr("id","titleLine")
-			.text(g.title());
+			.text(g.title()));
 		
 		this.calculateColumnWidths()
 			.setYScales(true)
-			.setXScales(true)
+			.setXScales()
 			.setYAxes(true)
 			.setXAxis(true);
 				
 		this.drawSeriesAndLegend(true);
 		
-		g.metaInfo = g.chartElement().append("g")
+		g.footerElement(g.chartElement().append("g")
 			.attr("id", "metaInfo")
-			.attr("transform", "translate(0," + (g.height() - 4) + ")");
+			.attr("transform", "translate(0," + (g.height() - 4) + ")"));
 		
-		g.sourceLineElement = g.metaInfo.append("text")
+		g.sourceElement(g.footerElement().append("text")
 			.attr("text-anchor", "end")
 			.attr("x", g.width() - g.padding().right)
 			.attr("class", "metaText")
-			.text(g.sourceLineText());
+			.text(g.source()));
 		
-		g.creditLineElement = g.metaInfo.append("text")
+		g.creditElement(g.footerElement().append("text")
 			.attr("x", g.padding().left)
 			.attr("class", "metaText")
-			.text(g.creditLineText());
+			.text(g.credit()));
       
 		return this;
 	};
@@ -441,7 +499,7 @@ function Gneiss(config)
 			.attr("width", g.width())
 			.attr("height", g.height());
       
-		g.metaInfo.attr("transform", "translate(0," + (g.height() - 4) + ")");
+		g.footerElement().attr("transform", "translate(0," + (g.height() - 4) + ")");
 		
 		return this;
 	};
@@ -551,108 +609,51 @@ function Gneiss(config)
 		
 		g.padding().top = padding_top;
 		g.padding().bottom = padding_bottom;
+		
 		return this;
 	};
   
-  this.setXScales = function Gneiss$setXScales(first) {
+  this.setXScales = function Gneiss$setXScales() {
 		/*
-			calculate and store the x-scales
+		* Calculate and store the x-axis scale information
 		*/
+		
 		var g = this;
-		var dateExtent;
-		var shortestPeriod = Infinity;
+		var x = g.xAxis();
+		var data = g.xAxisRef()[0].data;
 		
-		if(first) {
-			//create x scales
+		// Calculate extremes of x-axis
+		if(x.type == "date") {
+			var dateExtent = d3.extent(data);
 			
-			/*
-			*
-			* X AXIS SECTION
-			*
-			*/
-
-			//calculate extremes of axis
-			if(g.xAxis().type == "date") {
-				dateExtent = d3.extent(g.xAxisRef()[0].data);
-				g.xAxis().scale = d3.time.scale()
-					//.domain(Gneiss.multiextent(g.series,function(d){return d.data}))
-					.domain(dateExtent)
-				
-				//calculate smallest gap between two dates
-				for (var i = g.xAxisRef()[0].data.length - 2; i >= 0; i--){
-					shortestPeriod = Math.min(shortestPeriod, Math.abs(g.xAxisRef()[0].data[i] - g.xAxisRef()[0].data[i+1]))
-				}
-				
-				g.maxLength = Math.abs(Math.floor((dateExtent[0] - dateExtent[1]) / shortestPeriod))
-			}
-			else {
-
-				//calculate longest series and store series names
-				var maxLength = 0;
-				for (var i = g.series().length - 1; i >= 0; i--){
-					maxLength = Math.max(maxLength, g.series()[i].data.length)
-				};
-				g.xAxis().scale = d3.scale.ordinal()
-					.domain(g.xAxisRef()[0].data)
-					
-				g.maxLength = maxLength;
-			}
-			
+			// Create a linear scale with date keys between the input start and end dates
+			x.scale = d3.time.scale().domain(dateExtent);
 		}
-		else {
-			//update the existing scales
-
-			//calculate extremes of axis
-			if(g.xAxis().type == "date") {
-				dateExtent = d3.extent(g.xAxisRef()[0].data);
-				g.xAxis().scale = d3.time.scale()
-					//.domain(Gneiss.multiextent(g.series,function(d){return d.data}))
-					.domain(dateExtent)
-					
-				//calculate smallest gap between two dates
-				for (var i = g.xAxisRef()[0].data.length - 2; i >= 0; i--){
-					shortestPeriod = Math.min(shortestPeriod, Math.abs(g.xAxisRef()[0].data[i] - g.xAxisRef()[0].data[i+1]))
-				}
-				
-				g.maxLength = Math.abs(Math.floor((dateExtent[0] - dateExtent[1]) / shortestPeriod))
-			}
-			else {
-
-				//calculate longest series
-				var maxLength = 0;
-				for (var i = g.series().length - 1; i >= 0; i--){
-					maxLength = Math.max(maxLength, g.series()[i].data.length)
-				};
-				g.xAxis().scale.domain(g.xAxisRef()[0].data)
-				
-				g.maxLength = maxLength;
-			}
+		else {			
+			// Create a ordinal scale with with row name keys
+			x.scale = d3.scale.ordinal().domain(data);
 		}
-		var rangeArray = []
-		//set the range of the x axis
+		
+		// Set the range of the x-axis
+		var rangeArray = [];
+		var p = g.padding();
 		if(g.isBargrid()) {
-			rangeArray = [
-				g.padding().top,
-				 g.height() - g.padding().bottom
-			]
+			rangeArray = [p.top, g.height() - p.bottom];
 		}
-		else if (g.xAxis().hasColumns) {
-			rangeArray = [
-				g.padding().left + g.columnGroupWidth/2 + (g.yAxis().length==1?0:g.columnGroupWidth/2),
-				g.width() - g.padding().right - g.columnGroupWidth
-				] 
-			//g.xAxis().scale.range([g.padding().left + this.g.columnGroupWidth/2,g.width - g.padding().right - (10* (Math.round(this.g.yAxis()[0].domain[1]*3/4*100) + "").length )]) 
+		else if(x.hasColumns) {
+			var halfColumnWidth = g.columnGroupWidth() / 2;
+			rangeArray = [p.left + halfColumnWidth + ((g.yAxis().length == 1) ? 0 : halfColumnWidth),
+                    g.width() - p.right - g.columnGroupWidth()]; 
 		}
 		else {
-			rangeArray = [g.padding().left, g.width() - g.padding().right]
-			//g.xAxis().scale.range([g.padding().left,g.width - g.padding().right])
-		};
+			rangeArray = [p.left, g.width() - p.right];
+		}
 		
-		if(g.xAxis().type == "date") {
-			g.xAxis().scale.range(rangeArray);
+		if(x.type == "date") {
+			x.scale.range(rangeArray);
 		}
 		else {
-			g.xAxis().scale.rangePoints(rangeArray);
+			x.scale.rangePoints(rangeArray);
 		}
 		
 		return this;		
@@ -852,7 +853,7 @@ function Gneiss(config)
 		
 		if(g.isBargrid()){
 			d3.selectAll(".yAxis").style("display","none")
-			g.titleLine.attr("y",g.padding().top - 36)
+			g.titleElement().attr("y",g.padding().top - 36)
 			
 		}
 		else {
@@ -864,17 +865,17 @@ function Gneiss(config)
 				try{
 					if(!g.legend() || g.series().length == 1) {
 						//no legend or only one seriesgit 
-						g.titleLine.attr("y",g.topAxisItem.y - 4)
+						g.titleElement().attr("y",g.topAxisItem.y - 4)
 					}
 					else {
-						g.titleLine.attr("y",g.topAxisItem.y - 25)
+						g.titleElement().attr("y",g.topAxisItem.y - 25)
 					}
 				}catch(e){} //fail silently
 					
 			}
 			else {
 				try{
-					g.titleLine.attr("y",g.padding().top - 36)
+					g.titleElement().attr("y",g.padding().top - 36)
 				}catch(e){} //fail silently
 			}
 		}
@@ -1040,25 +1041,51 @@ function Gneiss(config)
   
   this.calculateColumnWidths = function Gneiss$calculateColumnWidths() {
 		/*
-			Calculate the propper column width for column charts
+		 * Calculate the proper width for columns in column charts
 		*/
 		
 		var g = this;
-		//store split by type for convenience
-		var sbt = g.seriesByType();
+		var x = g.xAxis();
+		var data = g.xAxisRef()[0].data;
+		var numColumnSeries = g.seriesByType().column.length;
 		
+		if(numColumnSeries === 0) {
+			return this;
+		}
 		
-		//determine the propper column width
-		//								---- Width of chart area ----------     -Num Data pts-  -Num Column Series-
-		var columnWidth = Math.floor((( g.width()-g.padding().right-g.padding().left) / g.maxLength) / sbt.column.length) - 3;
-		//make sure width is >= 1
+		var numDataPoints = 0;
+				
+		// Calculate the number of data points based on x-axis extents
+		if(x.type == "date") {
+			var dateExtent = d3.extent(data);
+					
+			// Calculate smallest gap between two dates (in ms)
+			var shortestPeriod = Infinity;
+			for (var i = data.length - 2; i >= 0; i--) {
+				shortestPeriod = Math.min(shortestPeriod, Math.abs(data[i] - data[i+1]));
+			}
+			
+			numDataPoints = Math.abs(Math.floor((dateExtent[0] - dateExtent[1]) / shortestPeriod));
+		}
+		else {
+			var series = g.series();
+			for (var i = series.length - 1; i >= 0; i--) {
+				numDataPoints = Math.max(numDataPoints, series[i].data.length);
+			};
+		}
+
+		// Determine the proper column width
+		var effectiveChartWidth = g.width() - g.padding().right - g.padding().left;
+		var columnWidth = Math.floor((effectiveChartWidth / numDataPoints) / numColumnSeries);
+		columnWidth -= 3; // Make columns slightly smaller for legibility
+		
+		// TODO: Both these checks *should* be unnecessary and thus safe to remove
 		columnWidth = Math.max(columnWidth, 1);
-		columnWidth = Math.min(columnWidth, ( g.width()-g.padding().right-g.padding().left) * 0.075)
-		var columnGroupShift = columnWidth + 1;
+		columnWidth = Math.min(columnWidth, effectiveChartWidth * 0.075)
 		
-		g.columnWidth = columnWidth;
-		g.columnGroupWidth = (columnWidth + 1) * sbt.column.length;
-		g.columnGroupShift = columnWidth +1;
+		g.columnWidth(columnWidth);
+		g.columnGroupWidth((columnWidth + 1) * numColumnSeries);
+		g.columnGroupShift(columnWidth + 1);
 		
 		return this;
 	};
@@ -1084,8 +1111,8 @@ function Gneiss(config)
 		var sbt = g.seriesByType();
 		var colors = g.colors();
 		
-		var columnWidth = g.columnWidth;
-		var columnGroupShift = g.columnGroupShift;
+		var columnWidth = g.columnWidth();
+		var columnGroupShift = g.columnGroupShift();
 		
 		var lineSeries;
 		
@@ -1514,7 +1541,7 @@ function Gneiss(config)
 				//test if the chart needs more top margin because of a large number of legend items				
 			} else {
 				if(g.title() == "") {
-					g.titleLine.text(g.series()[0].name)
+					g.titleElement().text(g.series()[0].name)
 				}
 			}
 		}
@@ -1524,7 +1551,7 @@ function Gneiss(config)
   
   this.updateMetaAndTitle = function Gneiss$updateMetaAndTitle() {
 		var g = this;
-		g.metaInfo.attr("transform", "translate(0," + ( g.height() - 4) + ")");
+		g.footerElement().attr("transform", "translate(0," + ( g.height() - 4) + ")");
 		return this;
 	};
   
