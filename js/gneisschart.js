@@ -915,7 +915,7 @@ function Gneiss(config)
 			.attr("text-anchor", g.xAxis.type == "date" ? (g.seriesByType().column.length>0 && g.seriesByType().line.length == 0 && g.seriesByType().scatter.length == 0 ? "middle":"start"): (g.isBargrid() ? "end":"middle"))
 			//.attr("text-anchor", g.isBargrid ? "end":"middle")
 			.each(function() {
-				var pwidth = this.parentNode.getBBox().width
+				var pwidth = this.parentNode.getBoundingClientRect().width
 				var attr = this.parentNode.getAttribute("transform")
 				var attrx = Number(attr.split("(")[1].split(",")[0])
 				var attry = Number(attr.split(")")[0].split(",")[1])
@@ -1391,11 +1391,11 @@ function Gneiss(config)
 					.attr("transform",function(d,i) {
 						//label isn't for the first series
 						var prev = d3.select(legendGroups[0][i]);
-						var prevWidth = parseFloat(prev.node().getBBox().width);
+						var prevWidth = parseFloat(prev.node().getBoundingClientRect().width);
 						var prevCoords = Gneiss.helper.transformCoordOf(prev);
 
 						var cur = d3.select(this);
-						var curWidth = parseFloat(cur.node().getBBox().width);
+						var curWidth = parseFloat(cur.node().getBoundingClientRect().width);
 						var curCoords = Gneiss.helper.transformCoordOf(cur);
 
 						legendItemY = prevCoords.y;

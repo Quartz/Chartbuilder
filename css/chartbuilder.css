@@ -189,15 +189,14 @@ select {
 	font-family: 'PTSerif';
 	color: #666666;
 	border: 1px solid #ccc;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing:border-box;
 	box-sizing: border-box;
-     -webkit-box-sizing:border-box;
-     -moz-box-sizing: border-box;
 }
 
 input[type="text"] {
 	padding: .25em 2%;
 	width: 96%;
-
 }
 
 textarea {
@@ -247,7 +246,6 @@ textarea {
 		width: 46%;
 		padding-right: 2%;
 		padding-left: 2%;
-
 	}
 }
 
@@ -288,7 +286,7 @@ textarea {
 }
 
 #seriesItems .seriesItemGroup input, 
-#seriesItems .seriesItemGroup select,
+#seriesItems .seriesItemGroup select
 {
 	float: left;
 	margin-left: .5em;
