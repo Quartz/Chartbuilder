@@ -457,7 +457,7 @@ function Gneiss(config)
 			.text(g.title()));
 		
 		this.calculateColumnWidths()
-			.setYScales(true)
+			.setYScales()
 			.setXScales()
 			.setYAxes(true)
 			.setXAxis(true);
@@ -504,13 +504,14 @@ function Gneiss(config)
 		return this;
 	};
   
-  this.setYScales = function Gneiss$setYScales(first) {
+  this.setYScales = function Gneiss$setYScales() {
 		/*
 		* Calculate and store the left and right y-axis scale information
 		*/
     
 		var g = this;
 		var y = g.yAxis();
+		var p = g.padding();
         
 		for (var i = series.length - 1; i >= 0; i--) {
 			// Plot this series against the right y-axis if no axis has been defined yet
@@ -530,9 +531,7 @@ function Gneiss(config)
 			// the extents are determined only by the values in the series charted 
 			// against the axis in question. The right y-axis extents will be
 			// dependent only on series graphed against the right y-axis.
-			// 
-			// 'true' preserves exisiting behavior, 'false' appears to be a better experience.
-			var useLowestValueInAllSeries = true;
+			var useLowestValueInAllSeries = false;
 			
 			if(y[i]) {
 				y[i].domain = Gneiss.helper.multiextent(g.series(), function(a) {
@@ -550,34 +549,23 @@ function Gneiss(config)
 					
 		//set extremes in y axis objects and create scales
 		for (var i = y.length - 1; i >= 0; i--) {
-			//y[i].domain = d3.extent(extremes[i])
-			if(first || !y[i].scale) {
-				y[i].scale = d3.scale.linear()
-					.domain(y[i].domain);
+			if(!y[i].scale) {
+				y[i].scale = d3.scale.linear();
 			}
-			else {
-				//set extremes in y axis objects and update scales
-				y[i].domain = d3.extent(y[i].domain);
-				y[i].scale.domain(y[i].domain);
-			}	
-		};		
-		
+			y[i].scale.domain(y[i].domain);
+		}
+				
 		if(g.isBargrid()) {
-			for (var i = y.length - 1; i >= 0; i--){
-				y[i].domain[0] = Math.min(y[i].domain[0],0);
-				y[i].scale.range([
-					g.padding().left,
-					(g.width() / g.seriesByType().bargrid.length) - g.padding().right
-					]).nice();				
-			};
+			var width = (g.width() / g.seriesByType().bargrid.length) - p.right;
+			for (var i = y.length - 1; i >= 0; i--) {
+				y[i].domain[0] = Math.min(y[i].domain[0], 0);
+				y[i].scale.range([p.left, width]).nice();				
+			}
 		}
 		else {
-			for (var i = y.length - 1; i >= 0; i--){
-				y[i].scale.range([
-					g.height() - g.padding().bottom,
-					g.padding().top
-					]).nice();
-			};
+			for (var i = y.length - 1; i >= 0; i--) {
+				y[i].scale.range([g.height() - p.bottom, p.top]).nice();
+			}
 		}
 		
 		return this;
