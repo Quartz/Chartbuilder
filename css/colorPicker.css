@@ -16,6 +16,14 @@ div.colorPicker-palette {
   padding: 1px;
   z-index: 9999;
 }
+div.colorPicker-palette {
+  width: 220px;
+  position: absolute;
+  border: 1px solid #598FEF;
+  background-color: #cd2b23;
+  padding: 1px;
+  z-index: 9999;
+}
   div.colorPicker_hexWrap {width: 100%; float:left }
   div.colorPicker_hexWrap label {font-size: 95%; color: #2F2F2F; margin: 5px 2px; width: 25%}
   div.colorPicker_hexWrap input {margin: 5px 2px; padding: 0; font-size: 95%; border: 1px solid #000; width: 65%; }
