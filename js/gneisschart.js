@@ -870,6 +870,8 @@ function Gneiss(config)
 	};
   
 	this.customYAxisFormat = function Gneiss$customYAxisFormat(axisGroup, i) {
+		var g = this;
+		
 		axisGroup.selectAll("g")
 			.each(function(d,j) {
 				//create an object to store axisItem info
@@ -887,7 +889,7 @@ function Gneiss(config)
 				//align the text right position it on top of the line
 				axisItem.text = d3.select(this).select("text")
 					.attr("text-anchor",i==0?"end":"start")
-					.attr("fill",i==0?"#666666":chart.yAxis()[i].color)
+					.attr("fill",i==0?"#666666":g.yAxis()[i].color)
 					.attr("x",function(){var elemx = Number(d3.select(this).attr("x")); return i==0?elemx:elemx+4})
 					.attr("y",-9)
 				});

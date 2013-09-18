@@ -9,8 +9,10 @@ describe("Gneiss", function() {
     
     gneiss = new Gneiss(Gneiss.defaultGneissChartConfig);
   });
+  
   afterEach(function() {
     $("#" + containerId).remove();
+		gneiss = null;
   });
 
   it("contains a default chart config", function() {
@@ -184,6 +186,7 @@ describe("Gneiss", function() {
       
       expect(gneiss.xAxis().hasColumns).toEqual(true);
     });
+    
     it("sets the 'hasColumns' property on the x-axis of a graph to false if a series of column data exists", function() {
       var graph = { xAxis: {} };
       
@@ -192,7 +195,8 @@ describe("Gneiss", function() {
       
       expect(gneiss.xAxis().hasColumns).toEqual(false);
     });
-    it("sets the 'isBargrid' property on a graph to true if a series of bar graph data exists", function() {
+    
+    it("sets the 'isBargrid' property on a graph to true if a series of bar data exists", function() {
       var graph = { xAxis: {} };
       
       var seriesByType = { bargrid: ["bargrid"], column: ["column"] };
@@ -200,7 +204,8 @@ describe("Gneiss", function() {
       
       expect(gneiss.isBargrid()).toEqual(true);
     });
-    it("sets the 'isBargrid' property on a graph to false if a series of bar graph data does not exists", function() {
+    
+    it("sets the 'isBargrid' property on a graph to false if a series of bar data does not exists", function() {
       var graph = { xAxis: {} };      
       
       var seriesByType = { bargrid: [], column: [] };
@@ -255,6 +260,111 @@ describe("Gneiss", function() {
       });
     });
   });
+  
+  describe("setYScales()", function() {  
+    it("sets the axis number for all series in a default chart", function() {
+      var series = gneiss.series();
+            
+      gneiss.setYScales();
+      
+      expect(series[0].axis).toEqual(0);
+      expect(series[1].axis).toEqual(0);
+    });
+    
+    it("sets the domain value for all y-axii in a default chart", function() {
+      var y = gneiss.yAxis();
+      y[0].domain = [null, null];
+      
+      gneiss.setYScales();
+      
+      expect(y[0].domain).toEqual([3.8, 23]);
+    });
+    
+    it("sets the domain value for all y-axii in a bar chart", function() {
+      var y = gneiss.yAxis();
+      y[0].domain = [null, null];
+      
+      gneiss.isBargrid(true);
+      gneiss.seriesByType({ bargrid: ["bar"] });
+      
+      gneiss.setYScales();
+      
+      expect(y[0].domain).toEqual([0, 23]);
+    });
+    
+    it("creates scales for all y-axii in a default chart", function() {
+      var y = gneiss.yAxis();
+      y[0].scale = null;
+      
+      gneiss.setYScales();
+      
+      expect(y[0].scale).not.toEqual(null);
+      expect(y[0].scale).not.toEqual(undefined);
+    });
+    
+    it("creates scales for all y-axii in a bar chart", function() {
+      var y = gneiss.yAxis();
+      y[0].scale = null;
+      
+      gneiss.isBargrid(true);
+      gneiss.seriesByType({ bargrid: ["bar"] });
+      
+      gneiss.setYScales();
+      
+      expect(y[0].scale).not.toEqual(null);
+      expect(y[0].scale).not.toEqual(undefined);
+    });
+    
+    it("sets domains for all y-axii scales in a default chart", function() {
+      var y = gneiss.yAxis();
+      y[0].scale = null;
+      
+      gneiss.setYScales();
+      
+      var newScale = d3.scale.linear().domain(y[0].domain).nice();      
+      expect(y[0].scale.domain()).toEqual(newScale.domain());
+    });
+    
+    it("sets domains for all y-axii scales in a bar chart", function() {
+      var y = gneiss.yAxis();
+      y[0].scale = null;
+      
+      gneiss.isBargrid(true);
+      gneiss.seriesByType({ bargrid: ["bar"] });
+      
+      gneiss.setYScales();
+      
+      var newScale = d3.scale.linear().domain(y[0].domain).nice();      
+      expect(y[0].scale.domain()).toEqual(newScale.domain());
+    });
+    
+    it("sets ranges for all y-axii scales in a default chart", function() {
+      var y = gneiss.yAxis();
+      y[0].scale = null;
+      
+      gneiss.setYScales();
+      
+      var newScale = d3.scale.linear()
+        .range([gneiss.height() - gneiss.padding().bottom, gneiss.padding().top])
+        .nice();
+      expect(y[0].scale.range()).toEqual(newScale.range());
+    });
+    
+    it("sets ranges for all y-axii scales in a bar chart", function() {
+      var y = gneiss.yAxis();
+      y[0].scale = null;
+      
+      gneiss.isBargrid(true);
+      gneiss.seriesByType({ bargrid: ["bar"] });
+      
+      gneiss.setYScales();
+      
+      var newScale = d3.scale.linear()
+        .range([gneiss.padding().left, gneiss.width() - gneiss.padding().right])
+        .nice();
+      expect(y[0].scale.range()).toEqual(newScale.range());
+    });
+  });
  
   describe("resize()", function() {
     it("updates the width and height of the chart in response to container size changes", function() {      
@@ -286,30 +396,35 @@ describe("Gneiss", function() {
       gneiss.setPadding();
       expect(gneiss.padding().top).toEqual(10);
     });
+    
     it("updates the top padding correctly for charts without legends", function() {
       gneiss.defaultPadding({top: 10});
       gneiss.legend(undefined);
       gneiss.setPadding();
       expect(gneiss.padding().top).toEqual(5);
     });
+    
     it("updates the top padding correctly for charts with titles", function() {
       gneiss.defaultPadding({top: 10});
       gneiss.title("title");
       gneiss.setPadding();
       expect(gneiss.padding().top).toEqual(35);
     });
-    it("updates the top padding correctly for charts that are bargrids", function() {
+    
+    it("updates the top padding correctly for bar charts", function() {
       gneiss.defaultPadding({top: 10});
       gneiss.isBargrid(true);
       gneiss.setPadding();
       expect(gneiss.padding().top).toEqual(20);
     });
+    
     it("updates the bottom padding correctly for default charts", function() {
       gneiss.defaultPadding({bottom: 10});
       gneiss.setPadding();
       expect(gneiss.padding().bottom).toEqual(10);
     });
-    it("updates the bottom padding correctly for charts that are bargrids", function() {
+    
+    it("updates the bottom padding correctly for bar charts", function() {
       gneiss.defaultPadding({bottom: 10});
       gneiss.isBargrid(true);
       gneiss.setPadding();
