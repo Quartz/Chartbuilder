@@ -1385,9 +1385,9 @@ function Gneiss(config)
 					.attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
 
 				legendGroups.filter(function(d){return d != g.series[0]})
-					.transition()
-					.duration(50)
-					.delay(function(d,i){return i * 50 + 50})
+					//.transition()
+					//.duration(50)
+					//.delay(function(d,i){return i * 50 + 50})
 					.attr("transform",function(d,i) {
 						//label isn't for the first series
 						var prev = d3.select(legendGroups[0][i]);
@@ -1397,6 +1397,9 @@ function Gneiss(config)
 						var cur = d3.select(this);
 						var curWidth = parseFloat(cur.node().getBoundingClientRect().width);
 						var curCoords = Gneiss.helper.transformCoordOf(cur);
+						
+						console.log(prevWidth,curWidth)
+						
 
 						legendItemY = prevCoords.y;
 						var x = prevCoords.x + prevWidth + 5;
