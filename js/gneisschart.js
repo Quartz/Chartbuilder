@@ -1233,7 +1233,7 @@ var Gneiss = {
 					.attr("class","legendLabel")
 					.attr("x",12)
 					.attr("y",18)
-					.attr("fill",function(d,i){return d.color? d.color : g.colors[i]})
+					.attr("fill","#666666")
 					.text(function(d,i){return d.name});
 			
 			//if there is more than one line
