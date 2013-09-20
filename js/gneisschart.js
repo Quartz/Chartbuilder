@@ -1239,8 +1239,8 @@ var Gneiss = {
 			//if there is more than one line
 			if(g.series.length > 1) {
 				legItems.append("rect")
-					.attr("width",10)
-					.attr("height",10)
+					.attr("width",11)
+					.attr("height",11)
 					.attr("x",0)
 					.attr("y",8)
 					.attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
