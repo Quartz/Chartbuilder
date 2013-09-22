@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+
+$LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + "/../lib")
+require 'webfontloader'
+
+begin
+  require 'webfontloader/demo/server'
+rescue LoadError => e
+  abort "Please gem install sinatra"
+end
+
+begin
+  require 'vegas'
+rescue LoadError => e
+  abort "Please gem install vegas"
+end
+
+Vegas::Runner.new(WebFontLoader::Demo::Server, 'font-demos', :host => "localhost") do |runner, opts, app|
+  opts.on('--compiled_js FILE', "Dynamically build the JS with the given modules") { |file|
+    app.set :compiled_js, File.read(file)
+  }
+  opts.on('--modules [MODULES]', "Dynamically build the JS with the given modules") { |opt_modules|
+    modules = opt_modules ? opt_modules.split(",") : []
+    app.set :modules, WebFontLoader::Modules.new(*modules)
+  }
+end
