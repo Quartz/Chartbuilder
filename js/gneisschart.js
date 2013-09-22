@@ -291,7 +291,18 @@ function Gneiss(config)
 		g.chart.append("rect")
 			.attr("id","ground")
 			.attr("width", g.width())
-			.attr("height", g.height());				
+			.attr("height", g.height());
+			
+		//add a rect to allow for styling of the chart area
+		g.chart.append("rect")
+			.attr("id","plotArea")
+			.attr("width", g.width())
+			.attr("height", g.height())
+			.style({
+				"fill":"#ccc",
+				"stroke":"none"
+				
+			})
 		
 		//group the series by their type
 		g.seriesByType(this.splitSeriesByType(g.series));
@@ -439,9 +450,12 @@ function Gneiss(config)
 		/*
 			calulates and stores the proper amount of extra padding beyond what the user specified (to account for axes, titles, legends, meta)
 		*/
-		var g = this;
-		var padding_top = g.defaultPadding().top;
-		var padding_bottom = g.defaultPadding().bottom;
+		var g = this,
+			padding_top = g.defaultPadding().top,
+			padding_bottom = g.defaultPadding().bottom,
+			padding_left = g.defaultPadding().left,
+			padding_right = g.defaultPadding.right
+		
 		
 		if(!g.legend) {
 			padding_top = 5;
@@ -452,10 +466,18 @@ function Gneiss(config)
 		if(g.isBargrid()) {
 			padding_top += -15;
 			padding_bottom -= 15;
+			
+			padding_right += 0;
 		}
 		
 		g.padding.top = padding_top;
 		g.padding.bottom = padding_bottom;
+		
+		d3.select("#plotArea")
+			.attr("transform","translate("+g.padding.left+","+g.padding.top+")")
+			.attr("width",g.width()-g.padding.left-g.padding.right)
+			.attr("height",g.height()-g.padding.top-g.padding.bottom)
+			
 		return this;
 	};
   
@@ -785,7 +807,9 @@ function Gneiss(config)
 		}
 		
 		d3.selectAll(".yAxis").each(function(){this.parentNode.prependChild(this);})
+		d3.selectAll("#plotArea").each(function(){this.parentNode.prependChild(this);})
 		d3.selectAll("#ground").each(function(){this.parentNode.prependChild(this);})
+		
 		
 		return this;
 	};
@@ -1006,6 +1030,8 @@ function Gneiss(config)
 					
 				}
 			});
+		
+			
       
 		return this;
 	};
@@ -1231,7 +1257,19 @@ function Gneiss(config)
 					
 				barLabels.transition()
 					.text(function(d,i){var yAxisIndex = d3.select(this.parentNode).data()[0].axis; return (i==0?g.yAxis[yAxisIndex].prefix.value:"") + g.numberFormat(d) + (i==0?g.yAxis[yAxisIndex].suffix.value:"")})
-					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return 3 + g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)):0) + Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
+					.attr("x", function(d,i) {
+						var yAxisIndex = d3.select(this.parentNode).data()[0].axis,
+						x = 3 + g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)):0) + Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)),
+						textWidth = this.getComputedTextLength()
+						
+						if (textWidth + x > g.width()) {
+							//the label will fall off the edge and thus the chart needs more padding
+							g.padding.right = textWidth + g.defaultPadding().right
+							g.redraw()
+						}
+						
+						return x
+					})
 					.attr("y",function(d,i) {return g.xAxis.scale(i) + 5})
 				
 				//remove non bargrid stuff
