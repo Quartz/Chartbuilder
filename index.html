@@ -168,6 +168,9 @@
 		<script src="bower_components/rgbcolor/index.js" charset="utf-8"></script>
 		<script src="bower_components/jquery-csv/index.js" charset="utf-8"></script>
 		<script src="bower_components/really-simple-color-picker/jquery.colorPicker.min.js" charset="utf-8"></script>
+		<script src="bower_components/webfontloader/target/webfont.js" type="text/javascript" charset="utf-8"></script>
+		
+		
 		
 		<!-- Custom libraries JS -->
 		<script src="js/custom_components/sugar-1.3.9-custom.min.js" charset="utf-8"></script>
@@ -180,13 +183,19 @@
 		<script src="js/vendor/rgbcolor.js" charset="utf-8"></script>
 		
 		<script type="text/javascript">
-		  (function() {
-		    // This starts Chartbuilder and can be passed a configuration
-		    // object.  See the Gneiss charting options.
-  		  ChartBuilder.start({
-    		  
-  		  });
-		  })();
+		
+		//This loads the webfonts and starts Chartbuilder once they're present
+		WebFont.load({
+			custom: {
+				families: ["Cutive"],
+				urls: ["http://fonts.googleapis.com/css?family=Cutive"]
+			},
+		    active: function(name) {
+		        $(document).ready(function() {
+		            ChartBuilder.start();
+		        });
+		    }
+		});
 		</script>
 	</body>
 </html>
