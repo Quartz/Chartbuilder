@@ -298,11 +298,6 @@ function Gneiss(config)
 			.attr("id","plotArea")
 			.attr("width", g.width())
 			.attr("height", g.height())
-			.style({
-				"fill":"#ccc",
-				"stroke":"none"
-				
-			})
 		
 		//group the series by their type
 		g.seriesByType(this.splitSeriesByType(g.series));
@@ -1207,11 +1202,11 @@ function Gneiss(config)
 				
 						
 				bargridLabel.enter()
-						.append("text")
-						.attr("class","bargridLabel")
-						.text(function(d,i){return d.name})
-						.attr("x",g.yAxis[0].scale(0))
-						.attr("y",g.padding.top-18)
+					.append("text")
+					.attr("class","bargridLabel")
+					.text(function(d,i){return d.name})
+					.attr("x",g.yAxis[0].scale(0))
+					.attr("y",g.padding.top-18)
 								
 				bargridLabel.transition()
 					.text(function(d,i){return d.name})
@@ -1254,19 +1249,30 @@ function Gneiss(config)
 					.text(function(d,i){return g.numberFormat(d)})
 					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
 					.attr("y",function(d,i) {return g.xAxis.scale(i) + 5})
+				
+				//reset the padding to the default before mucking with it in the label postitioning
+				
+				g.padding.right = g.defaultPadding().right
 					
 				barLabels.transition()
 					.text(function(d,i){var yAxisIndex = d3.select(this.parentNode).data()[0].axis; return (i==0?g.yAxis[yAxisIndex].prefix.value:"") + g.numberFormat(d) + (i==0?g.yAxis[yAxisIndex].suffix.value:"")})
 					.attr("x", function(d,i) {
 						var yAxisIndex = d3.select(this.parentNode).data()[0].axis,
 						x = 3 + g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)):0) + Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)),
-						textWidth = this.getComputedTextLength()
 						
-						if (textWidth + x > g.width()) {
+						bbox = this.getBBox()
+						parentCoords = Gneiss.helper.transformCoordOf(d3.select(this.parentNode))
+						console.log()
+						if (x + bbox.width + parentCoords.x > g.width()) {
 							//the label will fall off the edge and thus the chart needs more padding
-							g.padding.right = textWidth + g.defaultPadding().right
-							g.redraw()
+							if(bbox.width + g.defaultPadding().right < (g.width()-g.padding.left)/g.series.length) {
+								//add more padding if there is room for it
+								g.padding.right = bbox.width + g.defaultPadding().right
+								g.redraw()
+							}
+							
 						}
+						
 						
 						return x
 					})
