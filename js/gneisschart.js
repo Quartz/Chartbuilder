@@ -24,6 +24,9 @@ Gneiss.defaultGneissChartConfig = {
 	container: "#chartContainer", //css id of target chart container
 	editable: true, // reserved for enabling or dissabling on chart editing
 	lineDotsThreshold: 15, //line charts will have dots on points until a series has this number of points
+	bargridLabelMargin: 4, //the horizontal space between a bargrid bar and it's label
+	xAxisMargin: 8, //the vertical space between the plot area and the x axis
+	metaInfoMargin: 4, //the vertical space between the bottom of the bounding box and the meta information
 	primaryAxisPosition: "right",
 	legend: true, // whether or not there should be a legend
 	title: "", // the chart title 
@@ -321,7 +324,7 @@ function Gneiss(config)
 		
 		g.metaInfo = g.chart.append("g")
 			.attr("id","metaInfo")
-			.attr("transform","translate(0," + (g.height() - 4) + ")");
+			.attr("transform","translate(0," + (g.height() - g.metaInfoMargin) + ")");
 		
 		g.sourceLine = g.metaInfo.append("text")
 			.attr("text-anchor", "end")
@@ -354,7 +357,7 @@ function Gneiss(config)
 			.attr("width", g.width())
 			.attr("height", g.height());
       
-		g.metaInfo.attr("transform", "translate(0," + (g.height() - 4) + ")");
+		g.metaInfo.attr("transform","translate(0," + (g.height() - g.metaInfoMargin) + ")");
 		
 		return this;
 	};
@@ -778,7 +781,7 @@ function Gneiss(config)
 		
 		if(g.isBargrid()){
 			d3.selectAll(".yAxis").style("display","none")
-			g.titleLine.attr("y",g.padding.top - 36)
+			g.titleLine.attr("y",g.padding.top - 36) //CHANGE - MAGIC NUMBER
 			
 		}
 		else {
@@ -790,17 +793,17 @@ function Gneiss(config)
 				try{
 					if(!g.legend || g.series.length == 1) {
 						//no legend or only one seriesgit 
-						g.titleLine.attr("y",g.topAxisItem.y - 4)
+						g.titleLine.attr("y",g.topAxisItem.y - 4) //CHANGE - MAGIC NUMBER
 					}
 					else {
-						g.titleLine.attr("y",g.topAxisItem.y - 25)
+						g.titleLine.attr("y",g.topAxisItem.y - 25) //CHANGE - MAGIC NUMBER
 					}
 				}catch(e){} //fail silently
 					
 			}
 			else {
 				try{
-					g.titleLine.attr("y",g.padding.top - 36)
+					g.titleLine.attr("y",g.padding.top - 36) //CHANGE - MAGIC NUMBER
 				}catch(e){} //fail silently
 			}
 		}
@@ -886,7 +889,6 @@ function Gneiss(config)
 							case "M":
 								g.xAxis.axis.ticks(d3.time.months,1)
 							break;
-						   // "hmm"
 
 							case "YY":
 								g.xAxis.axis.ticks(d3.time.years,1)
@@ -922,7 +924,7 @@ function Gneiss(config)
 			g.chart.append("g")
 				.attr("class",'axis')
 				.attr("id","xAxis")
-				.attr("transform",g.isBargrid() ? "translate(" + g.padding.left + ",0)" : "translate(0," + (g.height() - g.padding.bottom + 8) + ")")
+				.attr("transform",g.isBargrid() ? "translate(" + g.padding.left + ",0)" : "translate(0," + (g.height() - g.padding.bottom + g.xAxisMargin) + ")")
 				.call(g.xAxis.axis);			
 		}
 		else {
@@ -997,7 +999,7 @@ function Gneiss(config)
 			}
 			
 			g.chart.select("#xAxis")
-				.attr("transform",g.isBargrid() ? "translate(" + g.padding.left + ",0)" : "translate(0," + (g.height() - g.padding.bottom + 8) + ")")
+				.attr("transform",g.isBargrid() ? "translate(" + g.padding.left + ",0)" : "translate(0," + (g.height() - g.padding.bottom + g.xAxisMargin) + ")")
 				.call(g.xAxis.axis)
 		}
 		
@@ -1047,14 +1049,14 @@ function Gneiss(config)
 		
 		//determine the propper column width
 		//								---- Width of chart area ----------     -Num Data pts-  -Num Column Series-
-		var columnWidth = Math.floor((( g.width()-g.padding.right-g.padding.left) / g.maxLength) / sbt.column.length) - 3;
+		var columnWidth = Math.floor((( g.width()-g.padding.right-g.padding.left) / g.maxLength) / sbt.column.length) - 3;  //CHANGE - MAGIC NUMBER?
 		//make sure width is >= 1
 		columnWidth = Math.max(columnWidth, 1);
-		columnWidth = Math.min(columnWidth, ( g.width()-g.padding.right-g.padding.left) * 0.075)
-		var columnGroupShift = columnWidth + 1;
+		columnWidth = Math.min(columnWidth, ( g.width()-g.padding.right-g.padding.left) * 0.075)  //CHANGE - MAGIC NUMBER
+		var columnGroupShift = columnWidth + 1;  //CHANGE - MAGIC NUMBER
 		
 		g.columnWidth = columnWidth;
-		g.columnGroupWidth = (columnWidth + 1) * sbt.column.length;
+		g.columnGroupWidth = (columnWidth + 1) * sbt.column.length;  //CHANGE - MAGIC NUMBER
 		g.columnGroupShift = columnWidth +1;
 		
 		return this;
@@ -1228,14 +1230,14 @@ function Gneiss(config)
 						.attr("height",20)
 						.attr("width", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
 						.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d)):0)})
-						.attr("y",function(d,i) {return g.xAxis.scale(i) - 10})
+						.attr("y",function(d,i) {return g.xAxis.scale(i) - 10})  //CHANGE - MAGIC NUMBER
 				
 				columnRects.transition()
 					.duration(500)
 					.attr("height",20)
 					.attr("width", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
 					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)):0)})
-					.attr("y",function(d,i) {return g.xAxis.scale(i) - 10})
+					.attr("y",function(d,i) {return g.xAxis.scale(i) - 10})  //CHANGE - MAGIC NUMBER
 				
 				//add label to each bar
 				var barLabels = columnGroups.selectAll("text.barLabel")
@@ -1246,7 +1248,7 @@ function Gneiss(config)
 					.attr("class","barLabel")
 					.text(function(d,i){return g.numberFormat(d)})
 					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
-					.attr("y",function(d,i) {return g.xAxis.scale(i) + 5})
+					.attr("y",function(d,i) {return g.xAxis.scale(i) + 5})  //CHANGE - MAGIC NUMBER
 				
 				//reset the padding to the default before mucking with it in the label postitioning
 				
@@ -1256,7 +1258,7 @@ function Gneiss(config)
 					.text(function(d,i){var yAxisIndex = d3.select(this.parentNode).data()[0].axis; return (i==0?g.yAxis[yAxisIndex].prefix.value:"") + g.numberFormat(d) + (i==0?g.yAxis[yAxisIndex].suffix.value:"")})
 					.attr("x", function(d,i) {
 						var yAxisIndex = d3.select(this.parentNode).data()[0].axis,
-						x = 3 + g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)):0) + Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)),
+						x = g.bargridLabelMargin + g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)):0) + Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)),
 						
 						bbox = this.getBBox()
 						parentCoords = Gneiss.helper.transformCoordOf(d3.select(this.parentNode))
@@ -1274,7 +1276,7 @@ function Gneiss(config)
 						
 						return x
 					})
-					.attr("y",function(d,i) {return g.xAxis.scale(i) + 5})
+					.attr("y",function(d,i) {return g.xAxis.scale(i) + 5})  //CHANGE - MAGIC NUMBER
 				
 				//remove non bargrid stuff
 				scatterSeries.remove()
@@ -1488,9 +1490,6 @@ function Gneiss(config)
 					.attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
 
 				legendGroups.filter(function(d){return d != g.series[0]})
-					//.transition()
-					//.duration(50)
-					//.delay(function(d,i){return i * 50 + 50})
 					.attr("transform",function(d,i) {
 						//label isn't for the first series
 						var prev = d3.select(legendGroups[0][i]);
@@ -1505,23 +1504,13 @@ function Gneiss(config)
 						
 
 						legendItemY = prevCoords.y;
-						var x = prevCoords.x + prevWidth + 5;
+						var x = prevCoords.x + prevWidth + 5;  //CHANGE - MAGIC NUMBER
 						if(x + curWidth >  g.width()) {
 							x = g.padding.left;
-							legendItemY += 15;						
+							legendItemY += 15;	 //CHANGE - MAGIC NUMBER
 						}
 						return "translate("+x+","+legendItemY+")";
-				})
-				//.filter(function(d,i){console.log(i,g.series.slice(0).pop()==d);return d == g.series.slice(0).pop()})
-				//.each("end", function(d,i) {
-				//	//the filter above makes sure this only hapens on the last one
-				//	if (legendItemY > 0 && g.defaults.padding.top != legendItemY + 25) { //CHANGE
-				//		g.defaults.padding.top = legendItemY + 25;
-				//		g.all.redraw();
-				//				
-				//	};
-				//})		
-				//test if the chart needs more top margin because of a large number of legend items				
+				})		
 			} else {
 				if(g.title == "") {
 					g.titleLine.text(g.series[0].name)
@@ -1534,7 +1523,7 @@ function Gneiss(config)
   
   this.updateMetaAndTitle = function Gneiss$updateMetaAndTitle() {
 		var g = this;
-		g.metaInfo.attr("transform", "translate(0," + ( g.height() - 4) + ")");
+		g.metaInfo.attr("transform","translate(0," + (g.height() - g.metaInfoMargin) + ")");
 		return this;
 	};
   
