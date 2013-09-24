@@ -23,7 +23,7 @@ Date.setLocale('en');
 Gneiss.defaultGneissChartConfig = {
 	container: "#chartContainer", //css id of target chart container
 	editable: true, // reserved for enabling or dissabling on chart editing
-	lineDotsThreshold: 15,
+	lineDotsThreshold: 15, //line charts will have dots on points until a series has this number of points
 	primaryAxisPosition: "right",
 	legend: true, // whether or not there should be a legend
 	title: "", // the chart title 
@@ -454,27 +454,20 @@ function Gneiss(config)
 			padding_right = g.defaultPadding.right
 		
 		
-		if(!g.legend) {
-			padding_top = 5;
-		}
+		// if(!g.legend) {
+		// 	padding_top = 5;
+		// }
 		
 		//Add the height of the title line to the padding, if the title line has a height
 		title_bottom_margin = 5;
-		title_height = g.titleLine[0][0].getBBox().height;
+		title_height = g.titleLine[0][0].getBoundingClientRect().height;
 		padding_top += title_height > 0? title_height + title_bottom_margin : 0
 		
 		//if there is more than one axis or the default axis is on the left and it isn't a bar grid 
 		//add enough space for the top axis label
 		
-		axis_label_height = d3.selectAll(".yAxis text")[0][0].getBBox().height;
+		axis_label_height = d3.selectAll(".yAxis text")[0][0].getBoundingClientRect().height;
 		padding_top += (g.yAxis.length == 1 && !g.isBargrid() || g.primaryAxisPosition == "left") ? 0 : axis_label_height + title_bottom_margin;
-		
-		if(g.isBargrid()) {
-			padding_top += -15;
-			padding_bottom -= 15;
-			
-			padding_right += 0;
-		}
 		
 		g.padding.top = padding_top;
 		g.padding.bottom = padding_bottom;
