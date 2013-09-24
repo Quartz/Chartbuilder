@@ -668,8 +668,8 @@ ChartBuilder.start = function(config) {
   	//this should change to be more like this http://bost.ocks.org/mike/chart/
     chart = new Gneiss(chartConfig);
     
-  	//scale it up so it looks good on retina displays
-  	$("#chart").attr("transform","scale(2)")
+  	// Scale the chart up so the outputted image looks good on retina displays
+  	$("#chart").attr("transform", "scale(2)");
   	
   	//populate the input with the data that is in the chart
   	$("#csvInput").val(function() {
