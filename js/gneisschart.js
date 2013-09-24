@@ -293,7 +293,13 @@ function Gneiss(config)
 		g.chart.append("rect")
 			.attr("id","ground")
 			.attr("width", g.width())
-			.attr("height", g.height());				
+			.attr("height", g.height());
+			
+		//add a rect to allow for styling of the chart area
+		g.chart.append("rect")
+			.attr("id","plotArea")
+			.attr("width", g.width())
+			.attr("height", g.height())
 		
 		//group the series by their type
 		g.seriesByType(this.splitSeriesByType(g.series));
@@ -441,9 +447,12 @@ function Gneiss(config)
 		/*
 			calulates and stores the proper amount of extra padding beyond what the user specified (to account for axes, titles, legends, meta)
 		*/
-		var g = this;
-		var padding_top = g.defaultPadding().top;
-		var padding_bottom = g.defaultPadding().bottom;
+		var g = this,
+			padding_top = g.defaultPadding().top,
+			padding_bottom = g.defaultPadding().bottom,
+			padding_left = g.defaultPadding().left,
+			padding_right = g.defaultPadding.right
+		
 		
 		if(!g.legend) {
 			padding_top = 5;
@@ -463,10 +472,18 @@ function Gneiss(config)
 		if(g.isBargrid()) {
 			padding_top += -15;
 			padding_bottom -= 15;
+			
+			padding_right += 0;
 		}
 		
 		g.padding.top = padding_top;
 		g.padding.bottom = padding_bottom;
+		
+		d3.select("#plotArea")
+			.attr("transform","translate("+g.padding.left+","+g.padding.top+")")
+			.attr("width",g.width()-g.padding.left-g.padding.right)
+			.attr("height",g.height()-g.padding.top-g.padding.bottom)
+			
 		return this;
 	};
   
@@ -796,7 +813,9 @@ function Gneiss(config)
 		}
 		
 		d3.selectAll(".yAxis").each(function(){this.parentNode.prependChild(this);})
+		d3.selectAll("#plotArea").each(function(){this.parentNode.prependChild(this);})
 		d3.selectAll("#ground").each(function(){this.parentNode.prependChild(this);})
+		
 		
 		return this;
 	};
@@ -840,33 +859,72 @@ function Gneiss(config)
 				.tickFormat(g.xAxis.formatter ? Gneiss.dateParsers[g.xAxis.formatter] : function(d) {return d})
 				.ticks(g.xAxis.ticks)
 				
-			if(g.xAxis.type == "date") {
-				
-				switch(g.xAxis.formatter) {
-				   // "mmddyyyy":
-				   // "mmdd"
-					case "yy":
-						g.xAxis.axis.ticks(d3.time.years,1)
-					break;
-					
-					case "yyyy":
-						g.xAxis.axis.ticks(d3.time.years,1)
-					break;
-					
-					case "MM":
-						g.xAxis.axis.ticks(d3.time.months,1)
-					break;
-					
-					case "M":
-						g.xAxis.axis.ticks(d3.time.months,1)
-					break;
-				   // "hmm"
+				if(g.xAxis.type == "date") {
+					if(g.xAxis.ticks === null || !isNaN(g.xAxis.ticks)) {
+						//auto suggest the propper tick gap
+						var timeSpan = g.xAxis.scale.domain()[1]-g.xAxis.scale.domain()[0],
+										months = timeSpan/2592000000,
+										years = timeSpan/31536000000;
+									
+						if(years > 30) {
+							yearGap = 10
+						}
+						if(years > 15) {
+							yearGap = 5;
+						}
+						else {
+							yearGap = 1;
+						}
+						switch(g.xAxis.formatter) {
+						   // "mmddyyyy":
+						   // "mmdd"
+							case "yy":
+								g.xAxis.axis.ticks(d3.time.years,yearGap)
+							break;
 
-					case "YY":
-						g.xAxis.axis.ticks(d3.time.years,1)
-					break;
+							case "yyyy":
+								g.xAxis.axis.ticks(d3.time.years,yearGap)
+							break;
+
+							case "MM":
+								g.xAxis.axis.ticks(d3.time.months,1)
+							break;
+
+							case "M":
+								g.xAxis.axis.ticks(d3.time.months,1)
+							break;
+						   // "hmm"
+
+							case "YY":
+								g.xAxis.axis.ticks(d3.time.years,1)
+							break;
+						}
+					}
+					else if(g.xAxis.ticks instanceof Array) {
+						//use the specified tick gap
+						var gap,
+							gapString = g.xAxis.ticks[1], 
+							num = parseInt(g.xAxis.ticks[0]);
+						
+							if((/day/i).test(gapString)) {
+								gap = d3.time.days;
+							}
+							else if((/week/i).test(gapString)) {
+								gap = d3.time.weeks;
+							}
+							else if((/month/i).test(gapString)) {
+								gap = d3.time.months;
+							}
+							else if((/year/i).test(gapString)) {
+								gap = d3.time.years;
+							}
+						g.xAxis.axis.ticks(gap,num)
+					}
+					else {
+						throw new Error("xAxis.ticks set to invalid date format");
+					}
 				}
-			}
+			
 			
 			g.chart.append("g")
 				.attr("class",'axis')
@@ -881,43 +939,71 @@ function Gneiss(config)
 				.orient(g.isBargrid() ? "left" : "bottom")
 			
 			if(g.xAxis.type == "date") {
-				var timeSpan = g.xAxis.scale.domain()[1]-g.xAxis.scale.domain()[0],
-				months = timeSpan/2592000000,
-				years = timeSpan/31536000000;
-				
-				if(years > 20) {
-					yearGap = 5;
+				if(g.xAxis.ticks === null || !isNaN(g.xAxis.ticks)) {
+					//auto suggest the propper tick gap
+					var timeSpan = g.xAxis.scale.domain()[1]-g.xAxis.scale.domain()[0],
+									months = timeSpan/2592000000,
+									years = timeSpan/31536000000;
+									
+					if(years > 30) {
+						yearGap = 10
+					}
+					if(years > 15) {
+						yearGap = 5;
+					}
+					else {
+						yearGap = 1;
+					}
+					switch(g.xAxis.formatter) {
+					   // "mmddyyyy":
+					   // "mmdd"
+						case "yy":
+							g.xAxis.axis.ticks(d3.time.years,yearGap)
+						break;
+
+						case "yyyy":
+							g.xAxis.axis.ticks(d3.time.years,yearGap)
+						break;
+
+						case "MM":
+							g.xAxis.axis.ticks(d3.time.months,1)
+						break;
+
+						case "M":
+							g.xAxis.axis.ticks(d3.time.months,1)
+						break;
+					   // "hmm"
+
+						case "YY":
+							g.xAxis.axis.ticks(d3.time.years,1)
+						break;
+					}
+				}
+				else if(g.xAxis.ticks instanceof Array) {
+					var gap,
+						gapString = g.xAxis.ticks[1], 
+						num = parseInt(g.xAxis.ticks[0]);
+						
+						if((/day/i).test(gapString)) {
+							gap = d3.time.days;
+						}
+						else if((/week/i).test(gapString)) {
+							gap = d3.time.weeks;
+						}
+						else if((/month/i).test(gapString)) {
+							gap = d3.time.months;
+						}
+						else if((/year/i).test(gapString)) {
+							gap = d3.time.years;
+						}
+					g.xAxis.axis.ticks(gap,num)
 				}
 				else {
-					yearGap = 1;
-				}
-				switch(g.xAxis.formatter) {
-				   // "mmddyyyy":
-				   // "mmdd"
-					case "yy":
-						g.xAxis.axis.ticks(d3.time.years,yearGap)
-					break;
-					
-					case "yyyy":
-						g.xAxis.axis.ticks(d3.time.years,yearGap)
-					break;
-					
-					case "MM":
-						g.xAxis.axis.ticks(d3.time.months,1)
-					break;
-					
-					case "M":
-						g.xAxis.axis.ticks(d3.time.months,1)
-					break;
-				   // "hmm"
-
-					case "YY":
-						g.xAxis.axis.ticks(d3.time.years,1)
-					break;
+					throw new Error("xAxis.ticks set to invalid date format");
 				}
 			}
 			
-			g.chart.selectAll("#xAxis")
+			g.chart.select("#xAxis")
 				.attr("transform",g.isBargrid() ? "translate(" + g.padding.left + ",0)" : "translate(0," + (g.height() - g.padding.bottom + 8) + ")")
 				.call(g.xAxis.axis)
 		}
@@ -926,7 +1012,7 @@ function Gneiss(config)
 			.attr("text-anchor", g.xAxis.type == "date" ? (g.seriesByType().column.length>0 && g.seriesByType().line.length == 0 && g.seriesByType().scatter.length == 0 ? "middle":"start"): (g.isBargrid() ? "end":"middle"))
 			//.attr("text-anchor", g.isBargrid ? "end":"middle")
 			.each(function() {
-				var pwidth = this.parentNode.getBBox().width
+				var pwidth = this.parentNode.getBoundingClientRect().width
 				var attr = this.parentNode.getAttribute("transform")
 				var attrx = Number(attr.split("(")[1].split(",")[0])
 				var attry = Number(attr.split(")")[0].split(",")[1])
@@ -950,6 +1036,8 @@ function Gneiss(config)
 					
 				}
 			});
+		
+			
       
 		return this;
 	};
@@ -1119,11 +1207,11 @@ function Gneiss(config)
 				
 						
 				bargridLabel.enter()
-						.append("text")
-						.attr("class","bargridLabel")
-						.text(function(d,i){return d.name})
-						.attr("x",g.yAxis[0].scale(0))
-						.attr("y",g.padding.top-18)
+					.append("text")
+					.attr("class","bargridLabel")
+					.text(function(d,i){return d.name})
+					.attr("x",g.yAxis[0].scale(0))
+					.attr("y",g.padding.top-18)
 								
 				bargridLabel.transition()
 					.text(function(d,i){return d.name})
@@ -1166,10 +1254,33 @@ function Gneiss(config)
 					.text(function(d,i){return g.numberFormat(d)})
 					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
 					.attr("y",function(d,i) {return g.xAxis.scale(i) + 5})
+				
+				//reset the padding to the default before mucking with it in the label postitioning
+				
+				g.padding.right = g.defaultPadding().right
 					
 				barLabels.transition()
 					.text(function(d,i){var yAxisIndex = d3.select(this.parentNode).data()[0].axis; return (i==0?g.yAxis[yAxisIndex].prefix.value:"") + g.numberFormat(d) + (i==0?g.yAxis[yAxisIndex].suffix.value:"")})
-					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return 3 + g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)):0) + Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
+					.attr("x", function(d,i) {
+						var yAxisIndex = d3.select(this.parentNode).data()[0].axis,
+						x = 3 + g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)):0) + Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)),
+						
+						bbox = this.getBBox()
+						parentCoords = Gneiss.helper.transformCoordOf(d3.select(this.parentNode))
+						console.log()
+						if (x + bbox.width + parentCoords.x > g.width()) {
+							//the label will fall off the edge and thus the chart needs more padding
+							if(bbox.width + g.defaultPadding().right < (g.width()-g.padding.left)/g.series.length) {
+								//add more padding if there is room for it
+								g.padding.right = bbox.width + g.defaultPadding().right
+								g.redraw()
+							}
+							
+						}
+						
+						
+						return x
+					})
 					.attr("y",function(d,i) {return g.xAxis.scale(i) + 5})
 				
 				//remove non bargrid stuff
@@ -1390,11 +1501,11 @@ function Gneiss(config)
 					.attr("transform",function(d,i) {
 						//label isn't for the first series
 						var prev = d3.select(legendGroups[0][i]);
-						var prevWidth = parseFloat(prev.node().getBBox().width);
+						var prevWidth = parseFloat(prev.node().getBoundingClientRect().width);
 						var prevCoords = Gneiss.helper.transformCoordOf(prev);
 
 						var cur = d3.select(this);
-						var curWidth = parseFloat(cur.node().getBBox().width);
+						var curWidth = parseFloat(cur.node().getBoundingClientRect().width);
 						var curCoords = Gneiss.helper.transformCoordOf(cur);
 
 						legendItemY = prevCoords.y;

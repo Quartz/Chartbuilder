@@ -668,8 +668,8 @@ ChartBuilder.start = function(config) {
   	//this should change to be more like this http://bost.ocks.org/mike/chart/
     chart = new Gneiss(chartConfig);
     
-  	//scale it up so it looks good on retina displays
-  	$("#chart").attr("transform","scale(2)")
+  	// Scale the chart up so the outputted image looks good on retina displays
+  	$("#chart").attr("transform", "scale(2)");
   	
   	//populate the input with the data that is in the chart
   	$("#csvInput").val(function() {
@@ -761,7 +761,7 @@ ChartBuilder.start = function(config) {
   			
   			if(dataObj.datetime) {
   				chart.xAxis.type = "date";
-  				chart.xAxis.formatter = chart.xAxis.formatter?chart.xAxis.formatter:"Mdd";
+  				chart.xAxis.formatter = chart.xAxis.formatter?chart.xAxis.formatter:"M";
   			}
   			else {
   				chart.xAxis.type = "ordinal";
@@ -812,6 +812,15 @@ ChartBuilder.start = function(config) {
   		ChartBuilder.redraw()
   		ChartBuilder.inlineAllStyles();
   	})
+	
+	$("#x_axis_tick_date_frequency").change(function(){
+		var val = $(this).val().split(" ")
+		//if the selected option has two words set it as the number of ticks
+		//else set ticks to null
+		chart.xAxis.ticks = val.length > 1 ? val : null
+		ChartBuilder.redraw()
+		ChartBuilder.inlineAllStyles();
+	})
   	
   	$("#left_axis_prefix").keyup(function() {
   		ChartBuilder.actions.axis_prefix_change(1,this)

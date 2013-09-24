@@ -5,6 +5,11 @@ svg #ground {
 	stroke: none;
 }
 
+svg #plotArea {
+	fill: none;
+	stroke: none;
+}
+
 svg .axis line {
 	fill: none;
 	shape-rendering: crispEdges;
