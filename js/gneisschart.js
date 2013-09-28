@@ -544,6 +544,9 @@ function Gneiss(config)
 					}
 					return [];
 				});
+				if(g.isBargrid()) {
+					y[i].domain[0] = Math.min(y[i].domain[0], 0);
+				}
 			}
 		}
 					
@@ -551,14 +554,13 @@ function Gneiss(config)
 		for (var i = y.length - 1; i >= 0; i--) {
 			if(!y[i].scale) {
 				y[i].scale = d3.scale.linear();
-			}
+			}			
 			y[i].scale.domain(y[i].domain);
 		}
 				
 		if(g.isBargrid()) {
 			var width = (g.width() / g.seriesByType().bargrid.length) - p.right;
 			for (var i = y.length - 1; i >= 0; i--) {
-				y[i].domain[0] = Math.min(y[i].domain[0], 0);
 				y[i].scale.range([p.left, width]).nice();				
 			}
 		}

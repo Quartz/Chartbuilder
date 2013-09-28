@@ -271,6 +271,28 @@ describe("Gneiss", function() {
       expect(series[1].axis).toEqual(0);
     });
     
+    it("sets the axis number for all series for which it is currently undefined", function() {
+      var series = gneiss.series();
+      series[0].axis = undefined;
+      series[1].axis = undefined;
+            
+      gneiss.setYScales();
+      
+      expect(series[0].axis).toEqual(0);
+      expect(series[1].axis).toEqual(0);
+    });
+    
+    it("ignores the axis number for all series for which it is currently set", function() {
+      var series = gneiss.series();
+      series[0].axis = 1;
+      series[1].axis = 190;
+            
+      gneiss.setYScales();
+      
+      expect(series[0].axis).toEqual(1);
+      expect(series[1].axis).toEqual(190);
+    });
+    
     it("sets the domain value for all y-axii in a default chart", function() {
       var y = gneiss.yAxis();
       y[0].domain = [null, null];
@@ -320,9 +342,8 @@ describe("Gneiss", function() {
       y[0].scale = null;
       
       gneiss.setYScales();
-      
-      var newScale = d3.scale.linear().domain(y[0].domain).nice();      
-      expect(y[0].scale.domain()).toEqual(newScale.domain());
+           
+      expect(y[0].scale.domain()).toEqual([3, 23]);
     });
     
     it("sets domains for all y-axii scales in a bar chart", function() {
@@ -333,9 +354,8 @@ describe("Gneiss", function() {
       gneiss.seriesByType({ bargrid: ["bar"] });
       
       gneiss.setYScales();
-      
-      var newScale = d3.scale.linear().domain(y[0].domain).nice();      
-      expect(y[0].scale.domain()).toEqual(newScale.domain());
+          
+      expect(y[0].scale.domain()).toEqual([0, 23]);
     });
     
     it("sets ranges for all y-axii scales in a default chart", function() {
@@ -344,10 +364,7 @@ describe("Gneiss", function() {
       
       gneiss.setYScales();
       
-      var newScale = d3.scale.linear()
-        .range([gneiss.height() - gneiss.padding().bottom, gneiss.padding().top])
-        .nice();
-      expect(y[0].scale.range()).toEqual(newScale.range());
+      expect(y[0].scale.range()).toEqual([661, 25]);
     });
     
     it("sets ranges for all y-axii scales in a bar chart", function() {
@@ -359,10 +376,7 @@ describe("Gneiss", function() {
       
       gneiss.setYScales();
       
-      var newScale = d3.scale.linear()
-        .range([gneiss.padding().left, gneiss.width() - gneiss.padding().right])
-        .nice();
-      expect(y[0].scale.range()).toEqual(newScale.range());
+      expect(y[0].scale.range()).toEqual([10, -10]);
     });
   });
  
