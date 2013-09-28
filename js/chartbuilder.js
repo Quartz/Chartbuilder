@@ -683,7 +683,7 @@ ChartBuilder.start = function(config) {
 
   // Create config
   var chartbuilderDefaultConfig = ChartBuilder.getDefaultConfig();
-  var chartConfig = $.extend(Gneiss.defaultGneissChartConfig, chartbuilderDefaultConfig, config);
+  var chartConfig = $.extend(true, Gneiss.defaultGneissChartConfig, chartbuilderDefaultConfig, config);
   
   $(document).ready(function() {
   	

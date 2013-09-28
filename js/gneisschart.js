@@ -416,20 +416,20 @@ function Gneiss(config)
 			throw new Error("build() must be called with a chart configuration with a 'container' property");
 		}
 		
-		g.containerId(config.container);
-		g.containerElement($(g.containerId()));
-		
-		g.title(config.title);
-		g.source(config.sourceline);
-		g.credit(config.creditline);
-		g.legend(config.legend);
-		g.colors(config.colors);
-		g.xAxis(config.xAxis);
-		g.xAxisRef(config.xAxisRef);
-		g.yAxis(config.yAxis);
-		g.series(config.series);
-		g.defaultPadding($.extend({}, config.padding)); // deep copy the padding configuration
-		g.padding($.extend({}, config.padding)); // deep copy the padding configuration
+		// Deep copy the config data to prevent side effects
+		g.containerId(config.container.slice());
+		g.containerElement($(g.containerId()));		
+		g.title(config.title.slice());
+		g.source(config.sourceline.slice());
+		g.credit(config.creditline.slice());
+		g.legend(config.legend === true ? true : false);
+		g.colors($.extend(true, [], config.colors));
+		g.xAxis($.extend(true, {}, config.xAxis));
+		g.xAxisRef($.extend(true, [], config.xAxisRef));
+		g.yAxis($.extend(true, [], config.yAxis));
+		g.series($.extend(true, [], config.series));
+		g.defaultPadding($.extend(true, {}, config.padding));
+		g.padding($.extend(true, {}, config.padding));
 		
 		//append svg to container using svg
 		g.chartElement(d3.select(g.containerId()).append("svg")
