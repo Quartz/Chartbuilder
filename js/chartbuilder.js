@@ -8,14 +8,20 @@ ChartBuilder = {
 						"9300BF","E770FF","CB5DE1","AE4BC4","9238A6","752588","59136B","3C004D"],
 	curRaw: "",
 	getNewData: function(csv) {
+	
+		if(!csv) {
+			return null;
+		}
+		
 		// Split the csv information by lines
 		var csv_array = csv.split("\n");
-
-        // Split the first element of the array by the designated separator
-        // tab in this case
-        var csv_matrix = [];
-        var delim = String.fromCharCode(9);
-        csv_matrix.push(csv_array[0].split(delim));
+		
+		// Split the first element of the array by the designated separator, tab in this case
+		var csv_matrix = [];
+		var delim = String.fromCharCode(9);
+		
+		// Trim leading and trailing spaces from rows and split
+		csv_matrix.push($.trim(csv_array[0]).split(delim));
 
 		// Get the number of columns
 		var cols_num = csv_matrix[0].length;
@@ -25,6 +31,11 @@ ChartBuilder = {
 			return null;
 		}
 
+		// Trim leading and trailing spaces from headers
+		for(var i = 0; i < cols_num; i++) {
+			csv_matrix[0][i] = $.trim(csv_matrix[0][i]);
+		}
+			
 		// Knowing the number of columns that every line should have, split
 		// those lines by the designated separator. While doing this, count
 		// the number of rows
@@ -37,11 +48,16 @@ ChartBuilder = {
 
 			// Split the row. If the row doesn't have the right amount of cols
 			// then the csv is not well formated, therefore, return null
-			var row = csv_array[i].split(delim);
+			var row = $.trim(csv_array[i]).split(delim);
 			if(row.length != cols_num) {
 				return null;
 			}
-
+			
+			// Trim leading and trailing spaces from entries
+			for(var j = 0; j < row.length; j++) {
+				row[j] = $.trim(row[j]);
+			}
+			
 			// Push row to matrix, increment row count, loop
 			csv_matrix.push(row);
 			rows_num++; 
