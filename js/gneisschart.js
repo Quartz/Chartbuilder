@@ -602,12 +602,8 @@ function Gneiss(config)
 			padding_right += 0;
 		}
 		
-		g.padding({
-			"left":padding_left,
-			"top":padding_top,
-			"right":padding_right,
-			"bottom":padding_bottom
-		});
+		g.padding().top = padding_top;
+		g.padding().bottom = padding_bottom;
 		
 		d3.select("#plotArea")
 			.attr("transform","translate("+g.padding().left+","+g.padding().top+")")
