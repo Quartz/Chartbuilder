@@ -929,10 +929,10 @@ function Gneiss(config)
 				.tickFormat(g.xAxis().formatter ? Gneiss.dateParsers[g.xAxis().formatter] : function(d) {return d})
 				.ticks(g.xAxis().ticks)
 				
-				if(g.xAxis.type == "date") {
-					if(g.xAxis.ticks === null || !isNaN(g.xAxis.ticks)) {
+				if(g.xAxis().type == "date") {
+					if(g.xAxis().ticks === null || !isNaN(g.xAxis().ticks)) {
 						//auto suggest the propper tick gap
-						var timeSpan = g.xAxis.scale.domain()[1]-g.xAxis.scale.domain()[0],
+						var timeSpan = g.xAxis().scale.domain()[1]-g.xAxis().scale.domain()[0],
 										months = timeSpan/2592000000,
 										years = timeSpan/31536000000;
 									
@@ -945,36 +945,36 @@ function Gneiss(config)
 						else {
 							yearGap = 1;
 						}
-						switch(g.xAxis.formatter) {
+						switch(g.xAxis().formatter) {
 						   // "mmddyyyy":
 						   // "mmdd"
 							case "yy":
-								g.xAxis.axis.ticks(d3.time.years,yearGap)
+								g.xAxis().axis.ticks(d3.time.years,yearGap)
 							break;
 
 							case "yyyy":
-								g.xAxis.axis.ticks(d3.time.years,yearGap)
+								g.xAxis().axis.ticks(d3.time.years,yearGap)
 							break;
 
 							case "MM":
-								g.xAxis.axis.ticks(d3.time.months,1)
+								g.xAxis().axis.ticks(d3.time.months,1)
 							break;
 
 							case "M":
-								g.xAxis.axis.ticks(d3.time.months,1)
+								g.xAxis().axis.ticks(d3.time.months,1)
 							break;
 						   // "hmm"
 
 							case "YY":
-								g.xAxis.axis.ticks(d3.time.years,1)
+								g.xAxis().axis.ticks(d3.time.years,1)
 							break;
 						}
 					}
-					else if(g.xAxis.ticks instanceof Array) {
+					else if(g.xAxis().ticks instanceof Array) {
 						//use the specified tick gap
 						var gap,
-							gapString = g.xAxis.ticks[1], 
-							num = parseInt(g.xAxis.ticks[0]);
+							gapString = g.xAxis().ticks[1], 
+							num = parseInt(g.xAxis().ticks[0]);
 						
 							if((/day/i).test(gapString)) {
 								gap = d3.time.days;
@@ -988,7 +988,7 @@ function Gneiss(config)
 							else if((/year/i).test(gapString)) {
 								gap = d3.time.years;
 							}
-						g.xAxis.axis.ticks(gap,num)
+						g.xAxis().axis.ticks(gap,num)
 					}
 					else {
 						throw new Error("xAxis.ticks set to invalid date format");
@@ -1007,10 +1007,10 @@ function Gneiss(config)
 				.ticks(g.isBargrid() ? g.series()[0].data.length : g.xAxis().ticks)
 				.orient(g.isBargrid() ? "left" : "bottom")
 			
-			if(g.xAxis.type == "date") {
-				if(g.xAxis.ticks === null || !isNaN(g.xAxis.ticks)) {
+			if(g.xAxis().type == "date") {
+				if(g.xAxis().ticks === null || !isNaN(g.xAxis().ticks)) {
 					//auto suggest the propper tick gap
-					var timeSpan = g.xAxis.scale.domain()[1]-g.xAxis.scale.domain()[0],
+					var timeSpan = g.xAxis().scale.domain()[1]-g.xAxis().scale.domain()[0],
 									months = timeSpan/2592000000,
 									years = timeSpan/31536000000;
 									
@@ -1023,35 +1023,35 @@ function Gneiss(config)
 					else {
 						yearGap = 1;
 					}
-					switch(g.xAxis.formatter) {
+					switch(g.xAxis().formatter) {
 					   // "mmddyyyy":
 					   // "mmdd"
 						case "yy":
-							g.xAxis.axis.ticks(d3.time.years,yearGap)
+							g.xAxis().axis.ticks(d3.time.years,yearGap)
 						break;
 
 						case "yyyy":
-							g.xAxis.axis.ticks(d3.time.years,yearGap)
+							g.xAxis().axis.ticks(d3.time.years,yearGap)
 						break;
 
 						case "MM":
-							g.xAxis.axis.ticks(d3.time.months,1)
+							g.xAxis().axis.ticks(d3.time.months,1)
 						break;
 
 						case "M":
-							g.xAxis.axis.ticks(d3.time.months,1)
+							g.xAxis().axis.ticks(d3.time.months,1)
 						break;
 					   // "hmm"
 
 						case "YY":
-							g.xAxis.axis.ticks(d3.time.years,1)
+							g.xAxis().axis.ticks(d3.time.years,1)
 						break;
 					}
 				}
-				else if(g.xAxis.ticks instanceof Array) {
+				else if(g.xAxis().ticks instanceof Array) {
 					var gap,
-						gapString = g.xAxis.ticks[1], 
-						num = parseInt(g.xAxis.ticks[0]);
+						gapString = g.xAxis().ticks[1], 
+						num = parseInt(g.xAxis().ticks[0]);
 						
 						if((/day/i).test(gapString)) {
 							gap = d3.time.days;
@@ -1065,7 +1065,7 @@ function Gneiss(config)
 						else if((/year/i).test(gapString)) {
 							gap = d3.time.years;
 						}
-					g.xAxis.axis.ticks(gap,num)
+					g.xAxis().axis.ticks(gap,num)
 				}
 				else {
 					throw new Error("xAxis.ticks set to invalid date format");
@@ -1229,7 +1229,7 @@ function Gneiss(config)
 				lineSeries.data(sbt.line)
 					.enter()
 					.append("path")
-						.attr("d",function(d,j) { yAxisIndex = d.axis; pathString = g.yAxis()[d.axis].line(d.data).split("L0,0L").join("M");  return pathString.indexOf("NaN")==-1?pathString:"M0,0"})
+						.attr("d",function(d,j) { yAxisIndex = d.axis; pathString = g.yAxis()[d.axis].line(d.data).split("L0,0").join("M").split("L0,0").join("");  return pathString.indexOf("NaN")==-1?pathString:"M0,0"})
 						.attr("class","seriesLine seriesGroup")
 						.attr("stroke",function(d,i){return d.color? d.color : colors[i]})
 						.attr("stroke-width",3)
@@ -1418,7 +1418,7 @@ function Gneiss(config)
 
 				lineSeries.enter()
 					.append("path")
-						.attr("d",function(d,j) { yAxisIndex = d.axis; pathString = g.yAxis()[d.axis].line(d.data).split("L0,0L").join("M0,0L"); return pathString;})
+						.attr("d",function(d,j) { yAxisIndex = d.axis; pathString = g.yAxis()[d.axis].line(d.data).split("L0,0L").join("M0,0M").split("L0,0").join(""); return pathString;})
 						.attr("class","seriesLine")
 						.attr("stroke",function(d,i){return d.color? d.color : colors[i]})
 						.attr("stroke-width",3)
@@ -1428,7 +1428,7 @@ function Gneiss(config)
 
 				lineSeries.transition()
 					.duration(500)
-					.attr("d",function(d,j) { yAxisIndex = d.axis; pathString = g.yAxis()[d.axis].line(d.data).split("L0,0L").join("M0,0M"); return pathString;})
+					.attr("d",function(d,j) { yAxisIndex = d.axis; pathString = g.yAxis()[d.axis].line(d.data).split("L0,0L").join("M0,0M").split("L0,0").join(""); return pathString;})
 
 				lineSeries.exit().remove()
 			
