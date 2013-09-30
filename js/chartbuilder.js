@@ -783,8 +783,8 @@ ChartBuilder.start = function(config) {
   			dataObj = ChartBuilder.mergeData(dataObj)
   			
   			if(dataObj.datetime) {
-  				chart.xAxis().type = "date";
-  				chart.xAxis().formatter = chart.xAxis().formatter ? chart.xAxis().formatter : "Mdd";
+  				chart.xAxis.type = "date";
+  				chart.xAxis.formatter = chart.xAxis.formatter?chart.xAxis.formatter:"M";
   			}
   			else {
   				chart.xAxis().type = "ordinal";
@@ -835,6 +835,15 @@ ChartBuilder.start = function(config) {
   		ChartBuilder.redraw()
   		ChartBuilder.inlineAllStyles();
   	})
+	
+	$("#x_axis_tick_date_frequency").change(function(){
+		var val = $(this).val().split(" ")
+		//if the selected option has two words set it as the number of ticks
+		//else set ticks to null
+		chart.xAxis.ticks = val.length > 1 ? val : null
+		ChartBuilder.redraw()
+		ChartBuilder.inlineAllStyles();
+	})
   	
   	$("#left_axis_prefix").keyup(function() {
   		ChartBuilder.actions.axis_prefix_change(1,this)
