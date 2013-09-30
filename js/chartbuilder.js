@@ -482,13 +482,13 @@ ChartBuilder = {
 		
 		if(hasBargrid) {
 			$("#chartContainer").css("height",
-				chart.series[0].data.length*22 + 
+				chart.series[0].data.length*22 + //CHANGE - MAGIC NUMBER
 				chart.padding.top + 
 				chart.padding.bottom
 				)
 		}
 		else {
-			$("#chartContainer").css("height",338)
+			$("#chartContainer").css("height",338) //CHANGE - MAGIC NUMBER
 		}
 	},
 	makeLegendAdjustable: function() {
