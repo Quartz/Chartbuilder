@@ -25,6 +25,13 @@
 	</head>
 	<body>
 		<!-- Add your site or application content here -->
+		<div id="header">
+		<h1><img src="http://minnesota.publicradio.org/standard/images/mpr006/news/header/mprNewsLogo.gif" alt="MPR News Logo">
+		Chartbuilder</h1>
+		<h4><i>A customized version of <a href="https://github.com/Quartz/Chartbuilder">Quartz Chartbuilder</a></i></h4>
+		<h4><i>*requires Chrome browser</i></h4>
+		</div>
+		<hr>
 		<div id="interactiveContent">
 			<div id="leftColumn" class="column">
 			  <div class="cbInner">
@@ -39,9 +46,6 @@
 
 			<div id="rightColumn" class="column">
 			  <div class="cbInner">
-			    <h1>MPR ChartBuilder</h1>
-	    		<h4><i>A customized version of <a href="https://github.com/Quartz/Chartbuilder">Quartz Chartbuilder</a></i></h4>
-				<p><i>*requires Chrome browser</i></p>
   				<div id="chartOptions" class="interfaceCol">
              <div id="datainput">
              	<div class="inputGroup">
@@ -60,7 +64,14 @@
              	</div>
              	<div class="clearfix"></div>
             </div>
-
+            <div>
+			  <h4>
+              <button>
+			    <a href="http://tools.bilware.info/MPR-Chartbuilder">Reset Page</a>
+			  </button>
+			  <i>If you don't like what you see you can reset and start from scratch</i>
+			  </h4>
+            </div>			
             <div class="optionBlock topOptionBlock">
               <h2>2. Series Options</h2>
               <div id="seriesItems"></div>
@@ -137,8 +148,7 @@
                 <p>Create Image of Chart</p>
               </div>
               <div id="downloadLinksDiv" class="downloadLinks hide">
-                <a download="new_chart.png" id="downloadImageLink" class="downloadLink" href="#" target="_blank">Download&nbsp;Image&nbsp;of&nbsp;Chart</a> or 
-                <a download="new_chart.svg" id="downloadSVGLink" class="downloadLink" href="#" target="_blank">Download&nbsp;SVG&nbsp;of&nbsp;Chart</a>
+                <a download="new_chart.png" id="downloadImageLink" class="downloadLink" href="#" target="_blank">Download&nbsp;Image&nbsp;of&nbsp;Chart</a>
               </div>
             </div>
             <div class="optionBlock full">
@@ -151,11 +161,7 @@
                 </div>
               </div>
 			</div>
-            <div class="optionBlock">
-              <button>
-			    <a href="http://tools.bilware.info/MPR-Chartbuilder">Reset Page</a>
-			  </button>
-            </div>			
+
             <div class="clearfix"></div>
 
   				

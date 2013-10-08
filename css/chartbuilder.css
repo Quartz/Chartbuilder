@@ -25,8 +25,9 @@ cite {
 }
 
 h1 {
-	font-size: 2em;
+	font-size: 3em;
 	line-height: 1.5em;
+	margin-left: 15px;
 }
 
 h2 {
@@ -37,10 +38,12 @@ h2 {
 
 h3 {
 	font-size: 1.25em;
+	margin-left: 15px;
 }
 
 h4 {
 	font-size: 1em;
+	margin-left: 15px;
 }
 
 table {
