@@ -29,7 +29,6 @@
 		<h1><img src="http://minnesota.publicradio.org/standard/images/mpr006/news/header/mprNewsLogo.gif" alt="MPR News Logo">
 		Chartbuilder</h1>
 		<h4><i>A customized version of <a href="https://github.com/Quartz/Chartbuilder">Quartz Chartbuilder</a></i></h4>
-		<h4><i>*requires Chrome browser</i></h4>
 		</div>
 		<hr>
 		<div id="interactiveContent">
@@ -42,14 +41,16 @@
   					<canvas id="favicanvas" width="16px" height="16px"></canvas> 
   				</div>
 			  </div>
-      </div>
+            </div>
 
 			<div id="rightColumn" class="column">
 			  <div class="cbInner">
   				<div id="chartOptions" class="interfaceCol">
              <div id="datainput">
              	<div class="inputGroup">
+				
                 <h2>1. Input your data</h2>
+				
                 <span id="invalidDataSpan" class="hide">Warning: Data is Invalid</span>
                 <textarea id="csvInput" class="input-box" name="csvInput" rows="8"></textarea>
              	</div>
@@ -65,6 +66,7 @@
              	<div class="clearfix"></div>
             </div>
             <div>
+			<h4>Chartbuilder requires a Chrome browser. Data should be prepped in a spreadsheet before pasting into the input box.</h4>
 			  <h4>
               <button>
 			    <a href="http://tools.bilware.info/MPR-Chartbuilder">Reset Page</a>
@@ -168,9 +170,10 @@
           <div id="currentSeries" class="interfaceCol"></div>
   			</div>			
 			</div>
-      <div id="blankColumn" class="column"></div>
-      <div class="clearfix"></div>
-		</div>
+            <div id="blankColumn" class="column"></div>
+            <div class="clearfix"></div>
+		    </div>
+	    </div>
 
     <!-- Libraries JS -->
 		<script src="bower_components/modernizr/modernizr.js" charset="utf-8"></script>
