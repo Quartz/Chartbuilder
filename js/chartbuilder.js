@@ -763,7 +763,7 @@ ChartBuilder.start = function(config) {
   			
   			if(dataObj.datetime) {
   				chart.xAxis.type = "date";
-  				chart.xAxis.formatter = chart.xAxis.formatter?chart.xAxis.formatter:"Mdd";
+  				chart.xAxis.formatter = chart.xAxis.formatter?chart.xAxis.formatter:"yyyy";
   			}
   			else {
   				chart.xAxis.type = "ordinal";
