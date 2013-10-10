@@ -40,7 +40,7 @@ _steps 2-4 are optional_
 FAQ/Troubleshooting
 ------------------------
 #####Why does the chart in the preview pane exceed the pane's boundaries?
-You are probably using a Firefox browser, which currently doesn't play nicely with Chartbuilder. Use Chrome.
+You are probably using a Firefox browser, which currently doesn't play nicely with Chartbuilder. Though Firefox will output a usable image, you can't see what you're building. Use Chrome.
 
 #####When I paste my data it shows up in the Input box in a single line with no spaces.
 A symptom of Internet Explorer. Charts still seem to render properly, but it's practically impossible to edit the data, so the Chrome browser is preferred.
