@@ -40,7 +40,7 @@ _steps 2-4 are optional_
 FAQ/Troubleshooting
 ------------------------
 #####Why does the chart in the preview pane exceed the pane's boundaries?
-You are probably using a Firefox browser, which currently doesn't play nicely with Chartbuilder. Though Firefox will output a usable image, you can't see what you're building. Use Chrome.
+You are probably using Firefox or another browser that currently doesn't play nicely with Chartbuilder. Though Firefox will output a usable image, you can't see what you're building. Use Chrome.
 
 #####When I paste my data it shows up in the Input box in a single line with no spaces.
 A symptom of Internet Explorer. Charts still seem to render properly, but it's practically impossible to edit the data, so the Chrome browser is preferred.
@@ -54,7 +54,13 @@ Chartbuilder requires clean data to work properly.
 #####My chart looks fine in the preview pane, but the exported image is missing details like the title, legend, source credit, etc.
 Hidden characters can prevent Chartbuilder from merging the layers that make up your chart on export. Check the HTML table (Step 5) for things like '&nbsp' (a hidden space character).
 
-###Examples of charts made with Chartbuilder
+#####Chartbuilder's cramming all the years on the bottom axis so they're unreadable.
+Make sure the label on the column with your years is 'Date', not 'Year' or anything else. Chartbuilder will recognize this as a date and space out the years listed on the axis.
+
+#####I made a change that pushed the title, legend or other info off the chart. What can I do to fix it?
+You probably can't create the layout you want. You may be able to backtrack through your changes to get the preview back to something usable. Sometimes it's easier to refresh the page and start from scratch.
+Examples of charts made with Chartbuilder
+------------------------
 ####Line charts
 <img src="http://quartz.github.io/Chartbuilder/images/line1.jpeg" />
 <img src="http://quartz.github.io/Chartbuilder/images/line2.jpeg" />
