@@ -43,7 +43,7 @@ FAQ/Troubleshooting
 You are probably using a Firefox browser, which currently doesn't play nicely with Chartbuilder. Use Chrome.
 
 #####When I paste my data it shows up in the Input box in a single line with no spaces.
-A symptom of Internet Explorer. Charts still seem to render properly, but the Chrome browser is preferred.
+A symptom of Internet Explorer. Charts still seem to render properly, but it's practically impossible to edit the data, so the Chrome browser is preferred.
 
 #####Why do I get a "Warning: Data is Invalid" error when I paste my table?
 Chartbuilder requires clean data to work properly.
