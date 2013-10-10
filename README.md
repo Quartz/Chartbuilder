@@ -45,7 +45,7 @@ Chartbuilder requires clean data to work properly.
 + If the data looks clean, it may still contain hidden characters. Check the HTML table (Step 5) for things like '&nbsp' (a hidden space character).
 + Sometimes a second set of data pasted over your first will create a single line of information rather than a table. Reset the page and start over.
 
-####My chart looks fine in the preview pane, but the exported image is missing details like the title, legend, source credit, etc.
+#####My chart looks fine in the preview pane, but the exported image is missing details like the title, legend, source credit, etc.
 Hidden characters can prevent Chartbuilder from merging the layers that make up your chart on export. Check the HTML table (Step 5) for things like '&nbsp' (a hidden space character).
 
 ###Examples of charts made with Chartbuilder
