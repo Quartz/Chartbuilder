@@ -39,6 +39,12 @@ _steps 2-4 are optional_
 
 FAQ/Troubleshooting
 ------------------------
+#####Why does the chart in the preview pane exceed the pane's boundaries?
+You are probably using a Firefox browser, which currently doesn't play nicely with Chartbuilder. Use Chrome.
+
+#####When I paste my data it shows up in the Input box in a single line with no spaces.
+A symptom of Internet Explorer. Charts still seem to render properly, but the Chrome browser is preferred.
+
 #####Why do I get a "Warning: Data is Invalid" error when I paste my table?
 Chartbuilder requires clean data to work properly.
 + Do not include '%' or '$' symbols in your tables
