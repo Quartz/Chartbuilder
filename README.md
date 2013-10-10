@@ -12,7 +12,7 @@ What Chartbuilder is not
 
 What Chartbuilder is
 --------------------
-Chartbuilder is the final step in charting. Paste data into it and export an svg or png chart in a style that has been predefined.
+Chartbuilder is the final step in charting. Paste data into it and export a png chart in a style that has been predefined.
 
 How to use Chartbuilder
 ------------------------
@@ -39,7 +39,11 @@ _steps 2-4 are optional_
 
 FAQ
 ------------------------
-Coming soon
+####Why do I get a "Warning: Data is Invalid" error when I enter my data?
+Chartbuilder requires clean data to work properly.
++Do not include '%' or '$' symbols in your tables
++If the data looks clean, it may still contain hidden characters. Check the HTML table (Step 5) for things like '&nbsp'.
++Sometimes a second set of data pasted over your first will create a single line of information rather than a table. Reset the page and start over.
 
 ###Examples of charts made with Chartbuilder
 ####Line charts
