@@ -1,4 +1,4 @@
-MPR-Chartbuilder / Gneisschart
+MPR-Chartbuilder
 ==========================
 
 MPR-Chartbuilder is a customized fork of a charting tool hosted at https://github.com/Quartz/Chartbuilder. Changes include color palettes and fonts consistent with Minnesota Public Radio online style conventions.
@@ -39,7 +39,7 @@ _steps 2-4 are optional_
 
 FAQ/Troubleshooting
 ------------------------
-####Why do I get a "Warning: Data is Invalid" error when I paste my table?
+#####Why do I get a "Warning: Data is Invalid" error when I paste my table?
 Chartbuilder requires clean data to work properly.
 + Do not include '%' or '$' symbols in your tables
 + If the data looks clean, it may still contain hidden characters. Check the HTML table (Step 5) for things like '&nbsp' (a hidden space character).
