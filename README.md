@@ -37,7 +37,7 @@ _steps 2-4 are optional_
 6. Click create chart
 7. Select to download an svg or png
 
-FAQ
+FAQ/Troubleshooting
 ------------------------
 ####Why do I get a "Warning: Data is Invalid" error when I paste my table?
 Chartbuilder requires clean data to work properly.
