@@ -66,6 +66,7 @@ Examples of charts made with Chartbuilder
 
 #####I clicked the "Create Image of Chart" button but don't get the download link.
 Right now, you only seem to get one shot at downloading the image. After you download it once, the download link won't show again until you reset the page. That appears to be a quirk in the original code, which I'm trying to fix.
+
 ------------------------
 ####Line charts
 <img src="http://quartz.github.io/Chartbuilder/images/line1.jpeg" />
