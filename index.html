@@ -30,9 +30,9 @@
 								width: 605px;
 								margin-left: 10px;
 								border: 1px solid">
-		<h1  style="height: 20px; margin-top: 10px"><img src="img/mprNewsLogo.gif" alt="MPR News Logo">
-		Chartbuilder</h1>
+		    <h1  style="height: 20px; margin-top: 10px"><img src="img/mprNewsLogo.gif" alt="MPR News Logo"> Chartbuilder</h1>
 		<h4><i>A customized version of <a href="https://github.com/Quartz/Chartbuilder">Quartz Chartbuilder</a></i></h4>
+		
 		</div>
 		<div id="interactiveContent">
 			<div id="leftColumn" class="column">
@@ -44,6 +44,15 @@
   					<canvas id="favicanvas" width="16px" height="16px"></canvas> 
   				</div>
 			  </div>
+			<div id="exportButton" class="optionBlock full" style="margin-left: 130px; position: fixed; top: 480px;">
+              <div class="updateButton" id="createImageButton">
+                <p>Create Image of Chart</p>
+              </div>
+              <div id="downloadLinksDiv" class="downloadLinks hide">
+                <a download="new_chart.png" id="downloadImageLink" class="downloadLink" href="#" target="_blank">Download&nbsp;Image&nbsp;of&nbsp;Chart</a>
+              </div>
+            </div>
+
             </div>
 
 			<div id="rightColumn" class="column">
@@ -146,20 +155,11 @@
     							<option value="M">Feb.</option>
     							<option value="hmm">3:27</option>
     						</select>
-							</div>
 							<cite>First series column must be labeled "Date" to enable date options</cite>
+							</div>
             </div>
             <div class="optionBlock full">
-              <h2>4. Export</h2>
-              <div class="updateButton" id="createImageButton">
-                <p>Create Image of Chart</p>
-              </div>
-              <div id="downloadLinksDiv" class="downloadLinks hide">
-                <a download="new_chart.png" id="downloadImageLink" class="downloadLink" href="#" target="_blank">Download&nbsp;Image&nbsp;of&nbsp;Chart</a>
-              </div>
-            </div>
-            <div class="optionBlock full">
-              <h3>5. Copy the HTML table of your data (if you want)</h3>
+              <h3>6. Copy the HTML table of your data (if you want)</h3>
               <textarea  class="input-box"  id="table-html" type="text" rows="10"></textarea>
               
               <div class="previousCharts">
