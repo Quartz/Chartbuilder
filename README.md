@@ -65,7 +65,7 @@ You probably can't create the layout you want. You may be able to backtrack thro
 Examples of charts made with Chartbuilder
 
 #####I made changes to my chart that didn't show up in the downloaded image.
-That can happen if you make a change after clicking the "Create Image of Chart" button but before clicking the "Download Image of Chart" link. You need to click the "Create..." button again to save your changes. (You may have to do it twice to make the "Download..." button appear again.) 
+That can happen if you make a change after clicking the "Save Image of Chart" button but before clicking the "Download Image of Chart" link. You need to click the "Save..." button again to save your changes. (You may have to do it twice to make the "Download..." button appear again.) 
 
 Examples of charts made with Chartbuilder
 ------------------------
