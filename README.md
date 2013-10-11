@@ -64,8 +64,8 @@ The date format can be changed via the dropdown box in Option 5.
 You probably can't create the layout you want. You may be able to backtrack through your changes to get the preview back to something usable. Sometimes it's easier to refresh the page and start from scratch.
 Examples of charts made with Chartbuilder
 
-#####I clicked the "Create Image of Chart" button but don't get the download link.
-Right now, you only seem to get one shot at downloading the image. After you download it once, the download link won't show again until you reset the page. That appears to be a quirk in the original code, which I'm trying to fix.
+#####I made changes to my chart that didn't show up in the downloaded image.
+That can happen if you make a change after clicking the "Create Image of Chart" button but before clicking the "Download Image of Chart" link. You need to click the "Create..." button again to save your changes. (You may have to do it twice to make the "Download..." button appear again.) 
 
 Examples of charts made with Chartbuilder
 ------------------------
