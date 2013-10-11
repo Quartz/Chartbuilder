@@ -63,6 +63,9 @@ The date format can be changed via the dropdown box in Option 5.
 #####I made a change that pushed the title, legend or other info off the chart. What can I do to fix it?
 You probably can't create the layout you want. You may be able to backtrack through your changes to get the preview back to something usable. Sometimes it's easier to refresh the page and start from scratch.
 Examples of charts made with Chartbuilder
+
+#####I clicked the "Create Image of Chart" button but don't get the download link.
+Right now, you only seem to get one shot at downloading the image. After you download it once, the download link won't show again until you reset the page. That appears to be a quirk in the original code, which I'm trying to fix.
 ------------------------
 ####Line charts
 <img src="http://quartz.github.io/Chartbuilder/images/line1.jpeg" />
