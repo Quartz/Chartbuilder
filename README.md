@@ -33,9 +33,9 @@ _steps 2-4 are optional_
 2. Set a title
 3. Set your units using the axis prefix and suffix field
 4. Adjust your max and min (if you so choose)
-4. Add a credit line and/or a source line
+5. Add a credit line and/or a source line
 6. Click create chart
-7. Select to download an svg or png
+7. Download png file
 
 FAQ/Troubleshooting
 ------------------------
@@ -48,17 +48,17 @@ A symptom of Internet Explorer. Charts still seem to render properly, but it's p
 #####Why do I get a "Warning: Data is Invalid" error when I paste my table?
 Chartbuilder requires clean data to work properly.
 + Do not include '%' or '$' symbols in your tables
-+ If the data looks clean, it may still contain hidden characters. Check the HTML table (Step 5) for things like '&nbsp' (a hidden space character).
++ If the data looks clean, it may still contain hidden characters. Check the HTML table (Option 6) for things like '&nbsp' (a hidden space character).
 + Sometimes a second set of data pasted over your first will create a single line of information rather than a table. Reset the page and start over.
 
 #####My chart looks fine in the preview pane, but the exported image is missing details like the title, legend, source credit, etc.
-Hidden characters can prevent Chartbuilder from merging the layers that make up your chart on export. Check the HTML table (Step 5) for things like '&nbsp' (a hidden space character).
+Hidden characters can prevent Chartbuilder from merging the layers that make up your chart on export. Check the HTML table (Option 6) for things like '&nbsp' (a hidden space character).
 
 #####Chartbuilder's cramming all the years on the bottom axis so they're unreadable.
 Make sure the label on the column with your years is 'Date', not 'Year' or anything else. Chartbuilder will recognize this as a date and space out the years listed on the axis.
 
 #####The bottom axis shows a series of 'Jan. 1' instead of the years.
-The date format can be changed via the dropdown box on Step 5.
+The date format can be changed via the dropdown box in Option 5.
 
 #####I made a change that pushed the title, legend or other info off the chart. What can I do to fix it?
 You probably can't create the layout you want. You may be able to backtrack through your changes to get the preview back to something usable. Sometimes it's easier to refresh the page and start from scratch.
