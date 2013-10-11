@@ -713,7 +713,7 @@ ChartBuilder.start = function(config) {
 			ChartBuilder.inlineAllStyles();
 
 		  if($("#downloadLinksDiv").hasClass("hide")) {
-				ChartBuilder.createChartImage();
+				ChartBuilder.createChartImage(); 
 			}
 			$("#downloadLinksDiv").toggleClass("hide");
   	})
@@ -870,9 +870,10 @@ ChartBuilder.start = function(config) {
   		
   		chart.titleLine.text(chart.title);
   	});
-  	
+	
   	$(".downloadLink").click(function() {
-  		$(".downloadLink").toggleClass("hide")
+  		$("#downloadLinksDiv").toggleClass("hide")
   	})
+	
   })
 };
