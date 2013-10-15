@@ -56,6 +56,18 @@ table {
 /**
  * Layout
  */
+ 
+#header {
+    position: fixed;
+	background-color: rgb(197, 221, 228);
+	width: 600px;
+	border: 1px solid
+}
+#logo {
+     height: 20px;
+     margin-top: 10px;
+}
+
 .cbInner {
   margin: 0 1em;
 }
@@ -321,6 +333,8 @@ textarea {
 	margin-left: 5%;
 	margin-top: .25em;
 }
+
+	
  
 /**
  * Export/update buttons
@@ -351,7 +365,12 @@ textarea {
 a.downloadLink {
 	line-height: 2em;
 }
+#downloadButton {
+    background-color: rgb(198, 226, 159);
+}
 
+#cancelDownload {
+    background-color: rgb(219, 128, 130);
 
 /**
 * Custom Picker Styles
