@@ -27,6 +27,10 @@ Gneiss.defaultGneissChartConfig = {
 	bargridLabelMargin: 4, //the horizontal space between a bargrid bar and it's label
 	xAxisMargin: 8, //the vertical space between the plot area and the x axis
 	footerMargin: 4, //the vertical space between the bottom of the bounding box and the meta information
+	legendLabelSpacingX: 5, //the horizontal space between legend items
+	legendLabelSpacingY: 3, //the vertical space between legend items 
+	columnGap: 1, //the horizontal space between two columns that have the same x-axis value
+	maxColumnWidth: 7.5, // the maximum width of a column as a percent of the available chart width
 	primaryAxisPosition: "right",
 	legend: true, // whether or not there should be a legend
 	title: "", // the chart title 
@@ -68,7 +72,7 @@ Gneiss.defaultGneissChartConfig = {
 			name: "apples",
 			data: [5.5,10.2,6.1,3.8],
 			source: "Some Org",
-			type: "line",
+			type: "column",
 			axis: 0,
 			color: null
 		},
@@ -76,7 +80,7 @@ Gneiss.defaultGneissChartConfig = {
 			name: "oranges",
 			data: [23,10,13,7],
 			source: "Some Org",
-			type: "line",
+			type: "column",
 			axis: 0,
 			color: null
 		}
@@ -99,8 +103,8 @@ Gneiss.dateParsers = {
     var month = d.getMonth() + 1;
     if(month == 5) {
       return d.format('{Mon}') + " " + d.getDate();
-    } 
-    else { 
+    }
+    else {
       return d.format('{Mon}.') + " " + d.getDate();
     }
   },
@@ -232,6 +236,10 @@ function Gneiss(config)
 	var xAxisMargin;
 	var footerMargin;
 	var primaryAxisPosition;
+	var legendLabelSpacingX;
+	var legendLabelSpacingY;
+	var columnGap;
+	var maxColumnWidth;
 	
 	
 	var columnWidth;
@@ -449,6 +457,33 @@ function Gneiss(config)
 			primaryAxisPosition = n
 	}
 
+	this.legendLabelSpacingX = function Gneiss$legendLabelSpacingX(n) {
+		if (!arguments.length) {
+			return legendLabelSpacingX;
+		}
+			legendLabelSpacingX = n;
+	};
+
+	this.legendLabelSpacingY = function Gneiss$legendLabelSpacingY(n) {
+		if (!arguments.length) {
+			return legendLabelSpacingY;
+		}
+			legendLabelSpacingY = n;
+	};
+
+	this.columnGap = function Gneiss$columnGap(n) {
+		if (!arguments.length) {
+			return columnGap;
+		}
+			columnGap = n;
+	};
+
+	this.maxColumnWidth = function Gneiss$maxColumnWidth(n) {
+		if (!arguments.length) {
+			return maxColumnWidth;
+		}
+			maxColumnWidth = n;
+	};
 	
 	this.build = function Gneiss$build(config) {
 		/*
@@ -485,6 +520,10 @@ function Gneiss(config)
 		g.xAxisMargin(config.xAxisMargin * 1);
 		g.footerMargin(config.footerMargin * 1);
 		g.primaryAxisPosition(config.primaryAxisPosition.slice());
+		g.legendLabelSpacingX(config.legendLabelSpacingX *1);
+		g.legendLabelSpacingY(config.legendLabelSpacingY * 1);
+		g.columnGap(config.columnGap * 1);
+		g.maxColumnWidth(config.maxColumnWidth * 1);
 		
 
 
@@ -1205,15 +1244,16 @@ function Gneiss(config)
 		// Determine the proper column width
 		var effectiveChartWidth = g.width() - g.padding().right - g.padding().left;
 		var columnWidth = Math.floor((effectiveChartWidth / numDataPoints) / numColumnSeries);
-		columnWidth -= 3; //CHANGE - MAGIC NUMBER // Make columns slightly smaller for legibility 
 		
-		// TODO: Both these checks *should* be unnecessary and thus safe to remove
+		// Make sure the columns are at least a pixel wide
 		columnWidth = Math.max(columnWidth, 1);
-		columnWidth = Math.min(columnWidth, effectiveChartWidth * 0.075)
+
+		// Make sure bars are not larger than the specified portion of the available width
+		columnWidth = Math.min(columnWidth, effectiveChartWidth * g.maxColumnWidth()/100);
 		
 		g.columnWidth(columnWidth);
-		g.columnGroupWidth((columnWidth + 1) * numColumnSeries); //CHANGE - MAGIC NUMBER
-		g.columnGroupShift(columnWidth + 1); //CHANGE - MAGIC NUMBER
+		g.columnGroupWidth((columnWidth + g.columnGap()) * numColumnSeries);
+		g.columnGroupShift(columnWidth + g.columnGap()); 
 		
 		return this;
 	};
@@ -1656,16 +1696,16 @@ function Gneiss(config)
 						var prevCoords = Gneiss.helper.transformCoordOf(prev);
 
 						var cur = d3.select(this);
-						var curWidth = parseFloat(cur.node().getBoundingClientRect().width);
+						var curBoundingRect = cur.node().getBoundingClientRect();
+						var curWidth = parseFloat(curBoundingRect.width);
 						var curCoords = Gneiss.helper.transformCoordOf(cur);
-						
-						
+						var curHeight = parseFloat(curBoundingRect.height)
 
 						legendItemY = prevCoords.y;
-						var x = prevCoords.x + prevWidth + 5;  //CHANGE - MAGIC NUMBER
+						var x = prevCoords.x + prevWidth + g.legendLabelSpacingX(); 
 						if(x + curWidth >  g.width()) {
 							x = g.padding().left;
-							legendItemY += 15; //CHANGE - MAGIC NUMBER				
+							legendItemY += curHeight + g.legendLabelSpacingY();				
 						}
 						return "translate("+x+","+legendItemY+")";
 				})
