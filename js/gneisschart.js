@@ -26,7 +26,7 @@ Gneiss.defaultGneissChartConfig = {
 	lineDotsThreshold: 15, //line charts will have dots on points until a series has this number of points
 	bargridLabelMargin: 4, //the horizontal space between a bargrid bar and it's label
 	xAxisMargin: 8, //the vertical space between the plot area and the x axis
-	metaInfoMargin: 4, //the vertical space between the bottom of the bounding box and the meta information
+	footerMargin: 4, //the vertical space between the bottom of the bounding box and the meta information
 	primaryAxisPosition: "right",
 	legend: true, // whether or not there should be a legend
 	title: "", // the chart title 
@@ -226,6 +226,13 @@ function Gneiss(config)
 	var yAxis;
 	var series;
 	var xAxisRef;
+
+	var lineDotsThreshold;
+	var bargridLabelMargin;
+	var xAxisMargin;
+	var footerMargin;
+	var primaryAxisPosition;
+	
 	
 	var columnWidth;
 	var columnGroupWidth;
@@ -405,6 +412,43 @@ function Gneiss(config)
 		}
 		columnGroupShift = w;
 	};
+
+
+	this.lineDotsThreshold = function Gneiss$lineDotsThreshold(n) {
+		if (!arguments.length) {
+			return lineDotsThreshold
+		}
+			lineDotsThreshold = n
+	}
+
+	this.bargridLabelMargin = function Gneiss$bargridLabelMargin(n) {
+		if (!arguments.length) {
+			return bargridLabelMargin
+		}
+			bargridLabelMargin = n
+	}
+
+	this.xAxisMargin = function Gneiss$xAxisMargin(n) {
+		if (!arguments.length) {
+			return xAxisMargin
+		}
+			xAxisMargin = n
+	}
+
+	this.footerMargin = function Gneiss$footerMargin(n) {
+		if (!arguments.length) {
+			return footerMargin
+		}
+		footerMargin = n
+	}
+
+	this.primaryAxisPosition = function Gneiss$primaryAxisPosition(n) {
+		if (!arguments.length) {
+			return primaryAxisPosition
+		}
+			primaryAxisPosition = n
+	}
+
 	
 	this.build = function Gneiss$build(config) {
 		/*
@@ -436,7 +480,14 @@ function Gneiss(config)
 		g.series($.extend(true, [], config.series));
 		g.defaultPadding($.extend(true, {}, config.padding));
 		g.padding($.extend(true, {}, config.padding));
+		g.lineDotsThreshold(config.lineDotsThreshold *1);
+		g.bargridLabelMargin(config.bargridLabelMargin *1);
+		g.xAxisMargin(config.xAxisMargin * 1);
+		g.footerMargin(config.footerMargin * 1);
+		g.primaryAxisPosition(config.primaryAxisPosition.slice());
 		
+
+
 		//append svg to container using svg
 		g.chartElement(d3.select(g.containerId()).append("svg")
 			.attr("id","chart")
@@ -475,11 +526,10 @@ function Gneiss(config)
 			.setXAxis(true);
 				
 		this.drawSeriesAndLegend(true);
-		
-		g.metaInfo = g.chart.append("g")
-			.attr("id","metaInfo")
-			.attr("transform","translate(0," + (g.height() - g.metaInfoMargin) + ")");
-		
+		g.footerElement(g.chartElement().append("g")
+			.attr("id", "metaInfo")
+			.attr("transform", "translate(0," + (g.height() - g.footerMargin()) + ")"));
+
 		g.sourceElement(g.footerElement().append("text")
 			.attr("text-anchor", "end")
 			.attr("x", g.width() - g.padding().right)
@@ -511,7 +561,7 @@ function Gneiss(config)
 			.attr("width", g.width())
 			.attr("height", g.height());
       
-		g.metaInfo.attr("transform","translate(0," + (g.height() - g.metaInfoMargin) + ")");
+		g.metaInfo.attr("transform","translate(0," + (g.height() - g.footerMargin()) + ")");
 		
 		return this;
 	};
@@ -601,14 +651,14 @@ function Gneiss(config)
 		
 		//Add the height of the title line to the padding, if the title line has a height
 		title_bottom_margin = 5;
-		title_height = g.titleLine[0][0].getBoundingClientRect().height;
+		title_height = g.titleElement()[0][0].getBoundingClientRect().height;
 		padding_top += title_height > 0? title_height + title_bottom_margin : 0
 		
 		//if there is more than one axis or the default axis is on the left and it isn't a bar grid 
 		//add enough space for the top axis label
 		
 		axis_label_height = d3.selectAll(".yAxis text")[0][0].getBoundingClientRect().height;
-		padding_top += (g.yAxis.length == 1 && !g.isBargrid() || g.primaryAxisPosition == "left") ? 0 : axis_label_height + title_bottom_margin;
+		padding_top += (g.yAxis.length == 1 && !g.isBargrid() || g.primaryAxisPosition() == "left") ? 0 : axis_label_height + title_bottom_margin;
 		
 		g.padding().top = padding_top;
 		g.padding().bottom = padding_bottom;
@@ -875,7 +925,8 @@ function Gneiss(config)
 						g.titleElement().attr("y",g.topAxisItem.y - 4) //CHANGE - MAGIC NUMBER
 					}
 					else {
-						g.titleElement().attr("y",g.topAxisItem.y - 25) //CHANGE - MAGIC NUMBER					}
+						g.titleElement().attr("y",g.topAxisItem.y - 25) //CHANGE - MAGIC NUMBER					
+					}
 				}catch(e){} //fail silently
 					
 			}
@@ -1003,7 +1054,7 @@ function Gneiss(config)
 			g.chartElement().append("g")
 				.attr("class",'axis')
 				.attr("id","xAxis")
-				.attr("transform",g.isBargrid() ? "translate(" + g.padding().left + ",0)" : "translate(0," + (g.height() - g.padding().bottom + g.xAxisMargin) + ")")
+				.attr("transform",g.isBargrid() ? "translate(" + g.padding().left + ",0)" : "translate(0," + (g.height() - g.padding().bottom + g.xAxisMargin()) + ")")
 				.call(g.xAxis().axis);			
 		}
 		else {
@@ -1078,7 +1129,7 @@ function Gneiss(config)
 			}
 			
 			g.chartElement().selectAll("#xAxis")
-				.attr("transform",g.isBargrid() ? "translate(" + g.padding().left + ",0)" : "translate(0," + (g.height() - g.padding().bottom + g.xAxisMargin) + ")")
+				.attr("transform",g.isBargrid() ? "translate(" + g.padding().left + ",0)" : "translate(0," + (g.height() - g.padding().bottom + g.xAxisMargin()) + ")")
 				.call(g.xAxis().axis)
 		}
 		
@@ -1245,7 +1296,7 @@ function Gneiss(config)
 					.attr("fill", function(d,i){return d.color? d.color : colors[i]})
 				
 				lineSeriesDotGroups
-					.filter(function(d){return d.data.length < g.lineDotsThreshold})
+					.filter(function(d){return d.data.length < g.lineDotsThreshold()})
 					.selectAll("circle")
 					.data(function(d){ return d.data})
 					.enter()
@@ -1362,7 +1413,7 @@ function Gneiss(config)
 					.text(function(d,i){var yAxisIndex = d3.select(this.parentNode).data()[0].axis; return (i==0?g.yAxis[yAxisIndex].prefix.value:"") + g.numberFormat(d) + (i==0?g.yAxis[yAxisIndex].suffix.value:"")})
 					.attr("x", function(d,i) {
 						var yAxisIndex = d3.select(this.parentNode).data()[0].axis,
-						x = g.bargridLabelMargin + g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)):0) + Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)),
+						x = g.bargridLabelMargin() + g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)):0) + Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)),
 						
 						bbox = this.getBBox()
 						parentCoords = Gneiss.helper.transformCoordOf(d3.select(this.parentNode))
@@ -1464,11 +1515,11 @@ function Gneiss(config)
 				
 				lineSeriesDotGroups.exit().remove()
 			
-				lineSeriesDots = lineSeriesDotGroups.filter(function(d){return d.data.length < g.lineDotsThreshold})
+				lineSeriesDots = lineSeriesDotGroups.filter(function(d){return d.data.length < g.lineDotsThreshold()})
 					.selectAll("circle")
 					.data(function(d,i){return d.data})
 					
-				lineSeriesDotGroups.filter(function(d){return d.data.length >= g.lineDotsThreshold})
+				lineSeriesDotGroups.filter(function(d){return d.data.length >= g.lineDotsThreshold()})
 					.remove()
 				
 				
@@ -1569,10 +1620,10 @@ function Gneiss(config)
 				.attr("class","legendItem")
 				.attr("transform",function(d,i) {
 					if(g.yAxis().length == 1) {
-						return "translate("+g.padding().left+","+(g.padding().top-25)+")"
+						return "translate("+g.padding().left+","+(g.padding().top-25)+")" //CHANGE - Magic Number
 					}
 					else {
-						return "translate("+g.padding().left+","+(g.padding().top-50)+")"
+						return "translate("+g.padding().left+","+(g.padding().top-50)+")" //CHANGE - Magic Number
 					}
 				});
 
@@ -1629,7 +1680,7 @@ function Gneiss(config)
   
   this.updateMetaAndTitle = function Gneiss$updateMetaAndTitle() {
 		var g = this;
-		g.metaInfo.attr("transform","translate(0," + (g.height() - g.metaInfoMargin) + ")");
+		g.footerElement().attr("transform","translate(0," + (g.height() - g.footerMargin()) + ")");
 		return this;
 	};
   
