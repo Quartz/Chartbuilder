@@ -1417,7 +1417,6 @@ function Gneiss(config)
 						
 						bbox = this.getBBox()
 						parentCoords = Gneiss.helper.transformCoordOf(d3.select(this.parentNode))
-						console.log()
 						if (x + bbox.width + parentCoords.x > g.width()) {
 							//the label will fall off the edge and thus the chart needs more padding
 							if(bbox.width + g.defaultPadding().right < (g.width()-g.padding.left)/g.series.length) {
@@ -1646,7 +1645,7 @@ function Gneiss(config)
 					.attr("y",8)
 					.attr("fill", function(d,i){return d.color? d.color : colors[i]})
 
-				legendGroups.filter(function(d){return d != g.series[0]})
+				legendGroups.filter(function(d){return d != g.series()[0]})
 					.attr("transform",function(d,i) {
 						//label isn't for the first series
 						var prev = d3.select(legendGroups[0][i]);
@@ -1657,7 +1656,6 @@ function Gneiss(config)
 						var curWidth = parseFloat(cur.node().getBoundingClientRect().width);
 						var curCoords = Gneiss.helper.transformCoordOf(cur);
 						
-						console.log(prevWidth,curWidth)
 						
 
 						legendItemY = prevCoords.y;
