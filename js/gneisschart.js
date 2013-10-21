@@ -561,7 +561,7 @@ function Gneiss(config)
 			.attr("width", g.width())
 			.attr("height", g.height());
       
-		g.metaInfo.attr("transform","translate(0," + (g.height() - g.footerMargin()) + ")");
+		g.footerElement().attr("transform","translate(0," + (g.height() - g.footerMargin()) + ")");
 		
 		return this;
 	};
@@ -1402,18 +1402,18 @@ function Gneiss(config)
 					.append("text")
 					.attr("class","barLabel")
 					.text(function(d,i){return g.numberFormat(d)})
-					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
-					.attr("y",function(d,i) {return g.xAxis.scale(i) + 5})  //CHANGE - MAGIC NUMBER
+					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return Math.abs(g.yAxis()[yAxisIndex].scale(d) - g.yAxis()[yAxisIndex].scale(0))})
+					.attr("y",function(d,i) {return g.xAxis().scale(i) + 5})  //CHANGE - MAGIC NUMBER
 				
 				//reset the padding to the default before mucking with it in the label postitioning
 				
 				g.padding.right = g.defaultPadding().right
 					
 				barLabels.transition()
-					.text(function(d,i){var yAxisIndex = d3.select(this.parentNode).data()[0].axis; return (i==0?g.yAxis[yAxisIndex].prefix.value:"") + g.numberFormat(d) + (i==0?g.yAxis[yAxisIndex].suffix.value:"")})
+					.text(function(d,i){var yAxisIndex = d3.select(this.parentNode).data()[0].axis; return (i==0?g.yAxis()[yAxisIndex].prefix.value:"") + g.numberFormat(d) + (i==0?g.yAxis()[yAxisIndex].suffix.value:"")})
 					.attr("x", function(d,i) {
 						var yAxisIndex = d3.select(this.parentNode).data()[0].axis,
-						x = g.bargridLabelMargin() + g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)):0) + Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)),
+						x = g.bargridLabelMargin() + g.yAxis()[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis()[yAxisIndex].scale(d) - g.yAxis()[yAxisIndex].scale(0)):0) + Math.abs(g.yAxis()[yAxisIndex].scale(d) - g.yAxis()[yAxisIndex].scale(0)),
 						
 						bbox = this.getBBox()
 						parentCoords = Gneiss.helper.transformCoordOf(d3.select(this.parentNode))
@@ -1430,7 +1430,7 @@ function Gneiss(config)
 						
 						return x
 					})
-					.attr("y",function(d,i) {return g.xAxis.scale(i) + 5})  //CHANGE - MAGIC NUMBER
+					.attr("y",function(d,i) {return g.xAxis().scale(i) + 5})  //CHANGE - MAGIC NUMBER
 				
 				//remove non bargrid stuff
 				scatterSeries.remove()
@@ -1446,8 +1446,11 @@ function Gneiss(config)
 					.data(sbt.column)
 					.attr("fill",function(d,i){return d.color? d.color : colors[i+sbt.line.length]})
 				
-				//remove bargrid labels
+				//remove bar labels
 				columnGroups.selectAll("text.barLabel").remove()
+
+				//remove bargrid labels
+				columnGroups.selectAll("text.bargridLabel").remove()
 				
 				columnGroups.enter()
 					.append("g") 
@@ -1579,8 +1582,8 @@ function Gneiss(config)
 		
 		//bring bars to front
 		if(sbt.column.length > 0) {
-			columnGroups.each(function(){this.parentNode.appendChild(this);})
-			columnSeries.each(function(){this.parentNode.appendChild(this);})
+			columnGroups.each(function(){if(this.parentNode){this.parentNode.appendChild(this);}})
+			columnSeries.each(function(){if(this.parentNode){this.parentNode.appendChild(this);}})
 		}
 		
 		
