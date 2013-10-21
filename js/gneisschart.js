@@ -966,7 +966,7 @@ function Gneiss(config)
 				axisItem.text = d3.select(this).select("text")
 					.attr("text-anchor",i==0?"end":"start")
 					.attr("fill",i==0?"#666666":g.yAxis()[i].color)
-					.attr("x",function(){var elemx = Number(d3.select(this).attr("x")); return i==0?elemx:elemx+4})
+					.attr("x",function(){var elemx = Number(d3.select(this).attr("x")); return i==0?elemx-3:elemx+3}) //CHANGE - MAGIC NUMBER (maybe?)
 					.attr("y",-9)
 				});
 	};
