@@ -36,7 +36,7 @@ Gneiss.defaultGneissChartConfig = {
 	title: "", // the chart title 
 	colors: ["#ff4cf4","#ffb3ff","#e69ce6","#cc87cc","#b373b3","#995f99","#804c80","#665266","#158eff","#99cdff","#9cc2e6","#87abcc","#7394b3","#5f7d99","#466780","#525c66"], 
 	padding :{
-		top: 25,
+		top: 5,
 		bottom: 50,
 		left: 10,
 		right: 10
@@ -682,22 +682,22 @@ function Gneiss(config)
 			padding_top = g.defaultPadding().top,
 			padding_bottom = g.defaultPadding().bottom,
 			padding_left = g.defaultPadding().left,
-			padding_right = g.defaultPadding().right
-
-		// if(!g.legend) {
-		// 	padding_top = 5;
-		// }
+			padding_right = g.defaultPadding().right;
 		
 		//Add the height of the title line to the padding, if the title line has a height
-		title_bottom_margin = 5;
+		//Add the height of the axis label if there is no title
+		title_bottom_margin = 5; //CHANGE - MAGIC NUMBER
 		title_height = g.titleElement()[0][0].getBoundingClientRect().height;
-		padding_top += title_height > 0? title_height + title_bottom_margin : 0
-		
-		//if there is more than one axis or the default axis is on the left and it isn't a bar grid 
-		//add enough space for the top axis label
-		
 		axis_label_height = d3.selectAll(".yAxis text")[0][0].getBoundingClientRect().height;
-		padding_top += (g.yAxis.length == 1 && !g.isBargrid() || g.primaryAxisPosition() == "left") ? 0 : axis_label_height + title_bottom_margin;
+
+		padding_top += title_height > 0? title_height + title_bottom_margin : axis_label_height + title_bottom_margin;
+		
+		//if there is more than one axis or the default axis is on the left and it isn't a bar grid or there is a legend and more than one series and a title
+		//add enough space for the top axis label
+		padding_top += g.yAxis().length > 1 || g.primaryAxisPosition == "left" || (g.series().length > 1 && g.legend() && g.title().length != 0) ? axis_label_height + title_bottom_margin : 0 
+		
+		
+		//padding_top += axis_label_height + title_bottom_margin;
 		
 		g.padding().top = padding_top;
 		g.padding().bottom = padding_bottom;
@@ -705,7 +705,7 @@ function Gneiss(config)
 		d3.select("#plotArea")
 			.attr("transform","translate("+g.padding().left+","+g.padding().top+")")
 			.attr("width",g.width()-g.padding().left-g.padding().right)
-			.attr("height",g.height()-g.padding().top-g.padding().bottom)
+			.attr("height",g.height()-g.padding().top-g.padding().bottom);
 			
 		return this;
 	};
@@ -762,13 +762,13 @@ function Gneiss(config)
 		for (var i = g.yAxis().length - 1; i >= 0; i--){
 			if(first || !g.yAxis()[i].line) {
 						g.yAxis()[i].line = d3.svg.line();
-						g.yAxis()[i].line.y(function(d,j){return d||d===0?g.yAxis()[yAxisIndex].scale(d):null})
-						g.yAxis()[i].line.x(function(d,j){return d||d===0?g.xAxis().scale(g.xAxisRef()[0].data[j]):null})
+						g.yAxis()[i].line.y(function(d,j){return d||d===0?g.yAxis()[yAxisIndex].scale(d):null});
+						g.yAxis()[i].line.x(function(d,j){return d||d===0?g.xAxis().scale(g.xAxisRef()[0].data[j]):null});
 			}
 			else {
 				for (var i = g.yAxis().length - 1; i >= 0; i--){
-					g.yAxis()[i].line.y(function(d,j){return d||d===0?g.yAxis()[yAxisIndex].scale(d):null})
-					g.yAxis()[i].line.x(function(d,j){return d||d===0?g.xAxis().scale(g.xAxisRef()[0].data[j]):null})
+					g.yAxis()[i].line.y(function(d,j){return d||d===0?g.yAxis()[yAxisIndex].scale(d):null});
+					g.yAxis()[i].line.x(function(d,j){return d||d===0?g.xAxis().scale(g.xAxisRef()[0].data[j]):null});
 				};
 			}
 
@@ -913,7 +913,6 @@ function Gneiss(config)
 						if(d == 0) {
 							//if the axisItem represents the zero line
 							//change it's class and make sure there's no decimal
-							//axisItem.line.attr("stroke","#666666")
 							d3.select(this).classed("zero", true)
 							axisItem.text.text("0")
 						}
@@ -948,34 +947,20 @@ function Gneiss(config)
 			
 		};
 		
+		try{
+			//the title will always be the same distance from the top, and will always be the top most element
+			g.titleElement().attr("y",g.defaultPadding().top + g.titleElement()[0][0].getBoundingClientRect().height)		
+		}catch(e){/* There isn't a title element and I dont care to let you know */}
+
 		if(g.isBargrid()){
+			//if it's a bargrid turn off the yAxis
 			d3.selectAll(".yAxis").style("display","none")
-			g.titleElement().attr("y",g.padding().top - 36) //CHANGE - MAGIC NUMBER			
 		}
 		else {
-			//isn't a bargrid
+			//isn't a bargrid so set the yAxis back to the default display prop
 			d3.selectAll(".yAxis").style("display",null)
-			
-			if(g.yAxis().length==1) {
-				//only has one axis
-				try{
-					if(!g.legend() || g.series().length == 1) {
-						//no legend or only one series
-						g.titleElement().attr("y",g.topAxisItem.y - 4) //CHANGE - MAGIC NUMBER
-					}
-					else {
-						g.titleElement().attr("y",g.topAxisItem.y - 25) //CHANGE - MAGIC NUMBER					
-					}
-				}catch(e){} //fail silently
-					
-			}
-			else {
-				try{
-					g.titleElement().attr("y",g.padding().top - 36) //CHANGE - MAGIC NUMBER
-				}catch(e){} //fail silently
-			}
 		}
-		
+
 		d3.selectAll(".yAxis").each(function(){this.parentNode.prependChild(this);})
 		d3.selectAll("#plotArea").each(function(){this.parentNode.prependChild(this);})
 		d3.selectAll("#ground").each(function(){this.parentNode.prependChild(this);})
@@ -1401,12 +1386,12 @@ function Gneiss(config)
 						.attr("class","bargridLabel")
 						.text(function(d,i){return d.name})
 						.attr("x",g.yAxis()[0].scale(0))
-						.attr("y",g.padding().top-18)
+						.attr("y",g.padding().top-18) //CHANGE - MAGIC NUMBER
 								
 				bargridLabel.transition()
 					.text(function(d,i){return d.name})
 					.attr("x",g.yAxis()[0].scale(0))
-					.attr("y",g.padding().top-18)
+					.attr("y",g.padding().top-18) //CHANGE - MAGIC NUMBER
 				
 				bargridLabel.exit().remove()
 				
@@ -1422,14 +1407,14 @@ function Gneiss(config)
 				
 				columnRects.enter()
 						.append("rect")
-						.attr("height",20)
+						.attr("height",20) //CHANGE - MAGIC NUMBER
 						.attr("width", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return Math.abs(g.yAxis()[yAxisIndex].scale(d) - g.yAxis()[yAxisIndex].scale(0))})
 						.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return g.yAxis()[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis()[yAxisIndex].scale(d)):0)})
 						.attr("y",function(d,i) {return g.xAxis().scale(i) - 10}) //CHANGE - MAGIC NUMBER
 				
 				columnRects.transition()
 					.duration(500)
-					.attr("height",20)
+					.attr("height",20) //CHANGE - MAGIC NUMBER
 					.attr("width", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return Math.abs(g.yAxis()[yAxisIndex].scale(d) - g.yAxis()[yAxisIndex].scale(0))})
 					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return g.yAxis()[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis()[yAxisIndex].scale(d) - g.yAxis()[yAxisIndex].scale(0)):0)})
 					.attr("y",function(d,i) {return g.xAxis().scale(i) - 10}) //CHANGE - MAGIC NUMBER
