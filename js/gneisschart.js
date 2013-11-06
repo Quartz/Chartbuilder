@@ -75,7 +75,7 @@ Gneiss.defaultGneissChartConfig = {
 			name: "apples",
 			data: [5.5,10.2,6.1,3.8],
 			source: "Some Org",
-			type: "column",
+			type: "line",
 			axis: 0,
 			color: null
 		},
@@ -83,7 +83,7 @@ Gneiss.defaultGneissChartConfig = {
 			name: "oranges",
 			data: [23,10,13,7],
 			source: "Some Org",
-			type: "column",
+			type: "line",
 			axis: 0,
 			color: null
 		}
@@ -631,6 +631,12 @@ function Gneiss(config)
 		d3.select("rect#ground")
 			.attr("width", g.width())
 			.attr("height", g.height());
+
+		//insert a background rectagle to style the plot area
+		d3.select("rect#plotArea")
+			.attr("transform","translate("+g.padding().left+","+g.padding().top+")")
+			.attr("width",g.width()-g.padding().left-g.padding().right)
+			.attr("height",g.height()-g.padding().top-g.padding().bottom);
       
 		g.footerElement().attr("transform","translate(0," + (g.height() - g.footerMargin()) + ")");
 		
@@ -746,10 +752,7 @@ function Gneiss(config)
 		g.padding().top = padding_top;
 		g.padding().bottom = padding_bottom;
 		
-		d3.select("#plotArea")
-			.attr("transform","translate("+g.padding().left+","+g.padding().top+")")
-			.attr("width",g.width()-g.padding().left-g.padding().right)
-			.attr("height",g.height()-g.padding().top-g.padding().bottom);
+		
 			
 		return this;
 	};
@@ -1053,7 +1056,7 @@ function Gneiss(config)
 				.orient(g.isBargrid() ? "left" : "bottom")
 				.tickFormat(g.xAxis().formatter ? Gneiss.dateParsers[g.xAxis().formatter] : function(d) {return d})
 				.ticks(g.xAxis().ticks)
-				
+
 				if(g.xAxis().type == "date") {
 					if(g.xAxis().ticks === null || !isNaN(g.xAxis().ticks)) {
 						//auto suggest the propper tick gap
@@ -1130,7 +1133,7 @@ function Gneiss(config)
 				.tickFormat(g.xAxis().formatter ? Gneiss.dateParsers[g.xAxis().formatter] : function(d) { return d; })
 				.ticks(g.isBargrid() ? g.series()[0].data.length : g.xAxis().ticks)
 				.orient(g.isBargrid() ? "left" : "bottom")
-			
+
 			if(g.xAxis().type == "date") {
 				if(g.xAxis().ticks === null || !isNaN(g.xAxis().ticks)) {
 					//auto suggest the propper tick gap

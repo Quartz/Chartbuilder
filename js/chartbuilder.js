@@ -783,12 +783,14 @@ ChartBuilder.start = function(config) {
   			dataObj = ChartBuilder.mergeData(dataObj)
   			
   			if(dataObj.datetime) {
-  				chart.xAxis.type = "date";
-  				chart.xAxis.formatter = chart.xAxis.formatter?chart.xAxis.formatter:"M";
+  				chart.xAxis().type = "date";
+  				chart.xAxis().formatter = chart.xAxis().formatter?chart.xAxis().formatter:"M";
   			}
   			else {
   				chart.xAxis().type = "ordinal";
   			}
+  			//TODO add a linear scale type
+
   			chart.xAxisRef([dataObj.data.shift()]);
   			
   			chart.series(dataObj.data);
@@ -840,7 +842,7 @@ ChartBuilder.start = function(config) {
 		var val = $(this).val().split(" ")
 		//if the selected option has two words set it as the number of ticks
 		//else set ticks to null
-		chart.xAxis.ticks = val.length > 1 ? val : null
+		chart.xAxis().ticks = val.length > 1 ? val : null
 		ChartBuilder.redraw()
 		ChartBuilder.inlineAllStyles();
 	})

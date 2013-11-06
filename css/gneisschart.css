@@ -14,7 +14,7 @@ svg #ground {
 
 svg #plotArea {
 	fill: none;
-	stroke: #f00;
+	stroke: none;
 }
 
 svg .axis line {
