@@ -29,10 +29,10 @@ Gneiss.defaultGneissChartConfig = {
 	xAxisMargin: 8, //the vertical space between the plot area and the x axis
 	footerMargin: 4, //the vertical space between the bottom of the bounding box and the meta information
 	legendLabelSpacingX: 5, //the horizontal space between legend items
-	legendLabelSpacingY: 3, //the vertical space between legend items 
+	legendLabelSpacingY: 4, //the vertical space between legend items 
 	columnGap: 1, //the horizontal space between two columns that have the same x-axis value
 	maxColumnWidth: 7.5, // the maximum width of a column as a percent of the available chart width
-	primaryAxisPosition: "right",
+	primaryAxisPosition: "right", // the first axis will be rendered on this side, "right" or "left" only
 	legend: true, // whether or not there should be a legend
 	title: "", // the chart title 
 	titleBottomMargin: 5, // the vertical space between the title and the next element (sometimes a legend, sometimes an axis)
@@ -723,10 +723,16 @@ function Gneiss(config)
 
 		padding_top += title_height > 0? title_height + g.titleBottomMargin() : axis_label_height + g.titleBottomMargin();
 		
-		//if there is more than one axis or the default axis is on the left and it isn't a bar grid or there is a legend and more than one series and a title
+		//if there is more than one axis or the default axis is on the left and it isn't a bar grid
 		//add enough space for the top axis label
-		padding_top += g.yAxis().length > 1 || g.primaryAxisPosition == "left" || (g.series().length > 1 && g.legend() && g.title().length != 0) ? axis_label_height + g.titleBottomMargin() : 0 
+		padding_top += ( g.yAxis().length > 1 || g.primaryAxisPosition == "left" ) ? axis_label_height + g.titleBottomMargin() : 0 
 		
+
+		//if there is a legend and there is more than one series
+		padding_top += (g.legend() && g.series().length > 1 ) ? g.legendLabelSpacingY() : 0 ;
+
+		//if there is a legend and there is more than one series and a title 
+		padding_top += (g.legend() && g.series().length > 1 && g.title().length != 0 > 1 ) ? d3.selectAll("g.legendItem")[0][0].getBoundingClientRect().height : 0 ;
 		
 		//if this is a bargrid add padding to account for the series label
 		if (g.isBargrid()) {
@@ -1428,7 +1434,7 @@ function Gneiss(config)
 						var y = g.defaultPadding().top + d3.select(this)[0][0].getBoundingClientRect().height
 						
 						//if there is a title bumb the series labels down
-						y += g.title().length > 0 ?  g.titleElement()[0][0].getBoundingClientRect().height + 5: 0
+						y += g.title().length > 0 ?  g.titleElement()[0][0].getBoundingClientRect().height + 5: 0; //CHANGE - Magic Number
 						
 						return y
 					})
@@ -1683,14 +1689,7 @@ function Gneiss(config)
 			var legItems = 	legendGroups.enter()
 				.append("g")
 				.attr("class","legendItem")
-				.attr("transform",function(d,i) {
-					if(g.yAxis().length == 1) {
-						return "translate("+g.padding().left+","+(g.padding().top-25)+")" //CHANGE - Magic Number
-					}
-					else {
-						return "translate("+g.padding().left+","+(g.padding().top-50)+")" //CHANGE - Magic Number
-					}
-				});
+				.attr("transform","translate("+g.padding().left+","+(g.defaultPadding().top + g.titleElement()[0][0].getBoundingClientRect().height) +")");
 
 			legendGroups.exit().remove()
 
