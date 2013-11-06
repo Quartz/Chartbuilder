@@ -1436,7 +1436,7 @@ function Gneiss(config)
 						var y = g.defaultPadding().top + d3.select(this)[0][0].getBoundingClientRect().height
 						
 						//if there is a title bumb the series labels down
-						y += g.title().length > 0 ?  g.titleElement()[0][0].getBoundingClientRect().height + 5: 0; //CHANGE - Magic Number
+						y += g.title().length > 0 ?  g.titleElement()[0][0].getBoundingClientRect().height + g.titleBottomMargin(): 0;
 						
 						return y
 					})
