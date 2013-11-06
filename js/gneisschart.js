@@ -36,7 +36,7 @@ Gneiss.defaultGneissChartConfig = {
 	legend: true, // whether or not there should be a legend
 	title: "", // the chart title 
 	titleBottomMargin: 5, // the vertical space between the title and the next element (sometimes a legend, sometimes an axis)
-	bargridLabelBottomMargin: 10,
+	bargridLabelBottomMargin: 5, //the space between the bargrid series label and the top most bar
 	colors: ["#ff4cf4","#ffb3ff","#e69ce6","#cc87cc","#b373b3","#995f99","#804c80","#665266","#158eff","#99cdff","#9cc2e6","#87abcc","#7394b3","#5f7d99","#466780","#525c66"], 
 	padding :{
 		top: 5,
@@ -725,19 +725,21 @@ function Gneiss(config)
 		
 		//if there is more than one axis or the default axis is on the left and it isn't a bar grid
 		//add enough space for the top axis label
-		padding_top += ( g.yAxis().length > 1 || g.primaryAxisPosition == "left" ) ? axis_label_height + g.titleBottomMargin() : 0 
+		padding_top += ( g.yAxis().length > 1 || g.primaryAxisPosition == "left" ) ? axis_label_height + g.titleBottomMargin() : 0 ;
 		
 
 		//if there is a legend and there is more than one series
-		padding_top += (g.legend() && g.series().length > 1 ) ? g.legendLabelSpacingY() : 0 ;
+		padding_top += (g.legend() && g.series().length > 1 )  ? g.legendLabelSpacingY() : 0 ;
 
-		//if there is a legend and there is more than one series and a title 
-		padding_top += (g.legend() && g.series().length > 1 && g.title().length != 0 > 1 ) ? d3.selectAll("g.legendItem")[0][0].getBoundingClientRect().height : 0 ;
+		//if there is a legend and there is more than one series and a title and it's not a bargrid
+
+		padding_top += (g.legend() && g.series().length > 1 && g.title().length != 0 && !g.isBargrid()) ? d3.selectAll("g.legendItem")[0][0].getBoundingClientRect().height : 0 ;
 		
 		//if this is a bargrid add padding to account for the series label
 		if (g.isBargrid()) {
 			try {
-				padding_top += d3.selectAll(".bargridLabel")[0][0].getBoundingClientRect().height + g.bargridLabelBottomMargin() - g.bargridBarThickness()/2
+				padding_top += d3.selectAll(".bargridLabel")[0][0].getBoundingClientRect().height + g.bargridLabelBottomMargin() - g.bargridBarThickness()/2;
+				padding_top += g.title().length != 0 ? title_height + g.titleBottomMargin() : 0
 			} catch(e) {/* A race condition that doesn't matter was met, setPadding will be called again and everything will be okay*/}
 		};
 		
