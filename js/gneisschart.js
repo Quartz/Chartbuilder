@@ -25,6 +25,7 @@ Gneiss.defaultGneissChartConfig = {
 	editable: true, // reserved for enabling or dissabling on chart editing
 	lineDotsThreshold: 15, //line charts will have dots on points until a series has this number of points
 	bargridLabelMargin: 4, //the horizontal space between a bargrid bar and it's label
+	bargridBarThickness: 20, //thickness of the bars in a bargrid
 	xAxisMargin: 8, //the vertical space between the plot area and the x axis
 	footerMargin: 4, //the vertical space between the bottom of the bounding box and the meta information
 	legendLabelSpacingX: 5, //the horizontal space between legend items
@@ -34,6 +35,8 @@ Gneiss.defaultGneissChartConfig = {
 	primaryAxisPosition: "right",
 	legend: true, // whether or not there should be a legend
 	title: "", // the chart title 
+	titleBottomMargin: 5, // the vertical space between the title and the next element (sometimes a legend, sometimes an axis)
+	bargridLabelBottomMargin: 10,
 	colors: ["#ff4cf4","#ffb3ff","#e69ce6","#cc87cc","#b373b3","#995f99","#804c80","#665266","#158eff","#99cdff","#9cc2e6","#87abcc","#7394b3","#5f7d99","#466780","#525c66"], 
 	padding :{
 		top: 5,
@@ -233,6 +236,7 @@ function Gneiss(config)
 
 	var lineDotsThreshold;
 	var bargridLabelMargin;
+	var bargridBarThickness;
 	var xAxisMargin;
 	var footerMargin;
 	var primaryAxisPosition;
@@ -240,6 +244,8 @@ function Gneiss(config)
 	var legendLabelSpacingY;
 	var columnGap;
 	var maxColumnWidth;
+	var titleBottomMargin;
+	var bargridLabelBottomMargin;
 	
 	
 	var columnWidth;
@@ -436,6 +442,13 @@ function Gneiss(config)
 			bargridLabelMargin = n
 	}
 
+	this.bargridBarThickness = function Gneiss$bargridBarThickness(n) {
+		if (!arguments.length) {
+			return bargridBarThickness
+		}
+			bargridBarThickness = n
+	}
+
 	this.xAxisMargin = function Gneiss$xAxisMargin(n) {
 		if (!arguments.length) {
 			return xAxisMargin
@@ -484,6 +497,22 @@ function Gneiss(config)
 		}
 			maxColumnWidth = n;
 	};
+
+	this.titleBottomMargin = function Gneiss$titleBottomMargin(n) {
+		if (!arguments.length) {
+			return titleBottomMargin;
+		}
+
+		titleBottomMargin = n;
+	};
+
+	this.bargridLabelBottomMargin = function Gneiss$bargridLabelBottomMargin(n) {
+		if (!arguments.length) {
+			return bargridLabelBottomMargin;
+		}
+
+		bargridLabelBottomMargin = n;
+	};
 	
 	this.build = function Gneiss$build(config) {
 		/*
@@ -517,6 +546,7 @@ function Gneiss(config)
 		g.padding($.extend(true, {}, config.padding));
 		g.lineDotsThreshold(config.lineDotsThreshold *1);
 		g.bargridLabelMargin(config.bargridLabelMargin *1);
+		g.bargridBarThickness(config.bargridBarThickness *1);
 		g.xAxisMargin(config.xAxisMargin * 1);
 		g.footerMargin(config.footerMargin * 1);
 		g.primaryAxisPosition(config.primaryAxisPosition.slice());
@@ -524,6 +554,8 @@ function Gneiss(config)
 		g.legendLabelSpacingY(config.legendLabelSpacingY * 1);
 		g.columnGap(config.columnGap * 1);
 		g.maxColumnWidth(config.maxColumnWidth * 1);
+		g.titleBottomMargin(config.titleBottomMargin * 1);
+		g.bargridLabelBottomMargin(config.bargridLabelBottomMargin *1);
 		
 
 
@@ -686,18 +718,22 @@ function Gneiss(config)
 		
 		//Add the height of the title line to the padding, if the title line has a height
 		//Add the height of the axis label if there is no title
-		title_bottom_margin = 5; //CHANGE - MAGIC NUMBER
 		title_height = g.titleElement()[0][0].getBoundingClientRect().height;
 		axis_label_height = d3.selectAll(".yAxis text")[0][0].getBoundingClientRect().height;
 
-		padding_top += title_height > 0? title_height + title_bottom_margin : axis_label_height + title_bottom_margin;
+		padding_top += title_height > 0? title_height + g.titleBottomMargin() : axis_label_height + g.titleBottomMargin();
 		
 		//if there is more than one axis or the default axis is on the left and it isn't a bar grid or there is a legend and more than one series and a title
 		//add enough space for the top axis label
-		padding_top += g.yAxis().length > 1 || g.primaryAxisPosition == "left" || (g.series().length > 1 && g.legend() && g.title().length != 0) ? axis_label_height + title_bottom_margin : 0 
+		padding_top += g.yAxis().length > 1 || g.primaryAxisPosition == "left" || (g.series().length > 1 && g.legend() && g.title().length != 0) ? axis_label_height + g.titleBottomMargin() : 0 
 		
 		
-		//padding_top += axis_label_height + title_bottom_margin;
+		//if this is a bargrid add padding to account for the series label
+		if (g.isBargrid()) {
+			try {
+				padding_top += d3.selectAll(".bargridLabel")[0][0].getBoundingClientRect().height + g.bargridLabelBottomMargin() - g.bargridBarThickness()/2
+			} catch(e) {/* A race condition that doesn't matter was met, setPadding will be called again and everything will be okay*/}
+		};
 		
 		g.padding().top = padding_top;
 		g.padding().bottom = padding_bottom;
@@ -1383,15 +1419,19 @@ function Gneiss(config)
 						
 				bargridLabel.enter()
 						.append("text")
-						.attr("class","bargridLabel")
 						.text(function(d,i){return d.name})
-						.attr("x",g.yAxis()[0].scale(0))
-						.attr("y",g.padding().top-18) //CHANGE - MAGIC NUMBER
+						.attr("class","bargridLabel")
 								
 				bargridLabel.transition()
-					.text(function(d,i){return d.name})
 					.attr("x",g.yAxis()[0].scale(0))
-					.attr("y",g.padding().top-18) //CHANGE - MAGIC NUMBER
+					.attr("y",function(d){ 
+						var y = g.defaultPadding().top + d3.select(this)[0][0].getBoundingClientRect().height
+						
+						//if there is a title bumb the series labels down
+						y += g.title().length > 0 ?  g.titleElement()[0][0].getBoundingClientRect().height + 5: 0
+						
+						return y
+					})
 				
 				bargridLabel.exit().remove()
 				
@@ -1407,17 +1447,17 @@ function Gneiss(config)
 				
 				columnRects.enter()
 						.append("rect")
-						.attr("height",20) //CHANGE - MAGIC NUMBER
+						.attr("height", g.bargridBarThickness()) 
 						.attr("width", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return Math.abs(g.yAxis()[yAxisIndex].scale(d) - g.yAxis()[yAxisIndex].scale(0))})
 						.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return g.yAxis()[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis()[yAxisIndex].scale(d)):0)})
-						.attr("y",function(d,i) {return g.xAxis().scale(i) - 10}) //CHANGE - MAGIC NUMBER
+						.attr("y",function(d,i) {return g.xAxis().scale(i) - g.bargridBarThickness()/2}) 
 				
 				columnRects.transition()
 					.duration(500)
-					.attr("height",20) //CHANGE - MAGIC NUMBER
+					.attr("height", g.bargridBarThickness()) 
 					.attr("width", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return Math.abs(g.yAxis()[yAxisIndex].scale(d) - g.yAxis()[yAxisIndex].scale(0))})
 					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return g.yAxis()[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis()[yAxisIndex].scale(d) - g.yAxis()[yAxisIndex].scale(0)):0)})
-					.attr("y",function(d,i) {return g.xAxis().scale(i) - 10}) //CHANGE - MAGIC NUMBER
+					.attr("y",function(d,i) {return g.xAxis().scale(i) - g.bargridBarThickness()/2}) 
 				
 				//add label to each bar
 				var barLabels = columnGroups.selectAll("text.barLabel")
@@ -1425,17 +1465,15 @@ function Gneiss(config)
 					
 				barLabels.enter()
 					.append("text")
+					.text(function(d,i){var yAxisIndex = d3.select(this.parentNode).data()[0].axis; return (i==0?g.yAxis()[yAxisIndex].prefix.value:"") + g.numberFormat(d) + (i==0?g.yAxis()[yAxisIndex].suffix.value:"")})
 					.attr("class","barLabel")
 					.text(function(d,i){return g.numberFormat(d)})
-					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentNode).data()[0].axis; return Math.abs(g.yAxis()[yAxisIndex].scale(d) - g.yAxis()[yAxisIndex].scale(0))})
-					.attr("y",function(d,i) {return g.xAxis().scale(i) + 5})  //CHANGE - MAGIC NUMBER
 				
 				//reset the padding to the default before mucking with it in the label postitioning
 				
 				g.padding.right = g.defaultPadding().right
 					
 				barLabels.transition()
-					.text(function(d,i){var yAxisIndex = d3.select(this.parentNode).data()[0].axis; return (i==0?g.yAxis()[yAxisIndex].prefix.value:"") + g.numberFormat(d) + (i==0?g.yAxis()[yAxisIndex].suffix.value:"")})
 					.attr("x", function(d,i) {
 						var yAxisIndex = d3.select(this.parentNode).data()[0].axis,
 						x = g.bargridLabelMargin() + g.yAxis()[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis()[yAxisIndex].scale(d) - g.yAxis()[yAxisIndex].scale(0)):0) + Math.abs(g.yAxis()[yAxisIndex].scale(d) - g.yAxis()[yAxisIndex].scale(0)),
@@ -1455,7 +1493,7 @@ function Gneiss(config)
 						
 						return x
 					})
-					.attr("y",function(d,i) {return g.xAxis().scale(i) + 5})  //CHANGE - MAGIC NUMBER
+					.attr("y",function(d,i) {return g.xAxis().scale(i) + d3.select(this)[0][0].getBoundingClientRect().height/2})
 				
 				//remove non bargrid stuff
 				scatterSeries.remove()
