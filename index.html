@@ -86,7 +86,7 @@
 	    						</select></div>
     							<div class="optionGroup"><label for="right_axis_max">Right Axis Max</label><input type="text" name="right_axis_max" value="" id="right_axis_max"></div>
     							<div class="optionGroup"><label for="right_axis_min">Right Axis Min</label><input type="text" name="right_axis_min" value="" id="right_axis_min"></div>
-    							<div class="optionGroup"><label for="right_axis_tick_override">Right Axis Tick Override</label><input type="text" name="right_axis_tick_override" value="" id="right_axis_tick_override"></div>
+    							<div class="optionGroup advanced"><label for="right_axis_tick_override">Right Axis Tick Override</label><input type="text" name="right_axis_tick_override" value="" id="right_axis_tick_override"></div>
     						</div>
     					</div>
     					<div id="leftAxisControls" class="optionBlock hide">
@@ -99,7 +99,7 @@
     					</div>
     					<div class="optionBlock">
     					<h2>5. Bottom Axis Options</h2>
-						<div class="optionGroup">
+						<div class="optionGroup showonlywith-date">
 							<label for="x_axis_tick_date_frequency">Tick date frequency</label><select name="x_axis_tick_date_frequency" id="x_axis_tick_date_frequency" size="1">
 								<option selected>auto</option>
 								<option>1 hour</option>
@@ -116,7 +116,7 @@
 								<option>100 years</option>
 							   </select>
 						</div>
-    						<div class="optionGroup"><label for="x_axis_date_format">X Axis Date Format</label><select name="x_axis_date_format" id="x_axis_date_format">
+    						<div class="optionGroup showonlywith-date"><label for="x_axis_date_format">X Axis Date Format</label><select name="x_axis_date_format" id="x_axis_date_format">
     							<option value="mmddyyyy">2/25/2012</option>
     							<option value="ddmmyyyy">25/2/2012</option>
     							<option value="mmdd">2/25</option>
@@ -130,6 +130,7 @@
     							<option value="hmm">3:27</option>
     						</select>
 							</div>
+              <div class="optionGroup showonlywith-ordinal">No options available</div>
             </div>
             <div class="optionBlock full">
               <h2>4. Export</h2>
@@ -145,7 +146,7 @@
               <h4>5. Copy the HTML table of your data (if you want)</h4>
               <textarea  class="input-box"  id="table-html" type="text" rows="10"></textarea>
               
-              <div class="previousCharts">
+              <div class="previousCharts hide">
                 <div class="optionGroup"><label for="previous_charts">Previously Created Charts</label>
                   <select name="previous_charts" id="previous_charts"></select>
                 </div>

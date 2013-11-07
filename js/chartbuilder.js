@@ -7,6 +7,7 @@ ChartBuilder = {
 						"006DBF","70B8FF","5DA1E1","4B89C4","3871A6","255A88","13436B","002B4D",
 						"9300BF","E770FF","CB5DE1","AE4BC4","9238A6","752588","59136B","3C004D"],
 	curRaw: "",
+	advancedMode: false,
 	getNewData: function(csv) {
 	
 		if(!csv) {
@@ -492,7 +493,32 @@ ChartBuilder = {
 		};
 		
 		//chart = g;
+		ChartBuilder.updateInterface();
 		ChartBuilder.inlineAllStyles();
+	},
+	updateInterface: function() {
+		if(chart.xAxis().type == "date") {
+			$(".showonlywith-date").removeClass("hide")
+		}
+
+		if(chart.xAxis().type == "ordinal") {
+			$(".showonlywith-ordinal").removeClass("hide")
+		}
+
+		if(chart.xAxis().type != "date") {
+			$(".showonlywith-date").addClass("hide")
+		}
+
+		if(chart.xAxis().type != "ordinal") {
+			$(".showonlywith-ordinal").addClass("hide")
+		}
+
+		if(this.advancedMode) {
+			$(".advanced").removeClass("hide")
+		}
+		else {
+			$(".advanced").addClass("hide")
+		}
 	},
 	setChartArea: function() {
 		var hasBargrid = false;
