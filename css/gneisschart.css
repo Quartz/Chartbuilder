@@ -1,7 +1,19 @@
-@import url(http://fonts.googleapis.com/css?family=Cutive);
+/* Adding fonts using Webfontloader in index.html
+// is significantly more reliable
+// @import url(http://fonts.googleapis.com/css?family=Cutive); 
+*/
+
+svg {
+	font-size: 14px;
+}
 
 svg #ground {
 	fill: #fff;
+	stroke: none;
+}
+
+svg #plotArea {
+	fill: none;
 	stroke: none;
 }
 
@@ -29,12 +41,10 @@ svg .axis path {
 
 svg .axis text {
 	font-family: 'Cutive',Helvetica, sans-serif;
-	font-size: 12px;
 }
 
 svg .legendItem text {
 	font-family: 'Cutive',Helvetica, sans-serif;
-	font-size:  12px;
 }
 
 svg text.metaText {
@@ -47,11 +57,23 @@ svg text.metaText {
 svg text.barLabel, 
 svg text.bargridLabel {
 	font-family: 'Cutive',Helvetica, sans-serif;
-	font-size: 12px
+}
+
+/*Default styling of series*/
+
+svg path.seriesLine {
+	stroke-width: 3px;
+	stroke-linejoin: round;
+	stroke-linecap: round;
+	fill: none;
+}
+
+svg .seriesScatter circle {
+	stroke:#fff;
+	stroke-width":1;
 }
 	
 #titleLine {
 	font-family: 'Cutive',Helvetica, sans-serif;
-	font-size: 12px;
 	fill: #666666;
 }

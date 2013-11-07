@@ -86,7 +86,7 @@
 	    						</select></div>
     							<div class="optionGroup"><label for="right_axis_max">Right Axis Max</label><input type="text" name="right_axis_max" value="" id="right_axis_max"></div>
     							<div class="optionGroup"><label for="right_axis_min">Right Axis Min</label><input type="text" name="right_axis_min" value="" id="right_axis_min"></div>
-    							<div class="optionGroup"><label for="right_axis_tick_override">Right Axis Tick Override</label><input type="text" name="right_axis_tick_override" value="" id="right_axis_tick_override"></div>
+    							<div class="optionGroup advanced"><label for="right_axis_tick_override">Right Axis Tick Override</label><input type="text" name="right_axis_tick_override" value="" id="right_axis_tick_override"></div>
     						</div>
     					</div>
     					<div id="leftAxisControls" class="optionBlock hide">
@@ -99,23 +99,24 @@
     					</div>
     					<div class="optionBlock">
     					<h2>5. Bottom Axis Options</h2>
-    						<div class="optionGroup"><label for="x_axis_tick_num">Number of X Axis Ticks</label><select name="x_axis_tick_num" id="x_axis_tick_num" size="1">
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option selected>5</option>
-                  <option>6</option>
-                  <option>7</option>
-                  <option>8</option>
-                  <option>9</option>
-                  <option>10</option>
-                  <option>11</option>
-                  <option>12</option>
-                  <option>13</option>
-                  <option>14</option>
-                  <option>15</option>
-    						</select></div>
-    						<div class="optionGroup"><label for="x_axis_date_format">X Axis Date Format</label><select name="x_axis_date_format" id="x_axis_date_format">
+						<div class="optionGroup showonlywith-date">
+							<label for="x_axis_tick_date_frequency">Tick date frequency</label><select name="x_axis_tick_date_frequency" id="x_axis_tick_date_frequency" size="1">
+								<option selected>auto</option>
+								<option>1 hour</option>
+								<option>1 day</option>
+								<option>1 week</option>
+								<option>1 month</option>
+								<option>3 months</option>
+								<option>6 months</option>
+								<option>1 year</option>
+								<option>5 years</option>
+								<option>10 years</option>
+								<option>20 years</option>
+								<option>50 years</option>
+								<option>100 years</option>
+							   </select>
+						</div>
+    						<div class="optionGroup showonlywith-date"><label for="x_axis_date_format">X Axis Date Format</label><select name="x_axis_date_format" id="x_axis_date_format">
     							<option value="mmddyyyy">2/25/2012</option>
     							<option value="ddmmyyyy">25/2/2012</option>
     							<option value="mmdd">2/25</option>
@@ -129,6 +130,7 @@
     							<option value="hmm">3:27</option>
     						</select>
 							</div>
+              <div class="optionGroup showonlywith-ordinal">No options available</div>
             </div>
             <div class="optionBlock full">
               <h2>4. Export</h2>
@@ -144,7 +146,7 @@
               <h4>5. Copy the HTML table of your data (if you want)</h4>
               <textarea  class="input-box"  id="table-html" type="text" rows="10"></textarea>
               
-              <div class="previousCharts">
+              <div class="previousCharts hide">
                 <div class="optionGroup"><label for="previous_charts">Previously Created Charts</label>
                   <select name="previous_charts" id="previous_charts"></select>
                 </div>
@@ -168,6 +170,9 @@
 		<script src="bower_components/rgbcolor/index.js" charset="utf-8"></script>
 		<script src="bower_components/jquery-csv/index.js" charset="utf-8"></script>
 		<script src="bower_components/really-simple-color-picker/jquery.colorPicker.min.js" charset="utf-8"></script>
+		<script src="bower_components/webfontloader/target/webfont.js" type="text/javascript" charset="utf-8"></script>
+		
+		
 		
 		<!-- Custom libraries JS -->
 		<script src="js/custom_components/sugar-1.3.9-custom.min.js" charset="utf-8"></script>
@@ -180,13 +185,19 @@
 		<script src="js/vendor/rgbcolor.js" charset="utf-8"></script>
 		
 		<script type="text/javascript">
-		  (function() {
-		    // This starts Chartbuilder and can be passed a configuration
-		    // object.  See the Gneiss charting options.
-  		  ChartBuilder.start({
-    		  
-  		  });
-		  })();
+		
+		//This loads the webfonts and starts Chartbuilder once they're present
+		WebFont.load({
+			custom: {
+				families: ["Cutive"],
+				urls: ["http://fonts.googleapis.com/css?family=Cutive"]
+			},
+		    active: function(name) {
+		        $(document).ready(function() {
+		            ChartBuilder.start();
+		        });
+		    }
+		});
 		</script>
 	</body>
 </html>
