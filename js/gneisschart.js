@@ -1527,7 +1527,7 @@ function Gneiss(config)
 					}
 
 					return output;
-					
+
 				})
 
 				
@@ -1544,12 +1544,17 @@ function Gneiss(config)
 						parentCoords = Gneiss.helper.transformCoordOf(d3.select(this.parentNode))
 						if (x + bbox.width + parentCoords.x > g.width()) {
 							//the label will fall off the edge and thus the chart needs more padding
-							if(bbox.width + g.defaultPadding().right < (g.width()-g.padding.left)/g.series.length) {
+							if(bbox.width + g.defaultPadding().right < (g.width()-g.padding().left)/g.series.length) {
 								//add more padding if there is room for it
-								g.padding.right = bbox.width + g.defaultPadding().right
+								g.padding().right = bbox.width + g.defaultPadding().right
 								g.redraw()
 							}
 							
+						}
+						else if (x + bbox.width + parentCoords.x < g.width() - 20){
+							//if there is too much left over space (typically caused by deleting a prefix or suffix) reset the padding
+							g.padding().right = g.defaultPadding().right;
+							g.redraw
 						}
 						
 						
