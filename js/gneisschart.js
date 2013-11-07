@@ -31,6 +31,7 @@ Gneiss.defaultGneissChartConfig = {
 	legendLabelSpacingX: 5, //the horizontal space between legend items
 	legendLabelSpacingY: 4, //the vertical space between legend items 
 	columnGap: 1, //the horizontal space between two columns that have the same x-axis value
+	axisBarGap: 5, //the horizontal space between a vertical axis and an adjacent bar
 	maxColumnWidth: 7.5, // the maximum width of a column as a percent of the available chart width
 	primaryAxisPosition: "right", // the first axis will be rendered on this side, "right" or "left" only
 	legend: true, // whether or not there should be a legend
@@ -246,6 +247,7 @@ function Gneiss(config)
 	var maxColumnWidth;
 	var titleBottomMargin;
 	var bargridLabelBottomMargin;
+	var axisBarGap;
 	
 	
 	var columnWidth;
@@ -513,6 +515,14 @@ function Gneiss(config)
 
 		bargridLabelBottomMargin = n;
 	};
+
+	this.axisBarGap = function Gneiss$axisBarGap(n) {
+		if(!arguments.length) {
+			return axisBarGap;
+		}
+
+		axisBarGap = n;
+	};
 	
 	this.build = function Gneiss$build(config) {
 		/*
@@ -556,6 +566,7 @@ function Gneiss(config)
 		g.maxColumnWidth(config.maxColumnWidth * 1);
 		g.titleBottomMargin(config.titleBottomMargin * 1);
 		g.bargridLabelBottomMargin(config.bargridLabelBottomMargin *1);
+		g.axisBarGap(config.axisBarGap * 1);
 		
 
 
@@ -786,8 +797,9 @@ function Gneiss(config)
 		}
 		else if(x.hasColumns) {
 			var halfColumnWidth = g.columnGroupWidth() / 2;
-			rangeArray = [p.left + halfColumnWidth + ((g.yAxis().length == 1) ? 0 : halfColumnWidth),
-                    g.width() - p.right - g.columnGroupWidth()];
+			var left = p.left + halfColumnWidth + ((g.yAxis().length == 1) ? 0 : d3.selectAll("#leftAxis.yAxis g:not(.topAxisItem) text")[0].pop().getBoundingClientRect().width + g.axisBarGap());
+			var right = g.width() - p.right - d3.selectAll("#rightAxis.yAxis g:not(.topAxisItem) text")[0].pop().getBoundingClientRect().width - halfColumnWidth - g.axisBarGap();
+			rangeArray = [left,right];
 		}
 		else {
 			rangeArray = [p.left, g.width() - p.right];
@@ -797,6 +809,7 @@ function Gneiss(config)
 			x.scale.range(rangeArray);
 		}
 		else {
+			//defaults to ordinal
 			x.scale.rangePoints(rangeArray);
 		}
 		
@@ -877,11 +890,13 @@ function Gneiss(config)
 				.selectAll("g")
 				.each(function(d,j) {
 					//create an object to store axisItem info
-					var axisItem = {};
+					var axisItem = {
+						"item": d3.select(this).classed("topAxisItem",false)
+					};
 					
-					//store the position of the axisItem
+					//store the position of the topAxisItem
 					//(figure it out by parsing the transfrom attribute)
-					axisItem.y = parseFloat(d3.select(this)
+					axisItem.y = parseFloat(axisItem.item
 						.attr("transform")
 							.split(")")[0]
 								.split(",")[1]
@@ -971,7 +986,10 @@ function Gneiss(config)
 						
 					}
 				});
-				
+			
+			//class the top label as top
+			g.topAxisItem.item.classed("topAxisItem",true);
+
 			//add the prefix and suffix to the top most label as appropriate
 			if(curAxis.suffix.use == "top" && curAxis.prefix.use == "top") {
 				//both preifx and suffix should be added to the top most label
