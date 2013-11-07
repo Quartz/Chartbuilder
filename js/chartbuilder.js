@@ -903,7 +903,7 @@ ChartBuilder.start = function(config) {
   	});
   	
   	$(".downloadLink").click(function() {
-  		$(".downloadLink").toggleClass("hide")
+  		$("#downloadLinksDiv").toggleClass("hide");
   	})
   })
 };

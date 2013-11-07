@@ -759,9 +759,9 @@ function Gneiss(config)
 		padding_top += (g.legend() && g.series().length > 1 )  ? g.legendLabelSpacingY() : 0 ;
 
 		//if there is a legend and there is more than one series and a title and it's not a bargrid
-
-		padding_top += ( g.legend() && g.series().length > 1 && g.title().length != 0 && !g.isBargrid() ) ? d3.selectAll("g.legendItem")[0][0].getBoundingClientRect().height : 0 ;
-		
+		try {
+			padding_top += ( g.legend() && g.series().length > 1 && g.title().length != 0 && !g.isBargrid() ) ? d3.selectAll("g.legendItem")[0][0].getBoundingClientRect().height : 0 ;
+		}catch(e){/* this happens when switching from a bargrid back to a standard chart*/}
 		//if this is a bargrid add padding to account for the series label
 		if (g.isBargrid()) {
 			try {
