@@ -662,7 +662,9 @@ function Gneiss(config)
 		var g = this;
 		var y = g.yAxis();
 		var p = g.padding();
-        
+		var series = g.series()
+		var calculatedDomain
+
 		for (var i = series.length - 1; i >= 0; i--) {
 			// Plot this series against the right y-axis if no axis has been defined yet
 			if(series[i].axis === undefined) {
@@ -684,7 +686,7 @@ function Gneiss(config)
 			var useLowestValueInAllSeries = false;
 			
 			if(y[i]) {
-				y[i].domain = Gneiss.helper.multiextent(g.series(), function(a) {
+				calculatedDomain = Gneiss.helper.multiextent(g.series(), function(a) {
 					if(a.axis === i || (useLowestValueInAllSeries && i == 0)) {
 						// This series is charted against this axis 
 						// OR
@@ -694,6 +696,14 @@ function Gneiss(config)
 					}
 					return [];
 				})
+
+				for (var j = y[i].domain.length - 1; j >= 0; j--) {
+					if(y[i].domain[j] === null) {
+						// only use the calculated domain limit if one isn't specified
+						y[i].domain[j] = calculatedDomain[j];
+					}
+				}
+
 				if(g.isBargrid()) {
 					y[i].domain[0] = Math.min(y[i].domain[0], 0);
 				}

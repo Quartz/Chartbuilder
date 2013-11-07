@@ -491,7 +491,7 @@ ChartBuilder = {
 			creditline: g.credit()
 		};
 		
-		chart = g;
+		//chart = g;
 		ChartBuilder.inlineAllStyles();
 	},
 	setChartArea: function() {
@@ -622,7 +622,6 @@ ChartBuilder = {
 				val = null
 			}
 			chart.yAxis()[index].domain[1] = val;
-			chart.setYScales();
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
 		},
