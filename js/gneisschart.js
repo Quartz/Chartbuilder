@@ -1495,13 +1495,41 @@ function Gneiss(config)
 				
 				//add label to each bar
 				var barLabels = columnGroups.selectAll("text.barLabel")
-					.data(function(d,i){return d.data})
-					
+					.data(function(d,i){return d.data});
+
 				barLabels.enter()
 					.append("text")
-					.text(function(d,i){var yAxisIndex = d3.select(this.parentNode).data()[0].axis; return (i==0?g.yAxis()[yAxisIndex].prefix.value:"") + g.numberFormat(d) + (i==0?g.yAxis()[yAxisIndex].suffix.value:"")})
 					.attr("class","barLabel")
-					.text(function(d,i){return g.numberFormat(d)})
+
+				//update the text in each label
+				//if it's the top label add the prefix and suffix
+				barLabels.text(function(d,i){
+					var yAxisIndex = d3.select(this.parentNode).data()[0].axis;
+					var output = g.numberFormat(d);
+					if((i==0 && g.yAxis()[yAxisIndex].prefix.use == "top") || g.yAxis()[yAxisIndex].prefix.use == "all") {
+						output = g.yAxis()[yAxisIndex].prefix.value + output;
+					}
+					else if (g.yAxis()[yAxisIndex].prefix.use == "positive" && d > 0){
+						output = g.yAxis()[yAxisIndex].prefix.value + output;
+					}
+					else if (g.yAxis()[yAxisIndex].prefix.use == "top" && d < 0) {
+						output = g.yAxis()[yAxisIndex].prefix.value + output;
+					}
+
+					if((i==0 && g.yAxis()[yAxisIndex].suffix.use == "top") || g.yAxis()[yAxisIndex].suffix.use == "all") {
+						output += g.yAxis()[yAxisIndex].suffix.value;
+					}
+					else if (g.yAxis()[yAxisIndex].suffix.use == "positive" && d > 0){
+						output += g.yAxis()[yAxisIndex].suffix.value;
+					}
+					else if (g.yAxis()[yAxisIndex].suffix.use == "top" && d < 0) {
+						output += g.yAxis()[yAxisIndex].suffix.value;
+					}
+
+					return output;
+					
+				})
+
 				
 				//reset the padding to the default before mucking with it in the label postitioning
 				
