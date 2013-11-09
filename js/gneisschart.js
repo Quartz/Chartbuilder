@@ -766,7 +766,10 @@ function Gneiss(config)
 		if (g.isBargrid()) {
 			try {
 				padding_top += d3.selectAll(".bargridLabel")[0][0].getBoundingClientRect().height + g.bargridLabelBottomMargin() - g.bargridBarThickness()/2;
-				padding_top += g.title().length != 0 ? title_height + g.titleBottomMargin() : 0
+			} catch(e) {/* A race condition that doesn't matter was met, setPadding will be called again and everything will be okay*/}
+
+			try {
+				padding_top += g.titleElement().text().length != 0 ? title_height + g.titleBottomMargin() : 0
 			} catch(e) {/* A race condition that doesn't matter was met, setPadding will be called again and everything will be okay*/}
 		}
 		
@@ -1462,10 +1465,11 @@ function Gneiss(config)
 						var y = g.defaultPadding().top + d3.select(this)[0][0].getBoundingClientRect().height
 						
 						//if there is a title bumb the series labels down
-						y += g.title().length > 0 ?  g.titleElement()[0][0].getBoundingClientRect().height + g.titleBottomMargin(): 0;
+						y += g.titleElement().text().length > 0 ?  g.titleElement()[0][0].getBoundingClientRect().height + g.titleBottomMargin(): 0;
 						
 						return y
 					})
+					.text(function(d,i){return d.name}) //update the text in case it changed without new data
 				
 				bargridLabel.exit().remove()
 				
@@ -1560,7 +1564,7 @@ function Gneiss(config)
 						
 						return x
 					})
-					.attr("y",function(d,i) {return g.xAxis().scale(i) + d3.select(this)[0][0].getBoundingClientRect().height/2})
+					.attr("y",function(d,i) {return g.xAxis().scale(i) + d3.select(this)[0][0].getBoundingClientRect().height/4})
 				
 				//remove non bargrid stuff
 				scatterSeries.remove()
@@ -1793,9 +1797,7 @@ function Gneiss(config)
 						return "translate("+x+","+legendItemY+")";
 				})
 			} else {
-				if(g.title() == "") {
-					g.titleElement().text(g.series()[0].name)
-				}
+				//not bargrid
 			}
 		}
 		
