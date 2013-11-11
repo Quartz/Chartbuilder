@@ -531,13 +531,13 @@ ChartBuilder = {
 		
 		if(hasBargrid) {
 			$("#chartContainer").css("height",
-				chart.series()[0].data.length*22 + //CHANGE - MAGIC NUMBER
+				chart.series()[0].data.length * (chart.bargridBarThickness() + 2) + //CHANGE - MAGIC NUMBER
 				chart.padding().top + 
 				chart.padding().bottom
 				)
 		}
 		else {
-			$("#chartContainer").css("height",338) //CHANGE - MAGIC NUMBER
+			$("#chartContainer").removeAttr("height").css("height","")
 		}
 	},
 	makeLegendAdjustable: function() {

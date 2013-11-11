@@ -1,7 +1,8 @@
-/* Adding fonts using Webfontloader in index.html
-// is significantly more reliable
-// @import url(http://fonts.googleapis.com/css?family=Cutive); 
+/* 
+// Make sure to change the name of the font 
+// in the webfont.js loader in index.html
 */
+@import url(http://fonts.googleapis.com/css?family=Cutive); 
 
 svg {
 	font-size: 14px;
