@@ -1002,7 +1002,7 @@ function Gneiss(config)
 						else {
 							// A non-zero value was rounded into a zero
 							// hide the whole group
-							this.style("display","none");
+							d3.select(this).style("display","none");
 						}
 						
 					}
