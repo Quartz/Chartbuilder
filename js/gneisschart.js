@@ -40,7 +40,7 @@ Gneiss.defaultGneissChartConfig = {
 	bargridLabelBottomMargin: 5, //the space between the bargrid series label and the top most bar
 	colors: ["#ff4cf4","#ffb3ff","#e69ce6","#cc87cc","#b373b3","#995f99","#804c80","#665266","#158eff","#99cdff","#9cc2e6","#87abcc","#7394b3","#5f7d99","#466780","#525c66"], 
 	padding :{
-		top: 5,
+		top: 0,
 		bottom: 50,
 		left: 10,
 		right: 10
@@ -1313,14 +1313,14 @@ function Gneiss(config)
 		// Determine the proper column width
 		var effectiveChartWidth = g.width() - g.padding().right - g.padding().left;
 		var columnWidth = Math.floor((effectiveChartWidth / numDataPoints) / numColumnSeries);
-		
+
 		// Make sure the columns are at least a pixel wide
 		columnWidth = Math.max(columnWidth, 1);
 
 		// Make sure bars are not larger than the specified portion of the available width
 		columnWidth = Math.min(columnWidth, effectiveChartWidth * g.maxColumnWidth()/100);
 
-		g.columnWidth(columnWidth);
+		g.columnWidth(columnWidth - g.columnGap());
 		g.columnGroupWidth((columnWidth + g.columnGap()) * numColumnSeries);
 		g.columnGroupShift(columnWidth + g.columnGap()); 
 

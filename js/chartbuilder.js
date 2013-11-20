@@ -393,7 +393,6 @@ ChartBuilder = {
 				chart.series()[$(this).parent().data().index].color = $(this).val()
 				ChartBuilder.redraw()
 			})
-			
 			typer.change(function() {
 				var val = $(this).val();
 				var index = $(this).parent().data().index;
@@ -404,6 +403,7 @@ ChartBuilder = {
 				chart.setXScales()
 					.resize();
 				ChartBuilder.redraw();
+
 			})
 			
 			axer.change(function() {
@@ -819,6 +819,14 @@ ChartBuilder.start = function(config) {
   			chart.xAxisRef([dataObj.data.shift()]);
   			
   			chart.series(dataObj.data);
+
+  			//if there is only one series, make the name of it the title and fill the title box
+  			if(chart.series().length === 1 && chart.title().length === 0 || chart.title() === chart.series()[0].name) {
+  				chart.title(chart.series()[0].name)
+  				chart.titleElement().text(chart.title())
+  				$("#chart_title").val(chart.title())
+  			}
+
   			chart.setPadding();
   			
   			ChartBuilder.setChartArea();
