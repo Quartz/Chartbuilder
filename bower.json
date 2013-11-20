@@ -17,6 +17,7 @@
     "rgbcolor": "http://www.phpied.com/files/rgbcolor/rgbcolor.js",
     "really-simple-color-picker": "https://github.com/laktek/really-simple-color-picker.git",
     "jquery-csv": "https://jquery-csv.googlecode.com/files/jquery.csv-0.71.min.js",
-    "html5-boilerplate": "~4.2.0"
+    "html5-boilerplate": "~4.2.0",
+	"webfontloader": "https://github.com/typekit/webfontloader.git"
   }
 }

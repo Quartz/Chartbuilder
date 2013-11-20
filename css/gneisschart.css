@@ -1,7 +1,20 @@
-@import url(http://fonts.googleapis.com/css?family=Cutive);
+/* 
+// Make sure to change the name of the font 
+// in the webfont.js loader in index.html
+*/
+@import url(http://fonts.googleapis.com/css?family=Georgia); 
+
+svg {
+	font-size: 14px;
+}
 
 svg #ground {
 	fill: #fff;
+	stroke: none;
+}
+
+svg #plotArea {
+	fill: none;
 	stroke: none;
 }
 
@@ -49,7 +62,20 @@ svg text.bargridLabel {
 	font-family: Georgia, serif;
 	font-size: 12px
 }
-	
+
+/*Default styling of series*/
+
+svg path.seriesLine {
+	stroke-width: 3px;
+	stroke-linejoin: round;
+	stroke-linecap: round;
+	fill: none;
+}
+
+svg .seriesScatter circle {
+	stroke:#fff;
+	stroke-width":1;
+}
 #titleLine {
 	font-family: Georgia Bold, serif;
 	font-size: 14px;
