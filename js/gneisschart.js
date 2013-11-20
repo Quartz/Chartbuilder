@@ -33,6 +33,7 @@ Gneiss.defaultGneissChartConfig = {
 	columnGap: 1, //the horizontal space between two columns that have the same x-axis value
 	axisBarGap: 5, //the horizontal space between a vertical axis and an adjacent bar
 	maxColumnWidth: 7.5, // the maximum width of a column as a percent of the available chart width	primaryAxisPosition: "right", // the first axis will be rendered on this side, "right" or "left" only
+	primaryAxisPosition: "right", // the first axis will be rendered on this side, "right" or "left" only
 	legend: true, // whether or not there should be a legend
 	title: "", // the chart title 
 	titleBottomMargin: 5, // the vertical space between the title and the next element (sometimes a legend, sometimes an axis)
