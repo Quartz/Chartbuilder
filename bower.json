@@ -2,16 +2,16 @@
   "name": "Chartbuilder",
   "version": "0.5.4",
   "main": [
-    "js/chartbuilder.js",
-    "js/gneisschart.js",
-    "css/chartbuilder.css",
-    "colorPicker.css",
-    "css/gneisschart.css",
-    "index.html"
+    "./js/chartbuilder.js",
+    "./js/gneisschart.js",
+    "./css/chartbuilder.css",
+    "./colorPicker.css",
+    "./css/gneisschart.css",
+    "./index.html"
     ],
   "scripts": [
-    "js/chartbuilder.js",
-    "js/gneisschart.js"
+    "./js/chartbuilder.js",
+    "./js/gneisschart.js"
   ],
   "ignore": [
     "**/.*",
