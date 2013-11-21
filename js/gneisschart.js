@@ -40,7 +40,7 @@ Gneiss.defaultGneissChartConfig = {
 	bargridLabelBottomMargin: 5, //the space between the bargrid series label and the top most bar
 	colors: ["#ff4cf4","#ffb3ff","#e69ce6","#cc87cc","#b373b3","#995f99","#804c80","#665266","#158eff","#99cdff","#9cc2e6","#87abcc","#7394b3","#5f7d99","#466780","#525c66"], 
 	padding :{
-		top: 0,
+		top: 5,
 		bottom: 50,
 		left: 10,
 		right: 10
