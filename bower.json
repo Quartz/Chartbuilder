@@ -2,16 +2,12 @@
   "name": "Chartbuilder",
   "version": "0.5.5",
   "main": [
-    "./js/chartbuilder.js",
-    "./js/gneisschart.js",
-    "./css/chartbuilder.css",
-    "./colorPicker.css",
-    "./css/gneisschart.css",
-    "./index.html"
-    ],
-  "scripts": [
-    "./js/chartbuilder.js",
-    "./js/gneisschart.js"
+    "js/chartbuilder.js",
+    "js/gneisschart.js",
+    "css/chartbuilder.css",
+    "css/colorPicker.css",
+    "css/gneisschart.css",
+    "index.html"
   ],
   "ignore": [
     "node_modules",
@@ -19,7 +15,10 @@
     "test",
     "tests"
   ],
-  "repository": { "type": "git", "url": "https://github.com/Quartz/Chartbuilder.git" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Quartz/Chartbuilder.git"
+  },
   "dependencies": {
     "canvg": "https://canvg.googlecode.com/files/canvg-1.3.zip",
     "d3": "~2.10.3",
@@ -29,6 +28,8 @@
     "really-simple-color-picker": "https://github.com/laktek/really-simple-color-picker.git",
     "jquery-csv": "https://jquery-csv.googlecode.com/files/jquery.csv-0.71.min.js",
     "html5-boilerplate": "~4.2.0",
-	"webfontloader": "https://github.com/typekit/webfontloader.git"
+    "webfontloader": "https://github.com/typekit/webfontloader.git",
+    "StackBlur": "http://www.quasimondo.com/StackBlurForCanvas/StackBlur.js",
+    "sugar": "~1.4.1"
   }
 }
