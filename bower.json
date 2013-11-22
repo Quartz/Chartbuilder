@@ -14,7 +14,6 @@
     "./js/gneisschart.js"
   ],
   "ignore": [
-    "**/.*",
     "node_modules",
     "bower_components",
     "test",
