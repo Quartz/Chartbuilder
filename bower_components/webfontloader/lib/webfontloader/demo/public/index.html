@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+<head>
+</head>
+<body>
+  <h1>Web Font Loader Demos</h1>
+  <p>
+    Demonstrations of pure CSS and JavaScript-enhanced use of @font-face.
+  </p>
+  <p>
+    Note that many of these demonstrations use a <strong>slow proxy</strong> to
+    increase the amount of time it takes to load a font. We do this to make it
+    more obvious that the events system is working. It <em>does not</em> represent
+    real world usage.
+  </p>
+
+  <h2>Modules</h2>
+  <p>
+    Web Font Loader provides modules to load fonts from many places.
+  </p>
+  <ol>
+    <li><a href="/google-css.html">Google / CSS Link</a>: Load fonts from Google with a <code>link</code> tag. Consider this a base case for font loading.</li>
+    <li><a href="/google.html">Google / Web Font Loader</a>: Load fonts from Google with Web Font Loader.</li>
+    <li><a href="/typekit.html">Typekit / Web Font Loader</a>: Load fonts from Typekit with Web Font Loader.</li>
+    <li><a href="/custom.html">Custom / Web Font Loader</a>: Load fonts from your own CSS with Web Font Loader.</li>
+    <li><a href="/fontdeck.html">Fontdeck / Web Font Loader</a>: Load fonts from Fontdeck with Web Font Loader.</li>
+    <li><a href="/monotype.html">Monotype / Web Font Loader</a>: Load fonts from fonts.com with Web Font Loader.</li>
+  </ol>
+
+  <h2>Modules in Iframes</h2>
+  <p>
+    Web Font Loader provides the ability to load fonts in child iframes using modules, instead of the main window.
+  </p>
+  <ol>
+    <li><a href="/google-iframe.html">Google / Web Font Loader</a>: Load fonts from Google in a child iframe with Web Font Loader.</li>
+    <li><a href="/typekit-iframe.html">Typekit / Web Font Loader</a>: Load fonts from Typekit in a child iframe with Web Font Loader.</li>
+    <li><a href="/custom-iframe.html">Custom / Web Font Loader</a>: Load fonts from your own CSS in a child iframe with Web Font Loader.</li>
+    <li>Fontdeck / Web Font Loader: Their demo fonts seem to be broken at the moment, so we don't have an iframe demo of this module.</li>
+    <li><a href="/monotype-iframe.html">Monotype / Web Font Loader</a>: Load fonts from fonts.com in a child iframe with Web Font Loader.</li>
+  </ol>
+
+  <h2>Events</h2>
+  <p>
+    Web Font Loader provides events to help control font rendering across browsers. Here are some sample uses.
+  </p>
+  <ol>
+    <li><a href="/event-css-active.html">Show when rendered (CSS)</a>: Use CSS to show part of the page only when the font has rendered. (Webkit style)</li>
+    <li><a href="/event-js-active.html">Show when rendered (JS)</a>: Use JS to show part of the page only when the font has rendered. (Webkit style)</li>
+    <li><a href="/event-css-inactive.html">Fallback before rendered (CSS)</a>: Use CSS to show fallback font before the font has rendered. (Mozilla style)</li>
+    <li><a href="/event-css-loading.html">Show loading message (CSS)</a>: Use CSS to show a message while the font loads.</li>
+    <li><a href="/event-js-loading.html">Show loading message (JS)</a>: Use JS to show a message while the font loads.</li>
+  </ol>
+
+  <h2>More Events</h2>
+  <p>
+    More complex samples using events.
+  </p>
+  <ol>
+    <li><a href="/event-css-active-multiple.html">Multiple font loads</a>: Use CSS to control more than one font.</li>
+    <li><a href="/events.html">Multiple typefaces</a>: The full CSS and JS event cycle when using multiple typefaces.</li>
+    <li><a href="/events-variations.html">Multiple variations</a>: The full CSS and JS event cycle when using multiple weights and styles of one typeface.</li>
+  </ol>
+
+  <h2>IE Behavior</h2>
+  <p>
+    Web Font Loader helps workaround IE's page blocking behavior.
+  </p>
+  <ol>
+    <li><a href="/ie-slow-link.html">Slow Link</a>: Demonstrate that IE blocks the whole page when loading fonts via a LINK tag.</li>
+    <li><a href="/ie-fast-js.html">Fast JS</a>: By default, Web Font Loader works around the default IE loading behavior.</li>
+    <li><a href="/ie-slow-js.html">Slow JS</a>: Restore the default IE loading behavior.</li>
+  </ol>
+
+  <h2>Tests</h2>
+  <p>
+    Additional demo pages to test specific functionality.
+  </p>
+  <ol>
+    <li><a href="/typekit-variations.html">Typekit with Multiple Variations</a></li>
+    <li><a href="/fontwatchrunner-default-fonts.html">Default font stacks for FontWatchRunner</li>
+  </ol>
+
+</body>
+</html>

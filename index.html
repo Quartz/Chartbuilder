@@ -50,92 +50,90 @@
                 </div>
 			  </div>
             </div>
-
 			<div id="rightColumn" class="column">
-                <div>
+				<div style="margin-left: 15px">
 			        <h4>Chrome browser recommended. Data should be prepped in a spreadsheet before pasting into the input box. <a href="https://github.com/bwareham/MPR-Chartbuilder#mpr-chartbuilder">Detailed instructions</a> & <a href="https://github.com/bwareham/MPR-Chartbuilder#faqtroubleshooting">Troubleshooting FAQ</a></h4>
 			        <h4><a href="http://tools.bilware.info/MPR-Chartbuilder"><button>Reset Page</button></a><i> If you don't like what you see you can reset and start from scratch</i></h4>
-				</div>			
+				</div>
 				<div class="cbInner">
 					<div id="chartOptions" class="interfaceCol">
 						<div id="datainput">
-							<div class="inputGroup">			
-								<h2>1. Input your data</h2>				
+							<div class="inputGroup">
+								<h2>1. Input your data</h2>
 								<span id="invalidDataSpan" class="hide">Warning: Data is Invalid</span>
 								<textarea id="csvInput" class="input-box" name="csvInput" rows="8"></textarea>
 							</div>
 							<div class="inputGroup">
 								<h4>Check the format of your data</h4>
-									<div id="dataTable" class="input-box">
-										<table border=0>
-											<tr><th>Header</th></tr>
-											<tr><td>Data</td></tr>
-										</table>
-									</div>
+								<div id="dataTable" class="input-box">
+								  <table border=0>
+									<tr><th>Header</th></tr>
+									<tr><td>Data</td></tr>
+								  </table>
+								</div>
 							</div>
 							<div class="clearfix"></div>
 						</div>
+
 						<div class="optionBlock topOptionBlock">
-							<h2>2. Series Options</h2>
-							<div id="seriesItems"></div>
-							<cite>Checking a series item creates a left axis based on that item</cite>
-						</div>  					
+						  <h2>2. Series Options</h2>
+						  <div id="seriesItems"></div>
+						  <cite>Checking a series item creates a left axis based on that item</cite>
+						</div>
+						
 						<div class="optionBlock">
 							<h2>3. Chart Options</h2>
 								<div class="optionGroup"><label for="chart_title">Title</label><input type="text" name="chart_title" value="" id="chart_title"></div>
-								<div class="optionGroup"><label for="credit">Credit</label><input id="creditLine" type="text" name="credit" value="MPR News graphic"></div>
+								<div class="optionGroup"><label for="credit">Credit</label><input id="creditLine" type="text" name="credit" value="MPR News Graphic"></div>
 								<div class="optionGroup"><label for="source">Source</label><input id="sourceLine" type="text" name="source" value="Data: ">
 								<cite>Something like "Data: Bureau of Labor Statistics" or "Data compiled by Factset"</cite></div>
 						</div>
 						<div class="optionBlock">
-								<h2>4. Right Axis Options</h2>
-								<div id="rightAxisControls">
-									<div class="optionGroup"><label for="right_axis_prefix">Right Axis Prefix</label><input type="text" name="right_axis_prefix" value="" id="right_axis_prefix"></div>
-									<div class="optionGroup"><label for="right_axis_suffix">Right Axis Suffix</label><input type="text" name="right_axis_suffix" value="" id="right_axis_suffix"></div>
-									<div class="optionGroup"><label for="right_axis_tick_num">Number of Y Axis Ticks</label>
-										<select name="right_axis_tick_num" id="right_axis_tick_num" size="1">
-											<option>2</option>
-											<option>3</option>
-											<option selected >4</option>
-											<option>5</option>
-											<option>6</option>
-										</select>
-									</div>
-									<div class="optionGroup"><label for="right_axis_max">Right Axis Max</label><input type="text" name="right_axis_max" value="" id="right_axis_max"></div>
-									<div class="optionGroup"><label for="right_axis_min">Right Axis Min</label><input type="text" name="right_axis_min" value="" id="right_axis_min"></div>
-									<div class="optionGroup"><label for="right_axis_tick_override">Right Axis Tick Override</label><input type="text" name="right_axis_tick_override" value="" id="right_axis_tick_override"></div>
-								</div>
-						</div>
-							<div id="leftAxisControls" class="optionBlock hide">
-								<h2>4+ Left Axis Options</h2>
-								<div class="optionGroup"><label for="left_axis_prefix">Left Axis Prefix</label><input type="text" name="left_axis_prefix" value="" id="left_axis_prefix"></div>
-								<div class="optionGroup"><label for="left_axis_suffix">Left Axis Suffix</label><input type="text" name="left_axis_suffix" value="" id="left_axis_suffix"></div>
-								<div class="optionGroup"><label for="left_axis_max">Left Axis Max</label><input type="text" name="left_axis_max" value="" id="left_axis_max"></div>
-								<div class="optionGroup"><label for="left_axis_min">Left Axis Min</label><input type="text" name="left_axis_min" value="" id="left_axis_min"></div>
-								<div class="optionGroup"><label for="left_axis_tick_override">Left Axis Tick Override</label><input type="text" name="left_axis_tick_override" value="" id="left_axis_tick_override" ></div>
-							</div>
-							<div class="optionBlock">
-								<h2>5. Bottom Axis Options</h2>
-								<div class="optionGroup"><label for="x_axis_tick_num">Number of X Axis Ticks</label>
-									<select name="x_axis_tick_num" id="x_axis_tick_num" size="1">
+							<h2>4. Right Axis Options</h2>
+							<div id="rightAxisControls">
+								<div class="optionGroup"><label for="right_axis_prefix">Right Axis Prefix</label><input type="text" name="right_axis_prefix" value="" id="right_axis_prefix"></div>
+								<div class="optionGroup"><label for="right_axis_suffix">Right Axis Suffix</label><input type="text" name="right_axis_suffix" value="" id="right_axis_suffix"></div>
+								<div class="optionGroup"><label for="right_axis_tick_num">Number of Y Axis Ticks</label><select name="right_axis_tick_num" id="right_axis_tick_num" size="1">
 									<option>2</option>
 									<option>3</option>
-									<option>4</option>
-									<option selected>5</option>
+									<option selected >4</option>
+									<option>5</option>
 									<option>6</option>
-									<option>7</option>
-									<option>8</option>
-									<option>9</option>
-									<option>10</option>
-									<option>11</option>
-									<option>12</option>
-									<option>13</option>
-									<option>14</option>
-									<option>15</option>
-									</select>
-								</div>
-								<div class="optionGroup"><label for="x_axis_date_format">X Axis Date Format</label>
-									<select name="x_axis_date_format" id="x_axis_date_format">
+								</select></div>
+								<div class="optionGroup"><label for="right_axis_max">Right Axis Max</label><input type="text" name="right_axis_max" value="" id="right_axis_max"></div>
+								<div class="optionGroup"><label for="right_axis_min">Right Axis Min</label><input type="text" name="right_axis_min" value="" id="right_axis_min"></div>
+								<div class="optionGroup advanced"><label for="right_axis_tick_override">Right Axis Tick Override</label><input type="text" name="right_axis_tick_override" value="" id="right_axis_tick_override"></div>
+							</div>
+						</div>
+						<div id="leftAxisControls" class="optionBlock hide">
+							<h2>4+ Left Axis Options</h2>
+							<div class="optionGroup"><label for="left_axis_prefix">Left Axis Prefix</label><input type="text" name="left_axis_prefix" value="" id="left_axis_prefix"></div>
+							<div class="optionGroup"><label for="left_axis_suffix">Left Axis Suffix</label><input type="text" name="left_axis_suffix" value="" id="left_axis_suffix"></div>
+							<div class="optionGroup"><label for="left_axis_max">Left Axis Max</label><input type="text" name="left_axis_max" value="" id="left_axis_max"></div>
+							<div class="optionGroup"><label for="left_axis_min">Left Axis Min</label><input type="text" name="left_axis_min" value="" id="left_axis_min"></div>
+							<div class="optionGroup"><label for="left_axis_tick_override">Left Axis Tick Override</label><input type="text" name="left_axis_tick_override" value="" id="left_axis_tick_override" ></div>
+						</div>
+						<div class="optionBlock">
+							<h2>5. Bottom Axis Options</h2>
+							<div class="optionGroup showonlywith-date">
+								<label for="x_axis_tick_date_frequency">Tick date frequency</label><select name="x_axis_tick_date_frequency" id="x_axis_tick_date_frequency" size="1">
+									<option selected>auto</option>
+									<option>1 hour</option>
+									<option>1 day</option>
+									<option>1 week</option>
+									<option>1 month</option>
+									<option>3 months</option>
+									<option>6 months</option>
+									<option>1 year</option>
+									<option>5 years</option>
+									<option>10 years</option>
+									<option>20 years</option>
+									<option>50 years</option>
+									<option>100 years</option>
+								   </select>
+							</div>
+							<div class="optionGroup showonlywith-date"><label for="x_axis_date_format">X Axis Date Format</label>
+								<select name="x_axis_date_format" id="x_axis_date_format">
 									<option value="mmddyyyy">2/25/2012</option>
 									<option value="ddmmyyyy">25/2/2012</option>
 									<option value="mmdd">2/25</option>
@@ -147,27 +145,28 @@
 									<option value="MM">February</option>
 									<option value="M">Feb.</option>
 									<option value="hmm">3:27</option>
-									</select>
-									<cite>First series column must be labeled "Date" to enable date options</cite>
+								</select>
+								<cite>First series column must be labeled "Date" to enable date options</cite>
+							</div>
+							<div class="optionGroup showonlywith-ordinal">No options available</div>
+						</div>
+						<div class="optionBlock full">
+							<h3>6. Copy the HTML table of your data (if you want)</h3>
+							<textarea  class="input-box"  id="table-html" type="text" rows="10"></textarea>
+							<div class="previousCharts hide">
+								<div class="optionGroup"><label for="previous_charts">Previously Created Charts</label>
+									<select name="previous_charts" id="previous_charts"></select>
 								</div>
 							</div>
-							<div class="optionBlock full">
-								<h3>6. Copy the HTML table of your data (if you want)</h3>
-								<textarea  class="input-box"  id="table-html" type="text" rows="10"></textarea>             
-								<div class="previousCharts">
-									<div class="optionGroup"><label for="previous_charts">Previously Created Charts</label>
-										<select name="previous_charts" id="previous_charts"></select>
-									</div>
-								</div>
-							</div>
-							<div class="clearfix"></div>  				
-							<div id="currentSeries" class="interfaceCol"></div>
-					</div>			
-				</div>
-				<div id="blankColumn" class="column"></div>
-				<div class="clearfix"></div>
-		    </div>
-	    </div>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+					<div id="currentSeries" class="interfaceCol"></div>
+				</div>			
+			</div>
+			<div id="blankColumn" class="column"></div>
+			<div class="clearfix"></div>
+		</div>
 
     <!-- Libraries JS -->
 		<script src="bower_components/modernizr/modernizr.js" charset="utf-8"></script>
@@ -177,6 +176,9 @@
 		<script src="bower_components/rgbcolor/index.js" charset="utf-8"></script>
 		<script src="bower_components/jquery-csv/index.js" charset="utf-8"></script>
 		<script src="bower_components/really-simple-color-picker/jquery.colorPicker.min.js" charset="utf-8"></script>
+		<script src="bower_components/webfontloader/target/webfont.js" type="text/javascript" charset="utf-8"></script>
+		
+		
 		
 		<!-- Custom libraries JS -->
 		<script src="js/custom_components/sugar-1.3.9-custom.min.js" charset="utf-8"></script>
@@ -189,13 +191,18 @@
 		<script src="js/vendor/rgbcolor.js" charset="utf-8"></script>
 		
 		<script type="text/javascript">
-		  (function() {
-		    // This starts Chartbuilder and can be passed a configuration
-		    // object.  See the Gneiss charting options.
-  		  ChartBuilder.start({
-    		  
-  		  });
-		  })();
+
+		//This loads the webfonts and starts Chartbuilder once they're present
+		WebFont.load({
+			custom: {
+				families: ["Cutive"]
+			},
+		    active: function(name) {
+		        $(document).ready(function() {
+		            ChartBuilder.start();
+		        });
+		    }
+		});
 		</script>
 	</body>
 </html>
