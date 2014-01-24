@@ -61,7 +61,7 @@ Make sure the label on the column with your years is 'Date', not 'Year' or anyth
 The date format can be changed via the dropdown box in Option 5.
 
 #####I made a change that pushed the title, legend or other info off the chart. What can I do to fix it?
-You probably can't create the layout you want. You may be able to backtrack through your changes to get the preview back to something usable. Sometimes it's easier to refresh the page and start from scratch.
+This hasn't been happening as often after some code improvements. But if it does, you may be able to backtrack through your changes to get the preview back to something usable. Sometimes it's easier to refresh the page and start from scratch.
 Examples of charts made with Chartbuilder
 
 #####I made changes to my chart that didn't show up in the downloaded image.
