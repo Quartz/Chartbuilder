@@ -1,9 +1,7 @@
-Chartbuilder / Gneisschart
+MPR-Chartbuilder
 ==========================
 
-Chartbuilder / Gneisschart is a D3.js based front-end charting application that facilitates easy creation of simple beautiful charts.
-
-Chartbuilder is the user and export interface. Gneisschart is the charting framework.
+MPR-Chartbuilder is a customized fork of a charting tool hosted at https://github.com/Quartz/Chartbuilder. Changes include color palettes and fonts consistent with Minnesota Public Radio online style conventions.
 
 What Chartbuilder is not
 -------------------------
@@ -14,32 +12,10 @@ What Chartbuilder is not
 
 What Chartbuilder is
 --------------------
-Chartbuilder is the final step in charting. Paste data into it and export an svg or png chart in a style that has been predefined.
-
-Who is using Chartbuilder
---------------------
-Other than Quartz, customized Chartbuilder created charts have been seen in many publications: 
-+ [NPR](http://www.npr.org/blogs/parallels/2013/10/24/240493422/in-most-every-european-country-bikes-are-outselling-cars)
-+ [CNBC](http://www.cnbc.com/id/101009116)
-+ [The New Yorker](http://www.newyorker.com/online/blogs/currency/2013/12/2013-the-year-in-charts.html)
-+ [The Press-Enterprise](http://blog.pe.com/political-empire/2013/07/31/ppic-poll-global-warming-a-concern-for-inland-voters/)
-+ [New Hampshire Public Radio](http://nhpr.org/post/water-cleanup-commences-beede-story-shows-superfund-laws-flaws)
-+ [CFO Magazine](http://ww2.cfo.com/the-economy/2013/11/retail-sales-growth-stalls/)
-+ [Australian Broadcasting Corporation](http://www.abc.net.au/news/2013-10-11/nobel-prize3a-why-2001-was-the-best-year-to-win/5016010)
+Chartbuilder is the final step in charting. Paste data into it and export a png chart in a style that has been predefined.
 
 How to use Chartbuilder
 ------------------------
-###Getting started
-If you are not interested in customizing the styles of your charts use the hosted version: http://quartz.github.io/Chartbuilder/
-
-Alternatively: 
-
-1. [Download source](https://github.com/Quartz/Chartbuilder/archive/master.zip) (and unzip)
-3. from the terminal navigate to the source folder (on a Mac: `cd ~/Downloads/Chartbuilder-master/`) 
-4. run `python -m SimpleHTTPServer`
-5. Open Google Chrome, Apple Safari, or Opera and navigate to [http://localhost:8000/](http://localhost:8000/)
-
-
 ####Charting time Series Data
 1. Find some time series data (may I suggest [this](https://docs.google.com/a/qz.com/spreadsheet/ccc?key=0AtrPfe-ScVhJdGg0a2hKZU1JaWZ4ZGMxY3NKbWozYUE#gid=0))
 2. Make sure the first column is your dates, and the heading on the first column is "date"
@@ -57,11 +33,42 @@ _steps 2-4 are optional_
 2. Set a title
 3. Set your units using the axis prefix and suffix field
 4. Adjust your max and min (if you so choose)
-4. Add a credit line and/or a source line
+5. Add a credit line and/or a source line
 6. Click create chart
-7. Select to download an svg or png
+7. Download png file
 
-###Examples of charts made with Chartbuilder
+FAQ/Troubleshooting
+------------------------
+#####Why does the chart in the preview pane exceed the pane's boundaries?
+You are probably using Firefox or another browser that currently doesn't play nicely with Chartbuilder. Though Firefox will output a usable image, you can't see what you're building. Use Chrome.
+
+#####When I paste my data it shows up in the Input box in a single line with no spaces.
+A symptom of Internet Explorer. Charts still seem to render properly, but it's practically impossible to edit the data, so the Chrome browser is preferred.
+
+#####Why do I get a "Warning: Data is Invalid" error when I paste my table?
+Chartbuilder requires clean data to work properly.
++ Do not include '%' or '$' symbols in your tables
++ If the data looks clean, it may still contain hidden characters. Check the HTML table (Option 6) for things like '&nbsp' (a hidden space character).
++ Sometimes a second set of data pasted over your first will create a single line of information rather than a table. Reset the page and start over.
+
+#####My chart looks fine in the preview pane, but the exported image is missing details like the title, legend, source credit, etc.
+Hidden characters can prevent Chartbuilder from merging the layers that make up your chart on export. Check the HTML table (Option 6) for things like '&nbsp' (a hidden space character).
+
+#####Chartbuilder's cramming all the years on the bottom axis so they're unreadable.
+Make sure the label on the column with your years is 'Date', not 'Year' or anything else. Chartbuilder will recognize this as a date and space out the years listed on the axis.
+
+#####The bottom axis shows a series of 'Jan. 1' instead of the years.
+The date format can be changed via the dropdown box in Option 5.
+
+#####I made a change that pushed the title, legend or other info off the chart. What can I do to fix it?
+You probably can't create the layout you want. You may be able to backtrack through your changes to get the preview back to something usable. Sometimes it's easier to refresh the page and start from scratch.
+Examples of charts made with Chartbuilder
+
+#####I made changes to my chart that didn't show up in the downloaded image.
+That can happen if you make a change after clicking the "Save Image of Chart" button but before clicking the "Download Image of Chart" link. You need to click the "Save..." button again to save your changes. (You may have to do it twice to make the "Download..." button appear again.) 
+
+Examples of charts made with Chartbuilder
+------------------------
 ####Line charts
 <img src="http://quartz.github.io/Chartbuilder/images/line1.jpeg" />
 <img src="http://quartz.github.io/Chartbuilder/images/line2.jpeg" />
@@ -80,43 +87,3 @@ _steps 2-4 are optional_
 <img src="http://quartz.github.io/Chartbuilder/images/mixed1.jpeg" />
 <img src="http://quartz.github.io/Chartbuilder/images/mixed2.jpeg?cache=0" />
 
-Deploying Chartbuilder
-------------------------
-ChartBuilder is meant to be deployed by an organization and then customized for the design consistency of that organization so that the reporters or other people in that organization can make charts.
-
-###Deploying
-ChartBuild is an HTML/CSS/JS application.  You can easy copy, fork, and install the files wherever.  It can be easily put up on Github Pages.
-
-###Configuration
-Once you deploy it, configuring is either through CSS overrides, custom HTML, or Javascript configuration.
-
-####Chart configuration
-Chart configuration is handled by passing a configuration object through to `ChartBuilder.start()`.
-
-    ChartBuilder.start({
-      colors: ["#ff4cf4","#ffb3ff","#e69ce6","#cc87cc","#b373b3","#995f99"],
-      creditline: 'NewsPost Inc.'
-    });
-
-You can see all the configuration options in the [Gneisschart.js library](https://github.com/Quartz/Chartbuilder/blob/master/js/gneisschart.js).
-
-###Getting started
-
-Why Chartbuilder / Gneisschart
------------------
-+ You're a writer, blogger, reporter who hates the way screenshotted research reports and excel charts look in your stories
-+ You're a graphic designer or graphics editor spending too much time making simple charts in the same style
-+ You're a developer at an organization looking to add consistency to employee generated charts
-
-Chartbuilder was created to speed workflow in a newsroom and give reporters more responsibility over their content. It allows someone to create simple graphics quickly within a pre-specified style guide without needing specialized design software.
-
-The output formats are can be used anywhere images and svgs are accepted. There's no need for CMS integration or complex back end systems. 
-
-There are fewer excuses to use screenshots from analyst reports or charts in Excel.
-
-More about that here http://yanofsky.info/demos/chartbuilder/slides/
-
-Gneisschart was created to assist in the above as well as establish the starting point for a touch focused responsive charting library.
-
-###Styling the chart
-Chart styles are contained in `css/gneisschart.css`. The color palette is defined in the configuration object
