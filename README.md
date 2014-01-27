@@ -62,7 +62,6 @@ The date format can be changed via the dropdown box in Option 5.
 
 #####I made a change that pushed the title, legend or other info off the chart. What can I do to fix it?
 This hasn't been happening as often after some code improvements. But if it does, you may be able to backtrack through your changes to get the preview back to something usable. Sometimes it's easier to refresh the page and start from scratch.
-Examples of charts made with Chartbuilder
 
 #####I made changes to my chart that didn't show up in the downloaded image.
 That can happen if you make a change after clicking the "Save Image of Chart" button but before clicking the "Download Image of Chart" link. You need to click the "Save..." button again to save your changes. (You may have to do it twice to make the "Download..." button appear again.) 
@@ -70,7 +69,7 @@ That can happen if you make a change after clicking the "Save Image of Chart" bu
 Examples of charts made with Chartbuilder
 ------------------------
 ####Line charts
-<img src="http://quartz.github.io/Chartbuilder/images/line1.jpeg" />
+<img src="http://tools.bilware.info/MPR-Chartbuilder/img/line1.png" />
 <img src="http://quartz.github.io/Chartbuilder/images/line2.jpeg" />
 
 ####Column charts
