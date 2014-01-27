@@ -69,8 +69,8 @@ That can happen if you make a change after clicking the "Save Image of Chart" bu
 Examples of charts made with Chartbuilder
 ------------------------
 ####Line charts
-<img src="http://tools.bilware.info/MPR-Chartbuilder/img/line1.png" />
-<img src="http://tools.bilware.info/MPR-Chartbuilder/img/line2.png" />
+<img src="http://tools.bilware.info/MPR-Chartbuilder/img/line_1.png" />
+<img src="http://tools.bilware.info/MPR-Chartbuilder/img/line_2.png" />
 
 ####Column charts
 <img src="http://tools.bilware.info/MPR-Chartbuilder/img/column1.png" />
