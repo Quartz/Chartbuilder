@@ -70,7 +70,7 @@ Examples of charts made with Chartbuilder
 ------------------------
 ####Line charts
 <img src="http://tools.bilware.info/MPR-Chartbuilder/img/line1.png" />
-<img src="http://quartz.github.io/Chartbuilder/images/line2.jpeg" />
+<img src="http://tools.bilware.info/MPR-Chartbuilder/img/line2.jpeg" />
 
 ####Column charts
 <img src="http://quartz.github.io/Chartbuilder/images/column1.jpeg" />
