@@ -71,6 +71,7 @@ Examples of charts made with Chartbuilder
 ####Line charts
 <img src="http://tools.bilware.info/MPR-Chartbuilder/img/line_1.png" />
 <img src="http://tools.bilware.info/MPR-Chartbuilder/img/line_2.png" />
+<img src="http://tools.bilware.info/MPR-Chartbuilder/img/line_3.png" />
 
 ####Column charts
 <img src="http://tools.bilware.info/MPR-Chartbuilder/img/column1.png" />
