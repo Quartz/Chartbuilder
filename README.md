@@ -83,6 +83,6 @@ Examples of charts made with Chartbuilder
 
 
 ####Mixed
-<img src="http://quartz.github.io/Chartbuilder/images/mixed1.jpeg" />
+<img src="http://tools.bilware.info/MPR-Chartbuilder/img/mixed1.png" />
 <img src="http://quartz.github.io/Chartbuilder/images/mixed2.jpeg?cache=0" />
 
