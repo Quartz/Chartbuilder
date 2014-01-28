@@ -55,7 +55,7 @@ Chartbuilder requires clean data to work properly.
 Hidden characters can prevent Chartbuilder from merging the layers that make up your chart on export. Check the HTML table (Option 6) for things like '&nbsp' (a hidden space character).
 
 #####Chartbuilder's cramming all the years on the bottom axis so they're unreadable.
-Make sure the label on the column with your years is 'Date', not 'Year' or anything else. Chartbuilder will recognize this as a date and space out the years listed on the axis.
+Make sure the label on the column with your years is 'Date', not 'Year' or anything else. Chartbuilder will recognize this as a date and space out the years listed on the axis. The latest build has options for overriding the autospacing.
 
 #####The bottom axis shows a series of 'Jan. 1' instead of the years.
 The date format can be changed via the dropdown box in Option 5.
