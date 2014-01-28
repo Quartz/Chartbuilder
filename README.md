@@ -78,7 +78,7 @@ Examples of charts made with Chartbuilder
 <img src="http://quartz.github.io/Chartbuilder/images/column3.jpeg" />
 
 ####Bar grids
-<img src="http://quartz.github.io/Chartbuilder/images/bargrid1.jpeg" />
+<img src="http://tools.bilware.info/MPR-Chartbuilder/img/bar1.png" />
 <img src="http://quartz.github.io/Chartbuilder/images/bargrid2.jpeg" />
 
 
