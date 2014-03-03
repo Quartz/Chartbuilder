@@ -32,3 +32,15 @@ div.colorPicker-swatch {
   cursor: pointer;
   line-height: 12px;
 }
+span.colorPicker-swatch {
+	float: right;
+	clear: both;
+}
+span.colorPicker-hr {
+	float: right;
+	clear: both;
+	border-bottom: 1px solid #ddd;
+	margin-bottom: 1px;
+	padding-bottom: 1px;
+	width:100%;
+}
