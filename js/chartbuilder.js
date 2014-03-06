@@ -104,8 +104,8 @@ ChartBuilder = {
 								.split("€").join("")
 								.split("%").join("");
 
-					if(value == "null" || value == "" || (/\s+/).test(value)) {
-						//allow for nulls, blank, or whitespace only cells
+					if(value == "null" || value == "" || (/^\s+$/).test(value) || (/^\#[A-Z\\\d\/]+\!$/).test(value)) {
+						//allow for nulls, blank, whitespace only cells (if somehow trim didn't work), and excel errors
 						value = null
 					}
 					else if (isNaN(value)){
