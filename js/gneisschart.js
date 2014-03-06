@@ -100,58 +100,99 @@ Gneiss.defaultGneissChartConfig = {
 };
 
 Gneiss.dateParsers = {
-  "mmddyyyy": function(d) { return [d.getMonth() + 1, d.getDate(), d.getFullYear()].join("/"); },
-  "ddmmyyyy": function(d) { return [d.getDate(), d.getMonth() + 1, d.getFullYear()].join("/"); },
-  "mmdd": function(d) { return [d.getMonth() + 1, d.getDate()].join("/"); },
-  "Mdd": function(d) {
-    var month = d.getMonth() + 1;
-    if(month == 5) {
-      return d.format('{Mon}') + " " + d.getDate();
-    }
-    else {
-      return d.format('{Mon}.') + " " + d.getDate();
-    }
-  },
-  "ddM": function(d) {
-    var month = d.getMonth() + 1;
-    if(month == 5) {
-      return "" + d.getDate() + " " + d.format('{Mon}');
-    }
-    else {
-      return "" + d.getDate() + " " + d.format('{Mon}.');
-    }
-  },
-  "mmyy": function(d) { return [d.getMonth() + 1, String(d.getFullYear()).split("").splice(2,2).join("")].join("/"); },
-  "yy": function(d) { return "’" + String(d.getFullYear()).split("").splice(2,2).join(""); },
-  "yyyy": function(d) { return "" + d.getFullYear(); },
-  "MM": function(d) {
-    var month = d.getMonth() + 1;
-    if(month == 1) {
-      return "" + d.getFullYear();
-    }
-    else {
-      return d.format('{Month}');
-    }
-  },
-  "M": function(d) {
-    var month = d.getMonth() + 1;
-    if(month == 1) {
-      return "’" + String(d.getFullYear()).split("").splice(2,2).join("");
-    }
-    else if(month == 5) {
-      return d.format('{Mon}');
-    }
-    else {
-      return d.format('{Mon}.');
-    }
-  },
-  "hmm": function(d) {
-    if(Date.getLocale().code == 'en') {
-      return d.format('{12hr}:{mm}');
-    } else {
-      return d.format('{24hr}:{mm}');
-    }
-  }
+	"mmddyyyy": function(d) { return [d.getMonth() + 1, d.getDate(), d.getFullYear()].join("/"); },
+	"ddmmyyyy": function(d) { return [d.getDate(), d.getMonth() + 1, d.getFullYear()].join("/"); },
+	"mmdd": function(d) { return [d.getMonth() + 1, d.getDate()].join("/"); },
+	"Mdd": function(d) {
+		var month = d.getMonth() + 1;
+		if(month == 5) {
+			return d.format('{Mon}') + " " + d.getDate();
+		}
+		else {
+			return d.format('{Mon}.') + " " + d.getDate();
+		}
+	},
+	"ddM": function(d) {
+		var month = d.getMonth() + 1;
+		if(month == 5) {
+			return "" + d.getDate() + " " + d.format('{Mon}');
+		}
+		else {
+			return "" + d.getDate() + " " + d.format('{Mon}.');
+		}
+	},
+	"mmyy": function(d) { return [d.getMonth() + 1, String(d.getFullYear()).split("").splice(2,2).join("")].join("/"); },
+	"yy": function(d) { return "’" + String(d.getFullYear()).split("").splice(2,2).join(""); },
+	"yyyy": function(d) { return "" + d.getFullYear(); },
+	"MM": function(d) {
+		var month = d.getMonth() + 1;
+		if(month == 1) {
+			return "" + d.getFullYear();
+		}
+		else {
+			return d.format('{Month}');
+		}
+	},
+	"M": function(d) {
+		var month = d.getMonth() + 1;
+		if(month == 1) {
+			return "’" + String(d.getFullYear()).split("").splice(2,2).join("");
+		}
+		else if(month == 5) {
+			return d.format('{Mon}');
+		}
+		else {
+			return d.format('{Mon}.');
+		}
+	},
+	"hmm": function(d) {
+		if(Date.getLocale().code == 'en') {
+			return d.format('{12hr}:{mm}');
+		} else {
+			return d.format('{24hr}:{mm}');
+		}
+	},
+	"QJan": function(d) {
+		var year = d.getFullYear();
+		var day = d.getDate();
+		if (day == 1) {
+			if (month == 1) {
+				return year;
+			}
+
+			if (month == 4 || month == 7 || month == 10) {
+				return "Q" + (((month-1) / 3) + 1);
+			}
+
+		}
+
+		return "";
+	},
+	"QJul": function(d) {
+		var year = d.getFullYear();
+		var day = d.getDate();
+		if (day == 1) {
+			if (month == 7) {
+				return year;
+			}
+
+			if (month == 1) {
+				return "Q3"
+			}
+
+			if (month == 4) {
+				return "Q4"
+			}
+
+			if (month == 10) {
+				return "Q2"
+			}
+			
+		}
+
+		return "";
+
+	}
 };
 
 Gneiss.helper = {
