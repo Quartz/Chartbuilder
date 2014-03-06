@@ -356,20 +356,16 @@ ChartBuilder = {
 			var color = ""
 			
 			if(s.type == "line") {
-				color = s.color ? s.color.replace("#","") : colors[lineIndex].replace("#","")
-				lineIndex++
+				color = s.color ? s.color.replace("#","") : colors[i].replace("#","")
 			}
 			else if(s.type == "column") {
-				color = s.color ? s.color.replace("#","") : colors[colIndex].replace("#","")
-				colIndex++
+				color = s.color ? s.color.replace("#","") : colors[i].replace("#","")
 			}
 			else if(s.type =="bargrid") {
-				color = s.color ? s.color.replace("#","") : colors[bargridIndex].replace("#","")
-				bargridIndex++
+				color = s.color ? s.color.replace("#","") : colors[i].replace("#","")
 			}
 			else if(s.type =="scatter") {
-				color = s.color ? s.color.replace("#","") : colors[scatterIndex].replace("#","")
-				scatterIndex++
+				color = s.color ? s.color.replace("#","") : colors[i].replace("#","")
 			}
 			
 			seriesContainer.append(seriesItem);
