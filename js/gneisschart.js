@@ -1311,12 +1311,6 @@ function Gneiss(config)
 
 		// Determine the proper column width
 		var effectiveChartWidth = g.width() - g.padding().right - g.padding().left - g.axisBarGap();
-		try {
-			effectiveChartWidth = g.xAxis().scale.range()[1] - g.xAxis().scale.range()[0];
-		}
-		catch(e) {
-			//do nothing if there's no scale object yet
-		}
 
 		var columnWidth = Math.floor((effectiveChartWidth / numDataPoints) / numColumnSeries);
 		columnWidth = columnWidth - g.columnGap()
@@ -1325,7 +1319,6 @@ function Gneiss(config)
 
 		// Make sure columns are not wider than the specified portion of the available width
 		columnWidth = Math.min(columnWidth, effectiveChartWidth * g.maxColumnWidth()/100);
-
 		g.columnWidth(columnWidth);
 		g.columnGroupWidth((columnWidth + g.columnGap()) * numColumnSeries);
 		g.columnGroupShift(columnWidth + g.columnGap()); 
