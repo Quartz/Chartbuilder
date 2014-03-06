@@ -821,7 +821,7 @@ ChartBuilder.start = function(config) {
   			chart.series(dataObj.data);
 
   			//if there is only one series (and isn't a bargrid), make the name of it the title and fill the title box
-  			if(chart.isBargrid()) {
+  			if(!chart.isBargrid()) {
 	  			if(chart.series().length === 1 && chart.title().length === 0 || chart.title() === chart.series()[0].name) {
 	  				chart.title(chart.series()[0].name)
 	  				chart.titleElement().text(chart.title())
