@@ -825,7 +825,31 @@ ChartBuilder.start = function(config) {
 
 			if(dataObj.datetime) {
 				chart.xAxis().type = "date";
-				chart.xAxis().formatter = chart.xAxis().formatter ? chart.xAxis().formatter:"M";
+				
+				//when there is new datetime data, always autopick the the xaxis format
+				var formatter = "";
+				var firstDate = dataObj.data[0].data[0];
+				var secondDate = dataObj.data[0].data[dataObj.data[0].data.length - 1];
+				console.log(dataObj)
+				var timeSpan = Math.max(firstDate,secondDate) - Math.min(firstDate,secondDate);
+				months = timeSpan/2592000000,
+				years = timeSpan/31536000000;
+								
+				if(years > 15) {
+					formatter = "yy";
+				}
+				else if(years > 1) {
+					formatter = "yyyy";
+				}
+				else if(months > 2){
+					formatter = "M";
+				}
+				else {
+					formatter = "Mdd"
+				}
+
+				chart.xAxis().formatter = formatter;
+				
 			}
 			else {
 				chart.xAxis().type = "ordinal";
