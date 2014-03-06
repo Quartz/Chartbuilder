@@ -97,8 +97,15 @@ ChartBuilder = {
 				// If it's a data point
 				else {
 					var value = csv_matrix[j][i];
-					if(value == "null" || value == "") {
-						//allow for nulls or blank cells
+
+					//strip out currency and measurement symbols
+					value = value.split("$").join("")
+								.split("£").join("")
+								.split("€").join("")
+								.split("%").join("");
+
+					if(value == "null" || value == "" || (/\s+/).test(value)) {
+						//allow for nulls, blank, or whitespace only cells
 						value = null
 					}
 					else if (isNaN(value)){
@@ -223,8 +230,8 @@ ChartBuilder = {
 
 	floatAll: function(a) {
 		for (var i=0; i < a.length; i++) {
-			if(a[i] && a[i].length > 0 && (/[\d\.]+/).test(a[i])) {
-				a[i] = parseFloat(a[i])
+			if(a[i] && a[i].length > 0 && (/[\d\.\$£€\%]+/).test(a[i])) {
+				a[i] = parseFloat(a[i]);
 			}
 			else {
 				a[i] = null
