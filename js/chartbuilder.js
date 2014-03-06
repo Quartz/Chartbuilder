@@ -104,7 +104,7 @@ ChartBuilder = {
 								.split("€").join("")
 								.split("%").join("");
 
-					if(value == "null" || value == "" || (/^\s+$/).test(value) || (/^\#[A-Z\\\d\/]+\!$/).test(value)) {
+					if(value == "null" || value == "" || (/^\s+$/).test(value) || (/^\#[A-Z\\\d\/]+!{0,}$/).test(value)) {
 						//allow for nulls, blank, whitespace only cells (if somehow trim didn't work), and excel errors
 						value = null
 					}
