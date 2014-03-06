@@ -397,6 +397,17 @@ ChartBuilder = {
 				var val = $(this).val();
 				var index = $(this).parent().data().index;
 				chart.series()[index].type = val;
+				if(val == "column") {
+					//if you're making a column chart, force the yAxis to span 0
+					var axis = chart.yAxis()[chart.series()[$(this).parent().data().index].axis]
+					if(axis.domain[1] > 0) {
+						axis.domain[0] = Math.min(axis.domain[0],0)
+					}
+					else {
+						axis.domain[1] == 0
+					}
+				}
+
 				var hasBargrid = false;
 				chart.setPadding();
 				ChartBuilder.setChartArea();
