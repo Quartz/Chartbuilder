@@ -958,6 +958,13 @@ ChartBuilder.start = function(config) {
 		chart.xAxis().formatter = val;
 		ChartBuilder.redraw();
 		ChartBuilder.inlineAllStyles();
+
+		if(val == "QJul" || val == "QJan") {
+			$("#x_axis_tick_date_frequency").attr("disabled","")
+		}
+		else {
+			$("#x_axis_tick_date_frequency").removeAttr("disabled")
+		}
 	});
 	
 	$("#creditLine").keyup(function() {
