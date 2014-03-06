@@ -1173,7 +1173,6 @@ function Gneiss(config)
 				.orient(g.isBargrid() ? "left" : "bottom");
 
 
-
 			if(g.xAxis().type == "date") {
 				if(g.xAxis().ticks === null || !isNaN(g.xAxis().ticks)) {
 					//auto suggest the propper tick gap

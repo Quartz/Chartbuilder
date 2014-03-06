@@ -801,19 +801,21 @@ ChartBuilder.start = function(config) {
   				return;
   			}
 				ChartBuilder.hideInvalidData();
+
+			if(dataObj.datetime) {
+  				chart.xAxis().type = "date";
+  				chart.xAxis().formatter = chart.xAxis().formatter ? chart.xAxis().formatter:"M";
+  			}
+  			else {
+  				chart.xAxis().type = "ordinal";
+  				chart.xAxis().formatter = null;
+  			}
   
   			ChartBuilder.createTable(newData, dataObj.datetime);
   			
   			chart.series().unshift(chart.xAxisRef)
   			dataObj = ChartBuilder.mergeData(dataObj)
   			
-  			if(dataObj.datetime) {
-  				chart.xAxis().type = "date";
-  				chart.xAxis().formatter = chart.xAxis().formatter?chart.xAxis().formatter:"M";
-  			}
-  			else {
-  				chart.xAxis().type = "ordinal";
-  			}
   			//TODO add a linear scale type
 
   			chart.xAxisRef([dataObj.data.shift()]);
