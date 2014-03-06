@@ -830,9 +830,8 @@ ChartBuilder.start = function(config) {
 				var formatter = "";
 				var firstDate = dataObj.data[0].data[0];
 				var secondDate = dataObj.data[0].data[dataObj.data[0].data.length - 1];
-				console.log(dataObj)
 				var timeSpan = Math.max(firstDate,secondDate) - Math.min(firstDate,secondDate);
-				months = timeSpan/2592000000,
+				months = timeSpan/2592000000;
 				years = timeSpan/31536000000;
 								
 				if(years > 15) {
@@ -845,7 +844,7 @@ ChartBuilder.start = function(config) {
 					formatter = "M";
 				}
 				else {
-					formatter = "Mdd"
+					formatter = "Mdd";
 				}
 
 				chart.xAxis().formatter = formatter;
@@ -956,15 +955,20 @@ ChartBuilder.start = function(config) {
 	$("#x_axis_date_format").change(function() {
 		var val = $(this).val();
 		chart.xAxis().formatter = val;
-		ChartBuilder.redraw();
-		ChartBuilder.inlineAllStyles();
 
 		if(val == "QJul" || val == "QJan") {
-			$("#x_axis_tick_date_frequency").attr("disabled","")
+			$("#x_axis_tick_date_frequency")
+			.val("3 months")
+			.change()
+			.attr("disabled","");
 		}
 		else {
-			$("#x_axis_tick_date_frequency").removeAttr("disabled")
+			$("#x_axis_tick_date_frequency").removeAttr("disabled");
 		}
+
+
+		ChartBuilder.redraw();
+		ChartBuilder.inlineAllStyles();
 	});
 	
 	$("#creditLine").keyup(function() {

@@ -1175,6 +1175,14 @@ function Gneiss(config)
 							case "YY":
 								g.xAxis().axis.ticks(d3.time.years,1);
 							break;
+
+							case "QJan":
+								g.xAxis().axis.ticks(d3.time.months,3);
+							break;
+
+							case "QJul":
+								g.xAxis().axis.ticks(d3.time.months,3);
+							break;
 						}
 					}
 					else if(g.xAxis().ticks instanceof Array) {
@@ -1252,12 +1260,21 @@ function Gneiss(config)
 						case "YY":
 							g.xAxis().axis.ticks(d3.time.years,1);
 						break;
+
+						case "QJan":
+							g.xAxis().axis.ticks(d3.time.months,3);
+						break;
+
+						case "QJul":
+							g.xAxis().axis.ticks(d3.time.months,3);
+						break;
+
 					}
 				}
 				else if(g.xAxis().ticks instanceof Array) {
-					var gap,
-						gapString = g.xAxis().ticks[1], 
-						num = parseInt(g.xAxis().ticks[0]);
+					var gap;
+					var gapString = g.xAxis().ticks[1];
+					var num = parseInt(g.xAxis().ticks[0],10);
 						
 						if((/day/i).test(gapString)) {
 							gap = d3.time.days;
