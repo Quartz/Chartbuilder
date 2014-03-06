@@ -154,7 +154,7 @@ Gneiss.dateParsers = {
 	},
 	"QJan": function(d) {
 		var year = d.getFullYear();
-		var month = d.getMonth() + 1
+		var month = d.getMonth() + 1;
 		var day = d.getDate();
 		if (day == 1) {
 			if (month == 1) {
@@ -171,7 +171,7 @@ Gneiss.dateParsers = {
 	},
 	"QJul": function(d) {
 		var year = d.getFullYear();
-		var month = d.getMonth() + 1
+		var month = d.getMonth() + 1;
 		var day = d.getDate();
 		if (day == 1) {
 			if (month == 7) {
@@ -179,15 +179,15 @@ Gneiss.dateParsers = {
 			}
 
 			if (month == 1) {
-				return "Q3"
+				return "Q3";
 			}
 
 			if (month == 4) {
-				return "Q4"
+				return "Q4";
 			}
 
 			if (month == 10) {
-				return "Q2"
+				return "Q2";
 			}
 			
 		}
