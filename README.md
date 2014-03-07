@@ -20,6 +20,7 @@ Who is using Chartbuilder
 --------------------
 Other than Quartz, customized Chartbuilder created charts have been seen in many publications: 
 + [NPR](http://www.npr.org/blogs/parallels/2013/10/24/240493422/in-most-every-european-country-bikes-are-outselling-cars)
++ [The Wall Street Journal](http://blogs.wsj.com/korearealtime/2014/03/07/for-korean-kids-mobile-chat-rules/)
 + [CNBC](http://www.cnbc.com/id/101009116)
 + [The New Yorker](http://www.newyorker.com/online/blogs/currency/2013/12/2013-the-year-in-charts.html)
 + [The Press-Enterprise](http://blog.pe.com/political-empire/2013/07/31/ppic-poll-global-warming-a-concern-for-inland-voters/)
