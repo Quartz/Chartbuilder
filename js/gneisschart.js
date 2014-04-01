@@ -24,6 +24,7 @@ Gneiss.defaultGneissChartConfig = {
 	container: "#chartContainer", //css id of target chart container
 	editable: true, // reserved for enabling or dissabling on chart editing
 	lineDotsThreshold: 15, //line charts will have dots on points until a series has this number of points
+	dotRadius: 4, //the radius of dots used on line and scatter plots
 	bargridLabelMargin: 4, //the horizontal space between a bargrid bar and it's label
 	bargridBarThickness: 20, //thickness of the bars in a bargrid
 	xAxisMargin: 8, //the vertical space between the plot area and the x axis
@@ -34,6 +35,7 @@ Gneiss.defaultGneissChartConfig = {
 	axisBarGap: 5, //the horizontal space between a vertical axis and an adjacent bar
 	maxColumnWidth: 7.5, // the maximum width of a column as a percent of the available chart width	primaryAxisPosition: "right", // the first axis will be rendered on this side, "right" or "left" only
 	primaryAxisPosition: "right", // the first axis will be rendered on this side, "right" or "left" only
+	allowAxisOverlap: false,
 	legend: true, // whether or not there should be a legend
 	title: "", // the chart title 
 	titleBottomMargin: 5, // the vertical space between the title and the next element (sometimes a legend, sometimes an axis)
@@ -280,6 +282,7 @@ function Gneiss(config)
 	var xAxisRef;
 
 	var lineDotsThreshold;
+	var dotRadius;
 	var bargridLabelMargin;
 	var bargridBarThickness;
 	var xAxisMargin;
@@ -292,6 +295,7 @@ function Gneiss(config)
 	var titleBottomMargin;
 	var bargridLabelBottomMargin;
 	var axisBarGap;
+	var allowAxisOverlap;
 	
 	
 	var columnWidth;
@@ -481,6 +485,13 @@ function Gneiss(config)
 			lineDotsThreshold = n;
 	};
 
+	this.dotRadius = function Gneiss$dotRadius(n) {
+		if (!arguments.length) {
+			return dotRadius;
+		}
+			dotRadius = n;
+	};
+
 	this.bargridLabelMargin = function Gneiss$bargridLabelMargin(n) {
 		if (!arguments.length) {
 			return bargridLabelMargin;
@@ -568,6 +579,14 @@ function Gneiss(config)
 		axisBarGap = n;
 	};
 
+	this.allowAxisOverlap = function Gneiss$allowAxisOverlap(b) {
+		if(!arguments.length) {
+			return allowAxisOverlap;
+		}
+
+		allowAxisOverlap = b;
+	};
+
 	this.hasColumns = function Gneiss$hasColumns(b) {
 		if(!arguments.length) {
 			return hasColumns;
@@ -594,7 +613,7 @@ function Gneiss(config)
 		
 		// Deep copy the config data to prevent side effects
 		g.containerId(config.container.slice());
-		g.containerElement( $(g.containerId() ));		
+		g.containerElement( $(g.containerId() ));
 		g.title(config.title.slice());
 		g.source(config.sourceline.slice());
 		g.credit(config.creditline.slice());
@@ -607,6 +626,7 @@ function Gneiss(config)
 		g.defaultPadding($.extend(true, {}, config.padding));
 		g.padding($.extend(true, {}, config.padding));
 		g.lineDotsThreshold(config.lineDotsThreshold *1);
+		g.dotRadius(config.dotRadius *1);
 		g.bargridLabelMargin(config.bargridLabelMargin *1);
 		g.bargridBarThickness(config.bargridBarThickness *1);
 		g.xAxisMargin(config.xAxisMargin * 1);
@@ -619,6 +639,7 @@ function Gneiss(config)
 		g.titleBottomMargin(config.titleBottomMargin * 1);
 		g.bargridLabelBottomMargin(config.bargridLabelBottomMargin *1);
 		g.axisBarGap(config.axisBarGap * 1);
+		g.allowAxisOverlap(config.allowAxisOverlap);
 		
 
 
@@ -857,18 +878,30 @@ function Gneiss(config)
 		
 		// Set the range of the x-axis
 		var rangeArray = [];
+		var left;
+		var right;
 		
 		if(g.isBargrid()) {
 			rangeArray = [p.top, g.height() - p.bottom];
 		}
 		else if(g.hasColumns()) {
-			var left;
-			var right;
 			var halfColumnWidth = g.columnGroupWidth() / 2;
 
 			left = p.left + halfColumnWidth + ((g.yAxis().length == 1) ? 0 : d3.selectAll("#leftAxis.yAxis g:not(.topAxisItem) text")[0].pop().getBoundingClientRect().width + g.axisBarGap());
 			right = g.width() - p.right - d3.selectAll("#rightAxis.yAxis g:not(.topAxisItem) text")[0].pop().getBoundingClientRect().width - halfColumnWidth - g.axisBarGap();
 			rangeArray = [left,right];
+		}
+		else if(!g.allowAxisOverlap()) {
+			try {
+				left = p.left + ((g.yAxis().length == 1) ? 0 : d3.selectAll("#leftAxis.yAxis g:not(.topAxisItem) text")[0].pop().getBoundingClientRect().width);
+				right = g.width() - p.right - d3.selectAll("#rightAxis.yAxis g:not(.topAxisItem) text")[0].pop().getBoundingClientRect().width - g.dotRadius();
+				rangeArray = [left,right];
+			}
+			catch(e){
+				//the this happens when the axis hasn't been created yet
+				rangeArray = [p.left, g.width() - p.right];
+			}
+
 		}
 		else {
 			rangeArray = [p.left, g.width() - p.right];
@@ -1469,7 +1502,7 @@ function Gneiss(config)
 					.data(function(d){ return d.data})
 					.enter()
 						.append("circle")
-						.attr("r",4)
+						.attr("r",g.dotRadius())
 						.attr("transform",function(d,i){
 							yAxisIndex = d3.select(this.parentNode).data()[0].axis; 
 							return "translate("+(g.xAxis().type=="date" ?
@@ -1490,7 +1523,7 @@ function Gneiss(config)
 					.data(function(d){ return d.data})
 				scatterDots.enter()
 						.append("circle")
-						.attr("r",4)
+						.attr("r",g.dotRadius())
 						.attr("transform",function(d,i){
 							yAxisIndex = d3.select(this.parentNode).data()[0].axis; 
 							return "translate("+(g.xAxis().type=="date" ?
@@ -1750,7 +1783,7 @@ function Gneiss(config)
 				
 				lineSeriesDots.enter()
 					.append("circle")
-					.attr("r",4)
+					.attr("r",g.dotRadius())
 					.attr("transform",function(d,i){
 						yAxisIndex = d3.select(this.parentNode).data()[0].axis;
 							var y = d || d ===0 ? g.yAxis()[yAxisIndex].scale(d) : -100;
@@ -1785,7 +1818,7 @@ function Gneiss(config)
 					
 				scatterDots.enter()
 						.append("circle")
-						.attr("r",4)
+						.attr("r",g.dotRadius())
 						.attr("transform",function(d,i){
 							yAxisIndex = d3.select(this.parentNode).data()[0].axis;
 							return "translate("+g.xAxis().scale(g.xAxisRef()[0].data[i]) + "," + g.yAxis()[yAxisIndex].scale(d) + ")"
