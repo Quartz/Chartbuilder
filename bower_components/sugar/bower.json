@@ -1,0 +1,17 @@
+{
+  "name": "sugar",
+  "version": "1.4.1",
+  "main": "./release/sugar.min.js",
+  "ignore": [
+    "/docs",
+    "/lib",
+    "/script",
+    "/test",
+    "/performance",
+    ".gitignore",
+    ".npmignore",
+    ".travis.yml",
+    "package.json"
+  ],
+  "dependencies": {}
+}
