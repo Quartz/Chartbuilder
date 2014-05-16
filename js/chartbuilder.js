@@ -253,28 +253,38 @@ ChartBuilder = {
 	},
 	inlineAllStyles: function() {
 		var chartStyle, selector, cssText;
-		var i;
-		for (i = document.styleSheets.length - 1; i >= 0; i--){
-			if(document.styleSheets[i].href && document.styleSheets[i].href.indexOf("gneisschart.css") != -1) {
-				if (document.styleSheets[i].rules !== undefined) {
-					chartStyle = document.styleSheets[i].rules;
-				}
-				else {
-					chartStyle = document.styleSheets[i].cssRules;
+
+		// Get rules from gneisschart.css
+		for (var i = 0; i <= document.styleSheets.length - 1; i++) {
+			if (document.styleSheets[i].href && document.styleSheets[i].href.indexOf('gneisschart.css') != -1) {
+				if (document.styleSheets[i].rules != undefined) {
+					chartStyle = document.styleSheets[i].rules
+				} else {
+					chartStyle = document.styleSheets[i].cssRules
 				}
 			}
 		}
-		if(chartStyle !== null && chartStyle !== undefined)
-		{
-			for (i=0; i < chartStyle.length; i++) {
-				if(chartStyle[i].type == 1) {
-					//cssRule is a style rule
+
+		if (chartStyle != null && chartStyle != undefined) {
+			for (var i = 0; i < chartStyle.length; i++) {
+				if (chartStyle[i].type == 1) {
 					selector = chartStyle[i].selectorText;
-					cssText = chartStyle[i].style.cssText;
-					d3.selectAll(selector).attr("style",cssText);
+					styles = ChartBuilder.makeStyleObject(chartStyle[i]);
+					d3.selectAll(selector).style(styles)
 				}
-			}
+			};
 		}
+	},
+	makeStyleObject: function(rule) {
+		var styleDec = rule.style;
+		var output = {};
+		var s;
+
+		for (s = 0; s < styleDec.length; s++) {
+			output[styleDec[s]] = styleDec[styleDec[s]];
+		}
+
+		return output;
 	},
 	createChartImage: function() {
 		// Create PNG image
