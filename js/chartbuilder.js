@@ -366,20 +366,7 @@ ChartBuilder = {
 				<div class="clearfix"></div>\
 			</div>');
 			
-			var color = "";
-			
-			if(s.type == "line") {
-				color = s.color ? s.color.replace("#","") : colors[i].replace("#","");
-			}
-			else if(s.type == "column") {
-				color = s.color ? s.color.replace("#","") : colors[i].replace("#","");
-			}
-			else if(s.type =="bargrid") {
-				color = s.color ? s.color.replace("#","") : colors[i].replace("#","");
-			}
-			else if(s.type =="scatter") {
-				color = s.color ? s.color.replace("#","") : colors[i].replace("#","");
-			}
+			var color = s.color ? s.color.replace("#","") : colors[i].replace("#","");
 			
 			seriesContainer.append(seriesItem);
 			picker = seriesItem.find("#"+this.idSafe(s.name)+"_color").colorPicker({pickerDefault: color, colors:this.allColors});

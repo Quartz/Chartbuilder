@@ -1,6 +1,6 @@
 {
   "name": "Chartbuilder",
-  "version": "0.5.6",
+  "version": "0.6.0",
   "main": [
     "./js/chartbuilder.js",
     "./js/gneisschart.js",
