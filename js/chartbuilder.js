@@ -365,8 +365,8 @@ ChartBuilder = {
 				<input id="'+this.idSafe(s.name)+'_check" name="'+this.idSafe(s.name)+'_check" type="checkbox" />\
 				<div class="clearfix"></div>\
 			</div>');
-			
 			var color = s.color ? s.color.replace("#","") : colors[i].replace("#","");
+			s.color = "#" + color;
 			
 			seriesContainer.append(seriesItem);
 			picker = seriesItem.find("#"+this.idSafe(s.name)+"_color").colorPicker({pickerDefault: color, colors:this.allColors});
