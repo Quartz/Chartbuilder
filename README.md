@@ -33,10 +33,17 @@ How to use Chartbuilder
 If you are not interested in customizing the styles of your charts use the hosted version: http://quartz.github.io/Chartbuilder/
 
 Alternatively: 
-
+####Download via github
 1. [Download source](https://github.com/Quartz/Chartbuilder/archive/master.zip) (and unzip)
-3. from the terminal navigate to the source folder (on a Mac: `cd ~/Downloads/Chartbuilder-master/`) 
-4. run `python -m SimpleHTTPServer`
+2. from the terminal navigate to the source folder (on a Mac: `cd ~/Downloads/Chartbuilder-master/`) 
+3. Start a webserver run `python -m SimpleHTTPServer`
+4. Open Google Chrome, Apple Safari, or Opera and navigate to [http://localhost:8000/](http://localhost:8000/)
+
+#### Install using bower
+1. from the terminal `bower install chartbuilder`
+2. copy the chartbuilder files to the top directory by running `cp -r bower_components/chartbuilder/* .`
+3. compile webfontloader `cd bower_components/webfontloader/; rake compile;`
+4. start a webserver `cd ../../; python -m SimpleHTTPServer;`
 5. Open Google Chrome, Apple Safari, or Opera and navigate to [http://localhost:8000/](http://localhost:8000/)
 
 
