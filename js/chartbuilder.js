@@ -233,6 +233,7 @@ ChartBuilder = {
 
 	floatAll: function(a) {
 		for (var i=0; i < a.length; i++) {
+			a = a.split(this.separators.thousands).join("");
 			if(a[i] && a[i].length > 0 && (/[\d\.\$£€\%]+/).test(a[i])) {
 				a[i] = parseFloat(a[i]);
 			}
@@ -638,6 +639,11 @@ ChartBuilder = {
 		//else return the string
 		return nStr
 	},
+	determineLocaleNumberSeps: function() {
+		var n = 1000.50;
+		var l = n.toLocaleString();
+		return {decimal: l.substring(5,6), thousands: l.substring(1,2)}
+	},
 	actions: {
 		axis_prefix_change: function(index,that) {
 			chart.yAxis()[index].prefix.value = $(that).val();
@@ -703,6 +709,8 @@ ChartBuilder = {
 // Create default config for chartbuilder
 ChartBuilder.getDefaultConfig = function() {
   var chartConfig = {};
+
+  chartConfig.separators = ChartBuilder.determineLocaleNumberSeps();
   
   chartConfig.colors = ["#BF0053","#FF70B0","#E15D98","#C44B81","#A63869","#882551","#6B133A","#4D0022",
 						"#BF600A","#FFC07E","#E1A76A","#C48D55","#A67341","#885A2D","#6B4118","#4D2704",
