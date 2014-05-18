@@ -8,6 +8,7 @@ ChartBuilder = {
 						"9300BF","E770FF","CB5DE1","AE4BC4","9238A6","752588","59136B","3C004D"],
 	curRaw: "",
 	advancedMode: false,
+	separators: {},
 	getNewData: function(csv) {
 		var i;
 		if(!csv) {
@@ -20,6 +21,10 @@ ChartBuilder = {
 		// Split the first element of the array by the designated separator, tab in this case
 		var csv_matrix = [];
 		var delim = String.fromCharCode(9);
+
+		if (delim == this.separators.thousands || delim == this.separators.decimal) {
+			console.warn("Your text deliminator is the same as your locale's thousands separator or decimal separator")
+		}
 		
 		// Trim leading and trailing spaces from rows and split
 		csv_matrix.push($.trim(csv_array[0]).split(delim));
@@ -99,11 +104,15 @@ ChartBuilder = {
 				else {
 					value = csv_matrix[j][i];
 
-					//strip out currency and measurement symbols
+					//strip out currency symbol, measurement symbol and thousands separator
+					//replace decimal separator with period
 					value = value.split("$").join("")
 								.split("£").join("")
 								.split("€").join("")
-								.split("%").join("");
+								.split("%").join("")
+								.split(this.separators.thousands).join("")
+								.split(this.separators.decimal).join(".");
+
 
 					if(value === "null" || value === "" || (/^\s+$/).test(value) || (/^\#[A-Z\\\d\/]+!{0,}$/).test(value)) {
 						//allow for nulls, blank, whitespace only cells (if somehow trim didn't work), and excel errors
@@ -228,12 +237,8 @@ ChartBuilder = {
 		html_str = $.trim(html_str);
 		$('#table-html').val(html_str);
 	},
-
-
-
 	floatAll: function(a) {
 		for (var i=0; i < a.length; i++) {
-			a = a.split(this.separators.thousands).join("");
 			if(a[i] && a[i].length > 0 && (/[\d\.\$£€\%]+/).test(a[i])) {
 				a[i] = parseFloat(a[i]);
 			}
@@ -642,7 +647,7 @@ ChartBuilder = {
 	determineLocaleNumberSeps: function() {
 		var n = 1000.50;
 		var l = n.toLocaleString();
-		return {decimal: l.substring(5,6), thousands: l.substring(1,2)}
+		return {decimal: l.substring(5,6), thousands: l.substring(1,2)};
 	},
 	actions: {
 		axis_prefix_change: function(index,that) {
@@ -709,9 +714,6 @@ ChartBuilder = {
 // Create default config for chartbuilder
 ChartBuilder.getDefaultConfig = function() {
   var chartConfig = {};
-
-  chartConfig.separators = ChartBuilder.determineLocaleNumberSeps();
-  
   chartConfig.colors = ["#BF0053","#FF70B0","#E15D98","#C44B81","#A63869","#882551","#6B133A","#4D0022",
 						"#BF600A","#FFC07E","#E1A76A","#C48D55","#A67341","#885A2D","#6B4118","#4D2704",
 						"#BFAA00","#FFF270","#E1D55D","#C4B84B","#A69C38","#887F25","#6B6213","#4D4500",
@@ -999,5 +1001,9 @@ ChartBuilder.start = function(config) {
 	$(".downloadLink").click(function() {
 		$("#downloadLinksDiv").toggleClass("hide");
 	});
+
+	//store the decimal and thousands separators
+	ChartBuilder.separators = ChartBuilder.determineLocaleNumberSeps();
+
   });
 };
