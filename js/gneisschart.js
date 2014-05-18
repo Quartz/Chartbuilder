@@ -1307,8 +1307,8 @@ function Gneiss(config)
 					else if (days >= 1) {
 						hourGap = 4;
 					}
-					else if (hours > 15) {
-						hourGap = 3;
+					else if (hours > 7) {
+						hourGap = 4;
 					}
 					else if (hours > 1){
 						hourGap = 1;
@@ -1355,8 +1355,11 @@ function Gneiss(config)
 					var gap;
 					var gapString = g.xAxis().ticks[1];
 					var num = parseInt(g.xAxis().ticks[0],10);
-						
-						if((/day/i).test(gapString)) {
+
+						if( (/hour/i).test(gapString) ) {
+							gap = d3.time.hours;
+						}
+						else if((/day/i).test(gapString)) {
 							gap = d3.time.days;
 						}
 						else if((/week/i).test(gapString)) {
