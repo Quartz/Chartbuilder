@@ -835,6 +835,8 @@ ChartBuilder.start = function(config) {
 				var timeSpan = Math.max(firstDate,secondDate) - Math.min(firstDate,secondDate);
 				months = timeSpan/2592000000;
 				years = timeSpan/31536000000;
+				days = timeSpan/86400000;
+				hours = timeSpan/3600000;
 								
 				if(years > 15) {
 					formatter = "yy";
@@ -845,8 +847,11 @@ ChartBuilder.start = function(config) {
 				else if(months > 2){
 					formatter = "M";
 				}
-				else {
+				else if (days > 3){
 					formatter = "Mdd";
+				}
+				else {
+					formatter = "hmm"
 				}
 
 				chart.xAxis().formatter = formatter;

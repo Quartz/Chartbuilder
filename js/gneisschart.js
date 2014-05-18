@@ -148,10 +148,14 @@ Gneiss.dateParsers = {
 		}
 	},
 	"hmm": function(d) {
+		if(d.getHours() === 0 && d.getMinutes() === 0) {
+			return Gneiss.dateParsers.Mdd(d);
+		}
+
 		if(Date.getLocale().code == 'en') {
-			return d.format('{12hr}:{mm}');
+			return d.format('{12hr}:{mm}{tt}');
 		} else {
-			return d.format('{24hr}:{mm}');
+			return d.format('{24hr}:{mm}{tt}');
 		}
 	},
 	"QJan": function(d) {
@@ -1159,7 +1163,7 @@ function Gneiss(config)
   
   this.setXAxis = function Gneiss$setXAxis(first) {
 		var g = this;
-    
+
 		if(first) {
 			/*
 			*
@@ -1177,7 +1181,8 @@ function Gneiss(config)
 						//auto suggest the propper tick gap
 						var timeSpan = g.xAxis().scale.domain()[1]-g.xAxis().scale.domain()[0],
 										months = timeSpan/2592000000,
-										years = timeSpan/31536000000;
+										years = timeSpan/31536000000,
+										days = timeSpan/86400000;
 									
 						if(years > 30) {
 							yearGap = 10;
@@ -1188,6 +1193,17 @@ function Gneiss(config)
 						else {
 							yearGap = 1;
 						}
+
+						if(days > 2) {
+							hourGap = 6;
+						}
+						else if (days > 1) {
+							hourGap = 4;
+						}
+						else {
+							hourGap = 1;
+						}
+
 						switch(g.xAxis().formatter) {
 							case "yy":
 								g.xAxis().axis.ticks(d3.time.years,yearGap);
@@ -1216,6 +1232,10 @@ function Gneiss(config)
 							case "QJul":
 								g.xAxis().axis.ticks(d3.time.months,3);
 							break;
+
+							case "hmm":
+								g.xAxis().axis.ticks(d3.time.hour,hourGap)
+							break
 						}
 					}
 					else if(g.xAxis().ticks instanceof Array) {
@@ -1223,12 +1243,15 @@ function Gneiss(config)
 						var gap,
 							gapString = g.xAxis().ticks[1], 
 							num = parseInt(g.xAxis().ticks[0]);
-						
+							
+							if((/hour/i).text(gapString)) {
+								gap = d3.time.hour
+							}
 							if((/day/i).test(gapString)) {
-								gap = d3.time.days;
+								gap = d3.time.hour;
 							}
 							else if((/week/i).test(gapString)) {
-								gap = d3.time.weeks;
+								gap = d3.time.day;
 							}
 							else if((/month/i).test(gapString)) {
 								gap = d3.time.months;
@@ -1261,9 +1284,12 @@ function Gneiss(config)
 				if(g.xAxis().ticks === null || !isNaN(g.xAxis().ticks)) {
 					//auto suggest the propper tick gap
 					var timeSpan = g.xAxis().scale.domain()[1]-g.xAxis().scale.domain()[0],
-						months = timeSpan/2592000000,
-						years = timeSpan/31536000000;
-									
+									months = timeSpan/2592000000,
+									years = timeSpan/31536000000,
+									days = timeSpan/86400000,
+									hours = timeSpan/3600000,
+									minutes = timeSpan/60000;
+								
 					if(years > 30) {
 						yearGap = 10;
 					}
@@ -1273,6 +1299,24 @@ function Gneiss(config)
 					else {
 						yearGap = 1;
 					}
+
+
+					if(days > 2) {
+						hourGap = 6;
+					}
+					else if (days >= 1) {
+						hourGap = 4;
+					}
+					else if (hours > 15) {
+						hourGap = 3;
+					}
+					else if (hours > 1){
+						hourGap = 1;
+					}
+
+					console.log(hours, hourGap);
+
+
 					switch(g.xAxis().formatter) {
 						case "yy":
 							g.xAxis().axis.ticks(d3.time.years,yearGap);
@@ -1302,6 +1346,9 @@ function Gneiss(config)
 							g.xAxis().axis.ticks(d3.time.months,3);
 						break;
 
+						case "hmm":
+							g.xAxis().axis.ticks(d3.time.hours,hourGap);
+						break
 					}
 				}
 				else if(g.xAxis().ticks instanceof Array) {
@@ -1343,11 +1390,11 @@ function Gneiss(config)
 				var attry = Number(attr.split(")")[0].split(",")[1])
 				if(!g.isBargrid()) {
 					// fix labels to not fall off edge when not bargrid
-					if (pwidth/2 + attrx >  g.width()) {
+					if (pwidth + attrx >  g.width()) {
 						this.setAttribute("x",Number(this.getAttribute("x"))-(pwidth + attrx -  g.width() + g.padding().right))
 						this.setAttribute("text-anchor","start")
 					}
-					else if (attrx - pwidth/2 < 0) {
+					else if (attrx - pwidth < 0) {
 						this.setAttribute("text-anchor","start")
 					}
 					g.padding().left = g.defaultPadding().left
