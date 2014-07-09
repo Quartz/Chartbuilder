@@ -28,7 +28,7 @@ svg .axis g.zero line {
 }
 
 svg #xAxis line {
-	stroke: #e6e6e6;
+	stroke: #cfcfcf;
 }
 
 svg #xAxis{
@@ -41,23 +41,24 @@ svg .axis path {
 }
 
 svg .axis text {
-	font-family: 'Cutive',Helvetica, sans-serif;
+	font-family: ‘Trebuchet MS’, Helvetica, sans-serif;
+	font-size: 16px;
 }
 
 svg .legendItem text {
-	font-family: 'Cutive',Helvetica, sans-serif;
+	font-family: ‘Trebuchet MS’, Helvetica, sans-serif;
 }
 
 svg text.metaText {
-	font-family: 'Cutive',Helvetica, sans-serif;
+	font-family: ‘Trebuchet MS’, Helvetica, sans-serif;
 	font-size:  10px;
 	text-rendering:   optimizeLegibility;
-	fill:  #999999;
+	fill:  #cfcfcf;
 }
 
 svg text.barLabel, 
 svg text.bargridLabel {
-	font-family: 'Cutive',Helvetica, sans-serif;
+	font-family: ‘Trebuchet MS’, Helvetica, sans-serif;
 }
 
 /*Default styling of series*/
@@ -71,10 +72,12 @@ svg path.seriesLine {
 
 svg .seriesScatter circle {
 	stroke:#fff;
-	stroke-width":1;
+	stroke-width:1;
 }
 	
 #titleLine {
-	font-family: 'Cutive',Helvetica, sans-serif;
+	font-size: 20px;
+	font-weight:bold;
+	font-family: ‘Trebuchet MS’, Helvetica, sans-serif;
 	fill: #666666;
 }

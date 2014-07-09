@@ -1,11 +1,10 @@
 var chart;
 ChartBuilder = {
-	allColors: ["BF0053","FF70B0","E15D98","C44B81","A63869","882551","6B133A","4D0022",
-						"BF600A","FFC07E","E1A76A","C48D55","A67341","885A2D","6B4118","4D2704",
-						"BFAA00","FFF270","E1D55D","C4B84B","A69C38","887F25","6B6213","4D4500",
-						"00BFA5","70FFF7","5DE1D9","4BC4BC","38A69E","258880","136B63","004D45",
-						"006DBF","70B8FF","5DA1E1","4B89C4","3871A6","255A88","13436B","002B4D",
-						"9300BF","E770FF","CB5DE1","AE4BC4","9238A6","752588","59136B","3C004D"],
+	allColors: ["D8372A","039CB2","25A4B6","34848F","1C7784","027585","0E5F6B","014953",
+						"FF3F30","FF8A81","EA5D52","D8372A","D91000","AF1F13","AA0C00","880A00",
+						"FA9B43","FFBD81","EA9B52","FF9330","D87D2A","D96800","AF5E13","884100",
+						"00D024","67CB78","28D346","3FB353","20A537","00A61D","0F8624","006812",
+						"C608FC","E770FF","CB5DE1","AE4BC4","9238A6","740094","752588","9300BF"],
 	curRaw: "",
 	advancedMode: false,
 	separators: {},
@@ -779,13 +778,12 @@ ChartBuilder = {
 // Create default config for chartbuilder
 ChartBuilder.getDefaultConfig = function() {
   var chartConfig = {};
-  chartConfig.colors = ["#BF0053","#FF70B0","#E15D98","#C44B81","#A63869","#882551","#6B133A","#4D0022",
-						"#BF600A","#FFC07E","#E1A76A","#C48D55","#A67341","#885A2D","#6B4118","#4D2704",
-						"#BFAA00","#FFF270","#E1D55D","#C4B84B","#A69C38","#887F25","#6B6213","#4D4500",
-						"#00BFA5","#70FFF7","#5DE1D9","#4BC4BC","#38A69E","#258880","#136B63","#004D45",
-						"#006DBF","#70B8FF","#5DA1E1","#4B89C4","#3871A6","#255A88","#13436B","#002B4D",
-						"#9300BF","#E770FF","#CB5DE1","#AE4BC4","#9238A6","#752588","#59136B","#3C004D"];
-  chartConfig.creditline = "Made with Chartbuilder";
+  chartConfig.colors = ["D8372A","039CB2","25A4B6","34848F","1C7784","027585","0E5F6B","014953",
+						"FF3F30","FF8A81","EA5D52","D8372A","D91000","AF1F13","AA0C00","880A00",
+						"FA9B43","FFBD81","EA9B52","FF9330","D87D2A","D96800","AF5E13","884100",
+						"00D024","67CB78","28D346","3FB353","20A537","00A61D","0F8624","006812",
+						"C608FC","E770FF","CB5DE1","AE4BC4","9238A6","740094","752588","9300BF"];
+  chartConfig.creditline = "theconversation.com";
   
   return chartConfig;
 };
