@@ -113,7 +113,6 @@ ChartBuilder = {
 								.split(this.separators.thousands).join("")
 								.split(this.separators.decimal).join(".");
 
-
 					if(value === "null" || value === "" || (/^\s+$/).test(value) || (/^\#[A-Z\\\d\/]+!{0,}$/).test(value)) {
 						//allow for nulls, blank, whitespace only cells (if somehow trim didn't work), and excel errors
 						value = null;
@@ -712,6 +711,10 @@ ChartBuilder = {
 	determineLocaleNumberSeps: function() {
 		var n = 1000.50;
 		var l = n.toLocaleString();
+		if(l === n.toString()) {
+			//CHANGE and actually deduce the proper format
+			return {decimal: ".", thousands: ","}
+		}
 		return {decimal: l.substring(5,6), thousands: l.substring(1,2)};
 	},
 	actions: {
