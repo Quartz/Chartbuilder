@@ -7,7 +7,7 @@
  * General
  */
 body {
-	min-width: 800px; 
+	min-width: 800px;
 	width: 100%;
 	overflow-y: scroll;
 	overflow-x: hidden;
@@ -50,7 +50,7 @@ table {
 .hide {
   display: none;
 }
- 
+
 /**
  * Layout
  */
@@ -223,8 +223,9 @@ textarea {
 .input-box {
 	max-height: 100px;
 	overflow: scroll;
-	white-space: nowrap;
+	white-space: pre;
 	tab-size: 20;
+	-moz-tab-size: 20;
 }
 
 #rightColumn cite {
@@ -285,7 +286,7 @@ textarea {
 	clear: both;
 }
 
-#seriesItems .seriesItemGroup input, 
+#seriesItems .seriesItemGroup input,
 #seriesItems .seriesItemGroup select
 {
 	float: left;
@@ -319,7 +320,7 @@ textarea {
 	margin-left: 5%;
 	margin-top: .25em;
 }
- 
+
 /**
  * Export/update buttons
  */
@@ -360,4 +361,3 @@ div.colorPicker-swatch {
 div.colorPicker_hexWrap {
 	display: none;
 }
-
