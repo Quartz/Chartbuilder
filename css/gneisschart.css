@@ -21,6 +21,7 @@ svg #plotArea {
 svg .axis line {
 	fill: none;
 	shape-rendering: crispEdges;
+	stroke: #e6e6e6;
 }
 
 svg .axis g.zero line {
@@ -62,7 +63,7 @@ svg text.bargridLabel {
 
 /*Default styling of series*/
 
-svg path.seriesLine {
+svg path.seriesLinePath {
 	stroke-width: 3px;
 	stroke-linejoin: round;
 	stroke-linecap: round;
@@ -74,6 +75,9 @@ svg .seriesScatter circle {
 	stroke-width":1;
 }
 	
+.seriesLineGroup .seriesLineDot {
+  stroke-width: 0;
+}
 #titleLine {
 	font-family: 'Cutive',Helvetica, sans-serif;
 	fill: #666666;

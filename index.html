@@ -4,141 +4,149 @@
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
     <head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<title>Chartbuilder</title>
-		<meta name="description" content="">
-		<meta name="viewport" content="width=device-width">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Chartbuilder</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
 
-		<!-- favicon updates through js -->
-		<link id="favicon" rel="shortcut icon" type="image/png" href="" />
-		
-		<!-- Libraries CSS -->
-		<link rel="stylesheet" href="bower_components/html5-boilerplate/css/normalize.css" type="text/css" media="screen" charset="utf-8">
-		<link rel="stylesheet" href="bower_components/html5-boilerplate/css/main.css" type="text/css" media="screen" charset="utf-8">
-		<link rel="stylesheet" href="bower_components/really-simple-color-picker/colorPicker.css" type="text/css" media="screen" charset="utf-8">
-		
-		<!-- Chartbuilder CSS -->
-		<link rel="stylesheet" href="css/chartbuilder.css" type="text/css" media="screen" charset="utf-8">
-		<link rel="stylesheet" href="css/gneisschart.css" type="text/css" media="screen" charset="utf-8">
-		<link rel="stylesheet" href="css/colorPicker.css" type="text/css" media="screen" charset="utf-8">
-	</head>
-	<body>
-		<!-- Add your site or application content here -->
-		<div id="interactiveContent">
-			<div id="leftColumn" class="column">
-			  <div class="cbInner">
-  				<div id="staticContainer">
-  					<div id="chartContainer"></div>
+    <!-- favicon updates through js -->
+    <link id="favicon" rel="shortcut icon" type="image/png" href="" />
+    
+    <!-- Libraries CSS -->
+    <link rel="stylesheet" href="bower_components/html5-boilerplate/css/normalize.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="bower_components/html5-boilerplate/css/main.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="bower_components/really-simple-color-picker/colorPicker.css" type="text/css" media="screen" charset="utf-8">
+    
+    <!-- Chartbuilder CSS -->
+    <link rel="stylesheet" href="css/chartbuilder.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="css/gneisschart.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="css/colorPicker.css" type="text/css" media="screen" charset="utf-8">
+  </head>
+  <body>
+    <!-- Add your site or application content here -->
+    <div id="interactiveContent">
+      <div id="secondaryColumn" class="column">
+        <div class="cbInner">
+          <div id="staticContainer">
+            <div id="chartContainer" class="size_normal"></div>
   
-  					<canvas id="canvas" width="1200px" height="676px"></canvas> 
-  					<canvas id="favicanvas" width="16px" height="16px"></canvas> 
-  				</div>
-			  </div>
+            <canvas id="canvas" width="1200px" height="676px"></canvas> 
+            <canvas id="favicanvas" width="16px" height="16px"></canvas> 
+          </div>
+        </div>
       </div>
 
-			<div id="rightColumn" class="column">
-			  <div class="cbInner">
-			    <h1>ChartBuilder</h1>
-			  
-  				<div id="chartOptions" class="interfaceCol">
+      <div id="primaryColumn" class="column">
+        <div class="cbInner">
+          <h1>ChartBuilder</h1>
+        
+          <div id="chartOptions" class="interfaceCol">
              <div id="datainput">
-             	<div class="inputGroup">
+              <div class="inputGroup">
                 <h2>1. Input your data</h2>
                 <span id="invalidDataSpan" class="hide">Warning: Data is Invalid</span>
                 <textarea id="csvInput" class="input-box" name="csvInput" rows="8"></textarea>
-             	</div>
-             	<div class="inputGroup">
-             		<h4>Check the format of your data</h4>
+              </div>
+              <div class="inputGroup">
+                <h4>Check the format of your data</h4>
                 <div id="dataTable" class="input-box">
                   <table border=0>
                     <tr><th>Header</th></tr>
                     <tr><td>Data</td></tr>
                   </table>
-              	</div>
-             	</div>
-             	<div class="clearfix"></div>
+                </div>
+              </div>
+              <div class="clearfix"></div>
             </div>
 
             <div class="optionBlock topOptionBlock">
               <h2>2. Series Options</h2>
               <div id="seriesItems"></div>
             </div>
-  					
-  					<div class="optionBlock">
-    					<h2>3. Chart Options</h2>
-    						<div class="optionGroup"><label for="chart_title">Title</label><input type="text" name="chart_title" value="" id="chart_title"></div>
-    						<div class="optionGroup"><label for="credit">Credit</label><input id="creditLine" type="text" name="credit" value="Made with Chartbuilder"></div>
-    						<div class="optionGroup"><label for="source">Source</label><input id="sourceLine" type="text" name="source" value="Data: ">
-    						<cite>Something like "Data: Bureau of Labor Statistics" or "Data compiled by Factset"</cite></div>
-    				</div>
-    				<div class="optionBlock">
-   							<h2>4. Right Axis Options</h2>
-    						<div id="rightAxisControls">
-    							<div class="optionGroup"><label for="right_axis_prefix">Right Axis Prefix</label><input type="text" name="right_axis_prefix" value="" id="right_axis_prefix"></div>
-	    						<div class="optionGroup"><label for="right_axis_suffix">Right Axis Suffix</label><input type="text" name="right_axis_suffix" value="" id="right_axis_suffix"></div>
-	    						<div class="optionGroup"><label for="right_axis_tick_num">Number of Y Axis Ticks</label><select name="right_axis_tick_num" id="right_axis_tick_num" size="1">
-	    							<option>3</option>
-	    							<option selected >4</option>
-	    							<option>5</option>
-	    							<option>6</option>
+            
+            <div class="optionBlock">
+              <h2>3. Chart Options</h2>
+                <div class="optionGroup"><label for="chart_title">Title</label><input type="text" name="chart_title" value="" id="chart_title"></div>
+                <!-- div class="optionGroup"><label for="credit">Credit</label><input id="creditLine" type="text" name="credit" value="Made with Chartbuilder"></div -->
+                <div class="optionGroup"><label for="source">Source</label><input id="sourceLine" type="text" name="source" value="Data: ">
+                <cite>Something like "Data: Bureau of Labor Statistics" or "Data compiled by Factset"</cite></div>
+                 <div class="optionGroup">
+                  <label for="chart_size">Chart Size</label>
+                  <select id="chart_size">
+                    <option value="size_normal" >Normal</option>
+                    <option value="size_longandskinny">Long and Skinny</option>
+                    <option value="size_spot">Spot</option>
+                  </select>
+                </div>
+            </div>
+            <div class="optionBlock">
+                <h2>4. Primary Axis Options</h2>
+                <div id="primaryAxisControls">
+                  <div class="optionGroup"><label for="primary_axis_prefix">Primary Axis Prefix</label><input type="text" name="primary_axis_prefix" value="" id="primary_axis_prefix"></div>
+                  <div class="optionGroup"><label for="primary_axis_suffix">Primary Axis Suffix</label><input type="text" name="primary_axis_suffix" value="" id="primary_axis_suffix"></div>
+                  <div class="optionGroup"><label for="primary_axis_tick_num">Number of Y Axis Ticks</label><select name="primary_axis_tick_num" id="primary_axis_tick_num" size="1">
+                    <option>3</option>
+                    <option selected >4</option>
+                    <option>5</option>
+                    <option>6</option>
                     <option>7</option>
                     <option>8</option>
                     <option>9</option>
                     <option>10</option>
-	    						</select></div>
-    							<div class="optionGroup"><label for="right_axis_max">Right Axis Max</label><input type="text" name="right_axis_max" value="" id="right_axis_max"></div>
-    							<div class="optionGroup"><label for="right_axis_min">Right Axis Min</label><input type="text" name="right_axis_min" value="" id="right_axis_min"></div>
-    							<div class="optionGroup advanced"><label for="right_axis_tick_override">Right Axis Tick Override</label><input type="text" name="right_axis_tick_override" value="" id="right_axis_tick_override"></div>
-    						</div>
-    					</div>
-    					<div id="leftAxisControls" class="optionBlock hide">
-  							<h2>4+ Left Axis Options</h2>
-  							<div class="optionGroup"><label for="left_axis_prefix">Left Axis Prefix</label><input type="text" name="left_axis_prefix" value="" id="left_axis_prefix"></div>
-  							<div class="optionGroup"><label for="left_axis_suffix">Left Axis Suffix</label><input type="text" name="left_axis_suffix" value="" id="left_axis_suffix"></div>
-  							<div class="optionGroup"><label for="left_axis_max">Left Axis Max</label><input type="text" name="left_axis_max" value="" id="left_axis_max"></div>
-  							<div class="optionGroup"><label for="left_axis_min">Left Axis Min</label><input type="text" name="left_axis_min" value="" id="left_axis_min"></div>
-  							<div class="optionGroup"><label for="left_axis_tick_override">Left Axis Tick Override</label><input type="text" name="left_axis_tick_override" value="" id="left_axis_tick_override" ></div>
-    					</div>
-    					<div class="optionBlock">
-    					<h2>5. Bottom Axis Options</h2>
-						<div class="optionGroup showonlywith-date">
-							<label for="x_axis_tick_date_frequency">Tick date frequency</label><select name="x_axis_tick_date_frequency" id="x_axis_tick_date_frequency" size="1">
-								<option selected>auto</option>
-								<option>1 hour</option>
+                  </select></div>
+                  <div class="optionGroup"><label for="primary_axis_max">Primary Axis Max</label><input type="text" name="primary_axis_max" value="" id="primary_axis_max"></div>
+                  <div class="optionGroup"><label for="primary_axis_min">Primary Axis Min</label><input type="text" name="primary_axis_min" value="" id="primary_axis_min"></div>
+                  <div class="optionGroup advanced"><label for="primary_axis_tick_override">Primary Axis Tick Override</label><input type="text" name="primary_axis_tick_override" value="" id="primary_axis_tick_override"></div>
+                </div>
+              </div>
+              <div id="secondaryAxisControls" class="optionBlock hide">
+                <h2>4+ Secondary Axis Options</h2>
+                <div class="optionGroup"><label for="secondary_axis_prefix">Secondary Axis Prefix</label><input type="text" name="secondary_axis_prefix" value="" id="secondary_axis_prefix"></div>
+                <div class="optionGroup"><label for="secondary_axis_suffix">Secondary Axis Suffix</label><input type="text" name="secondary_axis_suffix" value="" id="secondary_axis_suffix"></div>
+                <div class="optionGroup"><label for="secondary_axis_max">Secondary Axis Max</label><input type="text" name="secondary_axis_max" value="" id="secondary_axis_max"></div>
+                <div class="optionGroup"><label for="secondary_axis_min">Secondary Axis Min</label><input type="text" name="secondary_axis_min" value="" id="secondary_axis_min"></div>
+                <div class="optionGroup"><label for="secondary_axis_tick_override">Secondary Axis Tick Override</label><input type="text" name="secondary_axis_tick_override" value="" id="secondary_axis_tick_override" ></div>
+              </div>
+              <div class="optionBlock">
+              <h2>5. Bottom Axis Options</h2>
+            <div class="optionGroup showonlywith-date">
+              <label for="x_axis_tick_date_frequency">Tick date frequency</label><select name="x_axis_tick_date_frequency" id="x_axis_tick_date_frequency" size="1">
+                <option selected>auto</option>
+                <option>1 hour</option>
                 <option>2 hours</option>
                 <option>3 hours</option>
                 <option>4 hours</option>
                 <option>6 hours</option>
-								<option>1 day</option>
-								<option>1 week</option>
-								<option>1 month</option>
-								<option>3 months</option>
-								<option>6 months</option>
-								<option>1 year</option>
-								<option>5 years</option>
-								<option>10 years</option>
-								<option>20 years</option>
-								<option>50 years</option>
-								<option>100 years</option>
-							   </select>
-						</div>
-    						<div class="optionGroup showonlywith-date"><label for="x_axis_date_format">X Axis Date Format</label><select name="x_axis_date_format" id="x_axis_date_format">
-    							<option value="mmddyyyy">2/25/2012</option>
-    							<option value="ddmmyyyy">25/2/2012</option>
-    							<option value="mmdd">2/25</option>
-    							<option value="Mdd">Feb. 25</option>
+                <option>1 day</option>
+                <option>1 week</option>
+                <option>1 month</option>
+                <option>3 months</option>
+                <option>6 months</option>
+                <option>1 year</option>
+                <option>5 years</option>
+                <option>10 years</option>
+                <option>20 years</option>
+                <option>50 years</option>
+                <option>100 years</option>
+                 </select>
+            </div>
+                <div class="optionGroup showonlywith-date"><label for="x_axis_date_format">X Axis Date Format</label><select name="x_axis_date_format" id="x_axis_date_format">
+                  <option value="mmddyyyy">2/25/2012</option>
+                  <option value="ddmmyyyy">25/2/2012</option>
+                  <option value="mmdd">2/25</option>
+                  <option value="Mdd">Feb. 25</option>
                   <option value="ddM">25 Feb.</option>
-    							<option value="mmyy">2/13</option>
-    							<option value="yy">'13</option>
-    							<option value="yyyy">2013</option>
+                  <option value="mmyy">2/13</option>
+                  <option value="yy">'13</option>
+                  <option value="yyyy">2013</option>
                   <option value="QJan">Q2 (Jan. FY)</option>
                   <option value="QJul">Q2 (July FY)</option>
-    							<option value="MM">February</option>
-    							<option selected value="M">Feb.</option>
-    							<option value="hmm">3:27</option>
-    						</select>
-							</div>
+                  <option value="MM">February</option>
+                  <option selected value="M">Feb.</option>
+                  <option value="hmm">3:27</option>
+                </select>
+              </div>
               <div class="optionGroup showonlywith-ordinal">No options available</div>
             </div>
             <div class="optionBlock full">
@@ -162,29 +170,29 @@
               </div>
             </div>
             <div class="clearfix"></div>
-  				</div>
-  				
+          </div>
+          
           <div id="currentSeries" class="interfaceCol"></div>
-  			</div>			
-			</div>
+        </div>      
+      </div>
       <div id="blankColumn" class="column"></div>
       <div class="clearfix"></div>
-		</div>
+    </div>
 
     <!-- Libraries JS -->
-		<script src="bower_components/modernizr/modernizr.js" charset="utf-8"></script>
-		<script src="bower_components/jquery/jquery.min.js" charset="utf-8"></script>
-		<script src="bower_components/d3/d3.v2.min.js" charset="utf-8"></script>
-		<script src="bower_components/canvg/canvg.js" charset="utf-8"></script>
-		<script src="bower_components/rgbcolor/index.js" charset="utf-8"></script>
-		<script src="bower_components/jquery-csv/index.js" charset="utf-8"></script>
-		<script src="bower_components/really-simple-color-picker/jquery.colorPicker.min.js" charset="utf-8"></script>
-		<script src="bower_components/webfontloader/target/webfont.js" type="text/javascript" charset="utf-8"></script>
-		<script src="bower_components/sugar/release/sugar.min.js" charset="utf-8"></script>
-		
-		<!-- Chartbuilder JS -->
-		<script src="js/gneisschart.js" charset="utf-8"></script>
-		<script src="js/chartbuilder.js"></script>
+    <script src="bower_components/modernizr/modernizr.js" charset="utf-8"></script>
+    <script src="bower_components/jquery/jquery.min.js" charset="utf-8"></script>
+    <script src="bower_components/d3/d3.v2.min.js" charset="utf-8"></script>
+    <script src="bower_components/canvg/canvg.js" charset="utf-8"></script>
+    <script src="bower_components/rgbcolor/index.js" charset="utf-8"></script>
+    <script src="bower_components/jquery-csv/index.js" charset="utf-8"></script>
+    <script src="bower_components/really-simple-color-picker/jquery.colorPicker.min.js" charset="utf-8"></script>
+    <script src="bower_components/webfontloader/target/webfont.js" type="text/javascript" charset="utf-8"></script>
+    <script src="bower_components/sugar/release/sugar.min.js" charset="utf-8"></script>
+    
+    <!-- Chartbuilder JS -->
+    <script src="js/gneisschart.js" charset="utf-8"></script>
+    <script src="js/chartbuilder.js"></script>
 		
 		<script type="text/javascript">
 
