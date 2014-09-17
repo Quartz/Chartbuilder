@@ -288,7 +288,7 @@ ChartBuilder = {
 		for (s = 0; s < styleDec.length; s++) {
 			output[styleDec[s]] = styleDec[styleDec[s]];
 			if(styleDec[styleDec[s]] === undefined) {
-				//firefox being ffoxy
+				//firefox being firefoxy
 				output[styleDec[s]] = styleDec.getPropertyValue(styleDec[s])
 			}
 		}
