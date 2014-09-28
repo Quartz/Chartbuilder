@@ -7,7 +7,7 @@
  * General
  */
 body {
-	min-width: 800px;
+	min-width: 800px; 
 	width: 100%;
 	overflow-y: scroll;
 	overflow-x: hidden;
@@ -33,6 +33,7 @@ h2 {
 	font-size: 1.5em;
 	line-height: 1.5em;
 	margin-top: 0;
+	margin-bottom: 0;
 }
 
 h3 {
@@ -47,10 +48,16 @@ table {
   width: 100%;
 }
 
+cite {
+	font-size: 1em;
+	font-family: "Georgia", serif;
+	font-style: normal;
+}
+
 .hide {
   display: none;
 }
-
+ 
 /**
  * Layout
  */
@@ -58,10 +65,26 @@ table {
   margin: 0 1em;
 }
 
+#header {
+	background-color: #333;
+	padding-left: 15px;
+	position: fixed;
+	height: 4em;
+	top: 0;
+	width: 100%;
+}
+
+#header h1 {
+	color: #777;
+	padding: 0.2em 0;
+	margin: 0;
+}
+
 #interactiveContent {
   margin: 0;
+  margin-top: 4.5em;	
   padding-left: 650px;
-  padding-right: 0px
+  padding-right: 0px;
 }
 
 #interactiveContent .columns {
@@ -97,7 +120,7 @@ table {
   margin-bottom: 2em;
 }
 
-.inputDataHInvData {
+.inputDataInvalid {
 	margin-bottom: 4px;
 }
 
@@ -124,21 +147,19 @@ table {
 *Custom Chart Sizes
 */
 #chartContainer.size_normal {
-	width: 600px;
-	height: 338px;
+	width: 640px;
+	height: 400px;
 }
 
 #chartContainer.size_longandskinny {
-	width: 250px;
-	height: 500px;
+	width: 320px;
+	height: 600px;
 }
 
 #chartContainer.size_spot {
-	width: 300px;
+	width: 320px;
 	height: 250px;
 }
-
-
 
 #interactiveContent svg .legendItem text {
 	cursor: move;
@@ -155,7 +176,6 @@ table {
 	width:100%;
 	margin-left: 5px;
 	margin-right: 5px;
-	float: left;
 }
 
 #rightColumn .cbInner .optionBlock {
@@ -163,10 +183,8 @@ table {
 	padding-left: 1%;
 	margin-right: 1%;
 	margin-left: 1%;
-	margin-top: 1em;
-	width: 96%;
-	float: left;
-	background-color: #f6f6f6;
+	margin-top: 3em;
+	width: 100%;
 }
 #rightColumn .cbInner .optionBlock h2 {
 	margin-left: 5px;
@@ -179,6 +197,10 @@ table {
 
 #rightColumn .cbInner .optionBlock.full {
 	width:96%;
+}
+
+.optionGroup cite {
+	margin-bottom: 0.2em;
 }
 
 @media (min-width: 950px) {
@@ -206,7 +228,7 @@ textarea,
 select {
 	display: block;
 	margin-bottom: 1em;
-	font-family: 'PTSerif';
+	font-family: "AdelleSans-Regular";
 	color: #666666;
 	border: 1px solid #ccc;
   -moz-box-sizing: border-box;
@@ -215,21 +237,23 @@ select {
 }
 
 input[type="text"] {
-	padding: .25em 2%;
-	width: 96%;
+	padding: .25em;
+	width: 100%;
+	font-size: 16px;
 }
 
 textarea {
 	width: 100%;
-	resize: none;
 }
 
 select {
-	width: 96%;
+	width: 100%;
+	height: 30px;
+	font-size: 16px;
 }
 
 label {
-	font-family: Arial, "MS Trebuchet", sans-serif;
+	font-family: "AdelleSans-Bold", Arial, "MS Trebuchet", sans-serif;
 	color: #666666;
 	display: block;
 	font-size: 1em;
@@ -262,14 +286,6 @@ textarea {
 	font-family: Monaco, sans-serif;
 }
 
-@media (min-width: 1250px) {
-	#datainput .inputGroup {
-		float: left;
-		width: 46%;
-		padding-right: 2%;
-		padding-left: 2%;
-	}
-}
 
 #dataTable .otherrow {
 	background-color: #eee;
@@ -307,20 +323,39 @@ textarea {
 	clear: both;
 }
 
-#seriesItems .seriesItemGroup input,
+#seriesItems .section {
+	float: left;
+}
+
+
+#seriesItems .section.colorsection {
+	width: 50px;
+}
+#seriesItems .section.typesection {
+	width: 50%;
+	margin-right: 20px;
+}
+#seriesItems .section.axissection {
+	width: 120px;
+}
+
+#seriesItems .seriesItemGroup input, 
 #seriesItems .seriesItemGroup select
 {
-	float: left;
-	margin-left: .5em;
-	width: 5%;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
+	margin-top: 0.3em;
 }
+
+#seriesItems .seriesItemGroup label.seriesLabel {
+	font-size: 16px;
+	margin-bottom: 0.5em;
+}
+
 #seriesItems .seriesItemGroup .colorPicker-picker {
-	float: left;
-	margin-left: .5em;
-	margin-right: .5em;
+	margin-left: 0;
+	margin-right: 0;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
@@ -331,17 +366,34 @@ textarea {
 	margin-left: .5em;
 }
 
-#seriesItems select.typePicker  {
-	width: 60%;
-	float: left;
-}
 
 #seriesItems input[type="checkbox"] {
-	float: left;
-	margin-left: 5%;
-	margin-top: .25em;
+	margin-top: 1em;
+	margin-left: 9px;
+	-ms-transform: scale(2); /* IE */
+	-moz-transform: scale(2); /* FF */
+	-webkit-transform: scale(2); /* Safari and Chrome */
+	-o-transform: scale(2); /* Opera */
+	transform: scale(2);
+	 width: 16px;
+	 height: 16px;
+	 -webkit-appearance: none;
+	-moz-appearance: none;
+	 appearance: none;
 }
 
+#seriesItems input[type="checkbox"]:not(:checked) {
+	
+}
+
+#seriesItems input[type="checkbox"]:checked {
+	background-color: #999;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: #999 1px solid;
+}
+ 
 /**
  * Export/update buttons
  */
@@ -354,7 +406,6 @@ textarea {
 }
 
 .updateButton p {
-	font-family: Arial, "MS Trebuchet", sans-serif;
 	padding: 5px;
 	background-color: #999;
 	color: #ffffff;
@@ -382,3 +433,4 @@ div.colorPicker-swatch {
 div.colorPicker_hexWrap {
 	display: none;
 }
+

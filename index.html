@@ -1,57 +1,57 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<html class="no-js" lang="en">
     <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Chartbuilder</title>
+    <title>ChartBuilder</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
+    <meta name="robots" content="noindex">`
 
     <!-- favicon updates through js -->
-    <link id="favicon" rel="shortcut icon" type="image/png" href="" />
+    <link id="favicon" rel="shortcut icon" type="image/png" href="#" />
     
     <!-- Libraries CSS -->
-    <link rel="stylesheet" href="bower_components/html5-boilerplate/css/normalize.css" type="text/css" media="screen" charset="utf-8">
-    <link rel="stylesheet" href="bower_components/html5-boilerplate/css/main.css" type="text/css" media="screen" charset="utf-8">
-    <link rel="stylesheet" href="bower_components/really-simple-color-picker/colorPicker.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="bower_components/html5-boilerplate/css/normalize.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="bower_components/html5-boilerplate/css/main.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="bower_components/really-simple-color-picker/colorPicker.css" type="text/css" media="screen">
     
     <!-- Chartbuilder CSS -->
-    <link rel="stylesheet" href="css/chartbuilder.css" type="text/css" media="screen" charset="utf-8">
-    <link rel="stylesheet" href="css/gneisschart.css" type="text/css" media="screen" charset="utf-8">
-    <link rel="stylesheet" href="css/colorPicker.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="css/chartbuilder.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="css/gneisschart.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="css/colorPicker.css" type="text/css" media="screen">
   </head>
   <body>
     <!-- Add your site or application content here -->
+    <div id="header">
+      <h1>ChartBuilder</h1>
+    </div>
     <div id="interactiveContent">
       <div id="secondaryColumn" class="column">
         <div class="cbInner">
           <div id="staticContainer">
             <div id="chartContainer" class="size_normal"></div>
   
-            <canvas id="canvas" width="1200px" height="676px"></canvas> 
-            <canvas id="favicanvas" width="16px" height="16px"></canvas> 
+            <canvas id="canvas" width="1200" height="676"></canvas> 
+            <canvas id="favicanvas" width="16" height="16"></canvas> 
           </div>
         </div>
       </div>
 
       <div id="primaryColumn" class="column">
         <div class="cbInner">
-          <h1>ChartBuilder</h1>
         
           <div id="chartOptions" class="interfaceCol">
-             <div id="datainput">
+             <div id="datainput" class="optionBlock">
               <div class="inputGroup">
                 <h2>1. Input your data</h2>
+                <cite>It is best to copy and paste from a spreadsheet</cite>
                 <span id="invalidDataSpan" class="hide">Warning: Data is Invalid</span>
                 <textarea id="csvInput" class="input-box" name="csvInput" rows="8"></textarea>
               </div>
-              <div class="inputGroup">
+              <div class="inputGroup hide">
                 <h4>Check the format of your data</h4>
                 <div id="dataTable" class="input-box">
-                  <table border=0>
+                  <table>
                     <tr><th>Header</th></tr>
                     <tr><td>Data</td></tr>
                   </table>
@@ -62,26 +62,29 @@
 
             <div class="optionBlock topOptionBlock">
               <h2>2. Series Options</h2>
+              <cite>Select how you want your data to be visualized</cite>
               <div id="seriesItems"></div>
             </div>
             
             <div class="optionBlock">
               <h2>3. Chart Options</h2>
+              <cite>Add a title, enter the source of your data, select a chart size</cite>
                 <div class="optionGroup"><label for="chart_title">Title</label><input type="text" name="chart_title" value="" id="chart_title"></div>
                 <!-- div class="optionGroup"><label for="credit">Credit</label><input id="creditLine" type="text" name="credit" value="Made with Chartbuilder"></div -->
-                <div class="optionGroup"><label for="source">Source</label><input id="sourceLine" type="text" name="source" value="Data: ">
-                <cite>Something like "Data: Bureau of Labor Statistics" or "Data compiled by Factset"</cite></div>
+                <div class="optionGroup"><label for="sourceLine">Source</label><cite>Something like "Data: Bureau of Labor Statistics" or "Data compiled by Factset"</cite><input id="sourceLine" type="text" name="sourceLine" value="Data: ">
+                </div>
                  <div class="optionGroup">
                   <label for="chart_size">Chart Size</label>
                   <select id="chart_size">
-                    <option value="size_normal" >Normal</option>
-                    <option value="size_longandskinny">Long and Skinny</option>
-                    <option value="size_spot">Spot</option>
+                    <option value="size_normal" >Medium</option>
+                    <option value="size_longandskinny">Small: long</option>
+                    <option value="size_spot">Small: spot</option>
                   </select>
                 </div>
             </div>
             <div class="optionBlock">
                 <h2>4. Primary Axis Options</h2>
+                <cite>Set the units and magnitude of your data. Adjust the number of ticks and the max and min so that there are friendly numbers.</cite>
                 <div id="primaryAxisControls">
                   <div class="optionGroup"><label for="primary_axis_prefix">Primary Axis Prefix</label><input type="text" name="primary_axis_prefix" value="" id="primary_axis_prefix"></div>
                   <div class="optionGroup"><label for="primary_axis_suffix">Primary Axis Suffix</label><input type="text" name="primary_axis_suffix" value="" id="primary_axis_suffix"></div>
@@ -106,10 +109,11 @@
                 <div class="optionGroup"><label for="secondary_axis_suffix">Secondary Axis Suffix</label><input type="text" name="secondary_axis_suffix" value="" id="secondary_axis_suffix"></div>
                 <div class="optionGroup"><label for="secondary_axis_max">Secondary Axis Max</label><input type="text" name="secondary_axis_max" value="" id="secondary_axis_max"></div>
                 <div class="optionGroup"><label for="secondary_axis_min">Secondary Axis Min</label><input type="text" name="secondary_axis_min" value="" id="secondary_axis_min"></div>
-                <div class="optionGroup"><label for="secondary_axis_tick_override">Secondary Axis Tick Override</label><input type="text" name="secondary_axis_tick_override" value="" id="secondary_axis_tick_override" ></div>
+                <div class="optionGroup advanced"><label for="secondary_axis_tick_override">Secondary Axis Tick Override</label><input type="text" name="secondary_axis_tick_override" value="" id="secondary_axis_tick_override" ></div>
               </div>
               <div class="optionBlock">
               <h2>5. Bottom Axis Options</h2>
+              <cite>If this is a date series, pick the frequency and formatting of the ticks</cite>
             <div class="optionGroup showonlywith-date">
               <label for="x_axis_tick_date_frequency">Tick date frequency</label><select name="x_axis_tick_date_frequency" id="x_axis_tick_date_frequency" size="1">
                 <option selected>auto</option>
@@ -161,7 +165,7 @@
             </div>
             <div class="optionBlock full">
               <h4>5. Copy the HTML table of your data (if you want)</h4>
-              <textarea  class="input-box"  id="table-html" type="text" rows="10"></textarea>
+              <textarea  class="input-box"  id="table-html" rows="10"></textarea>
               
               <div class="previousCharts hide">
                 <div class="optionGroup"><label for="previous_charts">Previously Created Charts</label>
@@ -180,18 +184,18 @@
     </div>
 
     <!-- Libraries JS -->
-    <script src="bower_components/modernizr/modernizr.js" charset="utf-8"></script>
-    <script src="bower_components/jquery/jquery.min.js" charset="utf-8"></script>
-    <script src="bower_components/d3/d3.v2.min.js" charset="utf-8"></script>
-    <script src="bower_components/canvg/canvg.js" charset="utf-8"></script>
-    <script src="bower_components/rgbcolor/index.js" charset="utf-8"></script>
-    <script src="bower_components/jquery-csv/index.js" charset="utf-8"></script>
-    <script src="bower_components/really-simple-color-picker/jquery.colorPicker.min.js" charset="utf-8"></script>
-    <script src="bower_components/webfontloader/target/webfont.js" type="text/javascript" charset="utf-8"></script>
-    <script src="bower_components/sugar/release/sugar.min.js" charset="utf-8"></script>
+    <script src="bower_components/modernizr/modernizr.js"></script>
+    <script src="bower_components/jquery/jquery.min.js"></script>
+    <script src="bower_components/d3/d3.v2.min.js"></script>
+    <script src="bower_components/canvg/canvg.js"></script>
+    <script src="bower_components/rgbcolor/index.js"></script>
+    <script src="bower_components/jquery-csv/index.js"></script>
+    <script src="bower_components/really-simple-color-picker/jquery.colorPicker.min.js"></script>
+    <script src="bower_components/webfontloader/target/webfont.js" type="text/javascript"></script>
+    <script src="bower_components/sugar/release/sugar.min.js"></script>
     
     <!-- Chartbuilder JS -->
-    <script src="js/gneisschart.js" charset="utf-8"></script>
+    <script src="js/gneisschart.js"></script>
     <script src="js/chartbuilder.js"></script>
 		
 		<script type="text/javascript">
