@@ -27,7 +27,7 @@ Gneiss.defaultGneissChartConfig = {
 	editable: true, // reserved for enabling or dissabling on chart editing
 	lineDotsThresholdSingle: 10, //line charts will have dots on points until a series has this number of points
 	lineDotsThresholdTotal: 30, //line charts will have dots until all series together have this number of points
-	lineDotRadius: 6, //the radius of dots used on line and scatter plots
+	lineDotRadius: 4, //the radius of dots used on line and scatter plots
 	scatterDotRadius: 6, //the radius of dots used on line and scatter plots
 	bargridLabelMargin: 4, //the horizontal space between a bargrid bar and it's label
 	bargridAxisLabelMarginLeft: 20, //the horizontal minimum space between a bargrid label and a bar
@@ -49,7 +49,12 @@ Gneiss.defaultGneissChartConfig = {
 	legendBottomMargin: 0, // the vertical space between the title and the chart area if there is a legend
 	bargridLabelBottomMargin: 5, //the space between the bargrid series label and the top most bar
 	bargridSeriesGap: 10, //the horizontal space betweet two bargrid series
-	colors: ["#ff4cf4", "#ffb3ff", "#e69ce6", "#cc87cc", "#b373b3", "#995f99", "#804c80", "#665266", "#158eff", "#99cdff", "#9cc2e6", "#87abcc", "#7394b3", "#5f7d99", "#466780", "#525c66"],
+	colors: ["BF0053","FF70B0","E15D98","C44B81","A63869","882551","6B133A","4D0022",
+						"BF600A","FFC07E","E1A76A","C48D55","A67341","885A2D","6B4118","4D2704",
+						"BFAA00","FFF270","E1D55D","C4B84B","A69C38","887F25","6B6213","4D4500",
+						"00BFA5","70FFF7","5DE1D9","4BC4BC","38A69E","258880","136B63","004D45",
+						"006DBF","70B8FF","5DA1E1","4B89C4","3871A6","255A88","13436B","002B4D",
+						"9300BF","E770FF","CB5DE1","AE4BC4","9238A6","752588","59136B","3C004D"],
 	customYAxisFormatter: function(axisGroup, i) { // a routine to be run over the y-axis to customize it
 		var g = this;
 		axisGroup.selectAll("g")
@@ -69,10 +74,7 @@ Gneiss.defaultGneissChartConfig = {
 				axisItem.text = d3.select(this).select("text")
 					.attr("text-anchor", Gneiss.helper.axisSide(g.primaryAxisPosition(), i, "start", "end"))
 					.attr("fill", Gneiss.helper.axisSide(g.primaryAxisPosition(), i, "#9c9c9c", g.yAxis()[i].color))
-					.attr("x", function() {
-						var elemx = Number(d3.select(this).attr("x"));
-						return elemx + Gneiss.helper.axisSide(g.primaryAxisPosition(), i, 3, -3);
-					}) //CHANGE - MAGIC NUMBER (maybe?)
+					.attr("x", 0) //CHANGE - MAGIC NUMBER (maybe?)
 				.attr("y", -9);
 			});
 	},
@@ -120,8 +122,8 @@ Gneiss.defaultGneissChartConfig = {
 	margin: { //the margin is the space between the edge of the image and the next closest item
 		top: 0,
 		bottom: 0,
-		left: 0,
-		right: 0
+		left: 5,
+		right: 5
 	},
 	xAxis: {
 		domain: [0, 100],
@@ -1413,6 +1415,7 @@ function Gneiss(config) {
 
 
 				axisGroup = g.chartElement().selectAll(Gneiss.helper.axisSide(g.primaryAxisPosition(), i, "#leftAxis", "#rightAxis"))
+					.attr("transform", "translate(" + Gneiss.helper.axisSide(g.primaryAxisPosition(), i, g.margin().left, g.width() - g.margin().right) + ",0)")
 					.call(curAxis.axis);
 
 			}
@@ -2356,7 +2359,7 @@ function Gneiss(config) {
 					.attr("width", 10)
 					.attr("height", 10)
 					.attr("x", 0)
-					.attr("y", "0.6em")
+					.attr("y", "0.3em")
 					.attr("fill", function(d, i) {
 						return d.color ? d.color : colors[i]
 					})

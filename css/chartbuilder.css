@@ -120,6 +120,26 @@ table {
 	border: 1px solid #efefef;
 }
 
+/*
+*Custom Chart Sizes
+*/
+#chartContainer.size_normal {
+	width: 600px;
+	height: 338px;
+}
+
+#chartContainer.size_longandskinny {
+	width: 250px;
+	height: 500px;
+}
+
+#chartContainer.size_spot {
+	width: 300px;
+	height: 250px;
+}
+
+
+
 #interactiveContent svg .legendItem text {
 	cursor: move;
 }
