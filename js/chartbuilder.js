@@ -301,7 +301,7 @@ ChartBuilder = {
 		for (s = 0; s < styleDec.length; s++) {
 			output[styleDec[s]] = styleDec[styleDec[s]];
 			if(styleDec[styleDec[s]] === undefined) {
-				//firefox being firefoxy
+				//firefox being ffoxy
 				output[styleDec[s]] = styleDec.getPropertyValue(styleDec[s])
 			}
 		}
@@ -376,7 +376,6 @@ ChartBuilder = {
 
 	},
 	cleanSVGString: function(s) {
-		//use this funciton to say replace a webfont's name with a desktop font's name
 		return s
 	},
 	createSVGContent: function(svg) {
@@ -739,6 +738,11 @@ ChartBuilder = {
 		newChart = this.getAllInputData();
 		newChart.name = name;
 		allcharts.push(newChart);
+
+		while (allcharts.length > 20) {
+			allcharts.unshift()
+		}
+
 		localStorage["savedCharts"] = JSON.stringify(allcharts);
 	},
 	getLocalCharts: function() {
@@ -786,7 +790,18 @@ ChartBuilder = {
 	determineLocaleNumberSeps: function() {
 		var n = 1000.50;
 		var l = n.toLocaleString();
-		return {decimal: l.substring(5,6), thousands: l.substring(1,2)};
+		var s = n.toString()
+		var o = {decimal: l.substring(5,6), thousands: l.substring(1,2)}
+		
+		if(l.substring(5,6) == s.substring(5,6)) {
+			o.decimal = "."
+		}
+
+		if(l.substring(1,2) == s.substring(1,2)) {
+			o.thousands = ","
+		}
+
+		return o;
 	},
 	actions: {
 		axis_prefix_change: function(index,that) {
@@ -870,8 +885,8 @@ ChartBuilder.start = function(config) {
 
 	//construct a Gneisschart using default data
 	//this should change to be more like this http://bost.ocks.org/mike/chart/
-  chart = new Gneiss(chartConfig);
-	
+	chart = new Gneiss(chartConfig);
+
 	//populate the input with the data that is in the chart
 	$("#csvInput").val(function() {
 		var data = [];

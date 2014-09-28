@@ -73,9 +73,26 @@ Gneiss.defaultGneissChartConfig = {
 				//align the text right position it on top of the line
 				axisItem.text = d3.select(this).select("text")
 					.attr("text-anchor", Gneiss.helper.axisSide(g.primaryAxisPosition(), i, "start", "end"))
-					.attr("fill", Gneiss.helper.axisSide(g.primaryAxisPosition(), i, "#9c9c9c", g.yAxis()[i].color))
+					.attr("fill", Gneiss.helper.axisSide(g.primaryAxisPosition(), i, "#999", g.yAxis()[i].color))
 					.attr("x", 0) //CHANGE - MAGIC NUMBER (maybe?)
-				.attr("y", -9);
+					.attr("y", -9)
+					.style("fill", function () {
+					  var curAxis = g.yAxis();
+					  var curItem = d3.select(this);
+					  if (curAxis.length == 1) {
+					    curItem.classed('default', true)
+					    return "";
+					  } else if (curAxis.length == 2) {
+					    curItem.classed('default', false)
+					    var curSeries = g.series().filter(function (series) {
+					      return (series.axis == i);
+					    });
+					    return curSeries[0].color;
+					  } else {
+					    curItem.classed('default', false)
+					    return Gneiss.helper.axisSide(g.primaryAxisPosition(),i,"",g.yAxis()[i].color) // if there are more than two use the default for the primary
+					  }
+					});
 			});
 	},
 	customXAxisFormatter: function(axisGroup) {
@@ -422,6 +439,7 @@ function Gneiss(config) {
 	var yAxis;
 	var series;
 	var xAxisRef;
+	var hourGap;
 
 	var lineDotsThresholdSingle;
 	var lineDotsThresholdTotal;
@@ -1194,7 +1212,7 @@ function Gneiss(config) {
 			if(longestItem.right > 0) {
 				padding_right = longestItem.rect.width * g.seriesByType().bargrid.length
 			}
-			
+
 
 
 			d3.selectAll("#xAxis text").call(function(axis_text) {
@@ -1395,7 +1413,7 @@ function Gneiss(config) {
 				curAxis.axis = d3.svg.axis()
 					.scale(g.yAxis()[i].scale)
 					.orient(Gneiss.helper.axisSide(g.primaryAxisPosition(), i, "right", "left"))
-					.tickSize(g.width() - g.margin().left - g.margin().right - (g.yAxis().length > 1 ? 0 : g.padding().right))
+					.tickSize(g.width() - g.margin().left - g.margin().right )
 				//.ticks(g.yAxis()[0].ticks) // I'm not using built in ticks because it is too opinionated
 				.tickValues(g.yAxis()[i].tickValues ? curAxis.tickValues : Gneiss.helper.exactTicks(curAxis.scale.domain(), g.yAxis()[0].ticks))
 
@@ -1411,11 +1429,10 @@ function Gneiss(config) {
 				.tickValues(curAxis.tickValues ? curAxis.tickValues : Gneiss.helper.exactTicks(curAxis.scale.domain(), g.yAxis()[0].ticks))
 					.scale(g.yAxis()[i].scale)
 					.orient(Gneiss.helper.axisSide(g.primaryAxisPosition(), i, "right", "left"))
-					.tickSize(g.width() - g.margin().left - g.margin().right - (g.yAxis().length > 1 ? 0 : g.padding().right));
+					.tickSize(g.width() - g.margin().left - g.margin().right);
 
 
 				axisGroup = g.chartElement().selectAll(Gneiss.helper.axisSide(g.primaryAxisPosition(), i, "#leftAxis", "#rightAxis"))
-					.attr("transform", "translate(" + Gneiss.helper.axisSide(g.primaryAxisPosition(), i, g.margin().left, g.width() - g.margin().right) + ",0)")
 					.call(curAxis.axis);
 
 			}
@@ -2064,6 +2081,9 @@ function Gneiss(config) {
 				.text(function(d, i) {
 					var yAxisIndex = d3.select(this.parentNode.parentNode).data()[0].axis;
 					var output = g.numberFormat(d);
+					if(d === null) {
+						output = "no data"
+					}
 					if ((i == 0 && g.yAxis()[yAxisIndex].prefix.use == "top") || g.yAxis()[yAxisIndex].prefix.use == "all") {
 						output = g.yAxis()[yAxisIndex].prefix.value + output;
 					} else if (g.yAxis()[yAxisIndex].prefix.use == "positive" && d > 0) {
@@ -2407,7 +2427,7 @@ function Gneiss(config) {
 		var creditBBox;
 
 		//the default values for the source element
-		var sourceElementX = g.width() - g.defaultPadding().right;;
+		var sourceElementX = g.width() - g.margin().right;;
 		var sourceElementDY = 0;
 		var sourceElementTA = "end"
 
