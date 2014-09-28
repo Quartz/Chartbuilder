@@ -300,6 +300,10 @@ ChartBuilder = {
 
 		for (s = 0; s < styleDec.length; s++) {
 			output[styleDec[s]] = styleDec[styleDec[s]];
+			if(styleDec[styleDec[s]] === undefined) {
+				//firefox being firefoxy
+				output[styleDec[s]] = styleDec.getPropertyValue(styleDec[s])
+			}
 		}
 
 		return output;
@@ -311,7 +315,10 @@ ChartBuilder = {
 		canvas.height = $("#chartContainer").height() *2;
 
 		var canvasContext = canvas.getContext("2d");
+		// Scale the chart up so the outputted image looks good on retina displays
+		$("#chart").attr("transform", "scale(2)");
 		var svg = $.trim(document.getElementById("chartContainer").innerHTML);
+		$("#chart").attr("transform", null);
 		canvasContext.drawSvg(svg,0,0);
 
 
@@ -334,11 +341,17 @@ ChartBuilder = {
 
 		var svgContent = this.createSVGContent(document.getElementById("chart"));
 
+		svgContent.source[0] = svgContent.source[0]
+			.split('width="100%"').join('width="'+canvas.width+'"')
+			.split('height="100%"').join('height="'+canvas.height+'"');
+
+		svgContent.source[0] = ChartBuilder.cleanSVGString(svgContent.source[0])
+
 		$("#downloadSVGLink").attr("href","data:text/svg,"+ svgContent.source[0])
 			.attr("download",function(){ return filename + "_chartbuilder.svg";});
 
 			var icon = this.setFavicon();
-			this.storeLocalChart(filename);
+			//this.storeLocalChart(filename);
 
 		if(!(/Apple/).test(navigator.vendor)) {
 			//blobs dont work in Safari so don't use that method
@@ -361,6 +374,10 @@ ChartBuilder = {
 			link.href = url;
 		}
 
+	},
+	cleanSVGString: function(s) {
+		//use this funciton to say replace a webfont's name with a desktop font's name
+		return s
 	},
 	createSVGContent: function(svg) {
 		/*
@@ -853,11 +870,8 @@ ChartBuilder.start = function(config) {
 
 	//construct a Gneisschart using default data
 	//this should change to be more like this http://bost.ocks.org/mike/chart/
-	chart = new Gneiss(chartConfig);
-
-	// Scale the chart up so the outputted image looks good on retina displays
-	$("#chart").attr("transform", "scale(2)");
-
+  chart = new Gneiss(chartConfig);
+	
 	//populate the input with the data that is in the chart
 	$("#csvInput").val(function() {
 		var data = [];
