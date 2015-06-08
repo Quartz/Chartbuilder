@@ -68,6 +68,8 @@ ChartBuilder = {
 				return null;
 			}
 
+
+
 			// Trim leading and trailing spaces from entries
 			for(var j = 0; j < row.length; j++) {
 				row[j] = $.trim(row[j]);
