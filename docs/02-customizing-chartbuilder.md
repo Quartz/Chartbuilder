@@ -3,7 +3,7 @@
 You may want to alter some of Chartbuilder's basic style and settings for your organization.
 That's what we'll cover here.
 
-As noted in the [introduction to Chartbuilder's internals](01-introduction), we
+As noted in the [introduction to Chartbuilder's internals](01-introduction.md), we
 made as many style options as possible configurable through CSS. Nearly all
 other settings can be configured in one of two places in JavaScript:
 1. The global config files in the `src/js/config` directory
@@ -74,6 +74,6 @@ dataset, such as the color or display type.
 
 Some properties need to be calculated; the `config` file merely sets the
 defaults. It is up to the chart parser to do any necessary calculations. For
-example, [here is](misc/xy-model) a model of an XY chart after it has
+example, [here is](misc/sample_chart_model.json) a model of an XY chart after it has
 been parsed by `js/charts/cb-xy/parse-xy.js`.
 

@@ -70,7 +70,7 @@ server anywhere on the internet.
 
 ### Chartbuilder's structure
 
-Before we dive in with [customization](#) and [adding features](#), we'll do a
+Before we dive in with customization and adding features (coming soon), we'll do a
 quick run through how Chartbuilder is organized. The `src` directory contains
 files that you want to edit.
 
@@ -108,7 +108,7 @@ configuration and settings. The `config` directory contains project-wide
 configuration that is not specific to one chart type.
 
 All UI elements, like buttons, input fields, and colorpickers are separate React
-components that exist in their own project, [Chartbuilder UI](#). This should
+components that exist in their own project, [Chartbuilder UI](https://github.com/Quartz/chartbuilder-ui). This should
 make it easy to create new editor interfaces.
 
 #### CSS
@@ -117,4 +117,4 @@ As much as possible, we have put the configuration of Chartbuilder's visual
 display in CSS. We use stylus, which is essentially CSS with no brackets and
 meaningful whitespace. These styles live in the `src/styl` directory.
 
-### [Next: Customizing chartbuilder](#)
+### [Next: Customizing chartbuilder](02-customizing-chartbuilder.md)

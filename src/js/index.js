@@ -16,7 +16,6 @@ document.addEventListener("DOMContentLoaded", function() {
 	// Render parent chartbuilder component
 	React.render(
 		<Chartbuilder
-			showSaveButton={true}
 			showMobilePreview={false}
 		/>,
 	container );
