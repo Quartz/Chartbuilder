@@ -48,7 +48,7 @@ Alternatively:
 1. Make sure you have a recent version of [node.js](https://github.com/joyent/node/wiki/Installation) (or [io.js](https://iojs.org/en/index.html))
 2. [Download source](https://github.com/Quartz/Chartbuilder/archive/master.zip) (and unzip or clone using git)
 3. from the terminal navigate to the source folder (on a Mac: `cd ~/Downloads/Chartbuilder-master/`)
-4. Install the dependencies `npm install`
+4. Install the dependencies automatically by running `npm install`
 5. Start the included web server by running `npm run dev`
 5. Point your browser to [http://localhost:3000/](http://localhost:3000/)
 
