@@ -637,7 +637,7 @@ var xy_render_options = {
 				var bcr = textNode.getBoundingClientRect();
 				var width = bcr.width;
 				var x = parseFloat(textNode.getAttribute("x"));
-				var newX = 0;
+				var newX = x;
 				if (width + (-x) > chart.width - 12) {
 					newX = width - chart.width + chart.margin.left + 12;
 					maxTickText.attr("x", newX);
