@@ -1,0 +1,70 @@
+// Colors
+
+$color-bg = #fff
+$color-body-text = #666
+$color-chart-gridline = #ddd
+$color-chart-meta = #CCCCCC
+$color-chart-axis-text = #666
+$color-chart-title-text = #333
+$color-chart-zeroline = #333
+
+$color-editor-border = #e2e2e2
+$color-editor-fill = #F1F1F1
+$color-editor-disabled = #BEBEBE
+$color-editor-text = #333333
+$color-editor-placeholder = #CACACA
+
+$chart-colors = \
+	#a50026 \
+	#fdae61 \
+	#d73027 \
+	#abd9e9 \
+	#f46d43 \
+	#74add1 \
+	#4575b4 \
+	#313695 \
+	#999 \
+	#666 \
+	#ccc
+
+for c, i in $chart-colors
+	[data-color-index=\"{i}\"]
+		path
+			stroke (c)
+		rect
+			fill (c)
+		circle
+			stroke (c)
+			stroke-width 2px
+			fill (c)
+
+	.color-index-{i}
+		fill (c)
+
+	rect[data-color-index=\"{i}\"]
+		fill (c)
+
+	text[data-color-index=\"{i}\"]
+		fill (c)
+
+	.d4 .axis .tick text[data-color-index=\"{i}\"]
+		fill (c)
+
+	.cb-colorpicker-color-{i}
+		background-color (c)
+
+	.series-label-{i}
+		color (c)
+
+	.series-label-input-{i}
+		border-bottom 2px solid (c)
+		&:hover, &:focus
+			border none
+			border-bottom 2px solid (c)
+		input
+			color (c)
+
+	.cb-toggle.toggled.toggle-{i}
+		.cb-toggle-container
+			background-color (c)
+

@@ -1,0 +1,244 @@
+/**
+* Form Items
+*/
+
+flex-display()
+    display: -webkit-box
+    display: -moz-box
+    display: -ms-flexbox
+    display: -webkit-flex
+    display: flex
+
+flex-direction(dir)
+    -webkit-flex-direction: dir
+    -ms-flex-direction: dir
+    flex-direction: dir
+
+transform(arg)
+    -webkit-transform: arg
+    transform: arg
+
+transition(arg)
+    -webkit-transition: arg
+    transition: arg
+
+span.step-number
+	background-color #333
+	border-radius 100px
+	color #fff
+	width 1.5em
+	height 1.5em
+	display inline-block
+	text-align center
+	margin-right 0.25em
+
+.editor-options
+	font-family $font-sans
+	margin 30px 0
+	display block
+	width 100%
+	.editor-option
+		margin-bottom 12px
+
+.data-input
+	font-size 1em
+	border 1px solid $color-editor-border
+	margin 0
+	textarea
+		font-family $monospaced-font-family
+		height 12em
+	.cb-alert
+		font-size 1.2em
+
+/**
+ * Series items
+ */
+.series-control
+	margin 0 0 10px 0
+	&.inline
+		display inline-block
+		margin-right 10px
+		h3
+			line-height 2em
+			margin 0
+	.section
+		display inline-block
+		vertical-align middle
+	.axis-color
+		width 21%
+		flex-display()
+		flex-direction(column)
+		transform(translateX(4%))
+		label
+			color #bebebe
+			font-size 16px
+			line-height 24px
+
+.series-label
+	margin 10px 0
+
+.series-label-input
+	input
+		padding 0 0 0 2px
+		background none
+		border none
+		transition(padding 0.1s ease-out)
+		height 57px
+
+		width 100%
+		&:hover, &:focus
+			background-color $color-bg
+			transition(padding 0.1s ease-in)
+			padding 0 0 0 10px
+	&.cb-text-input
+		width 78%
+		float left
+		margin-right 4px
+
+.cb-text-input
+	width 100%
+	label
+		pointer-events none
+
+.colorsection
+	float right
+	width 100%
+	margin-bottom 5px
+	margin-top 4px
+	label
+		font-size 1.2em
+		float right
+		text-align left
+		width calc(100% - 55px)
+	.cb-colorpicker-current
+		width 45px
+		height 24px
+		border-radius 16px
+
+.axissection
+	width 100%
+	label
+		float right
+		padding-left 0px
+		width calc(100% - 55px)
+
+
+.typesection
+	width 100%
+
+	input[type="checkbox"]
+		cursor pointer
+		margin-top 1em
+		margin-left 9px
+		transform(scale(2))
+		width 1.5em
+		height 1.5em
+		appearance none
+
+	input[type="checkbox"]:checked
+		background-color #999
+.hidden
+	display none
+
+.downloadLinks
+	a
+		display block
+
+.scale-options
+	margin 30px 0
+
+.labelled-dropdown
+	display table
+	width 100%
+	label
+		width 35%
+		display table-cell
+	.cb-dropdown
+		display table-cell
+	select
+		width 100%
+
+.label-reset
+	display none
+	&.active
+		display inline
+
+.scale-tangle-inputs
+	display table
+	margin-top 5px
+	border 1px solid $color-editor-border
+	width 100%
+	.cb-labelled-tangle
+		display table-cell
+		padding 6px 12px
+		.cb-tangle
+			margin-left 5px
+
+.editor-label
+	font-size 18px
+	font-family $font-sans
+
+.load-localstorage
+	display none
+	&.active
+		display inline-block
+
+.export-button-wrapper
+	margin-top 15px
+	flex-display()
+	.export-button
+		flex auto
+		-webkit-flex auto
+		-ms-flex auto
+		transition 0.1s background-color linear
+		&:active
+			background-color $color-editor-border
+
+.save-button
+	width 100%
+	transition none
+	&.active
+		color white
+		transition none
+		background-color #ab5787
+
+.chartgrid-editor
+	.series-control
+		.colorsection
+			width 18%
+			label
+				font-size 16px
+				line-height 24px
+				color #bebebe
+
+	.grid-options
+		display table
+		border-collapse separate
+		border-spacing 10px
+		width 100%
+		.editor-option
+			display table-row
+			width 100%
+			.editor-label
+				display table-cell
+				width 20%
+			.cb-button-group
+				flex-display()
+
+	.series-label-input
+		width 80%
+
+	.universal-toggle
+		display block
+		width 98%
+
+.mobile-overrides
+	&> h2:first-child
+		font-family $font-sans-bold
+		margin-bottom 1em
+	.scale-options
+		margin-top 0.5em
+		margin-bottom 0.5em
+
+
+
