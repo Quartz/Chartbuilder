@@ -1,4 +1,5 @@
 node_modules/**
+build
 !node_modules/stylus-normalize
 .DS_Store
 .tmp

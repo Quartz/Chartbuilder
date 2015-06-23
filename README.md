@@ -44,10 +44,11 @@ Other than Quartz, customized Chartbuilder created charts have been seen in many
 
 Getting started with Chartbuilder
 ---------------------------------
-###Getting started
 If you are not interested in customizing the styles of your charts use the hosted version: http://quartz.github.io/Chartbuilder/build
 
-Alternatively:
+To work on the Chartbuilder code, first download the project and install
+dependencies:
+
 ####Download via github
 1. Make sure you have a recent version of [node.js](https://github.com/joyent/node/wiki/Installation) (0.12 or above) (or [io.js](https://iojs.org/en/index.html))
 2. [Download source](https://github.com/Quartz/Chartbuilder/archive/master.zip) (and unzip or clone using git)
@@ -65,15 +66,18 @@ Alternatively:
 * [Getting to know the Chartbuilder code](docs/01-introduction.md)
 * [Customizing chartbuilder](docs/02-customizing-chartbuilder.md)
 
-####Documentation
+### Documentation
 
-#####Chartbuilder Specific Documentaion
-* [Chartbuilder API docs](docs/api.md)
+* The [Chartbuilder API docs](http://quartz.github.io/Chartbuilder/build/api-docs/)
+document most of the React components, classes, and utilities in the code base.
 
-#####Chartbuilder Dependency Documentation
+##### Documentation for Chartbuilder's dependencies:
 * [D3](https://github.com/mbostock/d3/wiki)
 * [D4](http://visible.io/docs.html)
 * [React](https://facebook.github.io/react/docs/getting-started.html)
 
-##### Tests
-Run the tests with `npm test` (requires phantomjs 2.0 or greater).
+### Tests
+Run the full test suite with `npm test` (requires phantomjs 2.0 or greater).
+Fore more output, or if you don't have phantomjs 2+ handy, you may run `npm run
+test-js-browser` and/or `npm run test-jsx-browser` and open the URL that
+[testling](https://github.com/substack/testling) gives you.

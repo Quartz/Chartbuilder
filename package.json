@@ -1,20 +1,19 @@
 {
   "name": "chartbuilder",
-  "version": "0.1.0",
-  "description": "",
+  "version": "2.0.0",
+  "description": "Easily create beautiful charts",
   "main": "src/js/index.js",
   "scripts": {
-    "test-jsx-verbose": "browserify -t rewireify test/jsx/index-jsx.js | testling -x open",
-    "test-js-verbose": "browserify test/index.js | testling",
-    "test-verbose": "npm run test-js-verbose && npm run test-jsx-verbose",
+    "test-jsx-browser": "browserify -t rewireify test/jsx/index-jsx.js | testling -u",
+    "test-js-browser": "browserify test/index.js | testling -u",
     "test-jsx": "browserify -t rewireify test/jsx/index-jsx.js | testling | faucet",
     "test-js": "browserify test/index.js | testling | faucet",
     "test": "npm run test-js && npm run test-jsx",
-    "docs": "documentation -f md -o docs/api.md",
+    "docs": "documentation --github --format html -o api-docs",
     "test-page": "gulp test",
     "dev": "gulp",
     "build": "gulp build",
-    "gh-pages": "npm run build && git subtree push --prefix build origin gh-pages"
+    "gh-pages": "npm run build && npm run docs && mv api-docs build && git subtree push --prefix build origin gh-pages"
   },
   "repository": {
     "type": "git",
@@ -38,11 +37,15 @@
     }
   },
   "author": "Quartz",
-  "contributors": [
-    "Nikhil Sonnad",
-    "David Yanofsky"
-  ],
-  "license": "ISC",
+  "contributors": [{
+    "name": "Nikhil Sonnad",
+    "email": "nikhil@nsnnd.com"
+  },
+  {
+    "name": "David Yanofsky",
+    "email": "david@yanofsky.info"
+  }],
+  "license": "MIT",
   "dependencies": {
     "chartbuilder-ui": "git://github.com/quartz/chartbuilder-ui.git",
     "d3": "^3.5.5",
