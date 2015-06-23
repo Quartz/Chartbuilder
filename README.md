@@ -43,7 +43,7 @@ Other than Quartz, customized Chartbuilder created charts have been seen in many
 Getting started with Chartbuilder
 ---------------------------------
 ###Getting started
-If you are not interested in customizing the styles of your charts use the hosted version: http://quartz.github.io/Chartbuilder/
+If you are not interested in customizing the styles of your charts use the hosted version: http://quartz.github.io/Chartbuilder/build
 
 Alternatively:
 ####Download via github

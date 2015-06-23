@@ -1,398 +1,389 @@
 [data-color-index="0"] path {
-  stroke: #ab5787;
+  stroke: #a50026;
 }
 [data-color-index="0"] rect {
-  fill: #ab5787;
+  fill: #a50026;
 }
 [data-color-index="0"] circle {
-  stroke: #ab5787;
+  stroke: #a50026;
   stroke-width: 2px;
-  fill: #f9f9f9;
+  fill: #a50026;
 }
 .color-index-0 {
-  fill: #ab5787;
+  fill: #a50026;
 }
 rect[data-color-index="0"] {
-  fill: #ab5787;
+  fill: #a50026;
 }
 text[data-color-index="0"] {
-  fill: #ab5787;
+  fill: #a50026;
 }
 .d4 .axis .tick text[data-color-index="0"] {
-  fill: #ab5787;
+  fill: #a50026;
 }
 .cb-colorpicker-color-0 {
-  background-color: #ab5787;
+  background-color: #a50026;
 }
 .series-label-0 {
-  color: #ab5787;
+  color: #a50026;
 }
 .series-label-input-0 {
-  border: none;
-  border-bottom: 2px solid #ab5787;
+  border-bottom: 2px solid #a50026;
 }
 .series-label-input-0:hover,
 .series-label-input-0:focus {
   border: none;
-  border-bottom: 2px solid #ab5787;
+  border-bottom: 2px solid #a50026;
 }
 .series-label-input-0 input {
-  color: #ab5787;
+  color: #a50026;
 }
 .cb-toggle.toggled.toggle-0 .cb-toggle-container {
-  background-color: #ab5787;
+  background-color: #a50026;
 }
 [data-color-index="1"] path {
-  stroke: #51b2e5;
+  stroke: #fdae61;
 }
 [data-color-index="1"] rect {
-  fill: #51b2e5;
+  fill: #fdae61;
 }
 [data-color-index="1"] circle {
-  stroke: #51b2e5;
+  stroke: #fdae61;
   stroke-width: 2px;
-  fill: #f9f9f9;
+  fill: #fdae61;
 }
 .color-index-1 {
-  fill: #51b2e5;
+  fill: #fdae61;
 }
 rect[data-color-index="1"] {
-  fill: #51b2e5;
+  fill: #fdae61;
 }
 text[data-color-index="1"] {
-  fill: #51b2e5;
+  fill: #fdae61;
 }
 .d4 .axis .tick text[data-color-index="1"] {
-  fill: #51b2e5;
+  fill: #fdae61;
 }
 .cb-colorpicker-color-1 {
-  background-color: #51b2e5;
+  background-color: #fdae61;
 }
 .series-label-1 {
-  color: #51b2e5;
+  color: #fdae61;
 }
 .series-label-input-1 {
-  border: none;
-  border-bottom: 2px solid #51b2e5;
+  border-bottom: 2px solid #fdae61;
 }
 .series-label-input-1:hover,
 .series-label-input-1:focus {
   border: none;
-  border-bottom: 2px solid #51b2e5;
+  border-bottom: 2px solid #fdae61;
 }
 .series-label-input-1 input {
-  color: #51b2e5;
+  color: #fdae61;
 }
 .cb-toggle.toggled.toggle-1 .cb-toggle-container {
-  background-color: #51b2e5;
+  background-color: #fdae61;
 }
 [data-color-index="2"] path {
-  stroke: #703c5c;
+  stroke: #d73027;
 }
 [data-color-index="2"] rect {
-  fill: #703c5c;
+  fill: #d73027;
 }
 [data-color-index="2"] circle {
-  stroke: #703c5c;
+  stroke: #d73027;
   stroke-width: 2px;
-  fill: #f9f9f9;
+  fill: #d73027;
 }
 .color-index-2 {
-  fill: #703c5c;
+  fill: #d73027;
 }
 rect[data-color-index="2"] {
-  fill: #703c5c;
+  fill: #d73027;
 }
 text[data-color-index="2"] {
-  fill: #703c5c;
+  fill: #d73027;
 }
 .d4 .axis .tick text[data-color-index="2"] {
-  fill: #703c5c;
+  fill: #d73027;
 }
 .cb-colorpicker-color-2 {
-  background-color: #703c5c;
+  background-color: #d73027;
 }
 .series-label-2 {
-  color: #703c5c;
+  color: #d73027;
 }
 .series-label-input-2 {
-  border: none;
-  border-bottom: 2px solid #703c5c;
+  border-bottom: 2px solid #d73027;
 }
 .series-label-input-2:hover,
 .series-label-input-2:focus {
   border: none;
-  border-bottom: 2px solid #703c5c;
+  border-bottom: 2px solid #d73027;
 }
 .series-label-input-2 input {
-  color: #703c5c;
+  color: #d73027;
 }
 .cb-toggle.toggled.toggle-2 .cb-toggle-container {
-  background-color: #703c5c;
+  background-color: #d73027;
 }
 [data-color-index="3"] path {
-  stroke: #168dd9;
+  stroke: #abd9e9;
 }
 [data-color-index="3"] rect {
-  fill: #168dd9;
+  fill: #abd9e9;
 }
 [data-color-index="3"] circle {
-  stroke: #168dd9;
+  stroke: #abd9e9;
   stroke-width: 2px;
-  fill: #f9f9f9;
+  fill: #abd9e9;
 }
 .color-index-3 {
-  fill: #168dd9;
+  fill: #abd9e9;
 }
 rect[data-color-index="3"] {
-  fill: #168dd9;
+  fill: #abd9e9;
 }
 text[data-color-index="3"] {
-  fill: #168dd9;
+  fill: #abd9e9;
 }
 .d4 .axis .tick text[data-color-index="3"] {
-  fill: #168dd9;
+  fill: #abd9e9;
 }
 .cb-colorpicker-color-3 {
-  background-color: #168dd9;
+  background-color: #abd9e9;
 }
 .series-label-3 {
-  color: #168dd9;
+  color: #abd9e9;
 }
 .series-label-input-3 {
-  border: none;
-  border-bottom: 2px solid #168dd9;
+  border-bottom: 2px solid #abd9e9;
 }
 .series-label-input-3:hover,
 .series-label-input-3:focus {
   border: none;
-  border-bottom: 2px solid #168dd9;
+  border-bottom: 2px solid #abd9e9;
 }
 .series-label-input-3 input {
-  color: #168dd9;
+  color: #abd9e9;
 }
 .cb-toggle.toggled.toggle-3 .cb-toggle-container {
-  background-color: #168dd9;
+  background-color: #abd9e9;
 }
 [data-color-index="4"] path {
-  stroke: #d190b6;
+  stroke: #f46d43;
 }
 [data-color-index="4"] rect {
-  fill: #d190b6;
+  fill: #f46d43;
 }
 [data-color-index="4"] circle {
-  stroke: #d190b6;
+  stroke: #f46d43;
   stroke-width: 2px;
-  fill: #f9f9f9;
+  fill: #f46d43;
 }
 .color-index-4 {
-  fill: #d190b6;
+  fill: #f46d43;
 }
 rect[data-color-index="4"] {
-  fill: #d190b6;
+  fill: #f46d43;
 }
 text[data-color-index="4"] {
-  fill: #d190b6;
+  fill: #f46d43;
 }
 .d4 .axis .tick text[data-color-index="4"] {
-  fill: #d190b6;
+  fill: #f46d43;
 }
 .cb-colorpicker-color-4 {
-  background-color: #d190b6;
+  background-color: #f46d43;
 }
 .series-label-4 {
-  color: #d190b6;
+  color: #f46d43;
 }
 .series-label-input-4 {
-  border: none;
-  border-bottom: 2px solid #d190b6;
+  border-bottom: 2px solid #f46d43;
 }
 .series-label-input-4:hover,
 .series-label-input-4:focus {
   border: none;
-  border-bottom: 2px solid #d190b6;
+  border-bottom: 2px solid #f46d43;
 }
 .series-label-input-4 input {
-  color: #d190b6;
+  color: #f46d43;
 }
 .cb-toggle.toggled.toggle-4 .cb-toggle-container {
-  background-color: #d190b6;
+  background-color: #f46d43;
 }
 [data-color-index="5"] path {
-  stroke: #00609f;
+  stroke: #74add1;
 }
 [data-color-index="5"] rect {
-  fill: #00609f;
+  fill: #74add1;
 }
 [data-color-index="5"] circle {
-  stroke: #00609f;
+  stroke: #74add1;
   stroke-width: 2px;
-  fill: #f9f9f9;
+  fill: #74add1;
 }
 .color-index-5 {
-  fill: #00609f;
+  fill: #74add1;
 }
 rect[data-color-index="5"] {
-  fill: #00609f;
+  fill: #74add1;
 }
 text[data-color-index="5"] {
-  fill: #00609f;
+  fill: #74add1;
 }
 .d4 .axis .tick text[data-color-index="5"] {
-  fill: #00609f;
+  fill: #74add1;
 }
 .cb-colorpicker-color-5 {
-  background-color: #00609f;
+  background-color: #74add1;
 }
 .series-label-5 {
-  color: #00609f;
+  color: #74add1;
 }
 .series-label-input-5 {
-  border: none;
-  border-bottom: 2px solid #00609f;
+  border-bottom: 2px solid #74add1;
 }
 .series-label-input-5:hover,
 .series-label-input-5:focus {
   border: none;
-  border-bottom: 2px solid #00609f;
+  border-bottom: 2px solid #74add1;
 }
 .series-label-input-5 input {
-  color: #00609f;
+  color: #74add1;
 }
 .cb-toggle.toggled.toggle-5 .cb-toggle-container {
-  background-color: #00609f;
+  background-color: #74add1;
 }
 [data-color-index="6"] path {
-  stroke: #d365ba;
+  stroke: #4575b4;
 }
 [data-color-index="6"] rect {
-  fill: #d365ba;
+  fill: #4575b4;
 }
 [data-color-index="6"] circle {
-  stroke: #d365ba;
+  stroke: #4575b4;
   stroke-width: 2px;
-  fill: #f9f9f9;
+  fill: #4575b4;
 }
 .color-index-6 {
-  fill: #d365ba;
+  fill: #4575b4;
 }
 rect[data-color-index="6"] {
-  fill: #d365ba;
+  fill: #4575b4;
 }
 text[data-color-index="6"] {
-  fill: #d365ba;
+  fill: #4575b4;
 }
 .d4 .axis .tick text[data-color-index="6"] {
-  fill: #d365ba;
+  fill: #4575b4;
 }
 .cb-colorpicker-color-6 {
-  background-color: #d365ba;
+  background-color: #4575b4;
 }
 .series-label-6 {
-  color: #d365ba;
+  color: #4575b4;
 }
 .series-label-input-6 {
-  border: none;
-  border-bottom: 2px solid #d365ba;
+  border-bottom: 2px solid #4575b4;
 }
 .series-label-input-6:hover,
 .series-label-input-6:focus {
   border: none;
-  border-bottom: 2px solid #d365ba;
+  border-bottom: 2px solid #4575b4;
 }
 .series-label-input-6 input {
-  color: #d365ba;
+  color: #4575b4;
 }
 .cb-toggle.toggled.toggle-6 .cb-toggle-container {
-  background-color: #d365ba;
+  background-color: #4575b4;
 }
 [data-color-index="7"] path {
-  stroke: #154866;
+  stroke: #313695;
 }
 [data-color-index="7"] rect {
-  fill: #154866;
+  fill: #313695;
 }
 [data-color-index="7"] circle {
-  stroke: #154866;
+  stroke: #313695;
   stroke-width: 2px;
-  fill: #f9f9f9;
+  fill: #313695;
 }
 .color-index-7 {
-  fill: #154866;
+  fill: #313695;
 }
 rect[data-color-index="7"] {
-  fill: #154866;
+  fill: #313695;
 }
 text[data-color-index="7"] {
-  fill: #154866;
+  fill: #313695;
 }
 .d4 .axis .tick text[data-color-index="7"] {
-  fill: #154866;
+  fill: #313695;
 }
 .cb-colorpicker-color-7 {
-  background-color: #154866;
+  background-color: #313695;
 }
 .series-label-7 {
-  color: #154866;
+  color: #313695;
 }
 .series-label-input-7 {
-  border: none;
-  border-bottom: 2px solid #154866;
+  border-bottom: 2px solid #313695;
 }
 .series-label-input-7:hover,
 .series-label-input-7:focus {
   border: none;
-  border-bottom: 2px solid #154866;
+  border-bottom: 2px solid #313695;
 }
 .series-label-input-7 input {
-  color: #154866;
+  color: #313695;
 }
 .cb-toggle.toggled.toggle-7 .cb-toggle-container {
-  background-color: #154866;
+  background-color: #313695;
 }
 [data-color-index="8"] path {
-  stroke: #c4c4c4;
+  stroke: #999;
 }
 [data-color-index="8"] rect {
-  fill: #c4c4c4;
+  fill: #999;
 }
 [data-color-index="8"] circle {
-  stroke: #c4c4c4;
+  stroke: #999;
   stroke-width: 2px;
-  fill: #f9f9f9;
+  fill: #999;
 }
 .color-index-8 {
-  fill: #c4c4c4;
+  fill: #999;
 }
 rect[data-color-index="8"] {
-  fill: #c4c4c4;
+  fill: #999;
 }
 text[data-color-index="8"] {
-  fill: #c4c4c4;
+  fill: #999;
 }
 .d4 .axis .tick text[data-color-index="8"] {
-  fill: #c4c4c4;
+  fill: #999;
 }
 .cb-colorpicker-color-8 {
-  background-color: #c4c4c4;
+  background-color: #999;
 }
 .series-label-8 {
-  color: #c4c4c4;
+  color: #999;
 }
 .series-label-input-8 {
-  border: none;
-  border-bottom: 2px solid #c4c4c4;
+  border-bottom: 2px solid #999;
 }
 .series-label-input-8:hover,
 .series-label-input-8:focus {
   border: none;
-  border-bottom: 2px solid #c4c4c4;
+  border-bottom: 2px solid #999;
 }
 .series-label-input-8 input {
-  color: #c4c4c4;
+  color: #999;
 }
 .cb-toggle.toggled.toggle-8 .cb-toggle-container {
-  background-color: #c4c4c4;
+  background-color: #999;
 }
 [data-color-index="9"] path {
   stroke: #666;
@@ -403,7 +394,7 @@ text[data-color-index="8"] {
 [data-color-index="9"] circle {
   stroke: #666;
   stroke-width: 2px;
-  fill: #f9f9f9;
+  fill: #666;
 }
 .color-index-9 {
   fill: #666;
@@ -424,7 +415,6 @@ text[data-color-index="9"] {
   color: #666;
 }
 .series-label-input-9 {
-  border: none;
   border-bottom: 2px solid #666;
 }
 .series-label-input-9:hover,
@@ -439,48 +429,47 @@ text[data-color-index="9"] {
   background-color: #666;
 }
 [data-color-index="10"] path {
-  stroke: #969696;
+  stroke: #ccc;
 }
 [data-color-index="10"] rect {
-  fill: #969696;
+  fill: #ccc;
 }
 [data-color-index="10"] circle {
-  stroke: #969696;
+  stroke: #ccc;
   stroke-width: 2px;
-  fill: #f9f9f9;
+  fill: #ccc;
 }
 .color-index-10 {
-  fill: #969696;
+  fill: #ccc;
 }
 rect[data-color-index="10"] {
-  fill: #969696;
+  fill: #ccc;
 }
 text[data-color-index="10"] {
-  fill: #969696;
+  fill: #ccc;
 }
 .d4 .axis .tick text[data-color-index="10"] {
-  fill: #969696;
+  fill: #ccc;
 }
 .cb-colorpicker-color-10 {
-  background-color: #969696;
+  background-color: #ccc;
 }
 .series-label-10 {
-  color: #969696;
+  color: #ccc;
 }
 .series-label-input-10 {
-  border: none;
-  border-bottom: 2px solid #969696;
+  border-bottom: 2px solid #ccc;
 }
 .series-label-input-10:hover,
 .series-label-input-10:focus {
   border: none;
-  border-bottom: 2px solid #969696;
+  border-bottom: 2px solid #ccc;
 }
 .series-label-input-10 input {
-  color: #969696;
+  color: #ccc;
 }
 .cb-toggle.toggled.toggle-10 .cb-toggle-container {
-  background-color: #969696;
+  background-color: #ccc;
 }
 span.step-number {
   background-color: #333;
@@ -493,7 +482,7 @@ span.step-number {
   margin-right: 0.25em;
 }
 .editor-options {
-  font-family: 'Adelle', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  font-family: 'Khula-Regular', Arial, Helvetica, sans-serif;
   margin: 30px 0;
   display: block;
   width: 100%;
@@ -507,7 +496,7 @@ span.step-number {
   margin: 0;
 }
 .data-input textarea {
-  font-family: Consolas, Monaco, monospace;
+  font-family: Monaco, Lucida Console, monspace;
   height: 12em;
 }
 .data-input .cb-alert {
@@ -551,7 +540,7 @@ span.step-number {
 }
 .series-label-input input {
   padding: 0 0 0 2px;
-  background-color: #fff;
+  background: none;
   border: none;
   -webkit-transition: padding 0.1s ease-out;
   transition: padding 0.1s ease-out;
@@ -560,7 +549,7 @@ span.step-number {
 }
 .series-label-input input:hover,
 .series-label-input input:focus {
-  background-color: #f9f9f9;
+  background-color: #fff;
   -webkit-transition: padding 0.1s ease-in;
   transition: padding 0.1s ease-in;
   padding: 0 0 0 10px;
@@ -569,7 +558,6 @@ span.step-number {
   width: 78%;
   float: left;
   margin-right: 4px;
-  border-bottom: 0;
 }
 .cb-text-input {
   width: 100%;
@@ -662,7 +650,7 @@ span.step-number {
 }
 .editor-label {
   font-size: 18px;
-  font-family: 'Adelle', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  font-family: 'Khula-Regular', Arial, Helvetica, sans-serif;
 }
 .load-localstorage {
   display: none;
@@ -736,7 +724,7 @@ span.step-number {
   width: 98%;
 }
 .mobile-overrides> h2:first-child {
-  font-family: 'AdelleBold', "Helvetica Neue", Arial, sans-serif;
+  font-family: "Khula-Bold", Arial, sans-serif;
   margin-bottom: 1em;
 }
 .mobile-overrides .scale-options {
@@ -763,13 +751,13 @@ div.renderer-wrapper {
   height: 1em;
 }
 svg.renderer-svg {
-  fill: #f9f9f9;
-  font-family: 'AdelleLight', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  fill: #fff;
+  font-family: 'Khula-Light', Arial, Helvetica, sans-serif;
   text-rendering: optimizeLegibility;
   box-sizing: border-box;
 }
 svg.renderer-svg .svg-background {
-  fill: #f9f9f9;
+  fill: #fff;
 }
 svg.renderer-svg tspan {
   height: 1em;
@@ -779,13 +767,13 @@ svg.renderer-svg tspan {
   font-size: 20px;
 }
 .d4 .axis .tick {
-  font-family: 'AdelleLight', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  font-family: 'Khula-Light', Arial, Helvetica, sans-serif;
 }
 .d4 .axis .tick[data-anchor="middle"] text {
   text-anchor: middle;
 }
 .d4 .axis .tick text {
-  fill: #9c9c9c;
+  fill: #666;
   shape-rendering: crispEdges;
   text-anchor: middle;
 }
@@ -794,15 +782,15 @@ svg.renderer-svg tspan {
 }
 .d4 .axis .tick line {
   fill: none;
-  stroke: #eee;
+  stroke: #ddd;
   stroke-width: 1px;
   shape-rendering: crispEdges;
 }
 .d4 .axis .tick.zero line {
-  stroke: #a8a8a8;
+  stroke: #333;
 }
 .d4 .axis .tick rect {
-  fill: #f9f9f9;
+  fill: #fff;
   shape-rendering: crispEdges;
 }
 .d4 .axis.leftAxis text {
@@ -814,24 +802,24 @@ svg.renderer-svg tspan {
 .d4 .axis[data-scale="time"] .tick:not([data-anchor="middle"]) text {
   text-anchor: start;
 }
-.d4 .axis[data-scale="time"] .tick:not([data-anchor="middle"]) .tick:first-child text {
+.d4 .axis[data-scale="time"] .tick:first-child text {
   text-anchor: start;
 }
 .d4 .concealer-label {
-  font-family: 'AdelleLight', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  font-family: 'Khula-Light', Arial, Helvetica, sans-serif;
 }
 .d4 .concealer-label text {
-  fill: #9c9c9c;
+  fill: #666;
 }
 .d4 .concealer-label rect {
-  fill: #f9f9f9;
+  fill: #fff;
 }
 .d4 .connectors line {
   fill: none;
   stroke-width: 1px;
 }
 .d4 line.zero {
-  stroke: #a8a8a8;
+  stroke: #333;
   shape-rendering: crispEdges;
 }
 .d4 .margins .line path,
@@ -842,19 +830,19 @@ svg.renderer-svg tspan {
   stroke-linejoin: round;
 }
 .d4 .margins .label {
-  font-family: 'AdelleLight', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  font-family: 'Khula-Light', Arial, Helvetica, sans-serif;
 }
 .d4 .column-label {
-  fill: #9c9c9c;
+  fill: #666;
 }
 .d4 line.no-label-tick {
   fill: none;
-  stroke: #eee;
+  stroke: #ddd;
   stroke-width: 1px;
   shape-rendering: crispEdges;
 }
 .svg-text {
-  font-family: 'AdelleLight', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  font-family: 'Khula-Light', Arial, Helvetica, sans-serif;
   font-size: 20px;
 }
 .svg-text.svg-text-credit {
@@ -873,8 +861,8 @@ svg.renderer-svg tspan {
   text-anchor: end;
 }
 .svg-text-title {
-  fill: #333;
-  font-family: 'Adelle', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  fill: #666;
+  font-family: 'Khula-Regular', Arial, Helvetica, sans-serif;
   font-size: 20px;
 }
 .svg-source-pipe {
@@ -884,7 +872,7 @@ svg.renderer-svg tspan {
 }
 .svg-label-text {
   font-size: 20px;
-  font-family: 'AdelleLight', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  font-family: 'Khula-Light', Arial, Helvetica, sans-serif;
   cursor: move;
 }
 .crosshair line {
