@@ -10,6 +10,7 @@ What's new in Chartbuilder 2.0
 * The Chart Grid type. Use it to create small multiples of bars, lines, dots, or columns.
 * The app has been refactored, making it easier to add new chart types or use
 third-party rendering libraries, like we are with D4.
+* Data input now accepts csv formatted data as well as tsv formated data
 
 What Chartbuilder is not
 -------------------------
