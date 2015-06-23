@@ -46,7 +46,7 @@ If you are not interested in customizing the styles of your charts use the hoste
 
 Alternatively:
 ####Download via github
-1. Make sure you have a recent version of [node.js](https://github.com/joyent/node/wiki/Installation) (or [io.js](https://iojs.org/en/index.html))
+1. Make sure you have a recent version of [node.js](https://github.com/joyent/node/wiki/Installation) (0.12 or above) (or [io.js](https://iojs.org/en/index.html))
 2. [Download source](https://github.com/Quartz/Chartbuilder/archive/master.zip) (and unzip or clone using git)
 3. from the terminal navigate to the source folder (on a Mac: `cd ~/Downloads/Chartbuilder-master/`)
 4. Install the dependencies `npm install`
