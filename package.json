@@ -37,17 +37,19 @@
     }
   },
   "author": "Quartz",
-  "contributors": [{
-    "name": "Nikhil Sonnad",
-    "email": "nikhil@nsnnd.com"
-  },
-  {
-    "name": "David Yanofsky",
-    "email": "david@yanofsky.info"
-  }],
+  "contributors": [
+    {
+      "name": "Nikhil Sonnad",
+      "email": "nikhil@nsnnd.com"
+    },
+    {
+      "name": "David Yanofsky",
+      "email": "david@yanofsky.info"
+    }
+  ],
   "license": "MIT",
   "dependencies": {
-    "chartbuilder-ui": "git://github.com/quartz/chartbuilder-ui.git",
+    "chartbuilder-ui": "^1.0.1",
     "d3": "^3.5.5",
     "d4": "git://github.com/yanofsky/d4.git",
     "flux": "~2.0.1",
