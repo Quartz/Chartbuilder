@@ -51,8 +51,7 @@
     "react": "^0.12.2",
     "react-component-visibility": "0.0.5",
     "save-svg-as-png": "^1.0.0",
-    "sugar-date": "^1.5.1",
-    "superagent": "^1.2.0"
+    "sugar-date": "^1.5.1"
   },
   "devDependencies": {
     "browser-sync": "1.x.x",
@@ -70,7 +69,6 @@
     "gulp-notify": "^1.2.5",
     "gulp-stylus": "^2.0.1",
     "gulp-uglify": "^1.1.0",
-    "lodash-cli": "^3.9.3",
     "minimatch": "^2.0.1",
     "nib": "^1.0.2",
     "nomnom": "^1.8.0",
