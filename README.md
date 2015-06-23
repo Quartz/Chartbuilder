@@ -4,6 +4,8 @@ Chartbuilder :chart_with_upwards_trend:
 Chartbuilder is a front-end charting application that facilitates easy creation of simple beautiful charts.
 
 Chartbuilder is the user and export interface. [D4](https://github.com/heavysixer/d4) is the default charting framework.
+Chartbuilder powers all chart creation on [Atlas](http://atlas.qz.com), a
+charting platform developed by Quartz.
 
 What's new in Chartbuilder 2.0
 -------------------------
