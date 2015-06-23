@@ -43,7 +43,7 @@
   ],
   "license": "ISC",
   "dependencies": {
-    "chartbuilder-ui": "git+ssh://git@gitlab.com/quartzthings/chartbuilder-ui.git",
+    "chartbuilder-ui": "git://github.com/quartz/chartbuilder-ui.git",
     "d3": "^3.5.5",
     "d4": "git://github.com/yanofsky/d4.git",
     "flux": "~2.0.1",

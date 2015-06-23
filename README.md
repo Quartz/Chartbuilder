@@ -8,8 +8,10 @@ Chartbuilder is the user and export interface. [D4](https://github.com/heavysixe
 What's new in Chartbuilder 2.0
 -------------------------
 * The Chart Grid type. Use it to create small multiples of bars, lines, dots, or columns.
-* The app has been refactored, making it easier to add new chart types or use
+* The app has been rewritten in React.js, making it easier to add new chart types or use
 third-party rendering libraries, like we are with D4.
+* Chart edits are automatically saved to localStorage, and a chart can be
+recovered by clicking the "load previous chart" button on loading the page.
 
 What Chartbuilder is not
 -------------------------
@@ -52,13 +54,13 @@ Alternatively:
 5. Point your browser to [http://localhost:3000/](http://localhost:3000/)
 
 ####Making a chart with Charbuilder
-[How to make a line chart with time series data](tutorials/basic-chart.md)
-[How to make a bar chart with ranking data](tutorials/bar-chart-with-ranking-data.md)
-[How to make a column chart with ordinal data](tutorials/column-chart-ordinal-data.md)
+* [How to make a line chart with time series data](tutorials/basic-chart.md)
+* [How to make a bar chart with ranking data](tutorials/bar-chart-with-ranking-data.md)
+* [How to make a column chart with ordinal data](tutorials/column-chart-ordinal-data.md)
 
 ####Customizing your Chartbuilder
 * [Getting to know the Chartbuilder code](docs/01-introduction.md)
-* [Customizing chartbuilder](docs/02-introduction.md)
+* [Customizing chartbuilder](docs/02-customizing-chartbuilder.md)
 
 ####Documentation
 
