@@ -1,0 +1,84 @@
+{
+  "name": "chartbuilder",
+  "version": "0.1.0",
+  "description": "",
+  "main": "src/js/index.js",
+  "scripts": {
+    "test-jsx-verbose": "browserify -t rewireify test/jsx/index-jsx.js | testling -x open",
+    "test-js-verbose": "browserify test/index.js | testling",
+    "test-verbose": "npm run test-js-verbose && npm run test-jsx-verbose",
+    "test-jsx": "browserify -t rewireify test/jsx/index-jsx.js | testling | faucet",
+    "test-js": "browserify test/index.js | testling | faucet",
+    "test": "npm run test-js && npm run test-jsx",
+    "docs": "documentation -f md -o docs/api.md",
+    "test-page": "gulp test",
+    "dev": "gulp",
+    "build": "npm run test && gulp build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.com/quartzthings/chartbuilder-2"
+  },
+  "browser": {
+    "d4": "./node_modules/d4/d4.js"
+  },
+  "browserify": {
+    "transform": [
+      "browserify-shim",
+      "reactify"
+    ]
+  },
+  "browserify-shim": {
+    "d4": {
+      "exports": "d4",
+      "depends": [
+        "d3:d3"
+      ]
+    }
+  },
+  "author": "Quartz",
+  "contributors": [
+    "Nikhil Sonnad",
+    "David Yanofsky"
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "chartbuilder-ui": "git://github.com/quartz/chartbuilder-ui.git",
+    "d3": "^3.5.5",
+    "d4": "git://github.com/yanofsky/d4.git",
+    "flux": "~2.0.1",
+    "lodash": "^3.9.3",
+    "react": "^0.12.2",
+    "react-component-visibility": "0.0.5",
+    "save-svg-as-png": "^1.0.0",
+    "sugar-date": "^1.5.1"
+  },
+  "devDependencies": {
+    "browser-sync": "1.x.x",
+    "browserify": "^3.44.2",
+    "browserify-shim": "^3.8.0",
+    "del": "^0.1.2",
+    "documentation": "^1.4.0",
+    "envify": "^3.2.0",
+    "faker": "^2.1.2",
+    "faucet": "0.0.1",
+    "glob": "^4.3.5",
+    "gulp": "^3.6.2",
+    "gulp-changed": "^0.4.0",
+    "gulp-css-base64": "^1.3.1",
+    "gulp-notify": "^1.2.5",
+    "gulp-stylus": "^2.0.1",
+    "gulp-uglify": "^1.1.0",
+    "minimatch": "^2.0.1",
+    "nib": "^1.0.2",
+    "nomnom": "^1.8.0",
+    "prova": "^2.1.2",
+    "react-tools": "^0.12.2",
+    "reactify": "^0.15.0",
+    "rewireify": "0.0.13",
+    "tape": "^4.0.0",
+    "testling": "^1.7.1",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^0.1.1"
+  }
+}

@@ -1,0 +1,176 @@
+$header-height = 3em
+$chart-area-width = 640px
+$chart-area-padding = 20px
+
+// Page layout setup
+
+html, body
+	min-width 290px
+	color $color-body-text
+	max-width 100%
+	overflow-x none
+
+h1, h2, h4, h5
+	font-family $font-sans-bold
+	color $color-body-text
+
+h1
+	line-height 50px
+	margin-bottom 10px
+
+h2
+	font-size 24px
+	line-height 24px
+	font-style bold
+	margin 40px 0px
+
+h3
+	font-size 20px
+	font-family $font-serif
+	font-weight bold
+
+p
+	position relative
+	margin 0 0 0 0
+	padding 16px 0 16px 0
+	line-height 1.6
+
+// Base elements
+
+body
+	background-color #f3f3f3
+	font-family $primary-font-family
+	font-size 12px
+
+h1
+	font-size 2em
+	line-height 1
+	font-family $primary-font-family
+
+h2
+	font-size 1.5em
+	line-height 1.5em
+	margin-top 0.5em
+	margin-bottom 0.25em
+	font-family $primary-font-family
+
+h3
+	font-size 1.25em
+	font-family $primary-font-family
+
+h4
+	font-size 1em
+	primary-font-family $primary-font-family
+
+table
+	width 100%
+
+cite
+	font-size 1em
+	font-family $secondary-font-family
+	font-style normal
+
+textarea, input, select
+	width 100%
+	box-sizing border-box
+	margin-bottom 1em
+	color #666
+	border 1px solid #ccc
+	font-family $primary-font-family
+	background-color #fff
+
+textarea:focus,
+select:focus,
+input:focus
+	outline #999 1px solid
+
+textarea
+	font-size 0.75em
+
+select
+	height 3em
+
+canvas
+	display none
+
+.hide
+	display none
+
+.clearfix
+	clear both
+
+/**
+* Layout
+*/
+
+.header
+	background-color #333
+	margin-top 0
+	top 0
+	position fixed
+	height $header-height
+	width 100%
+	z-index 10000
+	padding 0.5em 0 0 0.25em
+	h1
+		color #777
+		margin 0
+		line-height 1
+		padding 0
+
+.chartbuilder-container
+	margin-top $header-height + 0.75
+	position relative
+	overflow hidden
+
+.chartbuilder-renderer
+	width $chart-area-width
+	left ($chart-area-padding / 2)
+	top $header-height
+	overflow-y scroll
+	overflow-x hidden
+	height 100%
+	position fixed
+	margin-top $chart-area-padding
+	.desktop
+		width $chart-area-width
+		position relative
+
+		.renderer-wrapper
+			width auto
+			margin-left auto
+			margin-right auto
+
+	.mobile
+		max-width 429px
+		height 1000px
+		margin-left auto
+		margin-right auto
+		margin-top 2em
+		position relative
+
+		.phone-wrap
+			background-image url('/assets/iphone-6.svg')
+			transform scale(1)
+			transform-origin top
+			height 881px
+
+		.phone-frame
+			overflow-y scroll
+			position relative
+			height 669px
+			width 372px
+			top 116px
+			left 29px
+
+@import 'chart-renderer.styl'
+
+.chartbuilder-editor
+	margin-left $chart-area-width + ($chart-area-padding * 2)
+	margin-bottom 30px
+	display inline-block
+	width 40%
+	padding 0 10px
+	min-width 100px
+	@import 'chart-editor.styl'
+

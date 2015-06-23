@@ -1,4 +1,9 @@
+node_modules/**
+!node_modules/stylus-normalize
+build
 .DS_Store
-config/quartz_config.js
-config/defenseOne_config.js
-d1.html
+.tmp
+.lvimrc
+npm-debug.log
+bower_components/
+src/fonts
