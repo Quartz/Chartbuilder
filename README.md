@@ -57,7 +57,8 @@ dependencies:
 3. from the terminal navigate to the source folder (on a Mac: `cd ~/Downloads/Chartbuilder-master/`)
 4. Install the dependencies automatically by running `npm install`
 5. Start the included web server by running `npm run dev`
-5. Point your browser to [http://localhost:3000/](http://localhost:3000/)
+6. Point your browser to [http://localhost:3000/](http://localhost:3000/)
+7. When you're done developing, [build and deploy](docs/deploying.md) your Chartbuilder!
 
 ####Making a chart with Charbuilder
 * [How to make a line chart with time series data](tutorials/basic-chart.md)
