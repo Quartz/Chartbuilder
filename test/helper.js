@@ -83,3 +83,10 @@ test("helper: detect precision", function(t) {
 	t.equal(p(to_fixed), digits_after_dec, "precision returns same value passed to toFixed");
 	t.end();
 });
+
+test("helper: precision of NaN is 0", function(t) {
+	t.plan(1);
+	var p = help.precision;
+	t.equal(p(0 / 0), 0);
+	t.end();
+});

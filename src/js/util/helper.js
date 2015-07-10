@@ -166,9 +166,15 @@ function combine_margin_pading(m,p) {
  */
 function precision(a) {
   // http://stackoverflow.com/a/27865285/1181761
-  var e = 1;
-  while (Math.round(a * e) / e !== a) e *= 10;
-  return Math.round(Math.log(e) / Math.LN10);
+
+  // guard for NaN
+  if (a === a) {
+	var e = 1;
+	while (Math.round(a * e) / e !== a) e *= 10;
+	return Math.round(Math.log(e) / Math.LN10);
+  } else {
+	return 0;
+  }
 }
 
 /**
