@@ -31,7 +31,7 @@ var inputAlerts = {
 		alertType: "error"
 	},
 	"TOO_FEW_SERIES": {
-		alertText: "You have less than 2 rows, which is less than Chartbuilder supports.",
+		alertText: "You have fewer than 2 rows, which is fewer than Chartbuilder supports.",
 		boldText: "Error:",
 		alertType: "error"
 	},
