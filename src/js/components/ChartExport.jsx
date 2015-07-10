@@ -30,7 +30,8 @@ var ChartExport = React.createClass({
 
 	getInitialState: function() {
 		return {
-			enableSvgExport: true
+			enableSvgExport: true,
+			enableJSONExport: true
 		};
 	},
 
@@ -268,6 +269,18 @@ var ChartExport = React.createClass({
 		a.click();
 	},
 
+	downloadJSON: function() {
+		json_string = JSON.stringify({"hello":"world"})
+		var a = document.createElement('a');
+		a.download = this._makeFilename(".json")
+		a.href = "data:text/svg," + json_string;
+		document.body.appendChild(a);
+		a.addEventListener("click", function(e) {
+			a.parentNode.removeChild(a);
+		});
+		a.click();
+	},
+
 	setAdvancedOptionState: function() {
 		this.setState({
 			showAdvancedOptions: !this.state.showAdvancedOptions
@@ -292,6 +305,17 @@ var ChartExport = React.createClass({
 					className="export-button"
 					onClick={this.downloadSVG}
 					text="Download SVG"
+				/>
+			);
+		}
+
+		if (this.state.enableJSONExport) {
+			chartExportButtons.push(
+				<Button
+					key="json-export"
+					className="export-button"
+					onClick={this.downloadJSON}
+					text="Download JSON"
 				/>
 			);
 		}
