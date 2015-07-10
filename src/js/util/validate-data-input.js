@@ -17,6 +17,9 @@ function validateDataInput(input, series, hasDate) {
 	if (input.length === 0) {
 		// Check whether we have input
 		return makeInputObj(input, "EMPTY", false);
+		} else if (series.length && !series[0].values.length) {
+		// Check that we have at least 1 value row (i.e. minimum header + 1 data row)
+		return makeInputObj(input, "TOO_FEW_SERIES", false);
 	} else if (series.length > 12) {
 		// Check whether there are too many series
 		return makeInputObj(input, "TOO_MANY_SERIES", false);

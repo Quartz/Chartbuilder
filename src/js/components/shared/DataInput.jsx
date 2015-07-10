@@ -30,6 +30,11 @@ var inputAlerts = {
 		boldText: "Error:",
 		alertType: "error"
 	},
+	"TOO_FEW_SERIES": {
+		alertText: "You have less than 2 rows, which is less than Chartbuilder supports.",
+		boldText: "Error:",
+		alertType: "error"
+	},
 	"NAN_VALUES": {
 		alertText: "At least one of your data points cannot be converted to a number",
 		boldText: "Error:",
