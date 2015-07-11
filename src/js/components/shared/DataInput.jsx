@@ -95,10 +95,15 @@ var DataInput = React.createClass({
 		this.setState(inputAlerts[nextProps.chartProps.input.status]);
 	},
 
+	onInputDragOver: function() {
+		console.log("here!")
+	},
+
 	render: function() {
 		var chartProps = this.props.chartProps;
 		return (
 			<div className={this.props.className}>
+				<input type="file" id="input" onDragOver={this.onInputDragOver}/>
 				<TextArea
 					value={chartProps.input.raw}
 					onChange={this._handleReparseUpdate.bind(null, "input")}

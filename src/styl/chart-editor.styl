@@ -44,9 +44,15 @@ span.step-number
 	font-size 1em
 	border 1px solid $color-editor-border
 	margin 0
+	position relative
 	textarea
 		font-family $monospaced-font-family
 		height 12em
+	input[type="file"]
+		height 12em
+		position absolute
+		z-index 1
+		opacity 0
 	.cb-alert
 		font-size 1.2em
 
