@@ -49,10 +49,16 @@ span.step-number
 		font-family $monospaced-font-family
 		height 12em
 	input[type="file"]
+		pointer-events none
 		height 12em
 		position absolute
-		z-index 1
-		opacity 0
+		opacity 1
+		z-index -1
+	&.dropping
+	 	background-color red
+	 	input[type="file"]
+	 		pointer-events all
+	 		z-index 1
 	.cb-alert
 		font-size 1.2em
 

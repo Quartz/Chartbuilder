@@ -9,6 +9,8 @@ var chartbuilderUI = require("chartbuilder-ui");
 var TextArea = chartbuilderUI.TextArea;
 var Alert = chartbuilderUI.Alert;
 
+var dropTimeout = null;
+
 var inputAlerts = {
 	"EMPTY": {
 		alertText: "Enter some data above.",
@@ -95,15 +97,24 @@ var DataInput = React.createClass({
 		this.setState(inputAlerts[nextProps.chartProps.input.status]);
 	},
 
-	onInputDragOver: function() {
-		console.log("here!")
+	onInputDragOver: function(e) {
+		clearTimeout(dropTimeout)
+		console.log("HERE")
+		var div = e.target.parentNode
+		if(div.className.indexOf("dropping") == -1) {
+			div.className = div.className + " dropping"
+		}
+		
+		dropTimeout = setTimeout(function(){
+			div.className = div.className.split(" ").filter(function(d){return d != "dropping"}).join(" ")
+		},1000)
 	},
 
 	render: function() {
 		var chartProps = this.props.chartProps;
 		return (
-			<div className={this.props.className}>
-				<input type="file" id="input" onDragOver={this.onInputDragOver}/>
+			<div className={this.props.className} onDragOver={this.onInputDragOver}>
+				<input type="file" id="input"/>
 				<TextArea
 					value={chartProps.input.raw}
 					onChange={this._handleReparseUpdate.bind(null, "input")}
