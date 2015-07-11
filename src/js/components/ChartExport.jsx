@@ -270,10 +270,10 @@ var ChartExport = React.createClass({
 	},
 
 	downloadJSON: function() {
-		json_string = JSON.stringify({"hello":"world"})
+		json_string = JSON.stringify(this.props.model,null,"\t")
 		var a = document.createElement('a');
 		a.download = this._makeFilename(".json")
-		a.href = "data:text/svg," + json_string;
+		a.href = "data:text/json;charset=utf-8," + encodeURIComponent(json_string);
 		document.body.appendChild(a);
 		a.addEventListener("click", function(e) {
 			a.parentNode.removeChild(a);
