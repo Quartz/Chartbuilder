@@ -54,11 +54,25 @@ span.step-number
 		position absolute
 		opacity 1
 		z-index -1
+	.file-drop
+		pointer-events none
+		height 12em
+		position absolute
+		z-index -2
+		background-color $color-editor-fill
+		width 100%
+		text-align center
+		font-family $font-sans
+		p
+			font-size 2em
+			margin-top 2em
+		
 	&.dropping
-	 	background-color red
 	 	input[type="file"]
 	 		pointer-events all
 	 		z-index 1
+	 	.file-drop
+	 		z-index 2
 	.cb-alert
 		font-size 1.2em
 

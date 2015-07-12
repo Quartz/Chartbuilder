@@ -99,14 +99,15 @@ var DataInput = React.createClass({
 
 	onInputDragOver: function(e) {
 		clearTimeout(dropTimeout)
-		console.log("HERE")
 		var div = e.target.parentNode
 		if(div.className.indexOf("dropping") == -1) {
 			div.className = div.className + " dropping"
 		}
 		
 		dropTimeout = setTimeout(function(){
-			div.className = div.className.split(" ").filter(function(d){return d != "dropping"}).join(" ")
+			div.className = div.className.split(" ")
+				.filter(function(d){return d != "dropping"})
+				.join(" ")
 		},1000)
 	},
 
@@ -114,6 +115,9 @@ var DataInput = React.createClass({
 		var chartProps = this.props.chartProps;
 		return (
 			<div className={this.props.className} onDragOver={this.onInputDragOver}>
+				<div className="file-drop">
+					<p>Drop File Here</p>
+				</div>
 				<input type="file" id="input"/>
 				<TextArea
 					value={chartProps.input.raw}
