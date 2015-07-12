@@ -112,7 +112,11 @@ var DataInput = React.createClass({
 	},
 
 	onFileUpload: function(e){
-		console.log('Here');
+		var reader = new FileReader();
+		reader.onload = function() {
+			console.log(JSON.parse(this.result))
+		}
+		reader.readAsText(e.target.files[0])
 	},
 
 	render: function() {
