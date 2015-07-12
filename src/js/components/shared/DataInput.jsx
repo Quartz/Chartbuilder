@@ -111,6 +111,10 @@ var DataInput = React.createClass({
 		},1000)
 	},
 
+	onFileUpload: function(e){
+		console.log('Here');
+	},
+
 	render: function() {
 		var chartProps = this.props.chartProps;
 		return (
@@ -118,7 +122,7 @@ var DataInput = React.createClass({
 				<div className="file-drop">
 					<p>Drop File Here</p>
 				</div>
-				<input type="file" id="input"/>
+				<input type="file" id="input" onChange={this.onFileUpload}/>
 				<TextArea
 					value={chartProps.input.raw}
 					onChange={this._handleReparseUpdate.bind(null, "input")}
