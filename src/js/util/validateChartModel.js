@@ -1,9 +1,7 @@
 /**
- * Given a defaults object and a source object, copy the value from the source
- * if it contains the same key, otherwise return the default. Skip keys that
- * only exist in the source object.
+ * Test whether a string is a valid Chartbuilder model
  * @param {object} modelStr - unparsed string of chart model JSON
- * @returns {object} parsed - parsed object
+ * @returns {object or null} parsed - parsed object
  * @static
  * @memberof helper
 */
