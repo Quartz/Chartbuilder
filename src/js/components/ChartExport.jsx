@@ -270,7 +270,12 @@ var ChartExport = React.createClass({
 	},
 
 	downloadJSON: function() {
-		json_string = JSON.stringify(this.props.model,null,"\t")
+
+		json_string = JSON.stringify({
+			chartProps: this.props.model.chartProps,
+			metadata: this.props.model.metadata
+		}, null, "\t")
+
 		var a = document.createElement('a');
 		a.download = this._makeFilename(".json")
 		a.href = "data:text/json;charset=utf-8," + encodeURIComponent(json_string);
