@@ -34,13 +34,11 @@ var LocalStorageTimer = React.createClass({
 	},
 
 	componentWillMount: function() {
-		if (localStorage.hasOwnProperty("model")) {
+		if (this.props.timerOn) {
 			timer = setTimeout(function() {
 				this._disableTimer();
 			}.bind(this), TIMER_DURATION);
 			ChartViewActions.startTimer();
-		} else {
-			ChartViewActions.stopTimer();
 		}
 	},
 
