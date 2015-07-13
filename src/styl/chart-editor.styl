@@ -51,13 +51,15 @@ span.step-number
 	input[type="file"]
 		pointer-events none
 		height 12em
-		position absolute
+		position relative
 		opacity 1
 		z-index -1
 	.file-drop
 		pointer-events none
 		height 12em
 		position absolute
+		top 0
+		left 0
 		z-index -2
 		background-color $color-editor-fill
 		width 100%
@@ -66,7 +68,7 @@ span.step-number
 		p
 			font-size 2em
 			margin-top 2em
-		
+
 	&.dropping
 	 	input[type="file"]
 	 		pointer-events all
