@@ -1,6 +1,6 @@
 /**
  * Test whether a string is a valid Chartbuilder model
- * @param {object} modelStr - unparsed string of chart model JSON
+ * @param {string} modelStr - unparsed string of chart model JSON
  * @returns {object or null} parsed - parsed object
  * @static
  * @memberof helper
