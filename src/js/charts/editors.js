@@ -12,5 +12,10 @@ module.exports = {
 	chartgrid: {
 		Editor: require("../components/chart-grid/ChartGridEditor.jsx"),
 		MobileOverrides: require("../components/chart-grid/ChartGridMobile.jsx")
+	},
+
+	stack: {
+		Editor: require("../components/chart-stack/StackEditor.jsx"),
+		MobileOverrides: require("../components/chart-stack/StackMobile.jsx")
 	}
 };

@@ -1,4 +1,5 @@
 var cb_xy = require("./cb-xy/draw-xy");
+var cb_stack = require("./cb-stack/draw-stack");
 var cb_bar_grid = require("./cb-chart-grid/draw-bar-grid");
 
 /**
@@ -15,7 +16,9 @@ var cb_charts = {
 	 * Chartbuilder's bar grid constructor. It is a slightly modified version of d4's row chart
 	 * @return {object} bar_grid
 	 */
-	cb_bar_grid: cb_bar_grid
+	cb_bar_grid: cb_bar_grid,
+
+	cb_stack: cb_stack
 };
 
 module.exports = cb_charts;
