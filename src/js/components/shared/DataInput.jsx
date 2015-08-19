@@ -6,7 +6,7 @@ var update = React.addons.update;
 var ChartViewActions = require("../../actions/ChartViewActions");
 var ChartServerActions = require("../../actions/ChartServerActions");
 
-var validateChartModel = require("../../util/validateChartModel");
+var validateChartModel = require("../../util/validate-chart-model");
 
 var chartbuilderUI = require("chartbuilder-ui");
 var TextArea = chartbuilderUI.TextArea;
