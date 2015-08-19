@@ -42,11 +42,38 @@ span.step-number
 
 .data-input
 	font-size 1em
-	border 1px solid $color-editor-border
 	margin 0
+	position relative
 	textarea
 		font-family $monospaced-font-family
 		height 12em
+	input[type="file"]
+		pointer-events none
+		height 12em
+		position relative
+		opacity 1
+		z-index -1
+	.file-drop
+		pointer-events none
+		height 12em
+		position absolute
+		top 0
+		left 0
+		z-index -2
+		background-color $color-editor-fill
+		width 100%
+		text-align center
+		font-family $font-sans
+		p
+			font-size 2em
+			margin-top 2em
+
+	&.dropping
+	 	input[type="file"]
+	 		pointer-events all
+	 		z-index 1
+	 	.file-drop
+	 		z-index 2
 	.cb-alert
 		font-size 1.2em
 

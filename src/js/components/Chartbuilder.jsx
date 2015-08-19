@@ -200,6 +200,7 @@ var Chartbuilder = React.createClass({
 						metadata={this.state.metadata}
 						stepNumber={String(editorSteps + 3)}
 						additionalComponents={this.props.additionalComponents.misc}
+						model={this.state}
 					/>
 				</div>
 				<div className="chartbuilder-canvas">
