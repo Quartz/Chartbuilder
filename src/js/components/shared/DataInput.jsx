@@ -124,7 +124,7 @@ var DataInput = React.createClass({
 				onDragLeave={this._toggleDropState}
 			>
 				<div className="file-drop">
-					<p>Drop File Here</p>
+					<p>Drop configuration file here</p>
 				</div>
 				<input type="file" id="input" onChange={this.onFileUpload}/>
 			</div>
@@ -137,6 +137,7 @@ var DataInput = React.createClass({
 			<div className={this.props.className}
 				onDragOver={this._toggleDropState}
 			>
+				<label>if you have a json file to load, drop that here</label>
 				<TextArea
 					value={this.props.chartProps.input.raw}
 					onChange={this._handleReparseUpdate.bind(null, "input")}
