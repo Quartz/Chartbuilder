@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/quartzthings/chartbuilder-2"
+    "url": "https://github.com/Quartz/Chartbuilder"
   },
   "browser": {
     "d4": "./node_modules/d4/d4.js"
