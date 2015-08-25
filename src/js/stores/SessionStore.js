@@ -9,7 +9,7 @@ var _session = {
 	separators: detectNumberSeparators(),
 	emSize: 10,
 	width: 640,
-	timerOn: true
+	timerOn: (localStorage.hasOwnProperty("model") === true)
 };
 
 var CHANGE_EVENT = "change";
