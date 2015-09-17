@@ -41,6 +41,7 @@ var chart_sizes = [
 
 var text_input_values = [
 	{ name: "title", content: "Title" },
+	{ name: "subtitle", content: "Subtitle"},
 	{ name: "credit", content: "Credit" },
 	{ name: "source", content: "Source" }
 ];
