@@ -272,7 +272,7 @@ var RendererWrapper = React.createClass({
 					<SvgText
 						text={metadata.title}
 						key="title"
-						translate={[translate.left, translate.top]}
+						translate={[translate.left, translate.top + 16]}
 						align="top"
 						className="svg-text-title"
 					/>
