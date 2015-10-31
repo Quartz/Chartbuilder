@@ -637,6 +637,19 @@ var init_data_intraday_single = [
 	"4/1/2015 9:30:59	160.13",
 ].join("\n");
 
+var init_data_comma = [
+	"year	foo",
+	"1989	$6,530",
+	"1992	$8,711",
+	"1995	$7,907",
+	"1998	$9,507",
+	"2001	$9,293",
+	"2004	$13,865",
+	"2007	$15,779",
+	"2010	$9,360",
+	"2013	$8,000"
+].join("\n");
+
 module.exports = {
 	init_data_ordinal: init_data_ordinal,
 	init_data_ordinal_multiple: init_data_ordinal_multiple,
@@ -644,5 +657,6 @@ module.exports = {
 	init_data_time: init_data_time,
 	init_data_time_multiple: init_data_time_multiple,
 	init_data_time_single: init_data_time_single,
-	init_data_intraday_single: init_data_intraday_single
+	init_data_intraday_single: init_data_intraday_single,
+	init_data_comma: init_data_comma
 };

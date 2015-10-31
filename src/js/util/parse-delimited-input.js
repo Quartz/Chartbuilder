@@ -29,7 +29,7 @@ function parseDelimInput(input, opts) {
 	var _stripCharsStr = stripChars.concat([separators.thousands]).reduce(function(a, b) {
 		return a.concat(parseUtils.escapeRegExp(b));
 	}, []).join("|");
-	var stripCharsRegex = new RegExp(_stripCharsStr);
+	var stripCharsRegex = new RegExp(_stripCharsStr, "g");
 
 	var columnNames = input.split(newLineRegex)[0].split(delimiter);
 
