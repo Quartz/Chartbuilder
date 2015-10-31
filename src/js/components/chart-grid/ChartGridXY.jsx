@@ -89,6 +89,7 @@ var ChartGridXY = React.createClass({
 			bottom: chartProps.extraPadding.bottom + this.state.extraHeight,
 			left: this.state.maxTickWidth
 		};
+		console.log(this.state.maxTickWidth)
 
 		var dimensions = clone(this.props.dimensions);
 
@@ -352,7 +353,53 @@ function yAxisUsing(location, axis, state) {
 			return help.roundToPrecision(d, scale.primaryScale.precision);
 		}
 	});
+
+	axis.afterRender(function(feature, data, chartArea, selection) {
+		adjust_y_labels.call(this, feature, data, chartArea, selection, scale.primaryScale.domain);
+	});
 }
 
+function adjust_y_labels(feature, data, chartArea, selection, domain) {
+	/* SO HERES THE DEAL
+	// this is a lot of effort to customize axes
+	// what we do at Quartz instead of this is build
+	// our own d3 that draws axes exactly how we want them
+	// If you're getting serious about customization,
+	// I suggest you do the same.
+	*/
+	var chart = this;
+	var ticks = selection.selectAll(".tick");
+	var text = ticks.selectAll("text");
+	var max = d3.max(domain);
+
+	ticks.classed("zero", function(d) {
+		return (d === 0);
+	});
+
+	var maxTick = ticks.filter(function(d) {
+		return (d === max);
+	});
+
+	var maxTickRect = maxTick.selectAll("rect").data([0]).enter().append("rect");
+	var maxTickText = maxTick.select("text");
+	var textNode = maxTickText.node();
+	var bcr = textNode.getBoundingClientRect();
+	var width = bcr.width;
+	var x = parseFloat(textNode.getAttribute("x"));
+	var newX = x;
+
+	// TODO: 31 hardcode is working, but why?? Where is number coming from?
+	if (width + (-x) > chart.width - 12) {
+		newX = width - chart.width + chart.margin.left + 12 - 31;
+		maxTickText.attr("x", newX);
+	}
+	maxTick.select("rect").attr({
+		x: newX - width,
+		y: (-1 * bcr.height / 2),
+		width: width + 6,
+		height: bcr.height
+	});
+	maxTickText.moveToFront();
+}
 
 module.exports = ChartGridXY;

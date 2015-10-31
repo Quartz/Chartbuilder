@@ -7,7 +7,7 @@ var chartConfig = require("../charts/chart-config");
 
 module.exports = {
 	defaultChart: function() {
-		var default_model = chartConfig.xy.defaultProps;
+		var default_model = chartConfig.chartgrid.defaultProps;
 		default_model.chartProps.input = {
 			raw: defaultInput,
 			status: "VALID",
