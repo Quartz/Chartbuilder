@@ -39,7 +39,7 @@ var inputAlerts = {
 		alertType: "error"
 	},
 	"NAN_VALUES": {
-		alertText: "At least one of your data points cannot be converted to a number",
+		alertText: "At least one of your data points cannot be converted into a number",
 		boldText: "Error:",
 		alertType: "error"
 	},
