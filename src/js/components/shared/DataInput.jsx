@@ -24,7 +24,7 @@ var inputAlerts = {
 		alertType: "error"
 	},
 	"column_zero": {
-		alertText: "You have a column chart that does not have a zero axis. Please double check to see if that is correct.",
+		alertText: "You have a column chart that doesn't have a zero axis. Double check that this is ok.",
 		boldText: "Warning:",
 		alertType: "warning"
 	},
@@ -39,7 +39,7 @@ var inputAlerts = {
 		alertType: "error"
 	},
 	"NAN_VALUES": {
-		alertText: "At least one of your data points cannot be converted into a number",
+		alertText: "At least one of your data points cannot be converted to a number",
 		boldText: "Error:",
 		alertType: "error"
 	},
@@ -49,7 +49,7 @@ var inputAlerts = {
 		alertType: "error"
 	},
 	"VALID": {
-		alertText: "Your data is looking healthy",
+		alertText: "Your data are looking healthy",
 		boldText: "",
 		alertType: "success"
 	}
