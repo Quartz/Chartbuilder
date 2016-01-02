@@ -121,31 +121,20 @@ var SvgText = React.createClass({
 	},
 
 	_markdownToTspans: function(input,that) {
-		console.log(input)
-		if(typeof input == "string") {
-			return input
-		}
-		else if (input.length == 1) {
-			return input[0]
-		}
-		else {
-			tag_type = input.shift()
-			return input.map(function(item, i) {
-				if(typeof item == "string") {
-					return <tspan 
-						className = {tag_type}
-					>
-						{item}
-					</tspan>
-				}
-				else {
-					return that._markdownToTspans(item,that)
-				}
-				
-				
-			})
+		var type = input.shift()
 
-		}
+		return input.map(function(item) {
+			if (typeof item == "string") {
+				return <tspan 
+					className = {type}
+				>
+					{item}
+				</tspan>
+			}
+			else {
+				return that._markdownToTspans(item,that)[0]
+			}
+		})
 	},
 
 	render: function() {
@@ -174,6 +163,8 @@ var SvgText = React.createClass({
 				dy = "0em";
 			}
 
+			tspans = this._markdownToTspans(parsed_text,this)
+			console.log(tspans)
 
 			textNodes = (
 				<text
@@ -181,7 +172,7 @@ var SvgText = React.createClass({
 					x="0"
 					dy={dy}
 				>
-					{ this._markdownToTspans(parsed_text,this) }
+					{tspans}
 				</text>
 			)
 		}
