@@ -1,7 +1,7 @@
 var React = require("react");
 var clone = require("lodash/lang/clone");
 
-var shallowEqual = require("react/lib/shallowEqual");
+var shallowEqual = require('react-addons-shallow-compare');
 var PureRenderMixin = React.addons.PureRenderMixin;
 var PropTypes = React.PropTypes;
 var update = React.addons.update;

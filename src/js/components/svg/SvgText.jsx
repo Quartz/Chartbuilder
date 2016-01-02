@@ -1,7 +1,6 @@
 // Svg text elements used to describe chart
 var React = require("react");
 var PropTypes = React.PropTypes;
-var shallowEqual = require("react/lib/shallowEqual");
 var ChartViewActions = require("../../actions/ChartViewActions");
 var markdown = require("markdown").markdown;
 
@@ -164,7 +163,6 @@ var SvgText = React.createClass({
 			}
 
 			tspans = this._markdownToTspans(parsed_text,this)
-			console.log(tspans)
 
 			textNodes = (
 				<text

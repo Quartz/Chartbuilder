@@ -5,7 +5,6 @@
 
 var React = require("react");
 var PropTypes = React.PropTypes;
-var shallowEqual = require("react/lib/shallowEqual");
 var SvgText = require("./SvgText.jsx");
 var update = React.addons.update;
 

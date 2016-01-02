@@ -388,7 +388,7 @@ var SvgRectLabel = React.createClass({
 
 	componentWillUpdate: function(nextProps, nextState) {
 		if (!nextProps.settings.dragged) {
-			this._setLegendPosition(nextProps, this.getDOMNode());
+			this._setLegendPosition(nextProps, this.findDOMNode());
 		}
 
 		if (nextProps.settings.dragged === false) {
