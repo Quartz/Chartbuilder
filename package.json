@@ -54,6 +54,7 @@
     "d4": "git://github.com/yanofsky/d4.git",
     "flux": "~2.0.1",
     "lodash": "^3.9.3",
+    "markdown": "^0.5.0",
     "react": "^0.12.2",
     "react-component-visibility": "0.0.5",
     "save-svg-as-png": "^1.0.0",

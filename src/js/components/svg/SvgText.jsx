@@ -3,6 +3,7 @@ var React = require("react");
 var PropTypes = React.PropTypes;
 var shallowEqual = require("react/lib/shallowEqual");
 var ChartViewActions = require("../../actions/ChartViewActions");
+var markdown = require("markdown").markdown;
 
 var config = {
 	textDy: 0.7,
@@ -119,8 +120,37 @@ var SvgText = React.createClass({
 		}
 	},
 
+	_markdownToTspans: function(input,that) {
+		console.log(input)
+		if(typeof input == "string") {
+			return input
+		}
+		else if (input.length == 1) {
+			return input[0]
+		}
+		else {
+			tag_type = input.shift()
+			return input.map(function(item, i) {
+				if(typeof item == "string") {
+					return <tspan 
+						className = {tag_type}
+					>
+						{item}
+					</tspan>
+				}
+				else {
+					return that._markdownToTspans(item,that)
+				}
+				
+				
+			})
+
+		}
+	},
+
 	render: function() {
 		var textNodes;
+		var parsed_text = markdown.parse(this.props.text)[1]
 		if (this.props.wrap) {
 			textNodes = this.state.lines.map(function(text, i) {
 				return (
@@ -144,13 +174,14 @@ var SvgText = React.createClass({
 				dy = "0em";
 			}
 
+
 			textNodes = (
 				<text
 					y="0"
 					x="0"
 					dy={dy}
 				>
-					{this.props.text}
+					{ this._markdownToTspans(parsed_text,this) }
 				</text>
 			)
 		}
