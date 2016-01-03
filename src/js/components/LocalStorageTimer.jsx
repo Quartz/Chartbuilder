@@ -4,7 +4,7 @@ var ChartbuilderLocalStorageAPI = require("../util/ChartbuilderLocalStorageAPI")
 
 /* Node modules */
 var React = require("react");
-var cx = React.addons.classSet;
+var cx = require("classnames");
 var PropTypes = React.PropTypes;
 
 /* Chartbuilder UI components */

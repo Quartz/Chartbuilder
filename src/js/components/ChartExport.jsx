@@ -2,7 +2,7 @@
 
 var React = require('react');
 var update = React.addons.update;
-var cx = React.addons.classSet;
+var cx = require("classnames");
 var PropTypes = React.PropTypes;
 var d3 = require("d3");
 
