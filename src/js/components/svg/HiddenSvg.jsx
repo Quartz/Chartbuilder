@@ -1,4 +1,5 @@
 var React = require("react");
+var ReactDOM = require("react-dom")
 var isEqual = require("lodash/lang/isEqual");
 var reduce = require("lodash/collection/reduce");
 
@@ -67,12 +68,12 @@ var HiddenSvgAxis = React.createClass({
 	},
 
 	componentDidMount: function(prevProps, prevState) {
-		var newMaxTickWidth = this._getMaxTickWidth(this.findDOMNode());
+		var newMaxTickWidth = this._getMaxTickWidth(ReactDOM.findDOMNode(this));
 		this.props.onUpdate(newMaxTickWidth);
 	},
 
 	componentDidUpdate: function(prevProps, prevState) {
-		var newMaxTickWidth = this._getMaxTickWidth(this.findDOMNode());
+		var newMaxTickWidth = this._getMaxTickWidth(ReactDOM.findDOMNode(this));
 		if (newMaxTickWidth !== this.props.maxTickWidth) {
 			// update `maxTickWidth` object in parent component, as it gets passed to
 			// `XYChart`, a sibling of this component.
@@ -153,7 +154,7 @@ var HiddenSvgBarLabels = React.createClass({
 	},
 
 	_getLabelOverlap: function(chartWidth) {
-		var el = this.findDOMNode();
+		var el = ReactDOM.findDOMNode(this);
 		var text = el.querySelectorAll("text");
 		// Find the top bar grid label that is furthest to the right
 		var furthestRight = reduce(text, function(prevRight, currNode, ix) {
@@ -191,7 +192,7 @@ var HiddenSvgBarLabels = React.createClass({
 
 	componentDidMount: function(prevProps, prevState) {
 		// Set the initial labelOverlap on mount
-		this.setState({ parentSVG: this._getSVGParent(this.findDOMNode())}, function() {
+		this.setState({ parentSVG: this._getSVGParent(ReactDOM.findDOMNode(this))}, function() {
 			var labelOverlap = this._getLabelOverlap(this.props.chartWidth);
 			this.props.onUpdate(labelOverlap);
 		})
