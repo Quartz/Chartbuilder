@@ -1,7 +1,7 @@
 // Export chart to PNG or SVG
 
 var React = require('react');
-var update = React.addons.update;
+var update = require("react-addons-update");
 var cx = require("classnames");
 var PropTypes = React.PropTypes;
 var d3 = require("d3");

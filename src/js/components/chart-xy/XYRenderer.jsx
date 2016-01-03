@@ -3,9 +3,10 @@
 
 // React
 var React = require("react");
-var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+var ReactDOM = require("react-dom");
+var PureRenderMixin = require("react-addons-pure-render-mixin");
 var PropTypes = React.PropTypes;
-var update = React.addons.update;
+var update = require("react-addons-update");
 
 // Node modules
 var d3 = require("d3");
@@ -279,7 +280,7 @@ var XYChart = React.createClass({
 
 	componentDidMount: function() {
 		// Draw chart once mounted
-		var el = this.getDOMNode();
+		var el = ReactDOM.findDOMNode(this);
 
 		if (this.props.chartProps.data.length === 0) {
 			return;
@@ -294,7 +295,7 @@ var XYChart = React.createClass({
 
 	shouldComponentUpdate: function(nextProps, nextState) {
 		// always update by redrawing the chart
-		var el = this.getDOMNode();
+		var el = ReactDOM.findDOMNode(this);
 		drawXY(el, this._getChartState(nextProps));
 		return false;
 	},
@@ -341,7 +342,7 @@ var XYChart = React.createClass({
 	},
 
 	render: function() {
-		// empty <svg:g> that will be drawn into using `this.getDOMNode()`
+		// empty <svg:g> that will be drawn into using `ReactDOM.findDOMNode(this)`
 		return (
 			<g className="renderer-chart">
 			</g>

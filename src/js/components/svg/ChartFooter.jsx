@@ -4,9 +4,10 @@
 // exceeds the width of the chart area.
 
 var React = require("react");
+var ReactDom = require("react-dom")
 var PropTypes = React.PropTypes;
 var SvgText = require("./SvgText.jsx");
-var update = React.addons.update;
+var update = require("react-addons-update");
 
 /**
  * Render a footer with the chart credit and source
@@ -119,7 +120,7 @@ var ChartFooter = React.createClass({
 var ChartCreditText = React.createClass({
 
 	componentDidMount: function() {
-		var node = this.getDOMNode();
+		var node = ReactDom.findDOMNode(this);
 		var bbox = node.getBBox();
 		this.props.updateState(bbox.width);
 	},
@@ -183,12 +184,12 @@ var ChartSourceText = React.createClass({
 var HiddenPixelMeasure = React.createClass({
 
 	componentDidMount: function() {
-		var textLength = this.getDOMNode().getComputedTextLength();
+		var textLength = ReactDom.findDOMNode(this).getComputedTextLength();
 		this.props.onUpdate(textLength / this.props.sampleString.length);
 	},
 
 	componentDidUpdate: function() {
-		var textLength = this.getDOMNode().getComputedTextLength();
+		var textLength = ReactDom.findDOMNode(this).getComputedTextLength();
 		var ppc = textLength / this.props.sampleString.length;
 		if (ppc !== this.props.pixelsPerCharacter) {
 			this.props.onUpdate(ppc);

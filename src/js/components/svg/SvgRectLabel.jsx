@@ -4,7 +4,8 @@
  */
 
 var React = require("react");
-var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+var ReactDOM = require("react-dom")
+var PureRenderMixin = require("react-addons-pure-render-mixin");
 var isEqual = require("lodash/lang/isEqual");
 var PropTypes = React.PropTypes;
 var d3 = require("d3");
@@ -327,7 +328,7 @@ var SvgRectLabel = React.createClass({
 		var newConfig = !isEqual(this.props.labelConfig, prevProps.labelConfig);
 
 		if (isLabelTextNew || isReset || newConfig) {
-			var node = this.getDOMNode();
+			var node = ReactDOM.findDOMNode(this);
 			var nodeBBox = node.getBBox();
 			var prevNode = this.props.prevNode;
 			this._updatePosition({
@@ -345,7 +346,7 @@ var SvgRectLabel = React.createClass({
 
 	componentDidMount: function() {
 		// Set default position of left-most label
-		var node = this.getDOMNode();
+		var node = ReactDOM.findDOMNode(this);
 		var nodeBBox = node.getBBox();
 		var parentSVG = this._getSVGParent(node);
 		if (!node.previousSibling) {
@@ -388,7 +389,7 @@ var SvgRectLabel = React.createClass({
 
 	componentWillUpdate: function(nextProps, nextState) {
 		if (!nextProps.settings.dragged) {
-			this._setLegendPosition(nextProps, this.findDOMNode());
+			this._setLegendPosition(nextProps, ReactDOM.findDOMNode(this));
 		}
 
 		if (nextProps.settings.dragged === false) {

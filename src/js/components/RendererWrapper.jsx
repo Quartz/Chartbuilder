@@ -6,6 +6,7 @@
 */
 
 var React = require("react");
+var ReactDOM = require("react-dom")
 var PropTypes = React.PropTypes;
 
 var assign = require("lodash/object/assign");
@@ -15,7 +16,7 @@ var isEqual = require("lodash/lang/isEqual");
 var throttle = require("lodash/function/throttle");
 var reduce = require("lodash/collection/reduce");
 var keys = require("lodash/object/keys");
-var update = React.addons.update;
+var update = require("react-addons-update");
 
 var SvgText = require("./svg/SvgText.jsx");
 
@@ -127,7 +128,7 @@ var RendererWrapper = React.createClass({
 
 	_updateWidth: function(force) {
 		//if (this.state.visible || force === true) {
-			var domNodeWidth = this.getDOMNode().offsetWidth;
+			var domNodeWidth = ReactDOM.findDOMNode(this).offsetWidth;
 			var bp = this._getBreakpointObj(domNodeWidth);
 			if (domNodeWidth !== this.state.domNodeWidth) {
 				var resized = this._resizeUpdate(this.props, bp, domNodeWidth);

@@ -1,5 +1,5 @@
 var React = require("react");
-var update = React.addons.update;
+var update = require("react-addons-update");
 var assign = require("lodash/object/assign");
 var map = require("lodash/collection/map");
 

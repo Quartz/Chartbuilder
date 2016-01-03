@@ -6,8 +6,7 @@
 
 /* Node modules */
 var React = require("react");
-require("react/addons");
-var update = React.addons.update;
+var update = require("react-addons-update");
 var PropTypes = React.PropTypes;
 
 /* Flux stores */

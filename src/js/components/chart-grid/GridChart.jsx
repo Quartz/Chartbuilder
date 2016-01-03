@@ -5,8 +5,9 @@
 */
 
 var React = require("react");
+var ReactDOM = require("react-dom");
 var PropTypes = React.PropTypes;
-var update = React.addons.update;
+var update = require("react-addons-update");
 var d4 = require("d4");
 
 // Date parsing settings
@@ -51,7 +52,7 @@ var GridChart = React.createClass({
 
 	shouldComponentUpdate: function(nextProps, nextState) {
 		// Draw chart when updated
-		var el = this.getDOMNode();
+		var el = ReactDOM.findDOMNode(this);
 		this.props.rendererFunc(el, this._getChartState(nextProps, nextState));
 		return true;
 	},
@@ -67,7 +68,7 @@ var GridChart = React.createClass({
 
 	componentDidMount: function() {
 		// Draw chart once mounted
-		var el = this.getDOMNode();
+		var el = ReactDOM.findDOMNode(this);
 
 		if (this.props.chartProps.data.length === 0) {
 			return;

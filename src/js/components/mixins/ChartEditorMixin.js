@@ -1,5 +1,5 @@
 var React = require("react");
-var update = React.addons.update;
+var update = require("react-addons-update");
 
 // Flux actions
 var ChartViewActions = require("../../actions/ChartViewActions");

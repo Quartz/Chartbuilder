@@ -1,6 +1,6 @@
 var React = require("react");
 var PropTypes = React.PropTypes;
-var update = React.addons.update;
+var update = require("react-addons-update");
 
 // Flux actions
 var ChartViewActions = require("../../actions/ChartViewActions");

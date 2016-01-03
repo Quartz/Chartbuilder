@@ -7,7 +7,7 @@
 
 var React = require("react");
 var PropTypes = React.PropTypes;
-var update = React.addons.update;
+var update = require("react-addons-update");
 var chartSizes = require("../../config/chart-sizes");
 var clone = require("lodash/lang/clone");
 var assign = require("lodash/object/assign");
