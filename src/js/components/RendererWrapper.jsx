@@ -26,8 +26,6 @@ var SessionStore = require("../stores/SessionStore");
 var breakpoints = require("../config/chart-breakpoints");
 var ChartFooter = require("./svg/ChartFooter.jsx");
 
-var CVM = require("react-component-visibility");
-
 /*
  * `chartConfig` is an object that sets default properties for chart types, and
  * also associates a given chart type with its Editor and Renderer components.
@@ -60,8 +58,6 @@ var RendererWrapper = React.createClass({
 		}
 		return true;
 	},
-
-	mixins: [ CVM ],
 
 	getInitialState: function() {
 		return {
@@ -127,16 +123,14 @@ var RendererWrapper = React.createClass({
 	},
 
 	_updateWidth: function(force) {
-		//if (this.state.visible || force === true) {
-			var domNodeWidth = ReactDOM.findDOMNode(this).offsetWidth;
-			var bp = this._getBreakpointObj(domNodeWidth);
-			if (domNodeWidth !== this.state.domNodeWidth) {
-				var resized = this._resizeUpdate(this.props, bp, domNodeWidth);
-				if (resized) {
-					this.setState(resized);
-				}
+		var domNodeWidth = ReactDOM.findDOMNode(this).offsetWidth;
+		var bp = this._getBreakpointObj(domNodeWidth);
+		if (domNodeWidth !== this.state.domNodeWidth) {
+			var resized = this._resizeUpdate(this.props, bp, domNodeWidth);
+			if (resized) {
+				this.setState(resized);
 			}
-		//}
+		}
 	},
 
 	componentDidMount: function() {
