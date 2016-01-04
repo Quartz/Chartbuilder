@@ -29,18 +29,6 @@ var DateScaleSettings = React.createClass({
 		stepNumber: PropTypes.string
 	},
 
-	shouldComponentUpdate: function(nextProps, nextState) {
-		var newStep = (this.props.stepNumber !== nextProps.stepNumber);
-		if (newStep) {
-			return true;
-		}
-		var newScale = !shallowEqual(this.props.scale.dateSettings, nextProps.scale.dateSettings);
-		if (newScale) {
-			return true;
-		}
-		return false;
-	},
-
 	_config: {
 		// Use ids to look up appropriate date interval and number of steps
 		// from `util/process-dates.js` on update
