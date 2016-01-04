@@ -1,8 +1,8 @@
 var React = require("react");
+var ReactDOM = require("react-dom");
 var d3 = require("d3");
-var _ = require("lodash");
-require("react/addons");
-var TU = React.addons.TestUtils;
+var filter = require("lodash/collection/filter");
+var TU = require("react-addons-test-utils");
 var test = require("tape");
 var util = require("../util/util");
 
@@ -19,6 +19,7 @@ Chartbuilder.__set__({
 
 var randChart = util.randArrElement(require("../render/test_charts.json"));
 ChartServerActions.receiveModel(randChart);
+
 var cb = TU.renderIntoDocument(
 	<Chartbuilder
 		showSaveButton={true}
@@ -28,69 +29,39 @@ var cb = TU.renderIntoDocument(
 );
 
 test("Chartbuilder", function(t) {
-	t.plan(2);
+
+	t.plan(1);
 
 	var find_cb = TU.findRenderedDOMComponentWithClass(
 		cb,
 		"chartbuilder-main"
 	);
+
 	t.ok(find_cb, "Chartbuilder renders into DOM");
 
-	var cb_state = find_cb.props.children[0]._owner.state;
-	t.deepEqual(
-		Object.keys(cb_state),
-		["chartProps", "metadata", "session"],
-		"Chartbuilder state loads from store"
-	);
-
-	t.end();
 });
 
 test("Chart type selector", function(t) {
-	t.plan(2);
+	t.plan(1);
 	var target_value;
 	var buttons;
 	var target_button;
 	var active_button;
 
-	var chartEditor = TU.findRenderedDOMComponentWithClass(
-		cb,
-		"chartbuilder-editor"
-	);
-
-	var chartTypeSelect = TU.findRenderedDOMComponentWithClass(
-		chartEditor,
-		"chart-type-select"
-	);
-
+	var cb_dom = ReactDOM.findDOMNode(cb);
+	var chartTypeSelectButtons = cb_dom.querySelectorAll(".chart-type-select > button");
 	target_value = "chartgrid";
 
-	buttons = TU.scryRenderedDOMComponentsWithTag(chartTypeSelect, "button");
-	target_button = buttons.filter(function(btn) {
-		return (btn.props.value == target_value);
+	target_button = filter(chartTypeSelectButtons, function(btn) {
+		return (btn.value == target_value);
 	})[0];
 
 	TU.Simulate.click(target_button);
 
-	active_button = buttons.filter(function(btn) {
-		return /.*active$/.test(btn.getDOMNode().className);
+	active_button = filter(chartTypeSelectButtons, function(btn) {
+		return /.*active$/.test(btn.className);
 	})[0];
 
-	t.equal(active_button.getDOMNode().value, target_value, "chart type button updates new active type");
-
-	target_value = "xy";
-
-	buttons = TU.scryRenderedDOMComponentsWithTag(chartTypeSelect, "button");
-	target_button = buttons.filter(function(btn) {
-		return (btn.props.value == target_value);
-	})[0];
-
-	TU.Simulate.click(target_button);
-
-	active_button = buttons.filter(function(btn) {
-		return /.*active$/.test(btn.getDOMNode().className);
-	})[0];
-
-	t.equal(active_button.getDOMNode().value, target_value, "chart type button updates active type");
+	t.equal(active_button.value, target_value, "chart type button updates new active type");
 });
 

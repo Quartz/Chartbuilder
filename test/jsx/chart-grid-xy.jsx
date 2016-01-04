@@ -1,11 +1,11 @@
 var test = require("tape");
 
 var React = require("react");
-require("react/addons");
+var ReactDOM = require("react-dom");
 
 var d3 = require("d3");
 var _ = require("lodash");
-var TU = React.addons.TestUtils;
+var TU = require("react-addons-test-utils");
 var util = require("../util/util");
 
 var RendererWrapper = require("../../src/js/components/RendererWrapper.jsx");
@@ -39,10 +39,15 @@ test("Renderer: Chart grid XY", function(t) {
 		/>
 	);
 
-	var svg = TU.findRenderedDOMComponentWithTag(rw, "svg");
-	var d3svg = d3.select(svg.getDOMNode());
+	var svg = TU.findRenderedDOMComponentWithTag(
+		rw,
+		"svg"
+	);
 
 	t.ok(TU.isDOMComponent(svg), "svg rendered to DOM");
+
+	var svg_dom = ReactDOM.findDOMNode(svg);
+	var d3svg = d3.select(svg_dom);
 
 	var num_series = randXYGrid.chartProps._grid.cols * randXYGrid.chartProps._grid.rows;
 	var num_vals = _.reduce(randXYGrid.chartProps.data, function(numVals, d) {
@@ -54,7 +59,7 @@ test("Renderer: Chart grid XY", function(t) {
 
 	//TODO: Check that correct types are rendererd
 
-	React.unmountComponentAtNode(rw.getDOMNode());
+	ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(rw).parentNode);
 	t.end();
 });
 

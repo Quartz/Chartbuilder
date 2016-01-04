@@ -1,11 +1,11 @@
 var test = require("tape");
 
 var React = require("react");
-require("react/addons");
+var ReactDOM = require("react-dom");
 
 var d3 = require("d3");
 var _ = require("lodash");
-var TU = React.addons.TestUtils;
+var TU = require("react-addons-test-utils");
 var util = require("../util/util");
 
 var RendererWrapper = require("../../src/js/components/RendererWrapper.jsx");
@@ -37,7 +37,9 @@ test("Renderer: XY chart", function(t) {
 
 	t.ok(TU.isDOMComponent(svg), "svg rendered to DOM");
 
-	var d3svg = d3.select(svg.getDOMNode());
+	var svg_dom = ReactDOM.findDOMNode(svg);
+	var d3svg = d3.select(svg_dom);
+
 	t.equal(d3svg.select(".chartArea").attr("class"), "chartArea", "chartArea rendered to DOM");
 
 	var xy_types = _.map(randXY.chartProps.chartSettings, function(d) {
@@ -87,7 +89,8 @@ test("Renderer: XY chart", function(t) {
 	t.equal(num_lines, type_counts.line, "number of rendered line groups matches data");
 	t.equal(num_dots, type_counts.scatterPlot, "number of rendered dot groups matches data");
 
-	React.unmountComponentAtNode(rw);
+	// Remove test RendererWrapper
+	ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(rw).parentNode);
 	t.end();
 });
 
