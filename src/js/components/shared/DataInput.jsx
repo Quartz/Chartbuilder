@@ -48,6 +48,26 @@ var inputAlerts = {
 		boldText: "Error:",
 		alertType: "error"
 	},
+	"TOO_MUCH_RESOLUTION" : {
+		"alertText": "Your data has a resolution higher than the chart area. Consider reducing your data to a less frequent interval.",
+		"boldText":"Chartbuilder is not plotting some of your data points.",
+		"alertType":"warning"
+	},
+	"TOO_HIGH_PRECISION" : {
+		"alertText": "Your data has unnecassary precision, consider rounding off your data",
+		"boldText":"Warning:",
+		"alertType":"warning"
+	},
+	"GREATER_THAN_THOUSAND" : {
+		"alertText": "Your data has values larger than or equal to 1,000. Chartbuilder charts look best when you reduce your data to an appropriate magnatude.",
+		"boldText":"Warning:",
+		"alertType":"warning"
+	},
+	"TOO_MUCH_DATA" : {
+		"alertText": "Your data is more than 250Kb in size",
+		"boldText":"Warning:",
+		"alertType":"warning"
+	},
 	"VALID": {
 		alertText: "Your data are looking healthy",
 		boldText: "",
