@@ -72,6 +72,8 @@ var SvgText = React.createClass({
 			var newWords = props.text.split(" ");
 			var words = [];
 			var spanLength = 0;
+			var cont_bold = false;
+			var cont_ital = false;
 
 			newWords.forEach(function(word) {
 				if (spanLength + word.length > maxCharacters) {
@@ -84,7 +86,36 @@ var SvgText = React.createClass({
 			});
 
 			if (words.length) {
-				lines.push(words.join(" "));
+				var line = words.join(" ");
+
+				//make sure we don't break markdown styling by splitting a line
+				//this will break if _**italic bold**_ is used but not if **_bold italic_** is used
+				
+				if(cont_bold) {
+					//start with a bold token if a bold token had to be added to the end previous line
+					line = "**" + line;
+					cont_bold = false;
+				}
+
+				if(cont_ital) {
+					//start with a italic token if a italic token had to be added to the end previous line
+					line = "_" + line;
+					cont_ital = false;
+				}
+
+				if(line.split("**").length % 2 == 0 && props.text.split("**").length % 2 != 0) {
+					//end with a bold token if the line left an odd number of them
+					line += "**";
+					cont_bold = true;
+				}
+
+				if(line.split("_").length % 2 == 0 && props.text.split("_").length % 2 != 0) {
+					//end with a italic token if the line left an odd number of them
+					line += "_";
+					cont_ital = true;
+				}
+				
+				lines.push(line);
 			}
 		} else {
 			lines = [props.text];
@@ -120,28 +151,38 @@ var SvgText = React.createClass({
 	},
 
 	_markdownToTspans: function(input,that,index) {
-		var type = input.shift()
+		var type = input.shift();
+		
 
 		return input.map(function(item,i) {
+			var fill;
 			if (typeof item == "string") {
-				return <tspan 
-					className = {type}
-					key={index}
-				>
-					{item}
-				</tspan>
+				fill = "​" + item // add a zero width space to the beginging of the string
+				
 			}
 			else {
-				return that._markdownToTspans(item,that,index+1)[0]
+				fill = that._markdownToTspans(item,that,index+1)[0]
 			}
+
+			return <tspan 
+					className = {type}
+					key={Math.random() + "." + index}
+				>
+					{fill}
+				</tspan>
+
+			
 		})
 	},
 
 	render: function() {
 		var textNodes;
-		var parsed_text = markdown.parse(this.props.text)[1]
+		var parsed_text;
+		var mdToSpans = this._markdownToTspans;
+		var that = this;
 		if (this.props.wrap) {
 			textNodes = this.state.lines.map(function(text, i) {
+				parsed_text = markdown.parse(text)[1];
 				return (
 					<text
 						dy={(i * config.textLineHeight).toString() + "em"}
@@ -149,12 +190,13 @@ var SvgText = React.createClass({
 						x="0"
 						key={i}
 					>
-						{text}
+						{mdToSpans(parsed_text,that,0)}
 					</text>
 				);
 			});
 		} else {
 			var dy;
+			parsed_text = markdown.parse(this.props.text)[1]
 			if (this.props.align === "bottom") {
 				dy = "-0.35em";
 			} else if (this.props.align === "top"){
@@ -163,15 +205,13 @@ var SvgText = React.createClass({
 				dy = "0em";
 			}
 
-			tspans = this._markdownToTspans(parsed_text,this,0)
-
 			textNodes = (
 				<text
 					y="0"
 					x="0"
 					dy={dy}
 				>
-					{tspans}
+					{mdToSpans(parsed_text,that,0)}
 				</text>
 			)
 		}

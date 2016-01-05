@@ -117,6 +117,10 @@ svg
       
     &.strong
       font-family $font-sans-bold
+      
+    &.strong .em, &.em .strong
+      font-family $font-sans-bold
+      font-style italic
 
   &.svg-text-credit
     font-size $em_size*0.6
