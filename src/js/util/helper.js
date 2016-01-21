@@ -1,7 +1,7 @@
-var isArray = require("lodash/lang/isArray");
-var isUndefined = require("lodash/lang/isUndefined");
-var keys = require("lodash/object/keys");
-var reduce = require("lodash/collection/reduce");
+var isArray = require("lodash/isArray");
+var isUndefined = require("lodash/isUndefined");
+var keys = require("lodash/keys");
+var reduce = require("lodash/reduce");
 var d3 = require("d3");
 var processDates = require("./process-dates");
 

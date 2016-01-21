@@ -1,5 +1,5 @@
 var React = require("react");
-var clone = require("lodash/lang/clone");
+var clone = require("lodash/clone");
 
 var shallowEqual = require('react-addons-shallow-compare');
 var PureRenderMixin = require("react-addons-pure-render-mixin");

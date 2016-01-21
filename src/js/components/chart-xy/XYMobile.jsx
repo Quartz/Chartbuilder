@@ -1,7 +1,7 @@
 var React = require("react");
 var PropTypes = React.PropTypes;
 var update = require("react-addons-update");
-var clone = require("lodash/lang/clone");
+var clone = require("lodash/clone");
 
 var ChartEditorMixin = require("../mixins/ChartEditorMixin");
 var XY_yScaleSettings = require("../shared/XY_yScaleSettings.jsx");

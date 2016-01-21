@@ -2,7 +2,7 @@ var React = require("react");
 var PropTypes = React.PropTypes;
 var update = require("react-addons-update");
 
-var clone = require("lodash/lang/clone");
+var clone = require("lodash/clone");
 
 var chartbuilderUI = require("chartbuilder-ui");
 var LabelledTangle = chartbuilderUI.LabelledTangle;

@@ -9,13 +9,13 @@ var React = require("react");
 var ReactDOM = require("react-dom")
 var PropTypes = React.PropTypes;
 
-var assign = require("lodash/object/assign");
-var clone = require("lodash/lang/clone");
-var isDate = require("lodash/lang/isDate");
-var isEqual = require("lodash/lang/isEqual");
-var throttle = require("lodash/function/throttle");
-var reduce = require("lodash/collection/reduce");
-var keys = require("lodash/object/keys");
+var assign = require("lodash/assign");
+var clone = require("lodash/clone");
+var isDate = require("lodash/isDate");
+var isEqual = require("lodash/isEqual");
+var throttle = require("lodash/throttle");
+var reduce = require("lodash/reduce");
+var keys = require("lodash/keys");
 var update = require("react-addons-update");
 
 var SvgText = require("./svg/SvgText.jsx");

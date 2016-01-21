@@ -1,6 +1,6 @@
-var clone = require("lodash/lang/clone");
-var map = require("lodash/collection/map");
-var reduce = require("lodash/collection/reduce");
+var clone = require("lodash/clone");
+var map = require("lodash/map");
+var reduce = require("lodash/reduce");
 var processDates = require("../../util/process-dates");
 
 /**

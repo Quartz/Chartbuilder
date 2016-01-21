@@ -1,6 +1,6 @@
 var React = require("react");
 var PropTypes = React.PropTypes;
-var clone = require("lodash/lang/clone");
+var clone = require("lodash/clone");
 var update = require("react-addons-update");
 
 var ChartEditorMixin = require("../mixins/ChartEditorMixin");
