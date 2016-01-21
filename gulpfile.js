@@ -90,13 +90,15 @@ gulp.task("clean", function (done) {
 	del([
 		config.dirs.tmp + "/**",
 		config.dirs.build + "/**"
-	], done);
+	]).then(function(paths) {
+		done();
+	});
 });
 
 gulp.task("clean-dist", function (done) {
-	del([
-		config.dirs.dist + "/**"
-	], done);
+	del([ config.dirs.dist + "/**" ]).then(function(paths) {
+		done()
+	});
 });
 
 gulp.task("copy-htdocs", function () {
