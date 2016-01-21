@@ -1,5 +1,5 @@
 var Dispatcher = require("flux").Dispatcher;
-var assign = require("lodash/object/assign");
+var assign = require("lodash/assign");
 
 /**
  * Flux dispatcher handles incoming payloads and sends them to flux stores.

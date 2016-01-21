@@ -2,7 +2,7 @@
 // as well as the column names using `d3.dsv`
 
 var d3 = require("d3");
-var each = require("lodash/collection/each");
+var each = require("lodash/each");
 require("sugar-date");
 var parseUtils = require("./parse-utils");
 

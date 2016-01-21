@@ -2,8 +2,8 @@ if (process.env.NODE_ENV !== "test") {
 	var d4 = require("d4");
 }
 
-var filter = require("lodash/collection/filter");
-var each = require("lodash/collection/each");
+var filter = require("lodash/filter");
+var each = require("lodash/each");
 
 var chartStyle = require("../../config/chart-style");
 var cb_mixins = require("../cb-d4-mixins.js");

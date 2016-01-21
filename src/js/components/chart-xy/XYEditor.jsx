@@ -7,10 +7,12 @@ var PropTypes = React.PropTypes;
 var PureRenderMixin = require("react-addons-pure-render-mixin");
 var update = require("react-addons-update");
 var cx = require("classnames");
-var clone = require("lodash/lang/clone");
-var map = require("lodash/collection/map");
-var keys = require("lodash/object/keys");
-var each = require("lodash/collection/each");
+
+var bind = require("lodash/bind");
+var clone = require("lodash/clone");
+var each = require("lodash/each");
+var keys = require("lodash/keys");
+var map = require("lodash/map");
 
 var dateParsers = require("../../util/process-dates").dateParsers;
 
@@ -87,7 +89,7 @@ var XYEditor = React.createClass({
 		var allowSecondaryAxis = (chartProps._numSecondaryAxis < (chartProps.data.length - 1));
 
 		/* Create a settings component for each data series (column) */
-		var chartSettings = map(chartProps.chartSettings, function(chartSetting, i) {
+		var chartSettings = map(chartProps.chartSettings, bind(function(chartSetting, i) {
 			return <XY_chartSettings
 				chartSettings={chartProps.chartSettings}
 				onUpdate={this._handlePropUpdate.bind(null, "chartSettings")}
@@ -97,7 +99,7 @@ var XYEditor = React.createClass({
 				index={i}
 				key={i}
 			/>
-		}, this);
+		}, this));
 
 		/* Y scale settings */
 		scaleSettings.push(

@@ -1,7 +1,7 @@
 var React = require("react");
 var PropTypes = React.PropTypes;
 var cx = require("classnames");
-var clone = require("lodash/lang/clone");
+var clone = require("lodash/clone");
 
 var chartbuilderUI = require("chartbuilder-ui");
 var Button = chartbuilderUI.Button;
