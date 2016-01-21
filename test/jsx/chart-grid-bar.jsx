@@ -62,7 +62,7 @@ test("Renderer: Chart grid bars", function(t) {
 	t.equal(num_vals, num_label_text, "number of bar grid labels matches data");
 	t.equal(num_vals, num_label_rect, "number of bar grid label rects matches data");
 
-	React.unmountComponentAtNode(rw.getDOMNode());
+	ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(rw).parentNode);
 	t.end();
 });
 
