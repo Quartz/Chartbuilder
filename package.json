@@ -4,8 +4,8 @@
   "description": "Easily create beautiful charts",
   "main": "src/js/index.js",
   "scripts": {
-    "test-jsx": "browserify -t rewireify test/jsx/index-jsx.js | tap-closer | smokestack | faucet",
-    "test-js": "browserify test/index.js | tap-closer | smokestack | faucet",
+    "test-jsx": "browserify -t rewireify test/jsx/index-jsx.js | tap-closer | smokestack | tap-spec",
+    "test-js": "browserify test/index.js | tap-closer | smokestack | tap-spec",
     "test": "npm run test-js && npm run test-jsx",
     "docs": "documentation -t documentation-theme-default --github --format html -o api-docs",
     "test-page": "gulp test",
@@ -70,7 +70,6 @@
     "documentation": "^3.0.4",
     "envify": "^3.2.0",
     "faker": "^2.1.2",
-    "faucet": "0.0.1",
     "gulp": "^3.6.2",
     "gulp-changed": "^1.3.0",
     "gulp-css-base64": "^1.3.1",
@@ -83,6 +82,7 @@
     "rewireify": "^0.2.5",
     "smokestack": "^3.4.1",
     "tap-closer": "^1.0.0",
+    "tap-spec": "^4.1.1",
     "tape": "^4.0.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
