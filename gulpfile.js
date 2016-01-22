@@ -196,3 +196,8 @@ gulp.task("test", ["clean"], function() {
 gulp.task("build", ["clean"], function() {
 	gulp.start("_build");
 });
+
+gulp.task("gh-pages", function() {
+	return gulp.src("./build/**/*")
+		.pipe(require("gulp-gh-pages")());
+});
