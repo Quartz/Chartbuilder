@@ -46,7 +46,7 @@ Other than Quartz, customized Chartbuilder created charts have been seen in many
 
 Getting started with Chartbuilder
 ---------------------------------
-If you are not interested in customizing the styles of your charts use the hosted version: http://quartz.github.io/Chartbuilder/build
+If you are not interested in customizing the styles of your charts use the hosted version: http://quartz.github.io/Chartbuilder
 
 To work on the Chartbuilder code, first download the project and install
 dependencies:
@@ -71,7 +71,7 @@ dependencies:
 
 ### Documentation
 
-* The [Chartbuilder API docs](http://quartz.github.io/Chartbuilder/build/api-docs/)
+* The [Chartbuilder API docs](http://quartz.github.io/Chartbuilder/api-docs/)
 document most of the React components, classes, and utilities in the code base.
 
 ##### Documentation for Chartbuilder's dependencies:
