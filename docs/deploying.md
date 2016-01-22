@@ -1,3 +1,13 @@
+### To Github pages
+
+If your Chartbuilder is on a Github repo, you can deploy it to github pages
+using the command:
+
+		npm run gh-pages
+
+The resulting page will also contain the Chartbuilder API docs at `/api-docs`,
+with Chartbuilder at the root `index.html`.
+
 ### Deploying your Chartbuilder
 
 Once you're done [customizing](02-customizing-chartbuilder.md), you'll want to
