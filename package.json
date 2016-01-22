@@ -11,7 +11,7 @@
     "test-page": "gulp test",
     "dev": "gulp",
     "build": "gulp build",
-    "gh-pages": "npm run build && npm run docs && mv api-docs build && git subtree push --prefix build origin gh-pages"
+    "gh-pages": "npm run build && npm run docs && mv api-docs build && git subtree split --prefix build -b gh-pages && git push -f origin gh-pages:gh-pages && git branch -D gh-pages"
   },
   "repository": {
     "type": "git",
