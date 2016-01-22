@@ -585,7 +585,15 @@ body {
   margin-left: 10px;
   color: #cacaca;
   position: absolute;
+  -webkit-transform: scale(1) translate3d(0, 0, 0);
+  -moz-transform: scale(1) translate3d(0, 0, 0);
+  -ms-transform: scale(1) translate3d(0, 0, 0);
+  -o-transform: scale(1) translate3d(0, 0, 0);
   transform: scale(1) translate3d(0, 0, 0);
+  -webkit-transform-origin: left top;
+  -moz-transform-origin: left top;
+  -ms-transform-origin: left top;
+  -o-transform-origin: left top;
   transform-origin: left top;
   -webkit-transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
   -moz-transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
@@ -595,6 +603,10 @@ body {
   z-index: 1;
 }
 .cb-text-input label.focus {
+  -webkit-transform: scale(0.8) translate3d(0, -11px, 0);
+  -moz-transform: scale(0.8) translate3d(0, -11px, 0);
+  -ms-transform: scale(0.8) translate3d(0, -11px, 0);
+  -o-transform: scale(0.8) translate3d(0, -11px, 0);
   transform: scale(0.8) translate3d(0, -11px, 0);
 }
 .cb-text-input input {
@@ -1657,6 +1669,17 @@ svg.renderer-svg tspan {
   font-family: 'Khula-Light', Arial, Helvetica, sans-serif;
   font-size: 20px;
 }
+.svg-text tspan.em {
+  font-style: italic;
+}
+.svg-text tspan.strong {
+  font-family: "Khula-Bold", Arial, sans-serif;
+}
+.svg-text tspan.strong .em,
+.svg-text tspan.em .strong {
+  font-family: "Khula-Bold", Arial, sans-serif;
+  font-style: italic;
+}
 .svg-text.svg-text-credit {
   font-size: 12px;
   fill: #ccc;
@@ -1666,13 +1689,13 @@ svg.renderer-svg tspan {
   font-size: 12px;
   fill: #ccc;
 }
-.svg-text.left {
+.svg-text.svg-text-source.left {
   text-anchor: start;
 }
-.svg-text.right {
+.svg-text.svg-text-source.right {
   text-anchor: end;
 }
-.svg-text-title {
+.svg-text.svg-text-title {
   fill: #666;
   font-family: 'Khula-Regular', Arial, Helvetica, sans-serif;
   font-size: 20px;
@@ -1804,12 +1827,44 @@ svg.renderer-svg tspan {
 }
 .chartbuilder-editor .data-input {
   font-size: 1em;
-  border: 1px solid #e2e2e2;
   margin: 0;
+  position: relative;
 }
 .chartbuilder-editor .data-input textarea {
   font-family: Monaco, Lucida Console, monspace;
   height: 12em;
+}
+.chartbuilder-editor .data-input input[type="file"] {
+  pointer-events: none;
+  height: 12em;
+  position: relative;
+  opacity: 1;
+  -ms-filter: none;
+  filter: none;
+  z-index: -1;
+}
+.chartbuilder-editor .data-input .file-drop {
+  pointer-events: none;
+  height: 12em;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -2;
+  background-color: #f1f1f1;
+  width: 100%;
+  text-align: center;
+  font-family: 'Khula-Regular', Arial, Helvetica, sans-serif;
+}
+.chartbuilder-editor .data-input .file-drop p {
+  font-size: 2em;
+  margin-top: 2em;
+}
+.chartbuilder-editor .data-input.dropping input[type="file"] {
+  pointer-events: all;
+  z-index: 1;
+}
+.chartbuilder-editor .data-input.dropping .file-drop {
+  z-index: 2;
 }
 .chartbuilder-editor .data-input .cb-alert {
   font-size: 1.2em;
