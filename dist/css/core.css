@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=FjallaOne");
+@import url("http://fonts.googleapis.com/css?family=Fjalla+One|Roboto");
 [data-color-index="0"] path {
   stroke: #a50026;
 }
@@ -483,7 +483,7 @@ span.step-number {
   margin-right: 0.25em;
 }
 .editor-options {
-  font-family: 'Fjalla One', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
   margin: 30px 0;
   display: block;
   width: 100%;
@@ -517,7 +517,7 @@ span.step-number {
   background-color: #f1f1f1;
   width: 100%;
   text-align: center;
-  font-family: 'Fjalla One', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 .data-input .file-drop p {
   font-size: 2em;
@@ -681,7 +681,7 @@ span.step-number {
 }
 .editor-label {
   font-size: 18px;
-  font-family: 'Fjalla One', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 .load-localstorage {
   display: none;
@@ -755,7 +755,7 @@ span.step-number {
   width: 98%;
 }
 .mobile-overrides> h2:first-child {
-  font-family: 'Fjalla One', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
   margin-bottom: 1em;
 }
 .mobile-overrides .scale-options {
@@ -783,7 +783,7 @@ div.renderer-wrapper {
 }
 svg.renderer-svg {
   fill: #fff;
-  font-family: 'Fjalla One', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
   text-rendering: optimizeLegibility;
   box-sizing: border-box;
 }
@@ -798,7 +798,7 @@ svg.renderer-svg tspan {
   font-size: 20px;
 }
 .d4 .axis .tick {
-  font-family: 'Fjalla One', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 .d4 .axis .tick[data-anchor="middle"] text {
   text-anchor: middle;
@@ -837,7 +837,7 @@ svg.renderer-svg tspan {
   text-anchor: start;
 }
 .d4 .concealer-label {
-  font-family: 'Fjalla One', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 .d4 .concealer-label text {
   fill: #666;
@@ -861,7 +861,7 @@ svg.renderer-svg tspan {
   stroke-linejoin: round;
 }
 .d4 .margins .label {
-  font-family: 'Fjalla One', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 .d4 .column-label {
   fill: #666;
@@ -873,18 +873,18 @@ svg.renderer-svg tspan {
   shape-rendering: crispEdges;
 }
 .svg-text {
-  font-family: 'Fjalla One', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 20px;
 }
 .svg-text tspan.em {
   font-style: italic;
 }
 .svg-text tspan.strong {
-  font-family: 'Fjalla One', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 .svg-text tspan.strong .em,
 .svg-text tspan.em .strong {
-  font-family: 'Fjalla One', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-style: italic;
 }
 .svg-text.svg-text-credit {
@@ -904,7 +904,7 @@ svg.renderer-svg tspan {
 }
 .svg-text.svg-text-title {
   fill: #666;
-  font-family: 'Fjalla One', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 20px;
 }
 .svg-source-pipe {
@@ -914,7 +914,7 @@ svg.renderer-svg tspan {
 }
 .svg-label-text {
   font-size: 20px;
-  font-family: 'Fjalla One', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
   cursor: move;
 }
 .crosshair line {
