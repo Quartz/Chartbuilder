@@ -7,7 +7,7 @@
     "test-jsx": "browserify -t rewireify test/jsx/index-jsx.js | tap-closer | smokestack | tap-spec",
     "test-js": "browserify test/index.js | tap-closer | smokestack | tap-spec",
     "test": "npm run test-js && npm run test-jsx",
-    "docs": "documentation -t documentation-theme-default --github --format html -o api-docs",
+    "docs": "./node_modules/.bin/documentation --github --format html -o api-docs",
     "test-page": "gulp test",
     "dev": "gulp",
     "build": "gulp build",
