@@ -15,7 +15,7 @@ git checkout -b test-page-improvements
 2. Rebase and squash all of your commits into a single commit for that feature.*
 Here is how to do that:
 
-2a – Make some commits
+*2a* – Make some commits
 
 Your `git log` may look something like this:
 
@@ -45,10 +45,10 @@ Date:   Tue Jan 26 14:50:13 2016 -0500
 add testing.md
 ```
 
-2b – Once the feature is ready, do `git rebase -i HEAD~N`, where `N` is the number
+*2b* – Once the feature is ready, do `git rebase -i HEAD~N`, where `N` is the number
 of commits to mash together
 
-2c – Git will display something like this, showing each of those commits.
+*2c* – Git will display something like this, showing each of those commits.
 
 ```
 pick 6149757 add testing.md
@@ -66,15 +66,13 @@ s 667494c lean up test page styles
 s b33c4e0 change test page naming to make more clear; render fewer charts
 ```
 
-2d – Save and exit, and include a new master commit message for this feature.
+*2d* – Save and exit, and include a new master commit message for this feature.
 You are now rebased in a single commit!
 
 3. Submit your pull request!
 
-[1]: https://github.com/ginatrapani/todo.txt-android/wiki/Squash-All-Commits-Related-to-a-Single-Issue-into-a-Single-Commit
-
 *Why a single commit? Many people out there have slightly modified forks/versions of Chartbuilder.
 That means that new features can cause ugly merge conflicts since some parts of
 the code are meant to differ across forks. The best way for new features
-to work well with the [recommended workflow]() for Chartbuilder
+to work well with the [recommended workflow](docs/git-workflow-forks.md) for Chartbuilder
 forks is to create a single commit that can be pulled in with `git cherry-pick`.

@@ -70,6 +70,7 @@ dependencies:
 * [Customizing chartbuilder](docs/02-customizing-chartbuilder.md)
 * [Test things out](docs/testing.md)
 * When you're done developing, [build and deploy](docs/deploying.md) your Chartbuilder!
+* Keep your customized version [in sync with the master](docs/git-workflow-forks.md)
 
 ### Documentation
 
