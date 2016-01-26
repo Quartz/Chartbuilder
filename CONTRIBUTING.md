@@ -69,6 +69,16 @@ s b33c4e0 change test page naming to make more clear; render fewer charts
 *2d* – Save and exit, and include a new master commit message for this feature.
 You are now rebased in a single commit!
 
+*2e* – Finally, push back to your feature branch.
+
+```sh
+# (optional) you may want to amend your commit message before pushing
+> git commit --amend
+
+# you will have to force push to your branch now
+> git push origin <branch-name> --force
+```
+
 #### 3. Submit your pull request!
 
 *Why a single commit? Many people out there have slightly modified forks/versions of Chartbuilder.

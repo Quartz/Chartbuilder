@@ -40,12 +40,6 @@ Date:   Tue Jan 26 14:50:13 2016 -0500
 
 # cherry pick the commit
 > git cherry-pick b33c4e0f03d6bddada348f080c837c7f91c2f78a
-
-# (optional) you may want to amend your commit message before pushing
-> git commit --amend
-
-# you will have to force push to your branch now
-> git push origin <branch-name> --force
 ```
 
 This means that only the changes from _that_ commit will be brought over, and
