@@ -90,7 +90,7 @@ var SvgText = React.createClass({
 
 				//make sure we don't break markdown styling by splitting a line
 				//this will break if _**italic bold**_ is used but not if **_bold italic_** is used
-				
+
 				if(cont_bold) {
 					//start with a bold token if a bold token had to be added to the end previous line
 					line = "**" + line;
@@ -114,7 +114,7 @@ var SvgText = React.createClass({
 					line += "_";
 					cont_ital = true;
 				}
-				
+
 				lines.push(line);
 			}
 		} else {
@@ -151,28 +151,27 @@ var SvgText = React.createClass({
 	},
 
 	_markdownToTspans: function(input,that,index) {
+		if (!input) return null;
+
 		var type = input.shift();
-		
 
 		return input.map(function(item,i) {
 			var fill;
 			if (typeof item == "string") {
 				fill = "​" + item // add a zero width space to the beginging of the string
-				
+
 			}
 			else {
 				fill = that._markdownToTspans(item,that,index+1)[0]
 			}
 
-			return <tspan 
+			return <tspan
 					className = {type}
 					key={Math.random() + "." + index}
 				>
 					{fill}
 				</tspan>
-
-			
-		})
+		});
 	},
 
 	render: function() {
