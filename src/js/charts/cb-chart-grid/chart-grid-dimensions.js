@@ -27,6 +27,8 @@ function chartGridDimensions(width, opts) {
 
 	if (model.metadata.title.length > 0 && opts.showMetadata) {
 		height += opts.displayConfig.afterTitle;
+	} else if (model.metadata.sub.length > 0 && opts.showMetadata) {
+		height += opts.displayConfig.afterTitle + opts.displayConfig.afterSub;
 	} else if (!opts.showMetadata) {
 		height -= opts.displayConfig.padding.bottom;
 	}

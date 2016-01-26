@@ -246,7 +246,8 @@ var RendererWrapper = React.createClass({
 
 		var margin = this.state.chartConfig.display.margin;
 		var metadataSvg = [];
-		var title,subtitle;
+		var title;
+		var sub;
 
 		var translate = {
 			top: margin.top,
@@ -261,7 +262,7 @@ var RendererWrapper = React.createClass({
 					<SvgText
 						text={metadata.title}
 						key="title"
-						translate={[translate.left, translate.top + 16]}
+						translate={[translate.left, translate.top]}
 						align="top"
 						className="svg-text-title"
 					/>
@@ -269,17 +270,17 @@ var RendererWrapper = React.createClass({
 				metadataSvg.push(title);
 			}
 
-			if (metadata.subtitle && metadata.subtitle !== "") {
-				subtitle = (
+			if (metadata.sub && metadata.sub !== "") {
+				sub = (
 					<SvgText
-						text={metadata.subtitle}
-						key="subtitle"
-						translate={[translate.left, translate.top]}
+						text={metadata.sub}
+						key="sub"
+						translate={[translate.left + 2, translate.top + 26]}
 						align="top"
-						className="svg-text-subtitle"
+						className="svg-text-sub"
 					/>
 				);
-				metadataSvg.push(subtitle);
+				metadataSvg.push(sub);
 			}
 
 			metadataSvg.push(

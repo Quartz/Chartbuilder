@@ -132,10 +132,11 @@ var XYRenderer = React.createClass({
 
 		// apply `chartSettings` to data
 		var dataWithSettings = this._applySettingsToData(_chartProps);
-		// compute margin based on existence of labels and title, based on default
+		// compute margin based on existence of labels and titles, based on default
 		// margin set in config
 		var labels = _chartProps._annotations.labels;
 		var hasTitle = (this.props.metadata.title.length > 0 && this.props.showMetadata);
+		var hasBoth = (this.props.metadata.title.length > 0 && this.props.metadata.sub.length > 0 && this.props.showMetadata);
 
 		// compute the max tick width for each scale
 		each(scaleNames, function(scaleKey) {
@@ -196,6 +197,7 @@ var XYRenderer = React.createClass({
 					key="xy-chart"
 					chartProps={_chartProps}
 					hasTitle={hasTitle}
+					hasBoth={hasBoth}
 					displayConfig={this.props.displayConfig}
 					styleConfig={this.props.styleConfig}
 					data={dataWithSettings}
@@ -215,6 +217,7 @@ var XYRenderer = React.createClass({
 					chartAreaDimensions={chartAreaDimensions}
 					data={dataWithSettings}
 					hasTitle={hasTitle}
+					hasBoth={hasBoth}
 					scale={scale}
 					editable={this.props.editable}
 					maxTickWidth={this.state.maxTickWidth}
@@ -235,6 +238,7 @@ var XYRenderer = React.createClass({
  * propTypes: {
  *   chartProps: PropTypes.object.isRequired,
  *   hasTitle: PropTypes.bool.isRequired,
+ *   hasBoth: PropTypes.bool.isRequired,
  *   displayConfig: PropTypes.object.isRequired,
  *   styleConfig: PropTypes.object.isRequired,
  *   data: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -257,6 +261,7 @@ var XYChart = React.createClass({
 	propTypes: {
 		chartProps: PropTypes.object.isRequired,
 		hasTitle: PropTypes.bool.isRequired,
+		hasBoth: PropTypes.bool.isRequired,
 		displayConfig: PropTypes.object.isRequired,
 		styleConfig: PropTypes.object.isRequired,
 		data: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -305,7 +310,9 @@ var XYChart = React.createClass({
 
 	componentWillReceiveProps: function(nextProps) {
 		var yOffset;
-		if (nextProps.hasTitle) {
+		if (nextProps.hasBoth) {
+			yOffset = nextProps.displayConfig.margin.top + nextProps.displayConfig.afterTitle + nextProps.displayConfig.afterSub;
+		} else if (nextProps.hasTitle) {
 			yOffset = nextProps.displayConfig.margin.top + nextProps.displayConfig.afterTitle;
 		} else {
 			yOffset = nextProps.displayConfig.margin.top;
@@ -367,6 +374,7 @@ var XYChart = React.createClass({
  * propTypes: {
  *   chartProps: PropTypes.object.isRequired,
  *   hasTitle: PropTypes.bool.isRequired,
+ *   hasBoth: PropTypes.bool.isRequired,
  *   displayConfig: PropTypes.object.isRequired,
  *   styleConfig: PropTypes.object.isRequired,
  *   data: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -391,6 +399,7 @@ var XYLabels = React.createClass({
 		chartProps: PropTypes.object.isRequired,
 		editable: PropTypes.bool,
 		hasTitle: PropTypes.bool.isRequired,
+		hasBoth: PropTypes.bool.isRequired,
 		displayConfig: PropTypes.object.isRequired,
 		styleConfig: PropTypes.object.isRequired,
 		data: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -421,7 +430,9 @@ var XYLabels = React.createClass({
 		// Determine how far down vertically the labels should be placed, depending
 		// on presence (or not) of a title
 		var yOffset;
-		if (nextProps.hasTitle) {
+		if (nextProps.hasBoth) {
+			yOffset = nextProps.displayConfig.margin.top + nextProps.displayConfig.afterTitle + nextProps.displayConfig.afterSub;
+		} else if (nextProps.hasTitle) {
 			yOffset = nextProps.displayConfig.margin.top + nextProps.displayConfig.afterTitle;
 		} else {
 			yOffset = nextProps.displayConfig.margin.top;
@@ -876,9 +887,11 @@ function computePadding(props, chartHeight) {
 	var displayConfig = props.displayConfig;
 	var _top = (props.labelYMax * props.chartAreaDimensions.height) + displayConfig.afterLegend;
 
-	if (props.hasTitle) {
+	if (props.hasBoth) {
+		_top += displayConfig.afterTitle + displayConfig.afterSub;
+	} else if (props.hasTitle) {
 		_top += displayConfig.afterTitle;
-	}
+	} 
 
 	// Maintain space between legend and chart area unless all legend labels
 	// have been dragged

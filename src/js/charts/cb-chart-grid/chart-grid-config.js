@@ -10,6 +10,7 @@ var ChartConfig = require("../ChartConfig");
 * @static
 * @memberof chart_grid_config
 * @property {Nem|number} afterTitle - Distance btwn top of title and top of legend or chart
+* @property {Nem|number} afterSub - Distance btwn top of sub and top of legend or chart
 * @property {Nem|number} afterLegend - Distance btwn top of legend and top of chart
 * @property {Nem|number} blockerRectOffset - Distance btwn text of axis and its background blocker
 * @property {Nem|number} paddingBerBar - Space btwn two bars in a bar grid
@@ -24,7 +25,8 @@ var ChartConfig = require("../ChartConfig");
 * @property {object} padding - Distances btwn inner chart elements and container
 */
 var display = {
-	afterTitle: "1.25em", // distance between top of title and top of legend or chart
+	afterTitle: "1.25em", // distance between top of title and top of sub, legend or chart
+	afterSub: "1em", // distance between top of sub and top of legend or chart
 	afterLegend: "0.5em", // distance between top of legend and top of chart
 	blockerRectOffset: 6, // distance between text and background blocker rect
 	paddingPerBar: "0.7em", // extra space around bars
@@ -36,9 +38,9 @@ var display = {
 	xy: require("../cb-xy/xy-config").display,
 	margin: {
 		top: "0.8em",
-		right: "0.25em",
-		bottom: "0.15em",
-		left: "0.25em"
+		right: "0.5em",
+		bottom: "0.5em",
+		left: "0.5em"
 	},
 	padding: {
 		top: "0.5em",
@@ -117,6 +119,7 @@ var defaultProps = {
 		id: null,
 		chartType: "chartgrid",
 		title: "",
+		sub: "",
 		source: "",
 		credit: "Made with Chartbuilder",
 		size: "auto"
