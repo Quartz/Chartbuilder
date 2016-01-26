@@ -16,7 +16,7 @@ var class_type_lookup = {
 	"scatterPlot": "circles"
 };
 
-var test_charts = require("../render/test_charts.json");
+var test_charts = require("../test-page/test_charts.json");
 var xy_grids = _.filter(test_charts, function(chart) {
 	if (chart.metadata.chartType === "chartgrid") {
 		return /line|scatterPlot|column/.test(chart.chartProps._grid.type);

@@ -1,24 +1,31 @@
+var React = require("react");
+var ReactDOM = require("react-dom")
+
 var chartGenerators = require("../chart-generators");
-require("react/addons");
 var RendererWrapper = require("../../src/js/components/RendererWrapper.jsx");
 var test_charts = require("./test_charts.json");
-var sample = require("lodash").sample;
+var sample = require("lodash/sampleSize");
+var breakpoints = require("../../src/js/config/chart-breakpoints");
 
 var chartDivStyle = {
-	"marginTop": "20px"
+	"marginTop": "30px"
 };
 
 // Optional array of chart ids to exclusively render.
 var ids = [
 ];
 
-var widths = [ 320, 320, 480, 480 ];
-var numCharts = 25;
+// TODO: automatically get 2-4? charts of each type
+
+var widths = [ 960, 640, 480, 360 ];
+var numCharts = 12;
 
 module.exports = React.createClass({
 
 	render: function() {
+
 		var specified_charts;
+
 		if (ids.length > 0) {
 			specified_charts = test_charts.filter(function(chart) {
 				return (ids.indexOf(chart._id) > -1);
@@ -31,18 +38,21 @@ module.exports = React.createClass({
 			var width = widths[(i % widths.length)];
 			return (
 				<div key={i} style={chartDivStyle} className="model-sample">
-					<h2 style={{"textAlign": "center"}}>
-						{[ model.metadata.chartType, width, model._id ].join(" - ")}
-					</h2>
-					<RendererWrapper
-						editable={false}
-						model={model}
-						showMetadata={true}
-						enableResponsive={true}
-					/>
+					<h1>{"Type: " + model.metadata.chartType}</h1>
+					<h1>{"Width: " + width}</h1>
+					<div style={{margin: "0 auto", width: width}}>
+						<RendererWrapper
+							editable={false}
+							model={model}
+							svgSizeClass={breakpoints.getBreakpointObj(width)}
+							showMetadata={true}
+							enableResponsive={true}
+						/>
+					</div>
 				</div>
 			);
-		})
+		});
+
 		return (
 			<div className="rendered-charts">
 				{charts}

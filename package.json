@@ -4,11 +4,11 @@
   "description": "Easily create beautiful charts",
   "main": "src/js/index.js",
   "scripts": {
-    "test-jsx": "browserify -t rewireify test/jsx/index-jsx.js | tap-closer | smokestack | tap-spec",
-    "test-js": "browserify test/index.js | tap-closer | smokestack | tap-spec",
-    "test": "npm run test-js && npm run test-jsx",
+    "test:jsx": "browserify -t rewireify test/jsx/index-jsx.js | tap-closer | smokestack | tap-spec",
+    "test:js": "browserify test/index.js | tap-closer | smokestack | tap-spec",
+    "test": "npm run test:js && npm run test:jsx",
     "docs": "./node_modules/.bin/documentation --github --format html -o api-docs",
-    "test-page": "gulp test",
+    "test-page": "gulp test-page",
     "dev": "gulp",
     "build": "gulp build",
     "gh-pages": "npm run build && npm run docs && mv api-docs build && gulp gh-pages"

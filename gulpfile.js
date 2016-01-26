@@ -65,10 +65,12 @@ gulp.task("browserify:dev", function () {
 });
 
 gulp.task("browserify:test", function () {
-	var bundler = browserify("./test/render/main.js")
+	var bundler = browserify("./test/test-page/main.js", {
+				debug: true
+			})
 			.transform(envify({ NODE_ENV: "dev" }));
 
-	return bundler.bundle({ debug: true })
+	return bundler.bundle()
 		.pipe(source("main.js"))
 		.pipe(gulp.dest(config.paths.build.js))
 		.pipe(reload({ stream: true }));
@@ -109,7 +111,7 @@ gulp.task("copy-htdocs", function () {
 });
 
 gulp.task("copy-test-htdocs", function () {
-	return gulp.src("test/render/index.html")
+	return gulp.src("test/test-page/index.html")
 		.pipe(changed(config.dirs.build))
 		.pipe(gulp.dest(config.dirs.build))
 		.pipe(reload({ stream: true }));
@@ -136,7 +138,7 @@ gulp.task("browser-sync", ["watch"], function () {
 	});
 });
 
-gulp.task("browser-sync-test", ["test-page"], function () {
+gulp.task("browser-sync-test", ["test-page-setup"], function () {
 	browserSync({
 		server: { baseDir: "build" },
 		open: false
@@ -169,7 +171,7 @@ gulp.task("_build", [
 	"copy-assets"
 ]);
 
-gulp.task("test-page", [
+gulp.task("test-page-setup", [
 	"browserify:test",
 	"stylus",
 	"copy-test-htdocs",
@@ -178,7 +180,7 @@ gulp.task("test-page", [
 ], function(done) {
 	gulp.watch("test/**", ["browserify:test"]);
 	gulp.watch(config.paths.src.js + "/**", ["browserify:test"]);
-	gulp.watch("test/render/index.html", ["copy-test-htdocs"]);
+	gulp.watch("test/test-page/index.html", ["copy-test-htdocs"]);
 	gulp.watch(config.paths.src.styl + "/**", ["stylus"]);
 	gulp.watch("./node_modules/d4/d4.js", ["browserify:dev"]);
 	gulp.watch("./node_modules/d3/d3.js", ["browserify:dev"]);
@@ -189,7 +191,7 @@ gulp.task("default", ["clean"], function () {
 	gulp.start("browser-sync");
 });
 
-gulp.task("test", ["clean"], function() {
+gulp.task("test-page", ["clean"], function() {
 	gulp.start("browser-sync-test");
 });
 

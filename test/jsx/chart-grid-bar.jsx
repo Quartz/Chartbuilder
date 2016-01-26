@@ -10,7 +10,7 @@ var util = require("../util/util");
 
 var RendererWrapper = require("../../src/js/components/RendererWrapper.jsx");
 
-var test_charts = require("../render/test_charts.json");
+var test_charts = require("../test-page/test_charts.json");
 var bar_grids = _.filter(test_charts, function(chart) {
 	if (chart.metadata.chartType === "chartgrid") {
 		return (chart.chartProps._grid.type === "bar");

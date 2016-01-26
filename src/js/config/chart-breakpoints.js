@@ -30,4 +30,17 @@ breakpoints.sort(function(a, b) {
 	return b.min_size - a.min_size;
 });
 
-module.exports = breakpoints;
+function getBreakpointObj(enableResponsive, width) {
+	if (enableResponsive || !width) {
+		return breakpoints.filter(function(bp) {
+			return width > bp.min_size;
+		})[0];
+	} else {
+		return breakpoints[1];
+	}
+}
+
+module.exports = {
+	breakpoints: breakpoints,
+	getBreakpointObj: getBreakpointObj
+};

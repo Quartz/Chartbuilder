@@ -12,7 +12,7 @@ var RendererWrapper = require("../../src/js/components/RendererWrapper.jsx");
 var lineDotsThresholdSingle = 10;
 var lineDotsThresholdTotal = 30;
 
-var test_charts = require("../render/test_charts.json");
+var test_charts = require("../test-page/test_charts.json");
 var xy_charts = _.filter(test_charts, function(chart) {
 	return chart.metadata.chartType === "xy";
 });

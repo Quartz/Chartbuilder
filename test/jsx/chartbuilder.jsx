@@ -17,7 +17,7 @@ Chartbuilder.__set__({
 	ChartExport: MockComponent
 });
 
-var randChart = util.randArrElement(require("../render/test_charts.json"));
+var randChart = util.randArrElement(require("../test-page/test_charts.json"));
 ChartServerActions.receiveModel(randChart);
 
 var cb = TU.renderIntoDocument(
