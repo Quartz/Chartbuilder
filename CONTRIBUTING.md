@@ -3,16 +3,16 @@
 We're happy that you'd like to contribute to Chartbuilder! Here are a couple
 general rules to follow if you'd like to add a feature or fix a bug.
 
-0. (Optional) Open an issue or empty PR to discuss the feature and possible
- implementation.
+#### 0. (Optional) Open an issue or empty PR to discuss the feature and possible implementation.
 
-1. Name your feature branch something descriptive
+#### 1. Name your feature branch something descriptive
 
 ```
 git checkout -b test-page-improvements
 ```
 
-2. Rebase and squash all of your commits into a single commit for that feature.*
+#### 2. Rebase and squash all of your commits into a single commit for that feature.*
+
 Here is how to do that:
 
 *2a* – Make some commits
@@ -69,7 +69,7 @@ s b33c4e0 change test page naming to make more clear; render fewer charts
 *2d* – Save and exit, and include a new master commit message for this feature.
 You are now rebased in a single commit!
 
-3. Submit your pull request!
+#### 3. Submit your pull request!
 
 *Why a single commit? Many people out there have slightly modified forks/versions of Chartbuilder.
 That means that new features can cause ugly merge conflicts since some parts of
