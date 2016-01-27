@@ -40,11 +40,7 @@ var ChartGridEditor = React.createClass({
 
 	propTypes: {
 		chartProps: PropTypes.shape({
-			input: PropTypes.shape({
-				raw: PropTypes.string,
-				status: PropTypes.string,
-				valid: PropTypes.bool
-			}).isRequired,
+			input: PropTypes.string.isRequired,
 			chartSettings: PropTypes.array,
 			data: PropTypes.array,
 			scale: PropTypes.shape({
@@ -132,6 +128,10 @@ var ChartGridEditor = React.createClass({
 			)
 		}
 
+		var inputErrors = this.props.errors.messages.filter(function(e) {
+			return e.location === "input";
+		});
+
 		return (
 			<div className="chartgrid-editor">
 				<div className="editor-options">
@@ -140,6 +140,7 @@ var ChartGridEditor = React.createClass({
 						<span>Input your data</span>
 					</h2>
 					<DataInput
+						errors={inputErrors}
 						chartProps={chartProps}
 						className="data-input"
 					/>

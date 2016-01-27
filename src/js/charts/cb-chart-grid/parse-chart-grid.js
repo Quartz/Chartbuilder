@@ -25,7 +25,7 @@ function parseChartgrid(config, _chartProps, callback, parseOpts) {
 
 	// dont check for date column if grid type is bar
 	var checkForDate = chartProps._grid.type !== "bar";
-	var bySeries = dataBySeries(chartProps.input.raw, { checkForDate: checkForDate });
+	var bySeries = dataBySeries(chartProps.input, { checkForDate: checkForDate });
 
 	var gridSettings = {
 		rows: +chartProps._grid.rows || chartgrid_defaults._grid.rows,

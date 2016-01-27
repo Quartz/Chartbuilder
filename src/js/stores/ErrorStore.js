@@ -11,7 +11,7 @@ var validateDataInput = require("../util/validate-data-input");
 var ChartPropertiesStore = require("./ChartPropertiesStore");
 
 /* Singleton that houses errors */
-var _errors = { valid: true, input: [] };
+var _errors = { valid: true, messages: [] };
 var CHANGE_EVENT = "change";
 
 /**
@@ -74,16 +74,20 @@ function registeredCallback(payload) {
 	switch(action.eventName) {
 		/* * Data input updated */
 		case "update-data-input":
+
+			var error_messages = [];
+
 			Dispatcher.waitFor([ChartPropertiesStore.dispatchToken]);
-
 			chartProps = ChartPropertiesStore.getAll();
-			var inputErrors = validateDataInput(chartProps.input, chartProps.data, chartProps.scale.hasDate);
 
-			_errors.input = inputErrors.map(function(err_name) {
+			var inputErrors = validateDataInput(chartProps.input, chartProps.data, chartProps.scale.hasDate)
+			error_messages = error_messages.concat(inputErrors);
+
+			_errors.messages = error_messages.map(function(err_name) {
 				return errorNames[err_name];
 			});
 
-			var isInvalid = some(_errors.input, { type: 3 } );
+			var isInvalid = some(_errors.messages, { type: 3 } );
 			_errors.valid = !isInvalid;
 
 			ErrorStore.emitChange();

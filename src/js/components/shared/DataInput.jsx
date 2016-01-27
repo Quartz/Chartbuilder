@@ -12,6 +12,7 @@ var validateChartModel = require("../../util/validate-chart-model");
 var chartbuilderUI = require("chartbuilder-ui");
 var TextArea = chartbuilderUI.TextArea;
 var Alert = chartbuilderUI.Alert;
+var ErrorMessage = require("../shared/ErrorMessage.jsx");
 
 /**
  * ### Text area component and error messaging for data input
@@ -21,7 +22,7 @@ var Alert = chartbuilderUI.Alert;
 var DataInput = React.createClass({
 
 	propTypes: {
-		errors: PropTypes.object.isRequired,
+		errors: PropTypes.array.isRequired,
 		chartProps: PropTypes.shape({
 			chartSettings: PropTypes.array,
 			data: PropTypes.array,
@@ -87,13 +88,13 @@ var DataInput = React.createClass({
 
 	_renderErrors: function() {
 
-		if (this.props.errors.input.length === 0) {
+		if (this.props.errors.length === 0) {
 			return null;
 		} else {
 
-			var errors = this.props.errors.input.map(function(error, i) {
+			var errors = this.props.errors.map(function(error, i) {
 				return (
-					<ErrorDisplay
+					<ErrorMessage
 						key={i}
 						type={error.type}
 						text={error.text}
@@ -136,27 +137,6 @@ var DataInput = React.createClass({
 		} else {
 			return this._renderDataInput();
 		}
-	}
-
-});
-
-var ErrorDisplay = React.createClass({
-
-	icons: {
-		1: "✓",
-		2: "⚠",
-		3: "✗"
-	},
-
-	render: function() {
-		var className = "error- " + this.props.type;
-		return (
-			<div className={className}>
-				<span>{this.icons[this.props.type]}</span>
-				<span> – </span>
-				<span>{this.props.text}</span>
-			</div>
-		);
 	}
 
 });

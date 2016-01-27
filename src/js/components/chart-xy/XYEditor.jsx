@@ -140,6 +140,10 @@ var XYEditor = React.createClass({
 			)
 		}
 
+		var inputErrors = this.props.errors.messages.filter(function(e) {
+			return e.location === "input";
+		});
+
 		return (
 			<div className="xy-editor">
 				<div className="editor-options">
@@ -148,7 +152,7 @@ var XYEditor = React.createClass({
 						<span>Input your data</span>
 					</h2>
 					<DataInput
-						errors={this.props.errors}
+						errors={inputErrors}
 						chartProps={chartProps}
 						className="data-input"
 					/>
