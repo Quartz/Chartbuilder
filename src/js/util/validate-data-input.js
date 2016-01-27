@@ -4,27 +4,45 @@
 var map = require("lodash/map");
 var filter = require("lodash/filter");
 var some = require("lodash/some");
+var sizeof = require("sizeof");
+var MAX_BYTES = 400000; // Max 400k for chartProps
 
+/*
+* Return array of input error names
+*/
 function makeInputObj(rawInput, status, isValid) {
 	return {
-		raw: rawInput,
 		status: status,
-		valid: isValid
 	};
 }
 
-function validateDataInput(input, series, hasDate) {
+function validateDataInput(chartProps) {
+	var input = chartProps.input.raw;
+	var series = chartProps.data;
+	var hasDate = chartProps.scale.hasDate;
+
+	var inputErrors = [];
+
+	// Check whether we have input
 	if (input.length === 0) {
-		// Check whether we have input
-		return makeInputObj(input, "EMPTY", false);
-	} else if (series.length && !series[0].values.length) {
-		// Check that we have at least 1 value row (i.e. minimum header + 1 data row)
-		return makeInputObj(input, "TOO_FEW_SERIES", false);
-	} else if (series.length > 12) {
-		// Check whether there are too many series
-		return makeInputObj(input, "TOO_MANY_SERIES", false);
+		inputErrors.push("EMPTY");
+		return inputErrors;
 	}
 
+	// Whether the number of bytes in chartProps exceeds our defined maximum
+	if (sizeof.sizeof(chartProps) > MAX_BYTES) {
+		inputErrors.push("TOO_MUCH_DATA");
+	}
+
+	if (series.length && !series[0].values) {
+		// Check that we have at least 1 value row (i.e. minimum header + 1 data row)
+		inputErrors.push("TOO_FEW_SERIES");
+	} else if (series.length > 12) {
+		// Check whether there are too many series
+		inputErrors.push("TOO_MANY_SERIES");
+	}
+
+	// Whether a column has a different number of values
 	var unevenSeries = dataPointTest(
 			series,
 			function(val) { return val.value !== null ? (val.value === undefined || val.value.length === 0) : false;},
@@ -32,33 +50,36 @@ function validateDataInput(input, series, hasDate) {
 		);
 
 	if (unevenSeries) {
-		return makeInputObj(input, "UNEVEN_SERIES", false);
+		inputErrors.push("UNEVEN_SERIES");
 	}
 
+	// Whether a column has NaN
 	var nanSeries = dataPointTest(
 			series,
-			function(val) { return isNaN(val.value);},
-			function(nan,vals) { return nan.length > 0;}
+			function(val) { return isNaN(val.value); },
+			function(nan, vals) { return nan.length > 0;}
 		);
 
 	if (nanSeries) {
-		return makeInputObj(input, "NAN_VALUES", false);
+		inputErrors.push("NAN_VALUES");
 	}
 
+	// Whether a column that is supposed to be a date is not in fact a date
 	if(hasDate) {
 		var badDateSeries = dataPointTest(
 				series,
-				function(val) {return isNaN(val.entry.getTime());},
+				function(val) { return isNaN(val.entry.getTime()); },
 				function(bd,vals) { return bd.length > 0;}
 			);
 
+
 		if (badDateSeries) {
-			return makeInputObj(input, "NOT_DATES", false);
+			inputErrors.push("NOT_DATES");
 		}
 	}
 
-	// If we make it here, input is valid
-	return makeInputObj(input, "VALID", true);
+	return inputErrors;
+
 }
 
 function dataPointTest(series, filterTest, someTest) {

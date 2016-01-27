@@ -650,6 +650,64 @@ var init_data_comma = [
 	"2013	$8,000"
 ].join("\n");
 
+var uneven_series = [
+	"Year	China	US",
+	"2000	2.8	23.5",
+	"2005	22	14.7",
+	"2010	28	",
+	"2015	25.4	"
+].join("\n");
+
+var too_many_series = [
+	"Year	A	B	C	D	E	F	G	H	I	J	K	L	M	N",
+	"2000	2.8	23.5	11.2	21.1	2.8	23.5	11.2	21.1	2.8	23.5	11.2	21.1	21.1	21.1",
+	"2005	22	14.7	7.6	17.2	22	14.7	7.6	17.2	22	14.7	7.6	17.2	17.2	17.2",
+	"2010	28	11.5	6.6	13.8	28	11.5	6.6	13.8	28	11.5	6.6	13.8	13.8	13.8",
+	"2015	25.4	12.2	6.8	13.4	25.4	12.2	6.8	13.4	25.4	12.2	6.8	13.4	13.4	13.4"
+].join("\n");
+
+var too_few_series = [
+	"China",
+	"2.8",
+	"22",
+	"28",
+	"25.42015",
+].join("\n");
+
+var nan_values = [
+	"year	foo",
+	"1989	$6,530",
+	"1992	NOT_A_NUMBER",
+	"1995	$7,907",
+	"1998	$9,507",
+	"2001	$9,293",
+	"2004	$13,865",
+	"2007	$15,779",
+	"2010	$9,360",
+	"2013	$8,000"
+].join("\n");
+
+var not_dates = [
+	"year	foo",
+	"NOT_A_DATE	$6,530",
+	"1992	$8,711",
+	"1995	$7,907",
+	"1998	$9,507",
+	"2001	$9,293",
+	"2004	$13,865",
+	"2007	$15,779",
+	"2010	$9,360",
+	"2013	$8,000"
+].join("\n");
+
+var multiple_errors = [
+	"Year	China	US",
+	"NOT_A_DATE	2.8	23.5",
+	"2005	22	NOT_A_NUMBER",
+	"2010	28	",
+	"2015	25.4	"
+].join("\n");
+
 module.exports = {
 	init_data_ordinal: init_data_ordinal,
 	init_data_ordinal_multiple: init_data_ordinal_multiple,
@@ -658,5 +716,11 @@ module.exports = {
 	init_data_time_multiple: init_data_time_multiple,
 	init_data_time_single: init_data_time_single,
 	init_data_intraday_single: init_data_intraday_single,
-	init_data_comma: init_data_comma
+	init_data_comma: init_data_comma,
+	uneven_series: uneven_series,
+	too_many_series: too_many_series,
+	too_few_series: too_few_series,
+	nan_values: nan_values,
+	not_dates: not_dates,
+	multiple_errors: multiple_errors
 };

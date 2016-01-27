@@ -55,11 +55,12 @@
     "lodash": "^4.0.0",
     "markdown": "^0.5.0",
     "react": "^0.14.5",
+    "react-addons-pure-render-mixin": "^0.14.5",
     "react-addons-shallow-compare": "^0.14.5",
     "react-addons-update": "^0.14.5",
-    "react-addons-pure-render-mixin": "^0.14.5",
     "react-dom": "^0.14.5",
     "save-svg-as-png": "^1.0.2",
+    "sizeof": "^1.0.0",
     "sugar-date": "^1.5.1"
   },
   "devDependencies": {
