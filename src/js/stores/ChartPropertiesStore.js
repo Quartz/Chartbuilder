@@ -129,7 +129,7 @@ function registeredCallback(payload) {
 			parser = chartConfig[chartType].parser;
 			config = chartConfig[chartType];
 
-			checkColumnChange(action.newProp.raw, function(columnsChanged) {
+			checkColumnChange(action.newProp, function(columnsChanged) {
 				_chartProps[action.key] = action.newProp;
 				var parseOpts = { columnsChanged: columnsChanged };
 				parser(config, _chartProps, function(newProps) {
@@ -147,7 +147,7 @@ function registeredCallback(payload) {
 
 function checkColumnChange(newInput, callback) {
 	var newCols = newInput.split(newLineRegex)[0];
-	var oldCols = _chartProps.input.raw.split(newLineRegex)[0];
+	var oldCols = _chartProps.input.split(newLineRegex)[0];
 	callback((newCols !== oldCols));
 }
 

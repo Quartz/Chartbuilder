@@ -13,6 +13,7 @@ var PropTypes = React.PropTypes;
 var ChartPropertiesStore = require("../stores/ChartPropertiesStore");
 var ChartMetadataStore = require("../stores/ChartMetadataStore");
 var SessionStore = require("../stores/SessionStore");
+var ErrorStore = require("../stores/ErrorStore");
 
 /*
  * Global React components that are used irrespective of chart type
@@ -48,6 +49,7 @@ function getStateFromStores() {
 	return {
 		chartProps: ChartPropertiesStore.getAll(),
 		metadata: ChartMetadataStore.getAll(),
+		errors: ErrorStore.getAll(),
 		session: SessionStore.getAll()
 	};
 }
@@ -103,6 +105,7 @@ var Chartbuilder = React.createClass({
 	componentDidMount: function() {
 		ChartPropertiesStore.addChangeListener(this._onChange);
 		ChartMetadataStore.addChangeListener(this._onChange);
+		ErrorStore.addChangeListener(this._onChange);
 		SessionStore.addChangeListener(this._onChange);
 	},
 
@@ -110,6 +113,7 @@ var Chartbuilder = React.createClass({
 	componentWillUnmount: function() {
 		ChartPropertiesStore.removeChangeListener(this._onChange);
 		ChartMetadataStore.removeChangeListener(this._onChange);
+		ErrorStore.removeChangeListener(this._onChange);
 		SessionStore.removeChangeListener(this._onChange);
 	},
 
@@ -183,6 +187,7 @@ var Chartbuilder = React.createClass({
 						timerOn={this.state.session.timerOn}
 					/>
 					<Editor
+						errors={this.state.errors}
 						chartProps={this.state.chartProps}
 						numColors={numColors}
 					/>

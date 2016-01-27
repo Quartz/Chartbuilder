@@ -32,11 +32,9 @@ function dataBySeries(input, opts) {
 		};
 	});
 
-	validatedInput = validateDataInput(input, series, parsedInput.hasDate);
-
 	return {
 		series: series,
-		input: validatedInput,
+		input: input,
 		hasDate: parsedInput.hasDate
 	};
 }

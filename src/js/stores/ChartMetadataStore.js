@@ -2,7 +2,6 @@
  * Store the Chart's metadata. These are properties used to describe the chart
  * and are unrelated to the actual rendering of the chart.
 */
-
 var assign = require("lodash/assign");
 var clone = require("lodash/clone");
 var EventEmitter = require("events").EventEmitter;

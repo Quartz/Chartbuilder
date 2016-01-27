@@ -23,7 +23,7 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 	// this can probably be avoided by applying new settings differently
 	var chartProps = JSON.parse(JSON.stringify(_chartProps));
 
-	var bySeries = dataBySeries(chartProps.input.raw, { checkForDate: true });
+	var bySeries = dataBySeries(chartProps.input, { checkForDate: true });
 	var labels = chartProps._annotations.labels;
 	var allColumn = true;
 	// check if either scale contains columns, as we'll need to zero the axis
@@ -41,6 +41,7 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 
 	var chartSettings = map(bySeries.series, function(dataSeries, i) {
 		var settings;
+
 		if (chartProps.chartSettings[i]) {
 			settings = chartProps.chartSettings[i];
 		} else {
@@ -60,24 +61,31 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 
 		// add data points to relevant scale
 		if (settings.altAxis === false) {
+
 			var _computed = _scaleComputed.primaryScale;
 			_computed.data = _computed.data.concat(values);
 			_computed.count += 1;
 			if (settings.type == "column") {
 				_computed.hasColumn = true;
 			}
+
 		} else {
+
 			var _computed = _scaleComputed.secondaryScale;
 			_computed.data = _computed.data.concat(values);
 			_computed.count += 1;
 			if (settings.type == "column") {
 				_computed.hasColumn = true;
 			}
+
 		}
+
 		return settings;
+
 	});
 
 	labels.values = map(bySeries.series, function(dataSeries, i) {
+
 		if (labels.values[i]) {
 			return assign({}, { name: chartSettings[i].label}, labels.values[i]);
 		} else {
@@ -85,6 +93,7 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 				name: dataSeries.name
 			};
 		}
+
 	});
 
 	var maxPrecision = 5;
