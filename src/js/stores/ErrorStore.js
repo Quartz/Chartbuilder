@@ -1,6 +1,7 @@
 var assign = require("lodash/assign");
 var clone = require("lodash/clone");
 var some = require("lodash/some");
+var filter = require("lodash/filter");
 var EventEmitter = require("events").EventEmitter;
 
 /* Flux dispatcher */
@@ -75,12 +76,11 @@ function registeredCallback(payload) {
 		/* * Data input updated */
 		case "update-data-input":
 
-			var error_messages = [];
-
 			Dispatcher.waitFor([ChartPropertiesStore.dispatchToken]);
 			chartProps = ChartPropertiesStore.getAll();
 
-			var inputErrors = validateDataInput(chartProps.input.raw, chartProps.data, chartProps.scale.hasDate)
+			var error_messages = removeLocation("input");
+			var inputErrors = validateDataInput(chartProps.input.raw, chartProps.data, chartProps.scale.hasDate);
 			error_messages = error_messages.concat(inputErrors);
 
 			_errors.messages = error_messages.map(function(err_name) {
@@ -99,6 +99,12 @@ function registeredCallback(payload) {
 
 	return true;
 
+}
+
+function removeLocation(location) {
+	return filter(_errors.messages, function(error) {
+		return error.location !== location;
+	});
 }
 
 //Dispatcher.register(registeredCallback);
