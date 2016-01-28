@@ -27,7 +27,7 @@ var DataInput = React.createClass({
 			chartSettings: PropTypes.array,
 			data: PropTypes.array,
 			scale: PropTypes.object,
-			input: PropTypes.string
+			input: PropTypes.object
 		}).isRequired,
 		className: PropTypes.string
 	},
@@ -43,7 +43,8 @@ var DataInput = React.createClass({
 
 	_handleReparseUpdate: function(k, v) {
 		// reset the raw input value
-		ChartViewActions.updateInput(k, v);
+		var newInput = { raw: v };
+		ChartViewActions.updateInput(k, newInput);
 	},
 
 	componentDidMount: function() {
@@ -121,10 +122,10 @@ var DataInput = React.createClass({
 			>
 				<label>if you have a json file to load, drop that here</label>
 				<TextArea
-					value={this.props.chartProps.input}
+					value={this.props.chartProps.input.raw}
 					onChange={this._handleReparseUpdate.bind(null, "input")}
 					className="data-input"
-					defaultValue={this.props.chartProps.input}
+					defaultValue={this.props.chartProps.input.raw}
 				/>
 				{errors}
 			</div>

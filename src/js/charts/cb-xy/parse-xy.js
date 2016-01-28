@@ -23,7 +23,7 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 	// this can probably be avoided by applying new settings differently
 	var chartProps = JSON.parse(JSON.stringify(_chartProps));
 
-	var bySeries = dataBySeries(chartProps.input, { checkForDate: true });
+	var bySeries = dataBySeries(chartProps.input.raw, { checkForDate: true });
 	var labels = chartProps._annotations.labels;
 	var allColumn = true;
 	// check if either scale contains columns, as we'll need to zero the axis

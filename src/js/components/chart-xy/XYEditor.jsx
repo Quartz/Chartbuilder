@@ -58,7 +58,7 @@ var XYEditor = React.createClass({
 	propTypes: {
 		errors: PropTypes.object,
 		chartProps: PropTypes.shape({
-			input: PropTypes.string.isRequired,
+			input: PropTypes.object.isRequired,
 			chartSettings: PropTypes.array,
 			data: PropTypes.array,
 			scale: PropTypes.object,
@@ -137,7 +137,7 @@ var XYEditor = React.createClass({
 					stepNumber="5"
 					onUpdate={this._handlePropUpdate.bind(null, "scale")}
 				/>
-			)
+			);
 		}
 
 		var inputErrors = this.props.errors.messages.filter(function(e) {

@@ -80,7 +80,7 @@ function registeredCallback(payload) {
 			Dispatcher.waitFor([ChartPropertiesStore.dispatchToken]);
 			chartProps = ChartPropertiesStore.getAll();
 
-			var inputErrors = validateDataInput(chartProps.input, chartProps.data, chartProps.scale.hasDate)
+			var inputErrors = validateDataInput(chartProps.input.raw, chartProps.data, chartProps.scale.hasDate)
 			error_messages = error_messages.concat(inputErrors);
 
 			_errors.messages = error_messages.map(function(err_name) {

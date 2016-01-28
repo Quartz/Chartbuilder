@@ -5,9 +5,18 @@ var d3 = require("d3");
 var each = require("lodash/each");
 require("sugar-date");
 var parseUtils = require("./parse-utils");
+var separators;
 
 // We need this to get the current locale's thousands separator
-var SessionStore = require("../stores/SessionStore");
+// Check for localStorage in case we are testing from node
+if (typeof(localStorage) !== 'undefined') {
+	separators = require("../stores/SessionStore").get("separators");
+} else {
+	separators = {
+		decimal: ".",
+		thousands: ","
+	};
+}
 
 var stripChars = [
 	"$",
@@ -17,8 +26,6 @@ var stripChars = [
 ];
 
 var newLineRegex = /\r\n|\r|\n/;
-
-var separators = SessionStore.get("separators");
 
 function parseDelimInput(input, opts) {
 	opts = opts || {};

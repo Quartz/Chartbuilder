@@ -8,7 +8,10 @@ var chartConfig = require("../charts/chart-config");
 module.exports = {
 	defaultChart: function() {
 		var default_model = chartConfig.xy.defaultProps;
-		default_model.chartProps.input = defaultInput;
+		default_model.chartProps.input = {
+			raw: defaultInput
+		};
+
 		ChartServerActions.receiveModel(default_model);
 	},
 

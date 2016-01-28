@@ -24,7 +24,7 @@ function validateDataInput(input, series, hasDate) {
 		return inputErrors;
 	}
 
-	if (series.length && !series[0].values.length) {
+	if (series.length && !series[0].values) {
 		// Check that we have at least 1 value row (i.e. minimum header + 1 data row)
 		inputErrors.push("TOO_FEW_SERIES");
 	} else if (series.length > 12) {

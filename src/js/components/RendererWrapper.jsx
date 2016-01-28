@@ -53,7 +53,6 @@ var RendererWrapper = React.createClass({
 	},
 
 	shouldComponentUpdate: function(nextProps, nextState) {
-		console.log('RENDERER ERRORS', nextProps.model.errors);
 		if (!nextProps.model.errors.valid) {
 			return false;
 		}

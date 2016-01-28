@@ -40,7 +40,7 @@ var ChartGridEditor = React.createClass({
 
 	propTypes: {
 		chartProps: PropTypes.shape({
-			input: PropTypes.string.isRequired,
+			input: PropTypes.object.isRequired,
 			chartSettings: PropTypes.array,
 			data: PropTypes.array,
 			scale: PropTypes.shape({
