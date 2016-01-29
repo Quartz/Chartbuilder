@@ -38,6 +38,11 @@ var error_names = {
 		location: "input",
 		text: "A least one of your dates cannot be understood by Chartbuilder",
 		type: 3
+	},
+	"TOO_MUCH_DATA": {
+		location: "input",
+		text: "You have more data than can be rendered or saved correctly",
+		type: 2
 	}
 };
 

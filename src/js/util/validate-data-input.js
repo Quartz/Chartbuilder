@@ -4,6 +4,8 @@
 var map = require("lodash/map");
 var filter = require("lodash/filter");
 var some = require("lodash/some");
+var sizeof = require("sizeof");
+var MAX_BYTES = 400000; // Max 400k for chartProps
 
 /*
 * Return array of input error names
@@ -14,7 +16,10 @@ function makeInputObj(rawInput, status, isValid) {
 	};
 }
 
-function validateDataInput(input, series, hasDate) {
+function validateDataInput(chartProps) {
+	var input = chartProps.input.raw;
+	var series = chartProps.data;
+	var hasDate = chartProps.hasDate;
 
 	var inputErrors = [];
 
@@ -22,6 +27,11 @@ function validateDataInput(input, series, hasDate) {
 	if (input.length === 0) {
 		inputErrors.push("EMPTY");
 		return inputErrors;
+	}
+
+	// Whether the number of bytes in chartProps exceeds our defined maximum
+	if (sizeof.sizeof(chartProps) > MAX_BYTES) {
+		inputErrors.push("TOO_MUCH_DATA");
 	}
 
 	if (series.length && !series[0].values) {
@@ -32,6 +42,7 @@ function validateDataInput(input, series, hasDate) {
 		inputErrors.push("TOO_MANY_SERIES");
 	}
 
+	// Whether a column has a different number of values
 	var unevenSeries = dataPointTest(
 			series,
 			function(val) { return val.value !== null ? (val.value === undefined || val.value.length === 0) : false;},
@@ -42,6 +53,7 @@ function validateDataInput(input, series, hasDate) {
 		inputErrors.push("UNEVEN_SERIES");
 	}
 
+	// Whether a column has NaN
 	var nanSeries = dataPointTest(
 			series,
 			function(val) { return isNaN(val.value); },
@@ -52,6 +64,7 @@ function validateDataInput(input, series, hasDate) {
 		inputErrors.push("NAN_VALUES");
 	}
 
+	// Whether a column that is supposed to be a date is not in fact a date
 	if(hasDate) {
 		var badDateSeries = dataPointTest(
 				series,

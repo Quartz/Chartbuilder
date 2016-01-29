@@ -140,7 +140,6 @@ var XYEditor = React.createClass({
 			);
 		}
 
-		console.log(this.props.errors.messages)
 		var inputErrors = this.props.errors.messages.filter(function(e) {
 			return e.location === "input";
 		});
