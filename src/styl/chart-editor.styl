@@ -100,6 +100,9 @@ span.step-number
 			color #bebebe
 			font-size 16px
 			line-height 24px
+		@media screen and (max-width: $single_column_breakpoint)
+			flex-direction(row)
+			width 100%
 
 .series-label
 	margin 10px 0
@@ -121,6 +124,11 @@ span.step-number
 		width 78%
 		float left
 		margin-right 4px
+	
+@media screen and (max-width: $single_column_breakpoint)
+	.series-label-input
+		&.cb-text-input
+			width 100%
 
 .cb-text-input
 	width 100%
@@ -148,6 +156,12 @@ span.step-number
 		float right
 		padding-left 0px
 		width calc(100% - 55px)
+		
+.axissection, .colorsection	
+	@media screen and (max-width: $single_column_breakpoint)
+		width 100%
+		margin-bottom 5px
+		margin-top 10px
 
 
 .typesection
@@ -200,7 +214,13 @@ span.step-number
 		padding 6px 12px
 		.cb-tangle
 			margin-left 5px
-
+	@media screen and (max-width: $single_column_breakpoint)
+		display block
+		padding-bottom 10px
+		.cb-labelled-tangle
+			display block
+			label
+				width 5em
 .editor-label
 	font-size 18px
 	font-family $font-sans
@@ -237,6 +257,8 @@ span.step-number
 				font-size 16px
 				line-height 24px
 				color #bebebe
+			@media screen and (max-width: $single_column_breakpoint)
+				width 100%
 
 	.grid-options
 		display table
@@ -254,6 +276,10 @@ span.step-number
 
 	.series-label-input
 		width 80%
+		
+		@media screen and (max-width: $single_column_breakpoint)
+			&.cb-text-input
+				width 100%
 
 	.universal-toggle
 		display block
