@@ -174,7 +174,7 @@ canvas
 	min-width 100px
 	@import 'chart-editor.styl'
 	
-@media screen and (max-width: 800px)
+@media screen and (max-width: $single_column_breakpoint)
 	.header
 		position relative
 	.chartbuilder-container
@@ -182,8 +182,10 @@ canvas
 	.chartbuilder-renderer
 		display block
 		position relative
-		margin-top 0
+		margin-top 10px
 		width 100%
+		top 0
+		overflow-x scroll
 		.desktop
 			margin-left auto
 			margin-right auto
