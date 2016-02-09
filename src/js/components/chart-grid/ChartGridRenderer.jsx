@@ -9,9 +9,9 @@ var React = require("react");
 var PropTypes = React.PropTypes;
 var update = require("react-addons-update");
 var chartSizes = require("../../config/chart-sizes");
-var clone = require("lodash/lang/clone");
-var assign = require("lodash/object/assign");
-var each = require("lodash/collection/each");
+var clone = require("lodash/clone");
+var assign = require("lodash/assign");
+var each = require("lodash/each");
 
 /* Chart grid types */
 var ChartGridBars = require("./ChartGridBars.jsx");

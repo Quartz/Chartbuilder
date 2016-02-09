@@ -9,13 +9,13 @@ var React = require("react");
 var ReactDOM = require("react-dom")
 var PropTypes = React.PropTypes;
 
-var assign = require("lodash/object/assign");
-var clone = require("lodash/lang/clone");
-var isDate = require("lodash/lang/isDate");
-var isEqual = require("lodash/lang/isEqual");
-var throttle = require("lodash/function/throttle");
-var reduce = require("lodash/collection/reduce");
-var keys = require("lodash/object/keys");
+var assign = require("lodash/assign");
+var clone = require("lodash/clone");
+var isDate = require("lodash/isDate");
+var isEqual = require("lodash/isEqual");
+var throttle = require("lodash/throttle");
+var reduce = require("lodash/reduce");
+var keys = require("lodash/keys");
 var update = require("react-addons-update");
 
 var SvgText = require("./svg/SvgText.jsx");
@@ -83,7 +83,7 @@ var RendererWrapper = React.createClass({
 		var chartType = this.props.model.metadata.chartType;
 		var size_calcs = {};
 		if (this.props.width) {
-			var bp = this._getBreakpointObj(this.props.width);
+			var bp = breakpoints.getBreakpointObj(this.props.enableResponsive, this.props.width);
 			size_calcs = this._resizeUpdate(this.props, bp, this.props.width);
 		}
 
@@ -124,7 +124,7 @@ var RendererWrapper = React.createClass({
 
 	_updateWidth: function(force) {
 		var domNodeWidth = ReactDOM.findDOMNode(this).offsetWidth;
-		var bp = this._getBreakpointObj(domNodeWidth);
+		var bp = breakpoints.getBreakpointObj(this.props.enableResponsive, domNodeWidth);
 		if (domNodeWidth !== this.state.domNodeWidth) {
 			var resized = this._resizeUpdate(this.props, bp, domNodeWidth);
 			if (resized) {
@@ -144,16 +144,6 @@ var RendererWrapper = React.createClass({
 	componentWillUnmount: function() {
 		if (this.props.enableResponsive) {
 			window.removeEventListener("resize", this._updateWidth);
-		}
-	},
-
-	_getBreakpointObj: function(width) {
-		if (this.props.enableResponsive || !width) {
-			return breakpoints.filter(function(bp) {
-				return width > bp.min_size;
-			})[0];
-		} else {
-			return breakpoints[1];
 		}
 	},
 

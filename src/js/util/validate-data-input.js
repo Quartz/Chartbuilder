@@ -1,9 +1,9 @@
 // Return input with validation statuses. These get sent to the UI in order
 // to prevent drawing and give error messages.
 
-var map = require("lodash/collection/map");
-var filter = require("lodash/collection/filter");
-var some = require("lodash/collection/some");
+var map = require("lodash/map");
+var filter = require("lodash/filter");
+var some = require("lodash/some");
 
 function makeInputObj(rawInput, status, isValid) {
 	return {

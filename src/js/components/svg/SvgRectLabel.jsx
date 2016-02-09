@@ -6,7 +6,7 @@
 var React = require("react");
 var ReactDOM = require("react-dom");
 var PureRenderMixin = require("react-addons-pure-render-mixin");
-var isEqual = require("lodash/lang/isEqual");
+var isEqual = require("lodash/isEqual");
 var PropTypes = React.PropTypes;
 var d3 = require("d3");
 

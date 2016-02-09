@@ -1,7 +1,7 @@
 var React = require("react");
 var update = require("react-addons-update");
-var assign = require("lodash/object/assign");
-var map = require("lodash/collection/map");
+var assign = require("lodash/assign");
+var map = require("lodash/map");
 
 /**
  * ### Functions common to chart renderers

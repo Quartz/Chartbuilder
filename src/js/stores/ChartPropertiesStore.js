@@ -3,7 +3,7 @@
  * rendering of the chart.
 */
 
-var assign = require("lodash/object/assign");
+var assign = require("lodash/assign");
 var EventEmitter = require("events").EventEmitter;
 
 /* Flux dispatcher */

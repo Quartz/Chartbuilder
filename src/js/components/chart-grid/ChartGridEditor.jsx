@@ -7,10 +7,11 @@ var PropTypes = React.PropTypes;
 var update = require("react-addons-update");
 var cx = require("classnames");
 
-var clone = require("lodash/lang/clone");
-var map = require("lodash/collection/map");
-var each = require("lodash/collection/each");
-var range = require("lodash/utility/range");
+var bind = require("lodash/bind");
+var clone = require("lodash/clone");
+var each = require("lodash/each");
+var map = require("lodash/map");
+var range = require("lodash/range");
 
 /* Shared Chartbuilder components */
 var DataInput = require("../shared/DataInput.jsx");
@@ -74,7 +75,7 @@ var ChartGridEditor = React.createClass({
 		var chartSettings;
 
 		/* Create a settings component for each data series (column) */
-		chartSettings = map(chartProps.chartSettings, function(seriesSetting, i) {
+		chartSettings = map(chartProps.chartSettings, bind(function(seriesSetting, i) {
 			return (
 				<ChartGrid_chartSettings
 					chartSettings={chartProps.chartSettings}
@@ -87,7 +88,7 @@ var ChartGridEditor = React.createClass({
 					key={i}
 				/>
 			);
-		}, this);
+		}, this));
 
 		/*
 		 * Settings to control the numerical scale. It will be different for bar

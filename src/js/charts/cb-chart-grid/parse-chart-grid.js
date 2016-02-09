@@ -1,6 +1,6 @@
-var clone = require("lodash/lang/clone");
-var map = require("lodash/collection/map");
-var assign = require("lodash/object/assign");
+var clone = require("lodash/clone");
+var map = require("lodash/map");
+var assign = require("lodash/assign");
 
 var dataBySeries = require("../../util/parse-data-by-series");
 var help = require("../../util/helper");

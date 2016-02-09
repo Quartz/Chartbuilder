@@ -7,9 +7,11 @@ var React = require("react");
 var PropTypes = React.PropTypes;
 var update = require("react-addons-update");
 var d4 = require("d4");
-var clone = require("lodash/lang/clone");
-var map = require("lodash/collection/map");
-var filter = require("lodash/collection/filter");
+
+var bind = require("lodash/bind");
+var clone = require("lodash/clone");
+var filter = require("lodash/filter");
+var map = require("lodash/map");
 
 /* Helper functions */
 var cb_xy = require("../../charts/cb-charts").cb_xy;
@@ -160,7 +162,7 @@ var ChartGridXY = React.createClass({
 
 		/* Get the number of charts and only render that many */
 		var numCharts = chartProps._grid.rows * chartProps._grid.cols;
-		var gridCharts = map(chartProps.data.slice(0, numCharts), function(d, i) {
+		var gridCharts = map(chartProps.data.slice(0, numCharts), bind(function(d, i) {
 			// Get the props we need for each chart
 			var gridChartProps = {
 				chartSettings: chartProps.chartSettings[i],
@@ -182,7 +184,7 @@ var ChartGridXY = React.createClass({
 				dimensions={dimensionsPerGrid}
 				padding={displayConfig.padding}
 			/>
-		}, this);
+		}, this));
 
 		return (
 			<g>

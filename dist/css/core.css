@@ -492,12 +492,42 @@ span.step-number {
 }
 .data-input {
   font-size: 1em;
-  border: 1px solid #e2e2e2;
   margin: 0;
+  position: relative;
 }
 .data-input textarea {
   font-family: Monaco, Lucida Console, monspace;
   height: 12em;
+}
+.data-input input[type="file"] {
+  pointer-events: none;
+  height: 12em;
+  position: relative;
+  opacity: 1;
+  z-index: -1;
+}
+.data-input .file-drop {
+  pointer-events: none;
+  height: 12em;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -2;
+  background-color: #f1f1f1;
+  width: 100%;
+  text-align: center;
+  font-family: 'Khula-Regular', Arial, Helvetica, sans-serif;
+}
+.data-input .file-drop p {
+  font-size: 2em;
+  margin-top: 2em;
+}
+.data-input.dropping input[type="file"] {
+  pointer-events: all;
+  z-index: 1;
+}
+.data-input.dropping .file-drop {
+  z-index: 2;
 }
 .data-input .cb-alert {
   font-size: 1.2em;
@@ -845,6 +875,17 @@ svg.renderer-svg tspan {
   font-family: 'Khula-Light', Arial, Helvetica, sans-serif;
   font-size: 20px;
 }
+.svg-text tspan.em {
+  font-style: italic;
+}
+.svg-text tspan.strong {
+  font-family: "Khula-Bold", Arial, sans-serif;
+}
+.svg-text tspan.strong .em,
+.svg-text tspan.em .strong {
+  font-family: "Khula-Bold", Arial, sans-serif;
+  font-style: italic;
+}
 .svg-text.svg-text-credit {
   font-size: 12px;
   fill: #ccc;
@@ -854,13 +895,13 @@ svg.renderer-svg tspan {
   font-size: 12px;
   fill: #ccc;
 }
-.svg-text.left {
+.svg-text.svg-text-source.left {
   text-anchor: start;
 }
-.svg-text.right {
+.svg-text.svg-text-source.right {
   text-anchor: end;
 }
-.svg-text-title {
+.svg-text.svg-text-title {
   fill: #666;
   font-family: 'Khula-Regular', Arial, Helvetica, sans-serif;
   font-size: 20px;

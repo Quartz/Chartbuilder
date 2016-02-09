@@ -1,7 +1,7 @@
 var React = require("react");
 var ReactDOM = require("react-dom");
 var d3 = require("d3");
-var filter = require("lodash/collection/filter");
+var filter = require("lodash/filter");
 var TU = require("react-addons-test-utils");
 var test = require("tape");
 var util = require("../util/util");
@@ -17,7 +17,7 @@ Chartbuilder.__set__({
 	ChartExport: MockComponent
 });
 
-var randChart = util.randArrElement(require("../render/test_charts.json"));
+var randChart = util.randArrElement(require("../test-page/test_charts.json"));
 ChartServerActions.receiveModel(randChart);
 
 var cb = TU.renderIntoDocument(
