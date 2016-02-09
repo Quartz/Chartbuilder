@@ -32,7 +32,10 @@ function dataBySeries(input, opts) {
 		};
 	});
 
-	var reduced_series = reduce_resolution(series);
+	//this replicates the logic of the chartgrid type selection in parse-chart-grid.js
+	opts.seriesTypes = opts.seriesTypes.map(function(d){return d ? d : (parsedInput.hasDate ? "line" : "bar")})
+	
+	var reduced_series = parsedInput.hasDate ? reduce_resolution(series, opts.seriesTypes) : series;
 
 	validatedInput = validateDataInput(input, series, parsedInput.hasDate);
 
@@ -43,11 +46,12 @@ function dataBySeries(input, opts) {
 	};
 }
 
-function reduce_resolution(series) {
+function reduce_resolution(series, seriesTypes) {
 	var max_num = 640
 	var natural_direction = series[0].values[0].entry > series[0].values[1].entry ? -1 : 1
 	return series.map(function(d,i) {
-		if(d.values.length < max_num ) {
+
+		if(d.values.length < max_num || seriesTypes[i] !== "line") {
 			return d
 		}
 		
