@@ -5,6 +5,21 @@ var map = require("lodash/map");
 var filter = require("lodash/filter");
 var some = require("lodash/some");
 
+var checkFor = {
+	empty: true,
+	tooManySeries: true,
+	unevenSeries: true,
+	nanSeries: true,
+	badDateSeries: true,
+	tooMuchData: true,
+	hasThousands: true,
+	highResData: true,
+	highPrecisionData: false
+};
+
+var maxDataSize = 250000;
+var chartWidth = 640;
+
 function makeInputObj(rawInput, status, isValid) {
 	return {
 		raw: rawInput,
@@ -14,10 +29,10 @@ function makeInputObj(rawInput, status, isValid) {
 }
 
 function validateDataInput(input, series, hasDate) {
-	if (input.length === 0) {
+	if (checkFor.empty && input.length === 0) {
 		// Check whether we have input
 		return makeInputObj(input, "EMPTY", false);
-	} else if (series.length > 12) {
+	} else if (checkFor.tooManySeries && series.length > 12) {
 		// Check whether there are too many series
 		return makeInputObj(input, "TOO_MANY_SERIES", false);
 	}
@@ -28,7 +43,7 @@ function validateDataInput(input, series, hasDate) {
 			function(empty,vals) { return empty.length !== vals[0].length;}
 		);
 
-	if (unevenSeries) {
+	if (checkFor.unevenSeries && unevenSeries) {
 		return makeInputObj(input, "UNEVEN_SERIES", false);
 	}
 
@@ -38,7 +53,7 @@ function validateDataInput(input, series, hasDate) {
 			function(nan,vals) { return nan.length > 0;}
 		);
 
-	if (nanSeries) {
+	if (checkFor.nanSeries && nanSeries) {
 		return makeInputObj(input, "NAN_VALUES", false);
 	}
 
@@ -49,7 +64,7 @@ function validateDataInput(input, series, hasDate) {
 				function(bd,vals) { return bd.length > 0;}
 			);
 
-		if (badDateSeries) {
+		if (checkFor.badDateSeries && badDateSeries) {
 			return makeInputObj(input, "NOT_DATES", false);
 		}
 	}
@@ -57,34 +72,34 @@ function validateDataInput(input, series, hasDate) {
 
 	// Warnings
 
-	if(input.length > 250000) {
+	if(checkFor.tooMuchData && input.length > maxDataSize) {
 		return makeInputObj(input,"TOO_MUCH_DATA",true)
 	}
 
-	has_thousands = dataPointTest(
+	hasThousands = dataPointTest(
 		series,
 		function(val){return val.value > 1000},
 		function(ht,vals){return ht.length > 0}
 		)
 
-	if(has_thousands) {
+	if(checkFor.hasThousands && hasThousands) {
 		return makeInputObj(input,"GREATER_THAN_THOUSAND",true)
 	}
 
-	high_res_data = input.split(/\r\n|\r|\n/).length > 640
+	highResData = input.split(/\r\n|\r|\n/).length > chartWidth
 
-	if(high_res_data) {
+	if(checkFor.highResData && highResData) {
 		return makeInputObj(input,"TOO_MUCH_RESOLUTION",true)
 	}
 
-	// high_precision_data = dataPointTest(
-	// 		series,
-	// 		function(val){return String(val.value % 1).length > 4},
-	// 		function(hp,vals){return hp.length > 0})
+	highPrecisionData = dataPointTest(
+			series,
+			function(val){return String(val.value % 1).length > 4},
+			function(hp,vals){return hp.length > 0})
 
-	// if(high_precision_data) {
-	// 	return makeInputObj(input,"TOO_HIGH_PRECISION",true)
-	// }
+	if(checkFor.highPrecisionData && highPrecisionData) {
+		return makeInputObj(input,"TOO_HIGH_PRECISION",true)
+	}
 
 	// If we make it here, input is valid, and needs no warning
 	return makeInputObj(input, "VALID", true);
