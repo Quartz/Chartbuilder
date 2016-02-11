@@ -33,7 +33,7 @@ function dataBySeries(input, opts) {
 	});
 
 	//this replicates the logic of the chartgrid type selection in parse-chart-grid.js
-	opts.seriesTypes = opts.seriesTypes.map(function(d){return d ? d : (parsedInput.hasDate ? "line" : "bar")})
+	opts.seriesTypes = opts.seriesTypes.map(function(d){return d ? d : (parsedInput.hasDate ? "line" : "bar")});
 	
 	var reduced_series = parsedInput.hasDate ? reduce_resolution(series, opts.seriesTypes) : series;
 
@@ -52,7 +52,7 @@ function reduce_resolution(series, seriesTypes) {
 	return series.map(function(d,i) {
 
 		if(d.values.length < max_num || seriesTypes[i] !== "line") {
-			return d
+			return d;
 		}
 		
 		var reduced_values = []
