@@ -9,6 +9,8 @@ var datePattern = /date|time|year/i;
 var parseDelimInput = require("./parse-delimited-input");
 var validateDataInput = require("./validate-data-input");
 
+var max_points_default = 640;
+
 // Parse data by series. Options:
 // checkForDate: bool | tell parser to return dates if key column is date/time/year
 function dataBySeries(input, opts) {
@@ -32,10 +34,11 @@ function dataBySeries(input, opts) {
 		};
 	});
 
+	opts.max_points = opts.max_points || max_points_default;
 	//this replicates the logic of the chartgrid type selection in parse-chart-grid.js
-	opts.seriesTypes = opts.seriesTypes.map(function(d){return d ? d : (parsedInput.hasDate ? "line" : "bar")});
+	opts.seriesTypes = opts.seriesTypes.map(function(d){return d ? d : (parsedInput.hasDate ? "line" : "bar");});
 	
-	var reduced_series = parsedInput.hasDate ? reduce_resolution(series, opts.seriesTypes) : series;
+	var reduced_series = parsedInput.hasDate ? reduce_resolution(series, opts.seriesTypes, opts.max_points) : series;
 
 	validatedInput = validateDataInput(input, series, parsedInput.hasDate);
 
@@ -46,8 +49,7 @@ function dataBySeries(input, opts) {
 	};
 }
 
-function reduce_resolution(series, seriesTypes) {
-	var max_num = 640
+function reduce_resolution(series, seriesTypes, max_num) {
 	var natural_direction = series[0].values[0].entry > series[0].values[1].entry ? -1 : 1
 	return series.map(function(d,i) {
 

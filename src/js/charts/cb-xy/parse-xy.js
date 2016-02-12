@@ -9,6 +9,8 @@ var help = require("../../util/helper");
 
 var scaleNames = ["primaryScale", "secondaryScale"];
 
+var max_points = 640;
+
 /**
  * see [ChartConfig#parser](#chartconfig/parser)
  * @see ChartConfig#parser
@@ -24,7 +26,7 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 	var chartProps = JSON.parse(JSON.stringify(_chartProps));
 	var seriesTypes = chartProps.chartSettings.map(function(d){return d.type;});
 
-	var bySeries = dataBySeries(chartProps.input.raw, { checkForDate: true, seriesTypes: seriesTypes });
+	var bySeries = dataBySeries(chartProps.input.raw, { checkForDate: true, seriesTypes: seriesTypes, max_points: max_points });
 	var labels = chartProps._annotations.labels;
 	var allColumn = true;
 	// check if either scale contains columns, as we'll need to zero the axis
