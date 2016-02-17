@@ -411,7 +411,8 @@ var XYLabels = React.createClass({
 		return {
 			yOffset: 10,
 			undraggedLabels: {},
-			dateScaleInfo: null
+			dateScaleInfo: null,
+			allLabels: []
 		};
 	},
 
@@ -507,6 +508,11 @@ var XYLabels = React.createClass({
 				this.props.updateLabelYMax(labelYMax);
 			}
 		}
+
+		this.refreshAllLabelPositions();
+	},
+
+	refreshAllLabelPositions: function() {
 	},
 
 	/**
@@ -565,21 +571,26 @@ var XYLabels = React.createClass({
 				var scales = this.props.scale;
 				yScale_info = !chartSetting.altAxis ? scales.primaryScale : scales.secondaryScale;
 				xScale_info = xScaleInfo(this.props.dimensions.width,padding,styleConfig,displayConfig,{dateSettings: this.state.dateScaleInfo});
-				scale = {
-					y: {
-						domain: yScale_info.domain,
-						range:[
+				
+				var yRange = [
 							this.props.dimensions.height - padding.bottom - displayConfig.margin.bottom,
 							padding.top + displayConfig.margin.top
-							]
-					},
-					x: {
-						domain: xScale_info.domain ? xScale_info.domain : [],
-						range: props.chartProps.scale.hasDate ? [
+							];
+
+				var xRange = props.chartProps.scale.hasDate ? [
 							padding.left + displayConfig.margin.left + this.props.maxTickWidth.primaryScale,
 							xScale_info.rangeR-padding.right-displayConfig.margin.right-this.props.maxTickWidth.secondaryScale - displayConfig.minPaddingOuter
 							] : []
-					}
+				scale = {
+					y: {
+						domain: yScale_info.domain,
+						range: yRange
+					},
+					x: {
+						domain: xScale_info.domain ? xScale_info.domain : [],
+						range: xRange
+					},
+					str: yRange + "__" + xRange
 				};
 
 				labelComponents.push(
@@ -601,6 +612,9 @@ var XYLabels = React.createClass({
 				);
 			}, this));
 		}
+
+		this.state.allLabels = labelComponents
+
 		return (
 			<g
 				ref="chartAnnotations"
