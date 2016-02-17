@@ -32,17 +32,33 @@ function parseDelimInput(input, opts) {
 	var stripCharsRegex = new RegExp(_stripCharsStr, "g");
 
 	var columnNames = input.split(newLineRegex)[0].split(delimiter);
+	var dsv = d3.dsv(delimiter, "text/plain");
+	var index_types = [];
+	var preparsed_data = dsv.parse(input, function(d) {
+		each(columnNames, function(column, i) {
+			if (i === 0) {
+				var parsed = parseKeyColumn(d[column],"whatever");
+				//first column
+				d[column] = parsed.val;
+				index_types.push(parsed.type);
+			}
+			else {
+				// all other columns
+				d[column] = parseValue(d[column], stripCharsRegex, separators.decimal);
+			}
+		});
+	});
 
 	var hasDate = false;
 	if (opts.checkForDate) {
 		hasDate = parseUtils.matchDatePattern(columnNames[0]);
 	}
 
-	var dsv = d3.dsv(delimiter, "text/plain");
+	
 	var data = dsv.parse(input, function(d) {
 		each(columnNames, function(column, i) {
 			if (i === 0) {
-				d[column] = parseKeyColumn(d[column], hasDate);
+				d[column] = parseKeyColumn(d[column], hasDate ? "date" : isLinear ? "linear" : false).val;
 			} else {
 				d[column] = parseValue(d[column], stripCharsRegex, separators.decimal);
 			}
@@ -69,11 +85,19 @@ function parseValue(val, _stripChars, decimal) {
 	}
 }
 
-function parseKeyColumn(entry, hasDate) {
-	if (hasDate) {
-		return new Date.create(entry);
-	} else {
-		return entry;
+function parseKeyColumn(entry, type) {
+	var num = Number(entry);
+	if (num || type == "linear") {
+		return {type: "number", val: num};
+	}
+	else {
+		var date = new Date.create(entry);
+
+		if(date || type == "date") {
+			return {type: "date", val: date};
+		}
+
+		return {type: "string", val: entry};
 	}
 }
 
