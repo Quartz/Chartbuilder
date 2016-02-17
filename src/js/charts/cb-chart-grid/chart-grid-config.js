@@ -86,6 +86,12 @@ var defaultProps = {
 			dateSettings: {
 				dateFrequency: "auto",
 				dateFormat: "auto"
+			},
+			numericSettings: {
+				ticks: null,
+				precision: 0,
+				prefix: "",
+				suffix: ""
 			}
 		},
 		chartSettings: [

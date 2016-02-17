@@ -215,6 +215,56 @@ function merge_or_apply(defaults, source) {
 	}, {});
 }
 
+function suggest_tick_num(domain) {
+	// function axis_ticks_even(scale) {
+	// 	var range = (scale.domain[1] - scale.domain[0]);
+	// 	var minimum = range / MAX_TICKS;
+	// 	var digits = Math.floor(range).toString().length;
+	// 	var multiplier = Math.pow(10, (digits - 2));
+
+	// 	var acceptable_intervals = reduce(INTERVAL_BASE_VALS, function(prev, curr) {
+	// 		var mult = curr * multiplier;
+
+	// 		if (mult >= minimum) {
+	// 			prev = prev.concat([mult]);
+	// 		}
+
+	// 		return prev;
+	// 	}, []);
+
+	// 	var are_ticks_even = some(acceptable_intervals, function(inter) {
+	// 		return all_modulo(scale.tickValues, inter);
+	// 	});
+
+	// 	return are_ticks_even;
+	// }
+	var MAX_TICKS = 10;
+	var INTERVAL_BASE_VALS = [1, 2, 2.5, 5, 10, 25];
+	var range = Math.abs(domain[0] - domain[1])
+	var minimum = range / MAX_TICKS;
+	var digits = Math.floor(range).toString().length;
+	var multiplier = Math.pow(10, (digits - 2));
+
+	var acceptable_intervals = reduce(INTERVAL_BASE_VALS, function(prev, curr) {
+		var mult = curr * multiplier;
+
+		if (mult >= minimum) {
+			prev = prev.concat([mult]);
+		}
+
+		return prev;
+	}, []);
+
+	for (var i = 0; i < acceptable_intervals.length; i++) {
+		var interval = acceptable_intervals[i]
+		if(range % interval == 0) {
+			return (range / interval) + 1
+		}
+	};
+
+	return 11;
+}
+
 /**
  * Helper functions!
  * @name helper
@@ -226,7 +276,8 @@ var helper = {
 	computeScaleDomain: compute_scale_domain,
 	precision: precision,
 	transformCoords: transform_coords,
-	mergeOrApply: merge_or_apply
+	mergeOrApply: merge_or_apply,
+	suggestTickNum: suggest_tick_num
 };
 
 module.exports = helper;

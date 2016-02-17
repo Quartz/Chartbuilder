@@ -5,3 +5,4 @@ require("./parse-input");
 require("./date-parsers");
 require("./date-frequencies");
 require("./auto-date-interval");
+require("./validate-input");

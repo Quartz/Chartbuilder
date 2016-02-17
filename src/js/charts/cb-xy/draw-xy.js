@@ -58,7 +58,8 @@ var mixin = [
 		"name": "other-circles",
 		"feature": d4.features.circleSeries
 	},
-	cb_mixins.series_label
+	cb_mixins.series_label,
+	cb_mixins.x_axis_label
 ];
 
 var locationKey = {
@@ -70,7 +71,6 @@ var using = {
 	lines: function(line,location,singleLineDotThresh,totalLinePoints) {
 		var isPrimary = (location === "primary");
 		var scale = isPrimary ? this.left : this.right;
-
 		line.beforeRender(function(data) {
 			var isolated_data = [];
 
@@ -92,9 +92,10 @@ var using = {
 		});
 
 		line.x(function(d) {
-			if (this.x.$scale == "time") {
+			if (this.x.$scale == "time" || this.x.$scale == "linear") {
 				return this.x(d[this.x.$key]);
-			} else {
+			} 
+			else {
 				return this.x(d[this.x.$key]) + this.x.rangeBand() / 2;
 			}
 		});
@@ -163,7 +164,7 @@ var using = {
 				// account for the case of columns in a time series. this requires
 				// some special positioning because a time series is continuous and
 				// the groups cannot be placed with `x.rangeBand()`
-				if (this.x.$scale == "time" && parsed.data.length > 0) {
+				if ((this.x.$scale == "time"  || this.x.$scale == "linear") && parsed.data.length > 0) {
 					var xRange = this.x.range();
 					var effectiveChartWidth = xRange[1] - xRange[0];
 
@@ -253,7 +254,7 @@ var using = {
 
 		circle
 			.cx(function(d) {
-				if (this.x.$scale == "time") {
+				if (this.x.$scale == "time" || this.x.$scale == "linear") {
 					return this.x(d[this.x.$key]);
 				} else {
 					return this.x(d[this.x.$key]) + this.x.rangeBand() / 2;
@@ -334,7 +335,6 @@ var cb_xy = d4.chart("cb-xy", function() {
 				if (numColumns === data.length) {
 					this.container.selectAll(".xAxis .tick").attr("data-anchor", "middle");
 				}
-
 				if(self.x.$scale == "time") {
 					axisNode.selectAll("text").each(function(d) {
 						var text = d3.select(this);
@@ -351,7 +351,20 @@ var cb_xy = d4.chart("cb-xy", function() {
 				var coords = help.transformCoords(axisNode.attr("transform"));
 				coords[1] = coords[1] + xy_config.xAxisShift;
 				axisNode.attr("transform","translate(" + coords + ")");
+				
+
+
+				
+
+				
+
 			});
+		})
+		.using("x-axis-label", function(label) {
+			label.afterRender(function(curLabel, data, chartArea){
+				var first_tick = this.container.selectAll(".xAxis .tick")[0][0]
+				chartArea.selectAll(".xAxislabel").attr("dx",first_tick.getBoundingClientRect().width/-2)
+			})
 		})
 		.y(function(y){
 			y.clamp(false);

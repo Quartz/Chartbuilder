@@ -7,37 +7,51 @@
 
 var datePattern = /date|time|year/i;
 var parseDelimInput = require("./parse-delimited-input");
-var validateDataInput = require("./validate-data-input");
 
 // Parse data by series. Options:
 // checkForDate: bool | tell parser to return dates if key column is date/time/year
 function dataBySeries(input, opts) {
+	var series;
 	opts = opts || {};
+
 	var parsedInput = parseDelimInput(input, {
-		checkForDate: opts.checkForDate
+		checkForDate: opts.checkForDate,
+		type: opts.type
 	});
+
 	var columnNames = parsedInput.columnNames;
 	var keyColumn = columnNames.shift();
 
-	var series = columnNames.map(function(header, i) {
-		return {
-			name: header,
+	if (columnNames.length === 0) {
+		series = [{
+			name: keyColumn,
 			values: parsedInput.data.map(function(d) {
 				return {
-					name: header,
-					entry: d[keyColumn],
-					value: d[header]
+					name: keyColumn,
+					value: d[keyColumn]
 				};
 			})
-		};
-	});
-
-	validatedInput = validateDataInput(input, series, parsedInput.hasDate);
+		}];
+	} else {
+		series = columnNames.map(function(header, i) {
+			return {
+				name: header,
+				values: parsedInput.data.map(function(d) {
+					return {
+						name: header,
+						entry: d[keyColumn],
+						value: d[header]
+					};
+				})
+			};
+		});
+	}
 
 	return {
 		series: series,
-		input: validatedInput,
-		hasDate: parsedInput.hasDate
+		input: { raw: input, type: opts.type },
+		hasDate: parsedInput.hasDate && (!opts.type || opts.type == "date"),
+		isNumeric: parsedInput.isNumeric && (!opts.type || opts.type == "numeric")
 	};
 }
 

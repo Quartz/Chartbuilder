@@ -23,6 +23,8 @@ var some = require("lodash/some");
 
 var ChartRendererMixin = require("../mixins/ChartRendererMixin.js");
 var DateScaleMixin = require("../mixins/DateScaleMixin.js");
+var NumericScaleMixin = require("../mixins/NumericScaleMixin.js");
+
 
 // Flux actions
 var ChartViewActions = require("../../actions/ChartViewActions");
@@ -277,7 +279,7 @@ var XYChart = React.createClass({
 		}
 	},
 
-	mixins: [ DateScaleMixin ],
+	mixins: [ DateScaleMixin, NumericScaleMixin ],
 
 	componentDidMount: function() {
 		// Draw chart once mounted
@@ -318,9 +320,14 @@ var XYChart = React.createClass({
 		// Generate and return the state needed to draw the chart. This is what will
 		// passed to the d4/d3 draw function.
 		var dateSettings;
+		var numericSettings;
 		if (props.chartProps.scale.hasDate) {
 			dateSettings = this.generateDateScale(props);
 		}
+		else if (props.chartProps.scale.isNumeric) {
+			numericSettings = this.generateNumericScale(props)
+		}
+
 		var computedPadding = computePadding(props);
 		var hasColumn = some(props.chartProps.chartSettings, function(setting) {
 			return setting.type == "column";
@@ -331,6 +338,7 @@ var XYChart = React.createClass({
 			styleConfig: props.styleConfig,
 			displayConfig: props.displayConfig,
 			dateSettings: dateSettings,
+			numericSettings: numericSettings,
 			maxTickWidth: props.maxTickWidth,
 			hasColumn: hasColumn,
 			axisTicks: props.axisTicks,
@@ -406,7 +414,7 @@ var XYLabels = React.createClass({
 		};
 	},
 
-	mixins: [ DateScaleMixin ],
+	mixins: [ DateScaleMixin, NumericScaleMixin ],
 
 	componentWillReceiveProps: function(nextProps) {
 		// Determine how far down vertically the labels should be placed, depending
@@ -660,6 +668,7 @@ var xy_render_options = {
 function drawXY(el, state) {
 	var chartProps = state.chartProps;
 	var dateSettings = state.dateSettings;
+	var numericSettings = state.numericSettings;
 	var displayConfig = state.displayConfig;
 	var styleConfig = state.styleConfig;
 	var hasOtherAxis = chartProps._numSecondaryAxis > 0;
@@ -695,6 +704,12 @@ function drawXY(el, state) {
 				x.domain(o.domain);
 				x.range([o.rangeL, o.rangeR]);
 			}
+			else if (state.numericSettings) {
+				x.scale("linear");
+				x.clamp(false)
+				x.domain(o.domain);
+				x.range([o.rangeL, o.rangeR]);
+			}
 		})
 		.y(function(y) {
 			y.key("value")
@@ -727,13 +742,32 @@ function drawXY(el, state) {
 				}
 			});
 
-			if (state.dateSettings) {
+			if (dateSettings) {
 				axis.tickValues(dateSettings.dateTicks);
 				axis.tickFormat(function(d,i) {
 					return dateSettings.dateFormatter(d,i);
 				});
 			}
 
+			if(numericSettings) {
+				axis.tickValues(numericSettings.tickValues)
+				axis.tickFormat(function(d,i) {
+					return (i == 0 ? numericSettings.prefix : "") +  help.roundToPrecision(d, numericSettings.precision);
+				})
+
+			}
+
+		})
+		.using("x-axis-label", function(label) {
+			label.beforeRender(function(data){
+					return [{
+						ypos: numericSettings ? state.dimensions.height - state.padding.bottom + state.styleConfig.overtick_bottom : 0,
+						xval: numericSettings ? scale.numericSettings.domain[0] : 0,
+						text: numericSettings ? numericSettings.suffix : "",
+						dy: "1.6em"
+					}]
+				})			
+			
 		});
 
 		if (chartProps._numSecondaryAxis > 0) {
@@ -758,10 +792,19 @@ function xScaleInfo(width, padding, styleConfig, displayConfig, state) {
 	if (state.chartProps && state.chartProps._numSecondaryAxis) {
 		hasMultipleYAxes = true;
 	}
+
+	var domain = null
+	if(state.dateSettings) {
+		domain = state.dateSettings.domain;
+	}
+	else if (state.numericSettings){
+		domain = state.numericSettings.domain;
+	}
+
 	var o = {
 		rangeL: padding.left + styleConfig.xOverTick,
 		rangeR: width - padding.right - (hasMultipleYAxes ? styleConfig.xOverTick : 0),
-		domain: state.dateSettings ? state.dateSettings.domain : null
+		domain: domain
 	}
 
 	if (state.hasColumn) {

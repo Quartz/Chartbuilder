@@ -12,7 +12,7 @@ var d4 = require("d4");
 
 // Date parsing settings
 var DateScaleMixin = require("../mixins/DateScaleMixin.js");
-
+var NumericScaleMixin = require("../mixins/NumericScaleMixin.js");
 /**
  * ### Component that renders a single grid chart. One of these is rendered for each series in a chart grid
  * @property {object} styleConfig - Allow the rendered component to interacted with and edited
@@ -48,7 +48,7 @@ var GridChart = React.createClass({
 		};
 	},
 
-	mixins: [DateScaleMixin],
+	mixins: [DateScaleMixin, NumericScaleMixin],
 
 	shouldComponentUpdate: function(nextProps, nextState) {
 		// Draw chart when updated
@@ -91,9 +91,12 @@ var GridChart = React.createClass({
 	_getChartState: function(props, state) {
 
 		var dateSettings;
+		var numericSettings;
 		// Calculate date settings if date scale is being used
 		if (props.chartProps.scale.hasDate) {
 			dateSettings = this.generateDateScale(props);
+		} else if (props.chartProps.scale.isNumeric) {
+			numericSettings = this.generateNumericScale(props);
 		}
 
 		return {
@@ -105,6 +108,7 @@ var GridChart = React.createClass({
 			hasColumn: (props.grid.type == "column"),
 			barLabelOverlap: props.barLabelOverlap,
 			dateSettings: dateSettings,
+			numericSettings: numericSettings,
 			positions: state.positions,
 			padding: props.padding,
 		};

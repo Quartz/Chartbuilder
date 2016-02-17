@@ -1,6 +1,7 @@
 var clone = require("lodash/clone");
 var map = require("lodash/map");
 var assign = require("lodash/assign");
+var each = require("lodash/each");
 
 var dataBySeries = require("../../util/parse-data-by-series");
 var help = require("../../util/helper");
@@ -22,10 +23,9 @@ function parseChartgrid(config, _chartProps, callback, parseOpts) {
 	var isColumnOrBar;
 
 	parseOpts = parseOpts || {};
-
 	// dont check for date column if grid type is bar
 	var checkForDate = chartProps._grid.type !== "bar";
-	var bySeries = dataBySeries(chartProps.input.raw, { checkForDate: checkForDate });
+	var bySeries = dataBySeries(chartProps.input.raw, { checkForDate: checkForDate, type: chartProps.input.type});
 
 	var gridSettings = {
 		rows: +chartProps._grid.rows || chartgrid_defaults._grid.rows,
@@ -56,6 +56,7 @@ function parseChartgrid(config, _chartProps, callback, parseOpts) {
 	});
 
 	chartProps.scale.hasDate = bySeries.hasDate;
+	chartProps.scale.isNumeric = bySeries.isNumeric;
 
 	if (bySeries.hasDate) {
 		chartProps.scale.dateSettings = chartProps.scale.dateSettings || clone(config.defaultProps.chartProps.scale.dateSettings);
@@ -67,8 +68,64 @@ function parseChartgrid(config, _chartProps, callback, parseOpts) {
 			minZero: isColumnOrBar
 		});
 		assign(primaryScale, domain);
+	} else if (bySeries.isNumeric) {
+		var maxPrecision = 5;
+		var factor = Math.pow(10, maxPrecision);
+		gridSettings.type = _chartProps._grid.type || "line";
+		
+		_computed = {
+			//TODO look at entries for all series not just the first
+			data: bySeries.series[0].values.map(function(d){return +d.entry}),
+			hasColumn: false,
+			count: 0
+		};
+
+		var currScale = chartProps.scale.numericSettings || clone(config.defaultProps.chartProps.scale.numericSettings);
+		var domain = help.computeScaleDomain(currScale, _computed.data, {
+			nice: true,
+			minZero: false
+		});
+
+		assign(currScale, domain);
+
+		var ticks = currScale.ticks;
+		currScale.tickValues = help.exactTicks(currScale.domain, ticks);
+
+		each(currScale.tickValues, function(v) {
+			var tickPrecision = help.precision(Math.round(v*factor)/factor);
+			if (tickPrecision > currScale.precision) {
+				currScale.precision = tickPrecision;
+			}
+		});
+
+		scale.numericSettings = currScale;
+
+		if (chartProps.mobile) {
+			if (chartProps.mobile.scale) {
+				var currMobile = chartProps.mobile.scale.numericSettings;
+				if (currMobile) {
+					var domain = help.computeScaleDomain(currMobile, _computed.data, {
+						nice: true,
+						minZero: false
+					});
+					assign(currMobile, domain);
+
+					var ticks = currMobile.ticks;
+					currMobile.tickValues = help.exactTicks(currMobile.domain, ticks);
+					each(currMobile.tickValues, function(v) {
+						var tickPrecision = help.precision(Math.round(v*factor)/factor);
+						if (tickPrecision > currMobile.precision) {
+							currMobile.precision = tickPrecision;
+						}
+					});
+				}
+				chartProps.mobile.scale.numericSettings = currMobile 
+			}
+		} else {
+			chartProps.mobile = {};
+		}
 	} else {
-		// for non-dates, default type should be bar
+		// ordinals default type should be bar
 		gridSettings.type = _chartProps._grid.type || "bar";
 		isColumnOrBar = (gridSettings.type == "column" || gridSettings.type == "bar");
 		domain = help.computeScaleDomain(primaryScale, scaleData, {

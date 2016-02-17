@@ -19,6 +19,7 @@ var dateParsers = require("../../util/process-dates").dateParsers;
 /* Shared Chartbuilder components */
 var DataInput = require("../shared/DataInput.jsx");
 var DateScaleSettings = require("../shared/DateScaleSettings.jsx");
+var NumericScaleSettings = require("../shared/NumericScaleSettings.jsx");
 var XY_yScaleSettings = require("../shared/XY_yScaleSettings.jsx");
 
 /* Chartbuilder UI components */
@@ -56,12 +57,9 @@ var axisOptions = [
 var XYEditor = React.createClass({
 
 	propTypes: {
+		errors: PropTypes.object,
 		chartProps: PropTypes.shape({
-			input: PropTypes.shape({
-				raw: PropTypes.string,
-				status: PropTypes.string,
-				valid: PropTypes.bool
-			}).isRequired,
+			input: PropTypes.object.isRequired,
 			chartSettings: PropTypes.array,
 			data: PropTypes.array,
 			scale: PropTypes.object,
@@ -130,7 +128,6 @@ var XYEditor = React.createClass({
 				/>
 			);
 		}
-
 		/* Add date settings if we are parsing a date */
 		if (chartProps.scale.hasDate) {
 			scaleSettings.push(
@@ -140,8 +137,25 @@ var XYEditor = React.createClass({
 					stepNumber="5"
 					onUpdate={this._handlePropUpdate.bind(null, "scale")}
 				/>
-			)
+			);
+		} else if (chartProps.scale.isNumeric) {
+			scaleSettings.push(
+				<NumericScaleSettings
+					scale={chartProps.scale}
+					key="xScale"
+					onUpdate={this._handlePropAndReparse.bind(null, "scale")}
+					onReset={this._handlePropAndReparse.bind(null, "scale")}
+					className="scale-options"
+					id="numericSettings"
+					name="Bottom"
+					stepNumber="5"
+				/>
+			);
 		}
+
+		var inputErrors = this.props.errors.messages.filter(function(e) {
+			return e.location === "input";
+		});
 
 		return (
 			<div className="xy-editor">
@@ -151,6 +165,7 @@ var XYEditor = React.createClass({
 						<span>Input your data</span>
 					</h2>
 					<DataInput
+						errors={inputErrors}
 						chartProps={chartProps}
 						className="data-input"
 					/>
@@ -275,12 +290,12 @@ var XY_chartSettings = React.createClass({
 
 				<div className="section axis-color">
 					<div className="section colorsection">
-						<label>Color</label>
 						<ColorPicker
 							onChange={this._handleSettingsUpdate.bind(null, this.props.index, "colorIndex")}
 							numColors={this.props.numColors}
 							index={this.props.index}
 							colorIndex={chartSetting.colorIndex}
+							labelText="Color"
 						/>
 					</div>
 					<div className="section axissection">
