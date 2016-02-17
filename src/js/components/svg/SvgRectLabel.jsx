@@ -73,21 +73,11 @@ var SvgRectLabel = React.createClass({
 	},
 
 	shouldComponentUpdate: function(nextProps, nextState) {
-		var nextSettings = nextProps.settings;
-
-		if (nextSettings.val_x && nextSettings.val_y) {
-			var newPos = this._fromValuePosition({x: nextSettings.val_x, y:nextSettings.val_y})
-
-			if (newPos !== {x: nextSettings.x, y:nextSettings.y}) {
-					return true;
-			}
-		}
-
-
-
 		var newProps = (!isEqual(this.props, nextProps));
 		var newDrag = (this.state.dragging !== nextState.dragging);
-		return (newProps || newDrag || nextState.dragging);
+		var hasValCoords = (nextProps.settings.val_x && nextProps.settings.val_y);
+
+		return (newProps || newDrag || nextState.dragging || hasValCoords);
 	},
 
 	componentWillReceiveProps: function(nextProps) {
@@ -96,7 +86,7 @@ var SvgRectLabel = React.createClass({
 		var elementPos = {
 			x: valueComputedPos.x || proportionalComputedPos.x,
 			y: valueComputedPos.y || proportionalComputedPos.y
-		}
+		};
 
 		this.setState({
 			proportionalComputed: proportionalComputedPos,
