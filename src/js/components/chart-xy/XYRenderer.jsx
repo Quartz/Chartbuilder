@@ -23,6 +23,8 @@ var some = require("lodash/some");
 
 var ChartRendererMixin = require("../mixins/ChartRendererMixin.js");
 var DateScaleMixin = require("../mixins/DateScaleMixin.js");
+var NumericScaleMixin = require("../mixins/NumericScaleMixin.js");
+
 
 // Flux actions
 var ChartViewActions = require("../../actions/ChartViewActions");
@@ -277,7 +279,7 @@ var XYChart = React.createClass({
 		}
 	},
 
-	mixins: [ DateScaleMixin ],
+	mixins: [ DateScaleMixin, NumericScaleMixin ],
 
 	componentDidMount: function() {
 		// Draw chart once mounted
@@ -321,6 +323,10 @@ var XYChart = React.createClass({
 		if (props.chartProps.scale.hasDate) {
 			dateSettings = this.generateDateScale(props);
 		}
+		else if (props.chartProps.scale.isNumeric) {
+			numericSettings = this.generateNumericScale(props)
+		}
+
 		var computedPadding = computePadding(props);
 		var hasColumn = some(props.chartProps.chartSettings, function(setting) {
 			return setting.type == "column";
@@ -406,7 +412,7 @@ var XYLabels = React.createClass({
 		};
 	},
 
-	mixins: [ DateScaleMixin ],
+	mixins: [ DateScaleMixin, NumericScaleMixin ],
 
 	componentWillReceiveProps: function(nextProps) {
 		// Determine how far down vertically the labels should be placed, depending
@@ -695,6 +701,11 @@ function drawXY(el, state) {
 				x.domain(o.domain);
 				x.range([o.rangeL, o.rangeR]);
 			}
+			else if (state.numericSettings) {
+				x.scale("linear");
+				x.domain(o.domain);
+				x.range([o.rangeL, o.rangeR]);
+			}
 		})
 		.y(function(y) {
 			y.key("value")
@@ -758,10 +769,19 @@ function xScaleInfo(width, padding, styleConfig, displayConfig, state) {
 	if (state.chartProps && state.chartProps._numSecondaryAxis) {
 		hasMultipleYAxes = true;
 	}
+
+	var domain = null
+	if(state.dateSettings) {
+		domain = state.dateSettings.domain;
+	}
+	else if (state.numericSettings){
+		domain = state.numericSettings.domain;
+	}
+
 	var o = {
 		rangeL: padding.left + styleConfig.xOverTick,
 		rangeR: width - padding.right - (hasMultipleYAxes ? styleConfig.xOverTick : 0),
-		domain: state.dateSettings ? state.dateSettings.domain : null
+		domain: domain
 	}
 
 	if (state.hasColumn) {

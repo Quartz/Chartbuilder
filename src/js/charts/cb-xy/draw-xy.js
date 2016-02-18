@@ -92,9 +92,10 @@ var using = {
 		});
 
 		line.x(function(d) {
-			if (this.x.$scale == "time") {
+			if (this.x.$scale == "time" || this.x.$scale == "linear") {
 				return this.x(d[this.x.$key]);
-			} else {
+			} 
+			else {
 				return this.x(d[this.x.$key]) + this.x.rangeBand() / 2;
 			}
 		});
@@ -163,7 +164,7 @@ var using = {
 				// account for the case of columns in a time series. this requires
 				// some special positioning because a time series is continuous and
 				// the groups cannot be placed with `x.rangeBand()`
-				if (this.x.$scale == "time" && parsed.data.length > 0) {
+				if ((this.x.$scale == "time"  || this.x.$scale == "linear") && parsed.data.length > 0) {
 					var xRange = this.x.range();
 					var effectiveChartWidth = xRange[1] - xRange[0];
 
@@ -253,7 +254,7 @@ var using = {
 
 		circle
 			.cx(function(d) {
-				if (this.x.$scale == "time") {
+				if (this.x.$scale == "time" || this.x.$scale == "linear") {
 					return this.x(d[this.x.$key]);
 				} else {
 					return this.x(d[this.x.$key]) + this.x.rangeBand() / 2;
@@ -335,7 +336,7 @@ var cb_xy = d4.chart("cb-xy", function() {
 					this.container.selectAll(".xAxis .tick").attr("data-anchor", "middle");
 				}
 
-				if(self.x.$scale == "time") {
+				if(self.x.$scale == "time" || this.x.$scale == "linear") {
 					axisNode.selectAll("text").each(function(d) {
 						var text = d3.select(this);
 						// We will handle this in CSS. Override d3's default settings here.

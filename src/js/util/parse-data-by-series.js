@@ -39,7 +39,7 @@ function dataBySeries(input, opts) {
 		series: series,
 		input: validatedInput,
 		hasDate: parsedInput.hasDate,
-		isLinear: parsedInput.isLinear
+		isNumeric: parsedInput.isNumeric
 	};
 }
 

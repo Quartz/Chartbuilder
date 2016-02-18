@@ -170,9 +170,59 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 		scale.dateSettings = chartProps.scale.dateSettings || clone(config.defaultProps.chartProps.scale.dateSettings);
 	}
 
-	if (bySeries.isLinear) {
+	if (bySeries.isNumeric) {
 		scale.isNumeric = bySeries.isNumeric;
-		scale.numericSettings = chartProps.scale.numericSettings || clone(config.defaultProps.chartProps.scale.numericSettings);
+		_computed = {
+			data: [],
+			hasColumn: false,
+			count: 0
+		};
+		var currScale = chartProps.scale.numericSettings || clone(config.defaultProps.chartProps.scale.numericSettings);
+		
+		var domain = help.computeScaleDomain(currScale, _computed.data, {
+			nice: true,
+			minZero: false
+		});
+		assign(currScale, domain);
+
+		var ticks = currScale.ticks;
+		currScale.tickValues = help.exactTicks(currScale.domain, ticks);
+
+		each(currScale.tickValues, function(v) {
+			var tickPrecision = help.precision(Math.round(v*factor)/factor);
+			if (tickPrecision > currScale.precision) {
+				currScale.precision = tickPrecision;
+			}
+		});
+
+		scale.numericSettings = currScale;
+
+		if (chartProps.mobile) {
+			if (chartProps.mobile.scale) {
+				var currMobile = chartProps.mobile.scale.numericSettings;
+				if (currMobile) {
+					var domain = help.computeScaleDomain(currMobile, _computed.data, {
+						nice: true,
+						minZero: false
+					});
+					assign(currMobile, domain);
+
+					var ticks = currMobile.ticks;
+					currMobile.tickValues = help.exactTicks(currMobile.domain, ticks);
+					each(currMobile.tickValues, function(v) {
+						var tickPrecision = help.precision(Math.round(v*factor)/factor);
+						if (tickPrecision > currMobile.precision) {
+							currMobile.precision = tickPrecision;
+						}
+					});
+				}
+				chartProps.mobile.scale.numericSettings = currMobile 
+			}
+		} else {
+			chartProps.mobile = {};
+		}
+
+
 	}
 
 	var newChartProps = assign(chartProps, {
@@ -190,5 +240,6 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 	}
 
 }
+
 
 module.exports = parseXY;
