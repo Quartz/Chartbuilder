@@ -5,6 +5,7 @@ var d3 = require("d3");
 var each = require("lodash/each");
 require("sugar-date");
 var parseUtils = require("./parse-utils");
+var unique = require("lodash").uniq;
 
 // We need this to get the current locale's thousands separator
 var SessionStore = require("../stores/SessionStore");
@@ -23,6 +24,7 @@ var separators = SessionStore.get("separators");
 function parseDelimInput(input, opts) {
 	opts = opts || {};
 	delimiter = opts.delimiter || parseUtils.detectDelimiter(input);
+	specified_type = opts.type
 
 	// create regex of special characters we want to strip out as well as our
 	// computed locale-specific thousands separator.
@@ -33,29 +35,38 @@ function parseDelimInput(input, opts) {
 
 	var columnNames = input.split(newLineRegex)[0].split(delimiter);
 	var dsv = d3.dsv(delimiter, "text/plain");
-	var index_types = [];
-	var preparsed_data = dsv.parse(input, function(d) {
+	var all_index_types = [];
+
+	var data = dsv.parse(input, function(d) {
 		each(columnNames, function(column, i) {
 			if (i === 0) {
-				var parsed = parseKeyColumn(d[column],"whatever");
 				//first column
+
+				var parsed = parseKeyColumn(d[column],opts.type);
+				all_index_types.push(parsed.type);
 				d[column] = parsed.val;
-				index_types.push(parsed.type);
 			}
 			else {
 				// all other columns
+
 				d[column] = parseValue(d[column], stripCharsRegex, separators.decimal);
 			}
 		});
+		return d
 	});
 
-	var hasDate = false;
-	if (opts.checkForDate) {
-		hasDate = parseUtils.matchDatePattern(columnNames[0]);
+	var index_types = unique(all_index_types);
+
+	if(index_types.length !== 1) {
+		//throw an error or warning that chartbuilder can't auto determine types
+	}
+	else {
+		hasDate = index_types[0] === "date";
+		isLinear = index_types[0] === "number";
 	}
 
 	
-	var data = dsv.parse(input, function(d) {
+	var odata = dsv.parse(input, function(d) {
 		each(columnNames, function(column, i) {
 			if (i === 0) {
 				d[column] = parseKeyColumn(d[column], hasDate ? "date" : isLinear ? "linear" : false).val;
@@ -66,10 +77,12 @@ function parseDelimInput(input, opts) {
 		return d;
 	});
 
+
 	return {
 		data: data,
 		columnNames: columnNames,
-		hasDate: hasDate
+		hasDate: hasDate,
+		isLinear: isLinear
 	};
 }
 
