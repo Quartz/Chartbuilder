@@ -52,7 +52,7 @@ function parseDelimInput(input, opts) {
 				d[column] = parseValue(d[column], stripCharsRegex, separators.decimal);
 			}
 		});
-		return d
+		return d;
 	});
 
 	var index_types = unique(all_index_types);
@@ -62,14 +62,14 @@ function parseDelimInput(input, opts) {
 	}
 	else {
 		hasDate = index_types[0] === "date";
-		isLinear = index_types[0] === "number";
+		isNumeric = index_types[0] === "number";
 	}
 
 	return {
 		data: data,
 		columnNames: columnNames,
 		hasDate: hasDate,
-		isLinear: isLinear
+		isNumeric: isNumeric
 	};
 }
 
@@ -87,7 +87,7 @@ function parseValue(val, _stripChars, decimal) {
 
 function parseKeyColumn(entry, type) {
 	var num = Number(entry);
-	if (num || type == "linear") {
+	if (num || type == "numeric") {
 		return {type: "number", val: num};
 	}
 	else {

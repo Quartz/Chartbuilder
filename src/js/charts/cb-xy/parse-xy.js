@@ -170,6 +170,11 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 		scale.dateSettings = chartProps.scale.dateSettings || clone(config.defaultProps.chartProps.scale.dateSettings);
 	}
 
+	if (bySeries.isLinear) {
+		scale.isNumeric = bySeries.isNumeric;
+		scale.numericSettings = chartProps.scale.numericSettings || clone(config.defaultProps.chartProps.scale.numericSettings);
+	}
+
 	var newChartProps = assign(chartProps, {
 		chartSettings: chartSettings,
 		scale: scale,
