@@ -24,7 +24,7 @@ var separators = SessionStore.get("separators");
 function parseDelimInput(input, opts) {
 	opts = opts || {};
 	delimiter = opts.delimiter || parseUtils.detectDelimiter(input);
-	specified_type = opts.type
+	specified_type = opts.type;
 
 	// create regex of special characters we want to strip out as well as our
 	// computed locale-specific thousands separator.
@@ -64,19 +64,6 @@ function parseDelimInput(input, opts) {
 		hasDate = index_types[0] === "date";
 		isLinear = index_types[0] === "number";
 	}
-
-	
-	var odata = dsv.parse(input, function(d) {
-		each(columnNames, function(column, i) {
-			if (i === 0) {
-				d[column] = parseKeyColumn(d[column], hasDate ? "date" : isLinear ? "linear" : false).val;
-			} else {
-				d[column] = parseValue(d[column], stripCharsRegex, separators.decimal);
-			}
-		});
-		return d;
-	});
-
 
 	return {
 		data: data,

@@ -14,7 +14,8 @@ var validateDataInput = require("./validate-data-input");
 function dataBySeries(input, opts) {
 	opts = opts || {};
 	var parsedInput = parseDelimInput(input, {
-		checkForDate: opts.checkForDate
+		checkForDate: opts.checkForDate,
+		type: opts.type
 	});
 	var columnNames = parsedInput.columnNames;
 	var keyColumn = columnNames.shift();
@@ -37,7 +38,8 @@ function dataBySeries(input, opts) {
 	return {
 		series: series,
 		input: validatedInput,
-		hasDate: parsedInput.hasDate
+		hasDate: parsedInput.hasDate,
+		isLinear: parsedInput.isLinear
 	};
 }
 
