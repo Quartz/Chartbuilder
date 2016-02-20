@@ -320,6 +320,7 @@ var XYChart = React.createClass({
 		// Generate and return the state needed to draw the chart. This is what will
 		// passed to the d4/d3 draw function.
 		var dateSettings;
+		var numericSettings;
 		if (props.chartProps.scale.hasDate) {
 			dateSettings = this.generateDateScale(props);
 		}
@@ -337,6 +338,7 @@ var XYChart = React.createClass({
 			styleConfig: props.styleConfig,
 			displayConfig: props.displayConfig,
 			dateSettings: dateSettings,
+			numericSettings: numericSettings,
 			maxTickWidth: props.maxTickWidth,
 			hasColumn: hasColumn,
 			axisTicks: props.axisTicks,

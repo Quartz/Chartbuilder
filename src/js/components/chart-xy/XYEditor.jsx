@@ -116,8 +116,6 @@ var XYEditor = React.createClass({
 			/>
 		);
 
-		console.log(chartProps.scale)
-
 		/* render a second y scale component if altAxis is specified */
 		if (chartProps._numSecondaryAxis > 0) {
 			scaleSettings.push(
@@ -133,7 +131,6 @@ var XYEditor = React.createClass({
 				/>
 			);
 		}
-		console.log(chartProps.scale)
 		/* Add date settings if we are parsing a date */
 		if (chartProps.scale.hasDate) {
 			scaleSettings.push(
@@ -147,7 +144,7 @@ var XYEditor = React.createClass({
 		} else if (chartProps.scale.isNumeric) {
 			scaleSettings.push(
 				<NumericScaleSettings
-					scale={chartProps.scale.NumericScaleSettings}
+					scale={chartProps.scale.numericSettings}
 					key="xScale"
 					onUpdate={this._handlePropAndReparse.bind(null, "scale")}
 					onReset={this._handlePropAndReparse.bind(null, "scale")}

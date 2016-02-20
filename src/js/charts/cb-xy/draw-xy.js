@@ -325,7 +325,6 @@ var cb_xy = d4.chart("cb-xy", function() {
 		})
 		.using("xAxis", function(axis) {
 			axis.stagger(false);
-
 			axis.afterRender(function(curAxis, data, chartArea, axisNode) {
 				var self = this;
 				var numColumns = filter(data, function(d) {

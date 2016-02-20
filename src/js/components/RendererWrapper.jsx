@@ -102,7 +102,6 @@ var RendererWrapper = React.createClass({
 			_chartProps.data = newData;
 			chartProps = _chartProps;
 		}
-
 		var state = assign({}, { chartProps: chartProps }, size_calcs);
 		this.setState(state);
 	},
@@ -181,7 +180,6 @@ var RendererWrapper = React.createClass({
 		var chartType = this.props.model.metadata.chartType;
 		var width = this.props.width || this.state.domNodeWidth;
 		var displayConfig = this.state.chartConfig.display;
-
 		if (!width) {
 			return <div style={{ width: "100%" }}></div>;
 		}
@@ -277,7 +275,6 @@ var RendererWrapper = React.createClass({
 				/>
 			);
 		}
-
 		return (
 			<div className={["renderer-wrapper", this.state.svgSizeClass, this.props.className].join(" ")}>
 				<svg
