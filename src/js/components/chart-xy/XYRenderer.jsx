@@ -668,6 +668,7 @@ var xy_render_options = {
 function drawXY(el, state) {
 	var chartProps = state.chartProps;
 	var dateSettings = state.dateSettings;
+	var numericSettings = state.numericSettings;
 	var displayConfig = state.displayConfig;
 	var styleConfig = state.styleConfig;
 	var hasOtherAxis = chartProps._numSecondaryAxis > 0;
@@ -705,6 +706,7 @@ function drawXY(el, state) {
 			}
 			else if (state.numericSettings) {
 				x.scale("linear");
+				x.clamp(false)
 				x.domain(o.domain);
 				x.range([o.rangeL, o.rangeR]);
 			}
@@ -740,11 +742,18 @@ function drawXY(el, state) {
 				}
 			});
 
-			if (state.dateSettings) {
+			if (dateSettings) {
 				axis.tickValues(dateSettings.dateTicks);
 				axis.tickFormat(function(d,i) {
 					return dateSettings.dateFormatter(d,i);
 				});
+			}
+
+			if(numericSettings) {
+				axis.tickValues(numericSettings.tickValues)
+				axis.tickFormat(function(d,i) {
+					return (i == 0 ? numericSettings.prefix : "") +  help.roundToPrecision(d, numericSettings.precision) + (i == 0 ? "\n" + numericSettings.suffix : "")
+				})
 			}
 
 		});

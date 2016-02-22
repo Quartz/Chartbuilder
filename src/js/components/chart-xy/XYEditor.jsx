@@ -144,12 +144,12 @@ var XYEditor = React.createClass({
 		} else if (chartProps.scale.isNumeric) {
 			scaleSettings.push(
 				<NumericScaleSettings
-					scale={chartProps.scale.numericSettings}
+					scale={chartProps.scale}
 					key="xScale"
 					onUpdate={this._handlePropAndReparse.bind(null, "scale")}
 					onReset={this._handlePropAndReparse.bind(null, "scale")}
 					className="scale-options"
-					id="xScale"
+					id="numericSettings"
 					name="Bottom"
 					stepNumber="5"
 				/>
