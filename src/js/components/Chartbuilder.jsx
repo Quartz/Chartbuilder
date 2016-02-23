@@ -13,6 +13,7 @@ var PropTypes = React.PropTypes;
 var ChartPropertiesStore = require("../stores/ChartPropertiesStore");
 var ChartMetadataStore = require("../stores/ChartMetadataStore");
 var SessionStore = require("../stores/SessionStore");
+var ErrorStore = require("../stores/ErrorStore");
 
 /*
  * Global React components that are used irrespective of chart type
@@ -22,6 +23,7 @@ var Canvas = require("./Canvas.jsx");
 var ChartExport = require("./ChartExport.jsx");
 var ChartMetadata = require("./ChartMetadata.jsx");
 var ChartTypeSelector = require("./ChartTypeSelector.jsx");
+var ErrorDisplay = require("./ErrorDisplay.jsx");
 var RendererWrapper = require("./RendererWrapper.jsx");
 var LocalStorageTimer = require("./LocalStorageTimer.jsx");
 
@@ -48,6 +50,7 @@ function getStateFromStores() {
 	return {
 		chartProps: ChartPropertiesStore.getAll(),
 		metadata: ChartMetadataStore.getAll(),
+		errors: ErrorStore.getAll(),
 		session: SessionStore.getAll()
 	};
 }
@@ -103,6 +106,7 @@ var Chartbuilder = React.createClass({
 	componentDidMount: function() {
 		ChartPropertiesStore.addChangeListener(this._onChange);
 		ChartMetadataStore.addChangeListener(this._onChange);
+		ErrorStore.addChangeListener(this._onChange);
 		SessionStore.addChangeListener(this._onChange);
 	},
 
@@ -110,6 +114,7 @@ var Chartbuilder = React.createClass({
 	componentWillUnmount: function() {
 		ChartPropertiesStore.removeChangeListener(this._onChange);
 		ChartMetadataStore.removeChangeListener(this._onChange);
+		ErrorStore.removeChangeListener(this._onChange);
 		SessionStore.removeChangeListener(this._onChange);
 	},
 
@@ -183,6 +188,7 @@ var Chartbuilder = React.createClass({
 						timerOn={this.state.session.timerOn}
 					/>
 					<Editor
+						errors={this.state.errors}
 						chartProps={this.state.chartProps}
 						numColors={numColors}
 					/>
@@ -193,11 +199,15 @@ var Chartbuilder = React.createClass({
 						additionalComponents={this.props.additionalComponents.metadata}
 					/>
 					{mobileOverrides}
+					<ErrorDisplay
+						stepNumber={String(editorSteps + 3)}
+						messages={this.state.errors.messages}
+					/>
 					<ChartExport
 						data={this.state.chartProps.data}
 						svgWrapperClassName={svgWrapperClassName.desktop}
 						metadata={this.state.metadata}
-						stepNumber={String(editorSteps + 3)}
+						stepNumber={String(editorSteps + 4)}
 						additionalComponents={this.props.additionalComponents.misc}
 						model={this.state}
 					/>

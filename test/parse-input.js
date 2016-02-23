@@ -4,7 +4,6 @@ var defaultInput = require("./util/test-input");
 
 var parseDataBySeries = require("../src/js/util/parse-data-by-series");
 var parseDelimitedInput = require("../src/js/util/parse-delimited-input");
-var validateDataInput = require("../src/js/util/validate-data-input");
 var parseUtils = require("../src/js/util/parse-utils");
 var util = require("./util/util");
 
