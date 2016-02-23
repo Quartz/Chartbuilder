@@ -17,6 +17,7 @@ function dataBySeries(input, opts) {
 		checkForDate: opts.checkForDate,
 		type: opts.type
 	});
+
 	var columnNames = parsedInput.columnNames;
 	var keyColumn = columnNames.shift();
 
@@ -32,8 +33,8 @@ function dataBySeries(input, opts) {
 			})
 		};
 	});
-
-	validatedInput = validateDataInput(input, series, parsedInput.hasDate);
+	console.log(parsedInput)
+	validatedInput = validateDataInput(input, series, parsedInput.hasDate, opts.type);
 
 	return {
 		series: series,

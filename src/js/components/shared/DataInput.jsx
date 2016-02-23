@@ -88,8 +88,16 @@ var DataInput = React.createClass({
 
 	_handleReparseUpdate: function(k, v) {
 		// reset the raw input value
-		var input = update(this.props.chartProps.input, { $merge: { raw: v }});
-		ChartViewActions.updateInput(k, input);
+		console.log("here",k)
+		if(k == "input") {
+			var input = update(this.props.chartProps.input, { $merge: { raw: v }});
+			ChartViewActions.updateInput(k, input);
+		}
+		else if (k == "type") {
+			var input = update(this.props.chartProps.input, { $merge: { type: v.type }});
+			ChartViewActions.updateAndReparse(k, input)
+		}
+		
 	},
 
 	componentDidMount: function() {
@@ -151,7 +159,7 @@ var DataInput = React.createClass({
 					boldText={this.state.boldText}
 				/>
 				<DataSeriesTypeSettings
-					onUpdate={this._handleReparseUpdate.bind(null, "dataSeriesType")}
+					onUpdate={this._handleReparseUpdate.bind(null, "type")}
 					chartProps={this.props.chartProps}
 				/>
 

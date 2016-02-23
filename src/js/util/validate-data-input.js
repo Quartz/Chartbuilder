@@ -5,11 +5,12 @@ var map = require("lodash/map");
 var filter = require("lodash/filter");
 var some = require("lodash/some");
 
-function makeInputObj(rawInput, status, isValid) {
+function makeInputObj(rawInput, status, isValid, type) {
 	return {
 		raw: rawInput,
 		status: status,
-		valid: isValid
+		valid: isValid,
+		type: type
 	};
 }
 

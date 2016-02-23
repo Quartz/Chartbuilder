@@ -24,7 +24,7 @@ var separators = SessionStore.get("separators");
 function parseDelimInput(input, opts) {
 	opts = opts || {};
 	delimiter = opts.delimiter || parseUtils.detectDelimiter(input);
-	specified_type = opts.type;
+	type = opts.type;
 
 	// create regex of special characters we want to strip out as well as our
 	// computed locale-specific thousands separator.
@@ -42,7 +42,7 @@ function parseDelimInput(input, opts) {
 			if (i === 0) {
 				//first column
 
-				var parsed = parseKeyColumn(d[column],opts.type);
+				var parsed = parseKeyColumn(d[column],type);
 				all_index_types.push(parsed.type);
 				d[column] = parsed.val;
 			}
@@ -61,15 +61,16 @@ function parseDelimInput(input, opts) {
 		//throw an error or warning that chartbuilder can't auto determine types
 	}
 	else {
-		hasDate = index_types[0] === "date";
-		isNumeric = index_types[0] === "number";
+		hasDate = type ? type == "date" : index_types[0] === "date";
+		isNumeric = type ? type == "numeric" : index_types[0] === "number";
 	}
 
 	return {
 		data: data,
 		columnNames: columnNames,
 		hasDate: hasDate,
-		isNumeric: isNumeric
+		isNumeric: isNumeric,
+		type: type
 	};
 }
 
