@@ -33,7 +33,6 @@ function dataBySeries(input, opts) {
 			})
 		};
 	});
-	console.log(parsedInput)
 	validatedInput = validateDataInput(input, series, parsedInput.hasDate, opts.type);
 
 	return {
