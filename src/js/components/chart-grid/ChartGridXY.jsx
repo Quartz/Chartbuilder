@@ -214,6 +214,8 @@ function drawXYChartGrid(el, state) {
 	var colorIndex = chartProps.chartSettings.colorIndex;
 	var gridType = state.grid.type;
 	var dateSettings = state.dateSettings;
+	var numericSettings = state.numericSettings;
+
 
 	xyConfig = displayConfig.xy;
 
@@ -304,9 +306,15 @@ function drawXYChartGrid(el, state) {
 			rangeL += displayConfig.columnExtraPadding;
 			rangeR -= displayConfig.columnExtraPadding;
 		}
-		if (chartProps.scale.hasDate) {
+
+		if (dateSettings) {
 			x.scale("time");
 			x.domain(dateSettings.domain);
+		}
+		else if (numericSettings) {
+			x.scale("linear");
+			x.clamp(false)
+			x.domain(numericSettings.domain);
 		}
 		x.range([rangeL, rangeR]);
 	})
@@ -323,6 +331,12 @@ function drawXYChartGrid(el, state) {
 			axis.tickFormat(function(d) {
 				return dateSettings.dateFormatter(d);
 			});
+		}
+		if(chartProps.scale.numericSettings) {
+			axis.tickValues(chartProps.scale.numericSettings.tickValues)
+			axis.tickFormat(function(d,i) {
+				return (i == 0 ? chartProps.scale.numericSettings.prefix : "") +  help.roundToPrecision(d, chartProps.scale.numericSettings.precision) + (i == 0 ? "\n" + chartProps.scale.numericSettings.suffix : "")
+			})
 		}
 
 		axis.innerTickSize(styleConfig.overtick_bottom);

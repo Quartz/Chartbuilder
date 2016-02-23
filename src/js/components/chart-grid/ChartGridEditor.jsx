@@ -16,6 +16,7 @@ var range = require("lodash/range");
 /* Shared Chartbuilder components */
 var DataInput = require("../shared/DataInput.jsx");
 var DateScaleSettings = require("../shared/DateScaleSettings.jsx");
+var NumericScaleSettings = require("../shared/NumericScaleSettings.jsx");
 var XY_yScaleSettings = require("../shared/XY_yScaleSettings.jsx");
 var ChartGrid_xScaleSettings = require("./ChartGrid_xScaleSettings.jsx");
 
@@ -128,6 +129,19 @@ var ChartGridEditor = React.createClass({
 					scale={chartProps.scale}
 					stepNumber="5"
 					onUpdate={this._handlePropUpdate.bind(null, "scale")}
+				/>
+			)
+		} else if (chartProps.scale.isNumeric) {
+			scaleSettings.push(
+				<NumericScaleSettings
+					scale={chartProps.scale}
+					key="numericSettings"
+					onUpdate={this._handlePropAndReparse.bind(null, "scale")}
+					onReset={this._handlePropAndReparse.bind(null, "scale")}
+					className="scale-options"
+					id="numericSettings"
+					name="Bottom"
+					stepNumber="5"
 				/>
 			)
 		}
