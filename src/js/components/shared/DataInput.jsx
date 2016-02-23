@@ -11,6 +11,7 @@ var validateChartModel = require("../../util/validate-chart-model");
 var chartbuilderUI = require("chartbuilder-ui");
 var TextArea = chartbuilderUI.TextArea;
 var Alert = chartbuilderUI.Alert;
+var DataSeriesTypeSettings = require("../shared/DataSeriesTypeSettings.jsx");
 
 var inputAlerts = {
 	"EMPTY": {
@@ -149,6 +150,11 @@ var DataInput = React.createClass({
 					alertText={this.state.alertText}
 					boldText={this.state.boldText}
 				/>
+				<DataSeriesTypeSettings
+					onUpdate={this._handleReparseUpdate.bind(null, "dataSeriesType")}
+					chartProps={this.props.chartProps}
+				/>
+
 			</div>
 		);
 	},

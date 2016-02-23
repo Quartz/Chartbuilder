@@ -168,4 +168,4 @@ var fibonacci = [
 	"144	20736"
 ].join("\n");
 
-module.exports = fibonacci;
+module.exports = default_input;
