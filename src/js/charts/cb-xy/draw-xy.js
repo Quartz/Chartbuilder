@@ -334,7 +334,7 @@ var cb_xy = d4.chart("cb-xy", function() {
 				if (numColumns === data.length) {
 					this.container.selectAll(".xAxis .tick").attr("data-anchor", "middle");
 				}
-				if(self.x.$scale == "time" || this.x.$scale == "linear") {
+				if(self.x.$scale == "time") {
 					axisNode.selectAll("text").each(function(d) {
 						var text = d3.select(this);
 						// We will handle this in CSS. Override d3's default settings here.
