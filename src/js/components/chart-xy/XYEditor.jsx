@@ -277,12 +277,12 @@ var XY_chartSettings = React.createClass({
 
 				<div className="section axis-color">
 					<div className="section colorsection">
-						<label>Color</label>
 						<ColorPicker
 							onChange={this._handleSettingsUpdate.bind(null, this.props.index, "colorIndex")}
 							numColors={this.props.numColors}
 							index={this.props.index}
 							colorIndex={chartSetting.colorIndex}
+							labelText="Color"
 						/>
 					</div>
 					<div className="section axissection">

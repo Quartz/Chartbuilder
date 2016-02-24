@@ -150,7 +150,6 @@ var ChartGridEditor = React.createClass({
 						<span className="step-number">3</span>
 						<span>Set series options</span>
 					</h2>
-					{chartSettings}
 					<ChartGrid_universalToggle
 						text="Single color"
 						chartSettings={chartProps.chartSettings}
@@ -158,6 +157,7 @@ var ChartGridEditor = React.createClass({
 						onUpdate={this._handlePropUpdate.bind(null, "chartSettings")}
 						onClick={this._handleStateUpdate}
 					/>
+					{chartSettings}
 					<ChartGrid_gridSettings
 						grid={chartProps._grid}
 						onUpdate={this._handlePropAndReparse.bind(null, "_grid")}
@@ -262,11 +262,11 @@ var ChartGrid_chartSettings = React.createClass({
 		return (
 			<div className="series-control">
 				<div className="section colorsection">
-					<label>Color</label>
 					<ColorPicker
 						onChange={this._handleColorUpdate.bind(null, this.props.index, "colorIndex")}
 						numColors={this.props.numColors}
 						colorIndex={seriesSetting.colorIndex}
+						labelText="Color"
 					/>
 				</div>
 				<TextInput
