@@ -57,12 +57,9 @@ var axisOptions = [
 var XYEditor = React.createClass({
 
 	propTypes: {
+		errors: PropTypes.object,
 		chartProps: PropTypes.shape({
-			input: PropTypes.shape({
-				raw: PropTypes.string,
-				status: PropTypes.string,
-				valid: PropTypes.bool
-			}).isRequired,
+			input: PropTypes.object.isRequired,
 			chartSettings: PropTypes.array,
 			data: PropTypes.array,
 			scale: PropTypes.object,
@@ -155,6 +152,11 @@ var XYEditor = React.createClass({
 				/>
 			)
 		}
+
+		var inputErrors = this.props.errors.messages.filter(function(e) {
+			return e.location === "input";
+		});
+
 		return (
 			<div className="xy-editor">
 				<div className="editor-options">
@@ -163,6 +165,7 @@ var XYEditor = React.createClass({
 						<span>Input your data</span>
 					</h2>
 					<DataInput
+						errors={inputErrors}
 						chartProps={chartProps}
 						className="data-input"
 					/>
