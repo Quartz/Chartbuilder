@@ -27,12 +27,14 @@ var stripChars = [
 ];
 
 var newLineRegex = /\r\n|\r|\n/;
+var parseErrors = [];
 
 function parseDelimInput(input, opts) {
 	opts = opts || {};
 	delimiter = opts.delimiter || parseUtils.detectDelimiter(input);
 	type = opts.type;
 
+	parseErrors = [];
 	// create regex of special characters we want to strip out as well as our
 	// computed locale-specific thousands separator.
 	var _stripCharsStr = stripChars.concat([separators.thousands]).reduce(function(a, b) {
@@ -64,8 +66,8 @@ function parseDelimInput(input, opts) {
 
 	var index_types = unique(all_index_types);
 
-	if(index_types.length !== 1) {
-		//throw an error or warning that chartbuilder can't auto determine types
+	if(index_types.length !== 1 && !type) {
+		parseErrors.push("CANT_AUTO_TYPE")
 	}
 	else {
 		hasDate = type ? type == "date" : index_types[0] === "date";
@@ -96,12 +98,18 @@ function parseValue(val, _stripChars, decimal) {
 function parseKeyColumn(entry, type) {
 	var num = Number(entry);
 	if (num || type == "numeric") {
+		if(!num) {
+			parseErrors.push("NAN_VALUES")
+		}
 		return {type: "number", val: num};
 	}
 	else {
 		var date = new Date.create(entry);
 
 		if(date || type == "date") {
+			if(!date) {
+				parseErrors.push("NOT_DATES")
+			}
 			return {type: "date", val: date};
 		}
 

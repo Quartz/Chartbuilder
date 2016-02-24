@@ -43,6 +43,11 @@ var error_names = {
 		location: "input",
 		text: "You have more data than can be rendered or saved correctly",
 		type: 2
+	},
+	"CANT_AUTO_TYPE": {
+		location: "input",
+		text: "The type of information in the first column of your data cannot be automatically determined. Please seleect one below.",
+		type: 2
 	}
 };
 
