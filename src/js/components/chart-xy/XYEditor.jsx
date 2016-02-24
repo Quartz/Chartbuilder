@@ -155,7 +155,6 @@ var XYEditor = React.createClass({
 				/>
 			)
 		}
-
 		return (
 			<div className="xy-editor">
 				<div className="editor-options">

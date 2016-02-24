@@ -70,7 +70,6 @@ var using = {
 	lines: function(line,location,singleLineDotThresh,totalLinePoints) {
 		var isPrimary = (location === "primary");
 		var scale = isPrimary ? this.left : this.right;
-
 		line.beforeRender(function(data) {
 			var isolated_data = [];
 
@@ -325,6 +324,7 @@ var cb_xy = d4.chart("cb-xy", function() {
 		})
 		.using("xAxis", function(axis) {
 			axis.stagger(false);
+
 			axis.afterRender(function(curAxis, data, chartArea, axisNode) {
 				var self = this;
 				var numColumns = filter(data, function(d) {
@@ -334,7 +334,6 @@ var cb_xy = d4.chart("cb-xy", function() {
 				if (numColumns === data.length) {
 					this.container.selectAll(".xAxis .tick").attr("data-anchor", "middle");
 				}
-
 				if(self.x.$scale == "time" || this.x.$scale == "linear") {
 					axisNode.selectAll("text").each(function(d) {
 						var text = d3.select(this);

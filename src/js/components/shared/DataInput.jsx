@@ -88,14 +88,14 @@ var DataInput = React.createClass({
 
 	_handleReparseUpdate: function(k, v) {
 		// reset the raw input value
-		console.log("here",k)
+		var input;
 		if(k == "input") {
-			var input = update(this.props.chartProps.input, { $merge: { raw: v }});
+			input = update(this.props.chartProps.input, { $merge: { raw: v }});
 			ChartViewActions.updateInput(k, input);
 		}
 		else if (k == "type") {
-			var input = update(this.props.chartProps.input, { $merge: { type: v.type }});
-			ChartViewActions.updateAndReparse(k, input)
+			input = update(this.props.chartProps.input, { $merge: { type: v.type }});
+			ChartViewActions.updateAndReparse("input", input)
 		}
 		
 	},

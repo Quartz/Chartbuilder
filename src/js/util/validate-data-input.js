@@ -14,7 +14,7 @@ function makeInputObj(rawInput, status, isValid, type) {
 	};
 }
 
-function validateDataInput(input, series, hasDate) {
+function validateDataInput(input, series, hasDate, type) {
 	if (input.length === 0) {
 		// Check whether we have input
 		return makeInputObj(input, "EMPTY", false);
@@ -59,7 +59,7 @@ function validateDataInput(input, series, hasDate) {
 	}
 
 	// If we make it here, input is valid
-	return makeInputObj(input, "VALID", true);
+	return makeInputObj(input, "VALID", true, type);
 }
 
 function dataPointTest(series, filterTest, someTest) {

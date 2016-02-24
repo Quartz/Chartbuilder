@@ -34,12 +34,11 @@ function dataBySeries(input, opts) {
 		};
 	});
 	validatedInput = validateDataInput(input, series, parsedInput.hasDate, opts.type);
-
 	return {
 		series: series,
 		input: validatedInput,
-		hasDate: parsedInput.hasDate,
-		isNumeric: parsedInput.isNumeric
+		hasDate: parsedInput.hasDate && (!opts.type || opts.type == "date"),
+		isNumeric: parsedInput.isNumeric && (!opts.type || opts.type == "numeric")
 	};
 }
 

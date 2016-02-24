@@ -44,7 +44,8 @@ var ChartGridEditor = React.createClass({
 			input: PropTypes.shape({
 				raw: PropTypes.string,
 				status: PropTypes.string,
-				valid: PropTypes.bool
+				valid: PropTypes.bool,
+				type: PropTypes.string
 			}).isRequired,
 			chartSettings: PropTypes.array,
 			data: PropTypes.array,
@@ -145,7 +146,6 @@ var ChartGridEditor = React.createClass({
 				/>
 			)
 		}
-
 		return (
 			<div className="chartgrid-editor">
 				<div className="editor-options">

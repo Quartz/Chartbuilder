@@ -172,7 +172,6 @@ var ChartGridBars = React.createClass({
 				key="hiddenLabel"
 			/>
 		);
-
 		var gridCharts = map(chartProps.data.slice(0, numCharts), bind(function(d, i) {
 			// Get the props we need for each chart
 			var gridChartProps = {
@@ -182,6 +181,8 @@ var ChartGridBars = React.createClass({
 				margin: this.props.displayConfig.margin,
 				extraPadding: extraPadding
 			};
+
+			console.log(chartProps.scale)
 
 			return <GridChart
 				chartProps={gridChartProps}

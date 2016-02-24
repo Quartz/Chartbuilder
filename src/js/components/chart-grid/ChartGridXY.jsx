@@ -296,7 +296,6 @@ function drawXYChartGrid(el, state) {
 		chart.outerWidth(state.dimensions.width);
 		chart.extraPadding(extraPadding);
 	}
-
 	chart
 	.x(function(x) {
 		x.key("entry");
@@ -306,7 +305,6 @@ function drawXYChartGrid(el, state) {
 			rangeL += displayConfig.columnExtraPadding;
 			rangeR -= displayConfig.columnExtraPadding;
 		}
-
 		if (dateSettings) {
 			x.scale("time");
 			x.domain(dateSettings.domain);
@@ -332,7 +330,7 @@ function drawXYChartGrid(el, state) {
 				return dateSettings.dateFormatter(d);
 			});
 		}
-		if(chartProps.scale.numericSettings) {
+		if(chartProps.scale.isNumeric) {
 			axis.tickValues(chartProps.scale.numericSettings.tickValues)
 			axis.tickFormat(function(d,i) {
 				return (i == 0 ? chartProps.scale.numericSettings.prefix : "") +  help.roundToPrecision(d, chartProps.scale.numericSettings.precision) + (i == 0 ? "\n" + chartProps.scale.numericSettings.suffix : "")

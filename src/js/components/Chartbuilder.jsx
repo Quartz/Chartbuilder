@@ -158,7 +158,6 @@ var Chartbuilder = React.createClass({
 				</div>
 			);
 		}
-
 		return (
 			<div className="chartbuilder-main">
 				<div className="chartbuilder-renderer">

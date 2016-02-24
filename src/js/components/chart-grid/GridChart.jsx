@@ -92,14 +92,11 @@ var GridChart = React.createClass({
 
 		var dateSettings;
 		var numericSettings;
-		
 		// Calculate date settings if date scale is being used
 		if (props.chartProps.scale.hasDate) {
 			dateSettings = this.generateDateScale(props);
-		}
-
-		if (props.chartProps.scale.isNumeric) {
-			numericSettings = this.generateNumericScale(props)
+		} else if (props.chartProps.scale.isNumeric) {
+			numericSettings = this.generateNumericScale(props);
 		}
 
 		return {

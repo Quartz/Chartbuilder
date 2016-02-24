@@ -23,7 +23,6 @@ function parseChartgrid(config, _chartProps, callback, parseOpts) {
 	var isColumnOrBar;
 
 	parseOpts = parseOpts || {};
-
 	// dont check for date column if grid type is bar
 	var checkForDate = chartProps._grid.type !== "bar";
 	var bySeries = dataBySeries(chartProps.input.raw, { checkForDate: checkForDate, type: chartProps.input.type});
@@ -57,6 +56,7 @@ function parseChartgrid(config, _chartProps, callback, parseOpts) {
 	});
 
 	chartProps.scale.hasDate = bySeries.hasDate;
+	chartProps.scale.isNumeric = bySeries.isNumeric;
 
 	if (bySeries.hasDate) {
 		chartProps.scale.dateSettings = chartProps.scale.dateSettings || clone(config.defaultProps.chartProps.scale.dateSettings);
@@ -72,7 +72,7 @@ function parseChartgrid(config, _chartProps, callback, parseOpts) {
 		var maxPrecision = 5;
 		var factor = Math.pow(10, maxPrecision);
 		gridSettings.type = _chartProps._grid.type || "line";
-		scale.isNumeric = bySeries.isNumeric;
+		
 		_computed = {
 			//TODO look at entries for all series not just the first
 			data: bySeries.series[0].values.map(function(d){return +d.entry}),
@@ -125,7 +125,7 @@ function parseChartgrid(config, _chartProps, callback, parseOpts) {
 			chartProps.mobile = {};
 		}
 	} else {
-		// for non-dates, default type should be bar
+		// ordinals default type should be bar
 		gridSettings.type = _chartProps._grid.type || "bar";
 		isColumnOrBar = (gridSettings.type == "column" || gridSettings.type == "bar");
 		domain = help.computeScaleDomain(primaryScale, scaleData, {
