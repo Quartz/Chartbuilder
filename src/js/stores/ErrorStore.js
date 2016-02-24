@@ -71,17 +71,22 @@ var ErrorStore = assign({}, EventEmitter.prototype, {
 function registeredCallback(payload) {
 	var action = payload.action;
 	var chartProps;
+	var error_messages;
+	var input_errors;
 
 	switch(action.eventName) {
-		/* * Data input updated */
+		/* *
+		* Data input updated or reparse called
+		* */
 		case "update-data-input":
+		case "update-and-reparse":
 
 			Dispatcher.waitFor([ChartPropertiesStore.dispatchToken]);
 			chartProps = ChartPropertiesStore.getAll();
 
-			var error_messages = removeLocation("input");
-			var inputErrors = validateDataInput(chartProps);
-			error_messages = error_messages.concat(inputErrors);
+			error_messages = [];
+			input_errors = validateDataInput(chartProps);
+			error_messages = error_messages.concat(input_errors);
 
 			_errors.messages = error_messages.map(function(err_name) {
 				return errorNames[err_name];
@@ -101,13 +106,6 @@ function registeredCallback(payload) {
 
 }
 
-function removeLocation(location) {
-	return filter(_errors.messages, function(error) {
-		return error.location !== location;
-	});
-}
-
-//Dispatcher.register(registeredCallback);
 /* Respond to actions coming from the dispatcher */
 ErrorStore.dispatchToken = Dispatcher.register(registeredCallback);
 module.exports = ErrorStore;

@@ -6,3 +6,4 @@ require("./date-parsers");
 require("./date-frequencies");
 require("./auto-date-interval");
 require("./validate-input");
+require("./catch-chart-mistakes");

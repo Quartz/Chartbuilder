@@ -73,6 +73,8 @@ function parseValue(val, _stripChars, decimal) {
 		return +val;
 	} else if (val == "null") {
 		return null;
+	} else {
+		return val;
 	}
 }
 

@@ -43,6 +43,21 @@ var error_names = {
 		location: "input",
 		text: "You have more data than can be rendered or saved correctly",
 		type: 2
+	},
+	"UNEVEN_TICKS": {
+		location: "axis",
+		text: "Your y-axis tick intervals do not divide cleanly",
+		type: 2
+	},
+	"NO_PREFIX_SUFFIX": {
+		location: "axis",
+		text: "You are missing a prefix and suffix. Consider labelling your data",
+		type: 2
+	},
+	"LARGE_NUMBERS": {
+		location: "input",
+		text: "Your numbers are large. Consider dividing and labelling the unit in the axis",
+		type: 2
 	}
 };
 

@@ -2,10 +2,10 @@
 // to prevent drawing and give error messages.
 
 var map = require("lodash/map");
+var max = require("lodash/max");
 var filter = require("lodash/filter");
 var some = require("lodash/some");
-var sizeof = require("sizeof");
-var MAX_BYTES = 400000; // Max 400k for chartProps
+var catchChartMistakes = require("./catch-chart-mistakes");
 
 /*
 * Return array of input error names
@@ -19,7 +19,7 @@ function makeInputObj(rawInput, status, isValid) {
 function validateDataInput(chartProps) {
 	var input = chartProps.input.raw;
 	var series = chartProps.data;
-	var hasDate = chartProps.scale.hasDate;
+	var scale = chartProps.scale;
 
 	var inputErrors = [];
 
@@ -27,11 +27,6 @@ function validateDataInput(chartProps) {
 	if (input.length === 0) {
 		inputErrors.push("EMPTY");
 		return inputErrors;
-	}
-
-	// Whether the number of bytes in chartProps exceeds our defined maximum
-	if (sizeof.sizeof(chartProps) > MAX_BYTES) {
-		inputErrors.push("TOO_MUCH_DATA");
 	}
 
 	if (series.length && !series[0].values) {
@@ -53,10 +48,12 @@ function validateDataInput(chartProps) {
 		inputErrors.push("UNEVEN_SERIES");
 	}
 
-	// Whether a column has NaN
+	// Whether a column has something that is NaN but is not nothing (blank) or `null`
 	var nanSeries = dataPointTest(
 			series,
-			function(val) { return isNaN(val.value); },
+			function(val) {
+				return (isNaN(val.value) && val.value !== undefined && val.value !== "");
+			},
 			function(nan, vals) { return nan.length > 0;}
 		);
 
@@ -65,17 +62,42 @@ function validateDataInput(chartProps) {
 	}
 
 	// Whether a column that is supposed to be a date is not in fact a date
-	if(hasDate) {
+	if(scale.hasDate) {
 		var badDateSeries = dataPointTest(
 				series,
 				function(val) { return isNaN(val.entry.getTime()); },
 				function(bd,vals) { return bd.length > 0;}
 			);
 
-
 		if (badDateSeries) {
 			inputErrors.push("NOT_DATES");
 		}
+	}
+
+	// Whether a column has NaN
+	var largeNumbers = dataPointTest(
+			series,
+			function(val) { return Math.floor(val.value).toString().length > 4; },
+			function(largeNums, vals) { return largeNums.length > 0;}
+		);
+
+	if (largeNumbers) {
+		inputErrors.push("LARGE_NUMBERS");
+	}
+
+	// Whether the number of bytes in chartProps exceeds our defined maximum
+	if (catchChartMistakes.tooMuchData(chartProps)) {
+		inputErrors.push("TOO_MUCH_DATA");
+	}
+
+	// Whether axis ticks divide evenly
+	if (!catchChartMistakes.axisTicksEven(scale.primaryScale)) {
+		inputErrors.push("UNEVEN_TICKS");
+	}
+
+	// Whether axis is missing pref and suf
+	if (catchChartMistakes.noPrefixSuffix(scale.primaryScale)) {
+		inputErrors.push("NO_PREFIX_SUFFIX");
 	}
 
 	return inputErrors;
