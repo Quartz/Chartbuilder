@@ -232,16 +232,18 @@ mixins = {
 					stagger: true,
 
 					y: function(d) {
-						return d.ypos;
+						return typeof d.ypos === 'undefined' ? 0 : d.ypos;
 					},
 					x: function(d) {
-						return d.xpos || this.x(d.xval) || this.x(0);
+						return typeof d.xpos !== 'undefined' ?  d.xpos :
+						typeof d.xval !== 'undefined' ? this.x(d.xval) :
+						this.x(0);
 					},
 					text: function(d,i) {
 						return d;
 					},
 					dy: function(d) {
-						return d.dy || "1em";
+						return typeof d.dy !== 'undefined' ? d.dy : "1em";
 					},
 					format: function(d,i) {
 						return d;

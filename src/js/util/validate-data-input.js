@@ -18,7 +18,7 @@ function validateDataInput(chartProps) {
 	var input = chartProps.input.raw;
 	var series = chartProps.data;
 	var hasDate = chartProps.scale.hasDate;
-	var type = charProps.input.type;
+	var type = chartProps.input.type;
 
 	var inputErrors = [];
 
