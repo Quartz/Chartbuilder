@@ -363,21 +363,7 @@ var cb_xy = d4.chart("cb-xy", function() {
 		.using("x-axis-label", function(label) {
 			label.afterRender(function(curLabel, data, chartArea){
 				var first_tick = this.container.selectAll(".xAxis .tick")[0][0]
-				// console.log(curLabel.x(), data, chartArea)
 				chartArea.selectAll(".xAxislabel").attr("dx",first_tick.getBoundingClientRect().width/-2)
-
-				// var minX = Infinity;
-				// var leftMostTick;
-
-				// this.container.selectAll(".xAxis .tick").each(function(){
-				// 	var curX = help.transform_coords(this.getAttribute("transform"))[0]
-				// 	if (curX < min) {
-				// 		min = curX;
-				// 		leftMostTick = this
-				// 	}
-				// })
-				// // console.log(curLabel.x(), data, chartArea)
-				// chartArea.selectAll(".xAxislabel").attr("dx",leftMostTick.getBoundingClientRect().width/-2)
 			})
 		})
 		.y(function(y){

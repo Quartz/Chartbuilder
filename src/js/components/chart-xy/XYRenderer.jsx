@@ -761,7 +761,6 @@ function drawXY(el, state) {
 		.using("x-axis-label", function(label) {
 			if(numericSettings) {
 				label.beforeRender(function(data){
-					console.log(state)
 					return [{
 						ypos: state.dimensions.height - state.padding.bottom + state.styleConfig.overtick_bottom,
 						xval: scale.numericSettings.domain[0],
