@@ -120,7 +120,7 @@ var DataInput = React.createClass({
 			<div className={this.props.className}
 				onDragOver={this._toggleDropState}
 			>
-				<label>if you have a json file to load, drop that here</label>
+				<label>If you have a json file to load, drop that here</label>
 				<TextArea
 					value={this.props.chartProps.input.raw}
 					onChange={this._handleReparseUpdate.bind(null, "input")}
