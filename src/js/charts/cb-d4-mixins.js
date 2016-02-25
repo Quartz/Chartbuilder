@@ -219,6 +219,46 @@ mixins = {
 				}
 			};
 		})
+	},
+	"x_axis_label": {
+		"name": "x-axis-label",
+		"feature": d4.feature("x-axis-label", function(name) {
+			return {
+				accessors: {
+					classes: 'x-axis-label',
+
+					key: d4.functor(d4.defaultKey),
+
+					stagger: true,
+
+					y: function(d) {
+						return d.ypos;
+					},
+					x: function(d) {
+						return d.xpos || this.x(d.xval) || this.x(0);
+					},
+					text: function(d,i) {
+						return d;
+					},
+					dy: function(d) {
+						return d.dy || "1em";
+					},
+					format: function(d,i) {
+						return d;
+					}
+
+				},
+				render: function(scope, data, selection) {
+					var text = d4.appendOnce(selection, "text.xAxislabel")
+						.data(data);
+
+					text.text(function(d) { return d.label || d.name; })
+						.attr('y',d4.functor(scope.accessors.y).bind(this))
+						.attr('x',d4.functor(scope.accessors.x).bind(this))
+						.attr('dy',d4.functor(scope.accessors.dy).bind(this));
+				}
+			}
+		})
 	}
 };
 

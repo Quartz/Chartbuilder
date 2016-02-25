@@ -58,7 +58,8 @@ var mixin = [
 		"name": "other-circles",
 		"feature": d4.features.circleSeries
 	},
-	cb_mixins.series_label
+	cb_mixins.series_label,
+	cb_mixins.x_axis_label
 ];
 
 var locationKey = {
@@ -350,7 +351,34 @@ var cb_xy = d4.chart("cb-xy", function() {
 				var coords = help.transformCoords(axisNode.attr("transform"));
 				coords[1] = coords[1] + xy_config.xAxisShift;
 				axisNode.attr("transform","translate(" + coords + ")");
+				
+
+
+				
+
+				
+
 			});
+		})
+		.using("x-axis-label", function(label) {
+			label.afterRender(function(curLabel, data, chartArea){
+				var first_tick = this.container.selectAll(".xAxis .tick")[0][0]
+				// console.log(curLabel.x(), data, chartArea)
+				chartArea.selectAll(".xAxislabel").attr("dx",first_tick.getBoundingClientRect().width/-2)
+
+				// var minX = Infinity;
+				// var leftMostTick;
+
+				// this.container.selectAll(".xAxis .tick").each(function(){
+				// 	var curX = help.transform_coords(this.getAttribute("transform"))[0]
+				// 	if (curX < min) {
+				// 		min = curX;
+				// 		leftMostTick = this
+				// 	}
+				// })
+				// // console.log(curLabel.x(), data, chartArea)
+				// chartArea.selectAll(".xAxislabel").attr("dx",leftMostTick.getBoundingClientRect().width/-2)
+			})
 		})
 		.y(function(y){
 			y.clamp(false);

@@ -752,10 +752,25 @@ function drawXY(el, state) {
 			if(numericSettings) {
 				axis.tickValues(numericSettings.tickValues)
 				axis.tickFormat(function(d,i) {
-					return (i == 0 ? numericSettings.prefix : "") +  help.roundToPrecision(d, numericSettings.precision) + (i == 0 ? "\n" + numericSettings.suffix : "")
+					return (i == 0 ? numericSettings.prefix : "") +  help.roundToPrecision(d, numericSettings.precision);
 				})
+
 			}
 
+		})
+		.using("x-axis-label", function(label) {
+			if(numericSettings) {
+				label.beforeRender(function(data){
+					console.log(state)
+					return [{
+						ypos: state.dimensions.height - state.padding.bottom + state.styleConfig.overtick_bottom,
+						xval: scale.numericSettings.domain[0],
+						label: numericSettings.suffix,
+						dy: "1.6em"
+					}]
+				})			
+			}
+			
 		});
 
 		if (chartProps._numSecondaryAxis > 0) {
