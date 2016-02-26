@@ -140,7 +140,7 @@ var Chartbuilder = React.createClass({
 			mobileOverrides = null;
 		}
 
-		var editorSteps = Editor.defaultProps.numSteps;
+		var editorSteps = Editor.defaultProps.numSteps + (this.state.chartProps.hasDate || this.state.chartProps.isNumeric ? 1 : 0);
 		var mobilePreview;
 
 		// Mobile preview of the chart, if told to render
