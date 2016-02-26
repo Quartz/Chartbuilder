@@ -240,7 +240,7 @@ mixins = {
 						this.x(0);
 					},
 					text: function(d,i) {
-						return d;
+						return d.text;
 					},
 					dy: function(d) {
 						return typeof d.dy !== 'undefined' ? d.dy : "1em";
@@ -254,7 +254,7 @@ mixins = {
 					var text = d4.appendOnce(selection, "text.xAxislabel")
 						.data(data);
 
-					text.text(function(d) { return d.label || d.name; })
+					text.text(d4.functor(scope.accessors.text).bind(this))
 						.attr('y',d4.functor(scope.accessors.y).bind(this))
 						.attr('x',d4.functor(scope.accessors.x).bind(this))
 						.attr('dy',d4.functor(scope.accessors.dy).bind(this));

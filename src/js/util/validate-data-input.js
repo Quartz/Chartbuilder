@@ -5,6 +5,14 @@ var map = require("lodash/map");
 var filter = require("lodash/filter");
 var some = require("lodash/some");
 var sizeof = require("sizeof");
+var unique = require("lodash").uniq;
+
+types = {
+	"number": "numeric",
+	"object": "date",
+	"string": "ordinal"
+};
+
 var MAX_BYTES = 400000; // Max 400k for chartProps
 
 function makeInputObj(rawInput, status, isValid, type) {
@@ -18,6 +26,7 @@ function validateDataInput(chartProps) {
 	var input = chartProps.input.raw;
 	var series = chartProps.data;
 	var hasDate = chartProps.scale.hasDate;
+	var isNumeric = chartProps.scale.isNumeric;
 	var type = chartProps.input.type;
 
 	var inputErrors = [];
@@ -63,11 +72,32 @@ function validateDataInput(chartProps) {
 		inputErrors.push("NAN_VALUES");
 	}
 
-	// Whether a column that is supposed to be a date is not in fact a date
-	if(hasDate) {
+	// Are there multiple types of axis entries
+	var entryTypes = unique(series[0].values.map(function(d){return typeof d.entry;}));
+	if(entryTypes.length > 1 && !chartProps.input.type) {
+		inputErrors.push("CANT_AUTO_TYPE")
+	}
+	
+
+	//Whether an entry column that is supposed to be a Number is not in fact a number
+	if(isNumeric || chartProps.input.type == "numeric") {
+		var badNumSeries = dataPointTest(
+				series,
+				function(val) { return isNaN(val.entry); },
+				function(bn,vals) { return bn.length > 0;}
+			);
+
+
+		if (badNumSeries) {
+			inputErrors.push("NAN_VALUES");
+		}
+	}
+
+	// Whether an entry column that is supposed to be a date is not in fact a date
+	if(hasDate || chartProps.input.type == "date") {
 		var badDateSeries = dataPointTest(
 				series,
-				function(val) { return isNaN(val.entry.getTime()); },
+				function(val) { return !val.entry.getTime || isNaN(val.entry.getTime()); },
 				function(bd,vals) { return bd.length > 0;}
 			);
 
@@ -76,6 +106,10 @@ function validateDataInput(chartProps) {
 			inputErrors.push("NOT_DATES");
 		}
 	}
+
+	// if the type is supposed to be date but isn't date
+
+	// if the type is supposed to be numeric but isn't number
 
 	return inputErrors;
 

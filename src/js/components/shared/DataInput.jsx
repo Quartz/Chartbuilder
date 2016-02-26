@@ -47,6 +47,7 @@ var DataInput = React.createClass({
 		var input;
 		if(k == "input") {
 			input = update(this.props.chartProps.input, { $merge: { raw: v }});
+			input.type = undefined;
 			ChartViewActions.updateInput(k, input);
 		}
 		else if (k == "type") {

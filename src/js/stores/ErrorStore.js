@@ -75,6 +75,7 @@ function registeredCallback(payload) {
 	switch(action.eventName) {
 		/* * Data input updated */
 		case "update-data-input":
+		case "update-and-reparse":
 
 			Dispatcher.waitFor([ChartPropertiesStore.dispatchToken]);
 			chartProps = ChartPropertiesStore.getAll();

@@ -759,16 +759,14 @@ function drawXY(el, state) {
 
 		})
 		.using("x-axis-label", function(label) {
-			if(numericSettings) {
-				label.beforeRender(function(data){
+			label.beforeRender(function(data){
 					return [{
-						ypos: state.dimensions.height - state.padding.bottom + state.styleConfig.overtick_bottom,
-						xval: scale.numericSettings.domain[0],
-						label: numericSettings.suffix,
+						ypos: numericSettings ? state.dimensions.height - state.padding.bottom + state.styleConfig.overtick_bottom : 0,
+						xval: numericSettings ? scale.numericSettings.domain[0] : 0,
+						text: numericSettings ? numericSettings.suffix : "",
 						dy: "1.6em"
 					}]
 				})			
-			}
 			
 		});
 

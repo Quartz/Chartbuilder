@@ -67,7 +67,7 @@ function parseDelimInput(input, opts) {
 	var index_types = unique(all_index_types);
 
 	if(index_types.length !== 1 && !type) {
-		parseErrors.push("CANT_AUTO_TYPE")
+
 	}
 	else {
 		hasDate = type ? type == "date" : index_types[0] === "date";
@@ -96,23 +96,20 @@ function parseValue(val, _stripChars, decimal) {
 }
 
 function parseKeyColumn(entry, type) {
+	
+	if (type == "ordinal") {
+		return {type: "string", val: entry};
+	}
+
 	var num = Number(entry);
 	if (num || type == "numeric") {
-		if(!num) {
-			parseErrors.push("NAN_VALUES")
-		}
 		return {type: "number", val: num};
 	}
 	else {
 		var date = new Date.create(entry);
-
-		if(date || type == "date") {
-			if(!date) {
-				parseErrors.push("NOT_DATES")
-			}
+		if(!isNaN(date) || type == "date") {
 			return {type: "date", val: date};
 		}
-
 		return {type: "string", val: entry};
 	}
 }

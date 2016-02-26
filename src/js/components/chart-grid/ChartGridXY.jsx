@@ -268,16 +268,15 @@ function drawXYChartGrid(el, state) {
 			yAxisUsing.call(this, "primary", axis, state);
 		})
 		.using("x-axis-label", function(label) {
-			if(numericSettings) {
-				label.beforeRender(function(data){
-					return [{
-						ypos: state.dimensions.height - state.padding.bottom + state.styleConfig.overtick_bottom,
-						xval: scale.numericSettings.domain[0],
-						label: numericSettings.suffix,
-						dy: 0
-					}]
-				})			
-			}
+			label.beforeRender(function(data){
+
+				return [{
+					ypos: numericSettings ? state.dimensions.height - state.padding.bottom + state.styleConfig.overtick_bottom : 0,
+					xval: numericSettings ? scale.numericSettings.domain[0] : 0,
+					text: numericSettings ? numericSettings.suffix : "",
+					dy: state.grid.rows == 1 ? "1.2em" : 0
+				}]
+			})			
 			
 		})
 		.using("xAxis", function(axis) {
@@ -327,14 +326,12 @@ function drawXYChartGrid(el, state) {
 			axis.innerTickSize(styleConfig.overtick_bottom);
 		})
 		.using("x-axis-label", function(label) {
-			if(numericSettings) {
-				label.beforeRender(function(data){
-					return [{
-						label: "",
-						dy: 0
-					}]
-				})			
-			}
+			label.beforeRender(function(data){
+				return [{
+					text: "",
+					dy: 0
+				}]
+			})			
 			
 		})
 		chart.outerWidth(state.dimensions.width);
