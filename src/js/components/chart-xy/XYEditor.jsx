@@ -135,7 +135,7 @@ var XYEditor = React.createClass({
 					key="xScale"
 					scale={chartProps.scale}
 					stepNumber="5"
-					onUpdate={this._handlePropUpdate.bind(null, "scale")}
+					onUpdate={this._handlePropAndReparse.bind(null, "scale")}
 				/>
 			);
 		} else if (chartProps.scale.isNumeric) {

@@ -57,8 +57,10 @@ function validateDataInput(chartProps) {
 	// Whether a column has NaN
 	var nanSeries = dataPointTest(
 			series,
-			function(val) { return isNaN(val.value); },
-			function(nan, vals) { return nan.length > 0;}
+			function(val) {
+				return (isNaN(val.value) && val.value !== undefined && val.value !== "");
+			},
+			function(nan, vals) {return nan.length > 0;}
 		);
 
 	if (nanSeries) {
@@ -95,6 +97,12 @@ function validateDataInput(chartProps) {
 
 		if (badDateSeries) {
 			inputErrors.push("NOT_DATES");
+		}
+
+		var tz_pattern = /([+-]\d\d:*\d\d)/gi;
+		var found_timezones = input.match(tz_pattern);
+		if(found_timezones && found_timezones.length != series[0].values.length) {
+			inputErrors.push("UNEVEN_TZ");
 		}
 	}
 

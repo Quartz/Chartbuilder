@@ -5,6 +5,7 @@ var d3 = require("d3");
 var each = require("lodash/each");
 require("sugar-date");
 var parseUtils = require("./parse-utils");
+var help = require("./helper.js");
 var unique = require("lodash/uniq");
 var separators;
 
@@ -34,6 +35,8 @@ function parseDelimInput(input, opts) {
 	delimiter = opts.delimiter || parseUtils.detectDelimiter(input);
 	type = opts.type;
 
+	opts.inputTZ = opts.inputTZ || "Z";
+
 	parseErrors = [];
 	// create regex of special characters we want to strip out as well as our
 	// computed locale-specific thousands separator.
@@ -46,7 +49,7 @@ function parseDelimInput(input, opts) {
 	var dsv = d3.dsv(delimiter, "text/plain");
 	var all_index_types = [];
 
-	var casted_data = cast_data(input, type, columnNames, stripCharsRegex, delimiter);
+	var casted_data = cast_data(input, type, columnNames, stripCharsRegex, delimiter, opts);
 	var data = casted_data.data;
 	all_index_types = casted_data.indexes;
 	var all_entry_values = casted_data.entries;
@@ -78,16 +81,30 @@ function parseDelimInput(input, opts) {
 	};
 }
 
-function cast_data(input, type, columnNames, stripCharsRegex, delimiter) {
+function cast_data(input, type, columnNames, stripCharsRegex, delimiter, opts) {
 	var dsv = d3.dsv(delimiter, "text/plain");
 	var all_index_types = [];
 	var all_entry_values = [];
-	var data = dsv.parse(input, function(d) {
+
+	var tz_pattern = /([+-]\d\d:*\d\d)/gi;
+	var found_timezones = input.match(tz_pattern);
+
+	var data = dsv.parse(input, function(d,ii) {
+		var curOffset = Date.create().getTimezoneOffset();
+		var offset = opts.inputTZ !== null ? -help.TZOffsetToMinutes(opts.inputTZ) : curOffset;
 		each(columnNames, function(column, i) {
 			if (i === 0) {
 				//first column
 
 				var parsed = parseKeyColumn(d[column],type);
+
+				if(parsed.type == "date") {
+					//apply a timezone to the data
+					if(!found_timezones) {
+						parsed.val = parsed.val.clone().addMinutes(offset-curOffset);
+					}
+				}
+
 				all_index_types.push(parsed.type);
 				all_entry_values.push(parsed.val);
 				d[column] = parsed.val;
@@ -150,5 +167,10 @@ function parseKeyColumn(entry, type) {
 	}
 }
 
-module.exports = parseDelimInput;
+module.exports = {
+		parser: parseDelimInput,
+		_cast_data: cast_data,
+		_parseKeyColumn: parseKeyColumn,
+		_parseValue: parseValue
+	}
 

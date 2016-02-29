@@ -8,10 +8,30 @@ var update = require("react-addons-update");
 
 var chartbuilderUI = require("chartbuilder-ui");
 var Dropdown = chartbuilderUI.Dropdown;
+var ButtonGroup = chartbuilderUI.ButtonGroup;
 
 var dateParsers = require("../../util/process-dates").dateParsers;
 
 var now = new Date();
+var now_offset = now.getUTCOffset().split("");
+now_offset.splice(3,0,":");
+var now_offset = now_offset.join("");
+
+var tz_text = "";
+var curMonth = now.getMonth();
+if(curMonth >= 3 && curMonth <= 11) {
+	tz_text += "Many countries in the northern hemisphere are observing day light savings time right now" + (curMonth == 3 ? " or will be soon" : ". ");
+}
+else {
+	tz_text += "Most countries in the northern hemisphere are on standard time right now. "
+}
+
+if(curMonth >= 9 || curMonth <= 4) {
+	tz_text += "Some countries in the southern hemisphere are observing day light savings time right now" + (curMonth == 9 ? "or will be soon." : ".");
+}
+else {
+	tz_text += "Most countries in the southern hemisphere are" + (curMonth == 3 ? " also " : " ") + "on standard time right now."
+}
 
 /**
  * ### Date scale settings for a chart editor
@@ -70,7 +90,64 @@ var DateScaleSettings = React.createClass({
 			{ value: "M", content: dateParsers["M"](now) },
 			{ value: "hmm", content: dateParsers["hmm"](now) },
 			{ value: "h", content: dateParsers["h"](now) }
+		],
+
+		timeDisplayOptions: [
+			{ title: "As entered", content: "As entered", value: "as-entered" },
+			{ title: "Localized", content: "Localized", value: "localized" }
+		],
+
+		timeZoneOptions: [
+			{ value: now_offset, content: "The same as your timezone: " + now_offset, custom: true},
+			{ value: "-05:00", content: "-05:00 New York EST / Chicago CDT"},
+			{ value: "Z",      content: "+00:00 London GMT "},
+			{ value: "+08:00", content: "+08:00 Beijing"},
+			{ value: "+09:00", content: "+09:00 Tokyo"},
+			{ value: "+01:00", content: "+01:00 Paris CET / London BST"},
+			{ value: "+02:00", content: "+02:00 Tel Aviv / Paris CEST"},
+			{ value: "+03:00", content: "+03:00 Moscow / Tel Aviv IDT"},
+			// { value: "+03:30", content: "+03:30 Tehran"},
+			{ value: "+04:00", content: "+04:00 Dubai"},
+			// { value: "+04:30", content: "+04:30 Kabul"},
+			{ value: "+05:00", content: "+05:00 Karachi"},
+			// { value: "+05:30", content: "+05:00 Delhi"},
+			// { value: "+05:45", content: "+05:45 Kathmandu"},
+			{ value: "+06:00", content: "+06:00 Dhaka"},
+			// { value: "+06:30", content: "+06:30 Yangon"},
+			{ value: "+07:00", content: "+07:00 Bangkok"},
+			// { value: "+08:30", content: "+08:30 Pyongyang"},
+			// { value: "+09:30", content: "+09:30 Adelaide"},
+			{ value: "+10:00", content: "+10:00 Sydney"},
+			{ value: "+11:00", content: "+11:00 Sydney AEDT"},
+			{ value: "+12:00", content: "+12:00 Auckland"},
+			{ value: "+13:00", content: "+13:00 Auckland NZDT"},
+			{ value: "+14:00", content: "+14:00"},
+			{ value: "-01:00", content: "-01:00"},
+			{ value: "-02:00", content: "-02:00"},
+			{ value: "-03:00", content: "-03:00 Buenos Aires / Halifax ADT"},
+			// { value: "-03:30", content: "-03:30 St. John's"},
+			{ value: "-04:00", content: "-04:00 Halifax"},
+			// { value: "-04:30", content: "-04:30 Caracas"},
+			{ value: "-06:00", content: "-06:00 Chicago / Denver MDT"},
+			{ value: "-07:00", content: "-07:00 Denver / Los Angeles PDT"},
+			{ value: "-08:00", content: "-08:00 Los Angeles / Anchorage AKDT"},
+			{ value: "-09:00", content: "-09:00 Anchorage"},
+			{ value: "-10:00", content: "-10:00 Honolulu"},
+			{ value: "-11:00", content: "-11:00"},
+			{ value: "-12:00", content: "-12:00"}
 		]
+	},
+
+	componentWillMount: function() {
+		if (this.props.scale.dateSettings.inputTZ === null) {
+			//if there isn't a inputTZ specified use the creator's machine's
+			this.props.scale.dateSettings.inputTZ = now_offset;
+			this._handleDateScaleUpdate.bind(null, "inputTZ");
+		}
+	},
+
+	localizeTimeZoneOptions: function(options) {
+		return options.filter(function(d){return (d.value != now_offset) || d.custom});
 	},
 
 	_handleDateScaleUpdate: function(k, v) {
@@ -80,11 +157,37 @@ var DateScaleSettings = React.createClass({
 		var scale = update(this.props.scale, { $merge: {
 			dateSettings: dateSettings
 		}});
+
 		this.props.onUpdate(scale);
 	},
 
 	render: function() {
 		var dateSettings = this.props.scale.dateSettings;
+
+		var showTimezoneSettings = dateSettings.dateFormat == "hmm" || dateSettings.dateFormat == "h" || dateSettings.dateFormat == "auto"
+
+		var timezoneSettings = showTimezoneSettings ? (
+			<div>
+				<div className="labelled-dropdown">
+					<label className="editor-label date-setting">The timezone of your data is</label>
+					<Dropdown
+						onChange={this._handleDateScaleUpdate.bind(null, "inputTZ")}
+						options={this.localizeTimeZoneOptions(this._config.timeZoneOptions)}
+						value={dateSettings.inputTZ}
+					/>
+				</div>
+				<p>{tz_text}</p>
+				<div className="labelled-dropdown">
+					<label className="editor-label date-setting">How should times appear?</label>
+					<ButtonGroup
+						className="button-group-wrapper"
+						onClick={this._handleDateScaleUpdate.bind(null, "displayTZ")}
+						buttons={this._config.timeDisplayOptions}
+						value={dateSettings.displayTZ}
+					/>
+				</div>
+			</div>
+			) : null
 
 		return (
 			<div className="scale-options scale-options-date">
@@ -108,6 +211,7 @@ var DateScaleSettings = React.createClass({
 						value={dateSettings.dateFormat}
 					/>
 				</div>
+				{timezoneSettings}
 			</div>
 		)
 	}

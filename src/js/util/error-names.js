@@ -48,6 +48,11 @@ var error_names = {
 		location: "input",
 		text: "The type of information in the first column of your data cannot be automatically determined. Please seleect one below.",
 		type: 2
+	},
+	"UNEVEN_TZ": {
+		location: "input",
+		text: "Some of your dates are specified with timezones and some of them are not. This may cause erroneous plotting.",
+		type: 2
 	}
 };
 
