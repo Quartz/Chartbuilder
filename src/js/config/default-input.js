@@ -163,4 +163,4 @@ var numeric = [
 "32	0.066388111	0.946670922"
 ].join("\n");
 
-module.exports = numeric;
+module.exports = default_input;
