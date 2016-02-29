@@ -64,7 +64,7 @@ test("validate data input", function(t) {
 		data: parsed.series,
 		scale: { hasDate: parsed.hasDate }
 	});
-	t.deepEqual(validateResult, ["NOT_DATES"], "date column with non-date returns NOT_DATES");
+	t.deepEqual(validateResult, ["CANT_AUTO_TYPE", "NOT_DATES"], "date column with non-date returns NOT_DATES");
 
 	parsed = parseDataBySeries(testInput.multiple_errors, { checkForDate: true} );
 	validateResult = validateDataInput({
@@ -72,5 +72,7 @@ test("validate data input", function(t) {
 		data: parsed.series,
 		scale: { hasDate: parsed.hasDate }
 	});
-	t.deepEqual(validateResult, ["UNEVEN_SERIES", "NAN_VALUES", "NOT_DATES"], "input with several errors returns them all");
+	t.deepEqual(validateResult, ["UNEVEN_SERIES", "NAN_VALUES", "CANT_AUTO_TYPE", "NOT_DATES"], "input with several errors returns them all");
+
+	t.end();
 });

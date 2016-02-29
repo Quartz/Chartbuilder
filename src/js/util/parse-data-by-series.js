@@ -15,18 +15,23 @@ function dataBySeries(input, opts) {
 	opts = opts || {};
 
 	var parsedInput = parseDelimInput(input, {
-		checkForDate: opts.checkForDate
+		checkForDate: opts.checkForDate,
+		type: opts.type
 	});
+
 	var columnNames = parsedInput.columnNames;
 	var keyColumn = columnNames.shift();
 
 	if (columnNames.length === 0) {
-		series = parsedInput.data.map(function(d) {
-			return {
-				name: keyColumn,
-				value: d[keyColumn]
-			};
-		});
+		series = [{
+			name: keyColumn,
+			values: parsedInput.data.map(function(d) {
+				return {
+					name: keyColumn,
+					value: d[keyColumn]
+				};
+			})
+		}];
 	} else {
 		series = columnNames.map(function(header, i) {
 			return {
@@ -44,8 +49,9 @@ function dataBySeries(input, opts) {
 
 	return {
 		series: series,
-		input: { raw: input },
-		hasDate: parsedInput.hasDate
+		input: { raw: input, type: opts.type },
+		hasDate: parsedInput.hasDate && (!opts.type || opts.type == "date"),
+		isNumeric: parsedInput.isNumeric && (!opts.type || opts.type == "numeric")
 	};
 }
 

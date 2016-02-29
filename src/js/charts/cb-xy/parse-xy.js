@@ -23,7 +23,7 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 	// this can probably be avoided by applying new settings differently
 	var chartProps = JSON.parse(JSON.stringify(_chartProps));
 
-	var bySeries = dataBySeries(chartProps.input.raw, { checkForDate: true });
+	var bySeries = dataBySeries(chartProps.input.raw, { checkForDate: true, type: chartProps.input.type });
 	var labels = chartProps._annotations.labels;
 	var allColumn = true;
 	// check if either scale contains columns, as we'll need to zero the axis
@@ -179,6 +179,65 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 		scale.dateSettings = chartProps.scale.dateSettings || clone(config.defaultProps.chartProps.scale.dateSettings);
 	}
 
+	if (bySeries.isNumeric) {
+		scale.isNumeric = bySeries.isNumeric;
+		_computed = {
+			//TODO look at entries for all series not just the first
+			data: bySeries.series[0].values.map(function(d){return +d.entry}),
+			hasColumn: false,
+			count: 0
+		};
+
+		var currScale = chartProps.scale.numericSettings || clone(config.defaultProps.chartProps.scale.numericSettings);
+		var domain = help.computeScaleDomain(currScale, _computed.data, {
+			nice: true,
+			minZero: false
+		});
+
+		assign(currScale, domain);
+
+		currScale.ticks = currScale.ticks || help.suggestTickNum(currScale.domain);
+
+		var ticks = currScale.ticks;
+		currScale.tickValues = help.exactTicks(currScale.domain, ticks);
+
+		each(currScale.tickValues, function(v) {
+			var tickPrecision = help.precision(Math.round(v*factor)/factor);
+			if (tickPrecision > currScale.precision) {
+				currScale.precision = tickPrecision;
+			}
+		});
+
+		scale.numericSettings = currScale;
+
+		if (chartProps.mobile) {
+			if (chartProps.mobile.scale) {
+				var currMobile = chartProps.mobile.scale.numericSettings;
+				if (currMobile) {
+					var domain = help.computeScaleDomain(currMobile, _computed.data, {
+						nice: true,
+						minZero: false
+					});
+					assign(currMobile, domain);
+
+					var ticks = currMobile.ticks;
+					currMobile.tickValues = help.exactTicks(currMobile.domain, ticks);
+					each(currMobile.tickValues, function(v) {
+						var tickPrecision = help.precision(Math.round(v*factor)/factor);
+						if (tickPrecision > currMobile.precision) {
+							currMobile.precision = tickPrecision;
+						}
+					});
+				}
+				chartProps.mobile.scale.numericSettings = currMobile;
+			}
+		} else {
+			chartProps.mobile = {};
+		}
+
+
+	}
+
 	var newChartProps = assign(chartProps, {
 		chartSettings: chartSettings,
 		scale: scale,
@@ -194,5 +253,6 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 	}
 
 }
+
 
 module.exports = parseXY;

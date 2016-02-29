@@ -26,7 +26,7 @@ var error_names = {
 	},
 	"TOO_FEW_SERIES": {
 		location: "input",
-		text: "You have fewer than 2 rows, which is fewer than Chartbuilder supports.",
+		text: "You have fewer than 2 columns, which is fewer than Chartbuilder supports.",
 		type: 3
 	},
 	"NAN_VALUES": {
@@ -42,6 +42,11 @@ var error_names = {
 	"TOO_MUCH_DATA": {
 		location: "input",
 		text: "You have more data than can be rendered or saved correctly",
+		type: 2
+	},
+	"CANT_AUTO_TYPE": {
+		location: "input",
+		text: "The type of information in the first column of your data cannot be automatically determined. Please seleect one below.",
 		type: 2
 	}
 };

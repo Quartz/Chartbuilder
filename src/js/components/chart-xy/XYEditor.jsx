@@ -19,6 +19,7 @@ var dateParsers = require("../../util/process-dates").dateParsers;
 /* Shared Chartbuilder components */
 var DataInput = require("../shared/DataInput.jsx");
 var DateScaleSettings = require("../shared/DateScaleSettings.jsx");
+var NumericScaleSettings = require("../shared/NumericScaleSettings.jsx");
 var XY_yScaleSettings = require("../shared/XY_yScaleSettings.jsx");
 
 /* Chartbuilder UI components */
@@ -127,7 +128,6 @@ var XYEditor = React.createClass({
 				/>
 			);
 		}
-
 		/* Add date settings if we are parsing a date */
 		if (chartProps.scale.hasDate) {
 			scaleSettings.push(
@@ -136,6 +136,19 @@ var XYEditor = React.createClass({
 					scale={chartProps.scale}
 					stepNumber="5"
 					onUpdate={this._handlePropUpdate.bind(null, "scale")}
+				/>
+			);
+		} else if (chartProps.scale.isNumeric) {
+			scaleSettings.push(
+				<NumericScaleSettings
+					scale={chartProps.scale}
+					key="xScale"
+					onUpdate={this._handlePropAndReparse.bind(null, "scale")}
+					onReset={this._handlePropAndReparse.bind(null, "scale")}
+					className="scale-options"
+					id="numericSettings"
+					name="Bottom"
+					stepNumber="5"
 				/>
 			);
 		}

@@ -12,6 +12,7 @@ var validateChartModel = require("../../util/validate-chart-model");
 var chartbuilderUI = require("chartbuilder-ui");
 var TextArea = chartbuilderUI.TextArea;
 var Alert = chartbuilderUI.Alert;
+var DataSeriesTypeSettings = require("../shared/DataSeriesTypeSettings.jsx");
 var ErrorMessage = require("../shared/ErrorMessage.jsx");
 
 /**
@@ -43,6 +44,18 @@ var DataInput = React.createClass({
 
 	_handleReparseUpdate: function(k, v) {
 		// reset the raw input value
+		var input;
+
+		if(k == "input") {
+			input = update(this.props.chartProps.input, { $merge: {
+				raw: v,
+				type: undefined
+			}});
+			ChartViewActions.updateInput(k, input);
+		} else if (k == "type") {
+			input = update(this.props.chartProps.input, { $merge: { type: v.type }});
+			ChartViewActions.updateAndReparse("input", input);
+		}
 		var newInput = { raw: v };
 		ChartViewActions.updateInput(k, newInput);
 	},
@@ -128,6 +141,10 @@ var DataInput = React.createClass({
 					defaultValue={this.props.chartProps.input.raw}
 				/>
 				{errors}
+				<DataSeriesTypeSettings
+					onUpdate={this._handleReparseUpdate.bind(null, "type")}
+					chartProps={this.props.chartProps}
+				/>
 			</div>
 		);
 	},
