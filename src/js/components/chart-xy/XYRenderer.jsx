@@ -744,9 +744,18 @@ function drawXY(el, state) {
 			});
 
 			if (dateSettings) {
+				var curOffset = Date.create().getTimezoneOffset()
 				axis.tickValues(dateSettings.dateTicks);
+				var displayTZ = state.chartProps.scale.dateSettings.displayTZ;
+				var inputOffset = state.chartProps.scale.dateSettings.inputTZ ? -help.TZOffsetToMinutes(state.chartProps.scale.dateSettings.inputTZ) : curOffset;
+				var timeOffset = 0;
 				axis.tickFormat(function(d,i) {
-					return dateSettings.dateFormatter(d,i);
+
+					if(displayTZ === "as-entered") {
+						timeOffset = curOffset - inputOffset;
+					}
+
+					return dateSettings.dateFormatter(d.clone(),i,timeOffset);
 				});
 			}
 

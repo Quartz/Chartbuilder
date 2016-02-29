@@ -215,29 +215,16 @@ function merge_or_apply(defaults, source) {
 	}, {});
 }
 
+/**
+ * Given a the domain of a scale suggest the most numerous number 
+ * of round number ticks that it cold be divided into while still containing
+ values evenly divisible by 1, 2, 2.5, 5, 10, or 25.
+ * @param {array} domain - An array of two number like objects
+ * @returns {integer} - Result is a single integer representing a nice number of ticks to use
+ * @static
+ * @memberof helper
+*/
 function suggest_tick_num(domain) {
-	// function axis_ticks_even(scale) {
-	// 	var range = (scale.domain[1] - scale.domain[0]);
-	// 	var minimum = range / MAX_TICKS;
-	// 	var digits = Math.floor(range).toString().length;
-	// 	var multiplier = Math.pow(10, (digits - 2));
-
-	// 	var acceptable_intervals = reduce(INTERVAL_BASE_VALS, function(prev, curr) {
-	// 		var mult = curr * multiplier;
-
-	// 		if (mult >= minimum) {
-	// 			prev = prev.concat([mult]);
-	// 		}
-
-	// 		return prev;
-	// 	}, []);
-
-	// 	var are_ticks_even = some(acceptable_intervals, function(inter) {
-	// 		return all_modulo(scale.tickValues, inter);
-	// 	});
-
-	// 	return are_ticks_even;
-	// }
 	var MAX_TICKS = 10;
 	var INTERVAL_BASE_VALS = [1, 2, 2.5, 5, 10, 25];
 	var range = Math.abs(domain[0] - domain[1])
@@ -266,6 +253,34 @@ function suggest_tick_num(domain) {
 }
 
 /**
+ * Given a timezone offset in an hour:minute format and return the equivalent
+ * number of minutes as a number
+ * only exist in the source object.
+ * @param {object} offset - A string in a hh:mm format or "Z" for no offset
+ * @returns {number} - Number of minutes
+ * @static
+ * @memberof helper
+*/
+function tz_offset_to_minutes(offset) {
+	if (offset == "Z") {
+		return 0
+	}
+
+	var offset = offset.split(":")
+
+	if(offset.length == 1) {
+		offset = offset[0]
+		split_loc = offset.length - 2
+		offset = [offset.substring(0, split_loc), offset.substring(split_loc)]
+	}
+	sign = offset[0].indexOf("-") > -1 ? -1 : 1
+
+	offset = offset.map(parseFloat)
+
+	return (offset[0]*60) + (sign * offset[1])
+}
+
+/**
  * Helper functions!
  * @name helper
  */
@@ -277,7 +292,8 @@ var helper = {
 	precision: precision,
 	transformCoords: transform_coords,
 	mergeOrApply: merge_or_apply,
-	suggestTickNum: suggest_tick_num
+	suggestTickNum: suggest_tick_num,
+	TZOffsetToMinutes: tz_offset_to_minutes
 };
 
 module.exports = helper;

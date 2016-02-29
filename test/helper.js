@@ -90,3 +90,17 @@ test("helper: precision of NaN is 0", function(t) {
 	t.equal(p(0 / 0), 0);
 	t.end();
 });
+
+test("helper: convert timezone strings", function(t) {
+	t.plan(8);
+	var p = help.TZOffsetToMinutes
+	t.equal(p("Z"),0,"Z timezone returns offset of 0 mintues")
+	t.equal(p("-00:00"), 0, "+0000 tz offset returns 0 minutes")
+	t.equal(p("+00:00"), 0, "+0000 tz offset returns 0 minutes")
+	t.equal(p("-08:00"), -480, "-0800 tz offset returns -480 minutes")
+	t.equal(p("+05:00"), 300, "+0500 tz offset returns 600 minutes")
+	t.equal(p("+04:30"), 270, "+0430 tz offset returns 270 minutes")
+	t.equal(p("-04:30"), -270, "-0430 tz offset returns -270 minutes")
+	t.equal(p("+10:00"), 600, "+1030 tz offset returns 600 minutes")
+	t.end();
+})

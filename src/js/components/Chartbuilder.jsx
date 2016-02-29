@@ -193,6 +193,7 @@ var Chartbuilder = React.createClass({
 					/>
 					<Editor
 						errors={this.state.errors}
+						session={this.state.session}
 						chartProps={this.state.chartProps}
 						numColors={numColors}
 					/>

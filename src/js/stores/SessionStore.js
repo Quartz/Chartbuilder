@@ -3,12 +3,15 @@ var EventEmitter = require("events").EventEmitter;
 
 /* Flux dispatcher */
 var Dispatcher = require("../dispatcher/dispatcher");
+var now = new Date();
 
 var _session = {
 	separators: detectNumberSeparators(),
 	emSize: 10,
 	width: 640,
-	timerOn: (localStorage.hasOwnProperty("model") === true)
+	timerOn: (localStorage.hasOwnProperty("model") === true),
+	nowOffset: getTZOffset(now),
+	now: now
 };
 
 var CHANGE_EVENT = "change";
@@ -99,6 +102,12 @@ function detectNumberSeparators() {
 	}
 
 	return o;
+}
+
+function getTZOffset(date) {
+	var _offset = date.getUTCOffset().split("");
+	_offset.splice(3, 0, ":")
+	return _offset.join("");
 }
 
 module.exports = SessionStore;

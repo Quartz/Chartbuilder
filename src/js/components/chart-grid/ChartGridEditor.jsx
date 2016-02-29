@@ -132,9 +132,11 @@ var ChartGridEditor = React.createClass({
 			scaleSettings.push(
 				<DateScaleSettings
 					key="xScale"
+					nowOffset={this.props.session.nowOffset}
+					now={this.props.session.now}
 					scale={chartProps.scale}
 					stepNumber="5"
-					onUpdate={this._handlePropUpdate.bind(null, "scale")}
+					onUpdate={this._handlePropAndReparse.bind(null, "scale")}
 				/>
 			)
 		} else if (chartProps.scale.isNumeric) {

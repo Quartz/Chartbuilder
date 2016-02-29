@@ -3,7 +3,7 @@ var _ = require("lodash");
 var defaultInput = require("./util/test-input");
 
 var parseDataBySeries = require("../src/js/util/parse-data-by-series");
-var parseDelimitedInput = require("../src/js/util/parse-delimited-input");
+var parseDelimitedInput = require("../src/js/util/parse-delimited-input").parser;
 var parseUtils = require("../src/js/util/parse-utils");
 var util = require("./util/util");
 
