@@ -88,21 +88,32 @@ var XYEditor = React.createClass({
 
 		/* Create a settings component for each data series (column) */
 		var chartSettings = map(chartProps.chartSettings, bind(function(chartSetting, i) {
-			return <XY_chartSettings
-				chartSettings={chartProps.chartSettings}
-				onUpdate={this._handlePropUpdate.bind(null, "chartSettings")}
-				onUpdateReparse={this._handlePropAndReparse.bind(null, "chartSettings")}
-				allowSecondaryAxis={allowSecondaryAxis}
-				numColors={this.props.numColors}
-				index={i}
-				key={i}
-			/>
+			return (
+				<XY_chartSettings
+					chartSettings={chartProps.chartSettings}
+					onUpdate={this._handlePropUpdate.bind(null, "chartSettings")}
+					onUpdateReparse={this._handlePropAndReparse.bind(null, "chartSettings")}
+					allowSecondaryAxis={allowSecondaryAxis}
+					numColors={this.props.numColors}
+					index={i}
+					key={i}
+				/>
+			);
 		}, this));
+
+		var inputErrors = this.props.errors.messages.filter(function(e) {
+			return e.location === "input";
+		});
+
+		var axisErrors = this.props.errors.messages.filter(function(e) {
+			return e.location === "axis";
+		});
 
 		/* Y scale settings */
 		scaleSettings.push(
 			<XY_yScaleSettings
 				scale={chartProps.scale}
+				errors={axisErrors}
 				className="scale-options"
 				onUpdate={this._handlePropAndReparse.bind(null, "scale")}
 				onReset={this._handlePropAndReparse.bind(null, "scale")}
@@ -152,11 +163,6 @@ var XYEditor = React.createClass({
 				/>
 			);
 		}
-
-		var inputErrors = this.props.errors.messages.filter(function(e) {
-			return e.location === "input";
-		});
-
 		return (
 			<div className="xy-editor">
 				<div className="editor-options">

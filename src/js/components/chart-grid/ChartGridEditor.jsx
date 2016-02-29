@@ -87,6 +87,14 @@ var ChartGridEditor = React.createClass({
 			);
 		}, this));
 
+		var inputErrors = this.props.errors.messages.filter(function(e) {
+			return e.location === "input";
+		});
+
+		var axisErrors = this.props.errors.messages.filter(function(e) {
+			return e.location === "axis";
+		});
+
 		/*
 		 * Settings to control the numerical scale. It will be different for bar
 		 * than for XY
@@ -96,6 +104,7 @@ var ChartGridEditor = React.createClass({
 			scaleSettings.push(
 				<ChartGrid_xScaleSettings
 					scale={chartProps.scale}
+					errors={axisErrors}
 					onUpdate={this._handlePropAndReparse.bind(null, "scale")}
 					className="scale-options"
 					key="xScale"
@@ -106,6 +115,7 @@ var ChartGridEditor = React.createClass({
 			scaleSettings.push(
 				<XY_yScaleSettings
 					scale={chartProps.scale}
+					errors={axisErrors}
 					className="scale-options"
 					onUpdate={this._handlePropAndReparse.bind(null, "scale")}
 					onReset={this._handlePropAndReparse.bind(null, "scale")}
@@ -141,10 +151,6 @@ var ChartGridEditor = React.createClass({
 				/>
 			)
 		}
-
-		var inputErrors = this.props.errors.messages.filter(function(e) {
-			return e.location === "input";
-		});
 
 		return (
 			<div className="chartgrid-editor">

@@ -681,8 +681,8 @@ var nan_values = [
 	"1995	$7,907",
 	"1998	$9,507",
 	"2001	$9,293",
-	"2004	$13,865",
-	"2007	$15,779",
+	"2004	$1,865",
+	"2007	$1,779",
 	"2010	$9,360",
 	"2013	$8,000"
 ].join("\n");
@@ -694,10 +694,23 @@ var not_dates = [
 	"1995	$7,907",
 	"1998	$9,507",
 	"2001	$9,293",
-	"2004	$13,865",
-	"2007	$15,779",
+	"2004	$1,865",
+	"2007	$1,779",
 	"2010	$9,360",
 	"2013	$8,000"
+].join("\n");
+
+var large_numbers = [
+	"year	foo",
+	"1989	600,530",
+	"1992	500,000",
+	"1995	700,907",
+	"1998	900,507",
+	"2001	900,293",
+	"2004	100,865",
+	"2007	100,779",
+	"2010	900,360",
+	"2013	800,000"
 ].join("\n");
 
 var multiple_errors = [
@@ -722,5 +735,6 @@ module.exports = {
 	too_few_series: too_few_series,
 	nan_values: nan_values,
 	not_dates: not_dates,
-	multiple_errors: multiple_errors
+	multiple_errors: multiple_errors,
+	large_numbers: large_numbers
 };

@@ -47,6 +47,21 @@ var error_names = {
 	"CANT_AUTO_TYPE": {
 		location: "input",
 		text: "The type of information in the first column of your data cannot be automatically determined. Please seleect one below.",
+		type: 2,
+	},
+	"UNEVEN_TICKS": {
+		location: "axis",
+		text: "Your y-axis tick intervals do not divide cleanly",
+		type: 2
+	},
+	"NO_PREFIX_SUFFIX": {
+		location: "axis",
+		text: "You are missing a prefix and suffix. Consider labelling your data",
+		type: 2
+	},
+	"LARGE_NUMBERS": {
+		location: "input",
+		text: "Your numbers are large. Consider dividing and labelling the unit in the axis",
 		type: 2
 	}
 };
