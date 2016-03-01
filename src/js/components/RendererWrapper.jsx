@@ -49,7 +49,9 @@ var RendererWrapper = React.createClass({
 		}),
 		width: PropTypes.number,
 		enableResponsive: PropTypes.bool,
-		showMetadata: PropTypes.bool
+		showMetadata: PropTypes.bool,
+		className: PropTypes.string,
+		svgClassName: PropTypes.string
 	},
 
 	shouldComponentUpdate: function(nextProps, nextState) {
@@ -180,6 +182,8 @@ var RendererWrapper = React.createClass({
 		var chartType = this.props.model.metadata.chartType;
 		var width = this.props.width || this.state.domNodeWidth;
 		var displayConfig = this.state.chartConfig.display;
+		var svgClassName = this.props.svgClassName || '';
+
 		if (!width) {
 			return <div style={{ width: "100%" }}></div>;
 		}
@@ -279,7 +283,7 @@ var RendererWrapper = React.createClass({
 			<div className={["renderer-wrapper", this.state.svgSizeClass, this.props.className].join(" ")}>
 				<svg
 					key={chartType}
-					className="renderer-svg"
+					className={["renderer-svg", svgClassName].join(" ")}
 					width={dimensions.width}
 					height={dimensions.height}
 				>

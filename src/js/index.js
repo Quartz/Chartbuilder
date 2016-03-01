@@ -24,6 +24,6 @@ document.addEventListener("DOMContentLoaded", function() {
 	//append the current timestamp to the end of the stylesheets on load so that the fonts will load
 	Array.prototype.slice.call(document.querySelectorAll('link[rel="stylesheet"]'))
 		.forEach(function(el){
-			el.setAttribute("href",el.getAttribute("href").split("?")[0] + "?t=" + (new Date().getTime()))
-		})
+			el.setAttribute("href",el.getAttribute("href").split("?")[0] + "?t=" + (new Date().getTime()));
+		});
 });

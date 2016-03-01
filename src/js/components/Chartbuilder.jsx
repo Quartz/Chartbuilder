@@ -63,6 +63,7 @@ function getStateFromStores() {
  * @property {boolean} showMobilePreview - Show mobile preview underneath default chart
  * @property {function} onStateChange - Callback when state is changed
  * @property {Object} additionalComponents - Optional additional React components
+ * @property {string} renderedSVGClassName - Optional class name for chart SVG class
  * @example
  * var React = require("react");
  * var Chartbuilder = require("./components/Chartbuilder.jsx");
@@ -85,7 +86,8 @@ var Chartbuilder = React.createClass({
 		additionalComponents: PropTypes.shape({
 			metadata: PropTypes.array,
 			misc: PropTypes.object
-		})
+		}),
+		renderedSVGClassName: React.PropTypes.string
 	},
 
 	getInitialState: function() {
@@ -155,6 +157,7 @@ var Chartbuilder = React.createClass({
 								model={this.state}
 								enableResponsive={true}
 								className={svgWrapperClassName.mobile}
+								svgClassName={this.props.renderedSVGClassName}
 							/>
 							<div></div>
 						</div>
@@ -174,6 +177,7 @@ var Chartbuilder = React.createClass({
 							width={640}
 							showMetadata={true}
 							className={svgWrapperClassName.desktop}
+							svgClassName={this.props.renderedSVGClassName}
 						/>
 					</div>
 					{mobilePreview}
