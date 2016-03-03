@@ -457,6 +457,13 @@ var SvgRectLabel = React.createClass({
 			</g>
 		}
 
+		var handleMouseDown = null;
+		var draggableClass = "";
+		if (this.props.editable) {
+			handleMouseDown = this._onMouseDown;
+			draggableClass = "draggable";
+		}
+
 		return (
 			<g
 				className="svg-label-g"
@@ -464,17 +471,16 @@ var SvgRectLabel = React.createClass({
 			>
 				{rect}
 				<text
-					className={["svg-label-text", colorClass].join(" ")}
+					className={["svg-label-text", colorClass, draggableClass].join(" ")}
 					x={textOffsetX}
 					y={textOffsetY}
 					dy={dy}
 					draggable={this.props.editable}
-					onMouseDown={this._onMouseDown}
+					onMouseDown={handleMouseDown}
 				>
 					{this.props.text}
 				</text>
 				{crosshair}
-
 			</g>
 		);
 	}

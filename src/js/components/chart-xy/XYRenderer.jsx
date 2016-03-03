@@ -389,6 +389,7 @@ var XYLabels = React.createClass({
 
 	propTypes: {
 		chartProps: PropTypes.object.isRequired,
+		editable: PropTypes.bool,
 		hasTitle: PropTypes.bool.isRequired,
 		displayConfig: PropTypes.object.isRequired,
 		styleConfig: PropTypes.object.isRequired,
@@ -766,8 +767,8 @@ function drawXY(el, state) {
 						text: numericSettings ? numericSettings.suffix : "",
 						dy: "1.6em"
 					}]
-				})			
-			
+				})
+
 		});
 
 		if (chartProps._numSecondaryAxis > 0) {

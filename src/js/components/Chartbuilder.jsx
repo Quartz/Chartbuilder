@@ -136,6 +136,7 @@ var Chartbuilder = React.createClass({
 			mobileOverrides = (
 				<MobileComponent
 					chartProps={this.state.chartProps}
+					errors={this.state.errors}
 				/>
 			);
 		} else {

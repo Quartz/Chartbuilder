@@ -44,10 +44,15 @@ var XYMobile = React.createClass({
 		var scaleSettings = [];
 		var scale = chartProps.mobile.scale || chartProps.scale;
 
+		var axisErrors = this.props.errors.messages.filter(function(e) {
+			return e.location === "axis";
+		});
+
 		/* Y scale settings */
 		scaleSettings.push(
 			<XY_yScaleSettings
 				scale={scale}
+				errors={axisErrors}
 				className="scale-options"
 				onUpdate={this._handleScaleUpdate.bind(null, "scale")}
 				onReset={this._handleScaleReset}

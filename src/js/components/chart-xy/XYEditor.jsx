@@ -130,6 +130,7 @@ var XYEditor = React.createClass({
 				<XY_yScaleSettings
 					scale={chartProps.scale}
 					onUpdate={this._handlePropAndReparse.bind(null, "scale")}
+					errors={axisErrors}
 					onReset={this._handlePropAndReparse.bind(null, "scale")}
 					className="scale-options"
 					id="secondaryScale"

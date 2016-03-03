@@ -54,10 +54,11 @@ var XY_yScaleSettings = React.createClass({
 
 	_renderErrors: function() {
 
-		if (this.props.errors.length === 0) {
+		if (!this.props.errors) {
+			return null;
+		} else if (this.props.errors.length === 0) {
 			return null;
 		} else {
-
 			var errors = this.props.errors.map(function(error, i) {
 				return (
 					<ErrorMessage
