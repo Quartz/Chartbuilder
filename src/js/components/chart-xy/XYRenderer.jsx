@@ -298,6 +298,7 @@ var XYChart = React.createClass({
 
 	shouldComponentUpdate: function(nextProps, nextState) {
 		// always update by redrawing the chart
+		console.log(this.props, nextProps, this.state, nextState)
 		var el = ReactDOM.findDOMNode(this);
 		drawXY(el, this._getChartState(nextProps));
 		return false;
@@ -508,11 +509,6 @@ var XYLabels = React.createClass({
 				this.props.updateLabelYMax(labelYMax);
 			}
 		}
-
-		this.refreshAllLabelPositions();
-	},
-
-	refreshAllLabelPositions: function() {
 	},
 
 	/**

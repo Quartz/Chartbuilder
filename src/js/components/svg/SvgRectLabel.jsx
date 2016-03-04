@@ -157,8 +157,6 @@ var SvgRectLabel = React.createClass({
 			valueComputed : this._toValuePosition({x: this.props.settings.val_x, y:this.props.settings.val_y})
 		});
 
-
-
 		e.stopPropagation();
 		e.preventDefault();
 	},
