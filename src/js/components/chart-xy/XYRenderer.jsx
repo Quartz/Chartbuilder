@@ -109,6 +109,12 @@ var XYRenderer = React.createClass({
 		var labelComponents;
 		var dimensions = this.props.dimensions;
 
+		// Maintain space between legend and chart area unless all legend labels
+		// have been dragged
+		var allLabelsDragged = reduce(_chartProps._annotations.labels.values, function(prev, value) {
+			return (prev === true && value.dragged === true);
+		}, true);
+
 		// Dimensions of the chart area
 		var chartAreaDimensions = {
 			width: (dimensions.width -
@@ -195,6 +201,7 @@ var XYRenderer = React.createClass({
 				<XYChart
 					key="xy-chart"
 					chartProps={_chartProps}
+					allLabelsDragged={allLabelsDragged}
 					hasTitle={hasTitle}
 					displayConfig={this.props.displayConfig}
 					styleConfig={this.props.styleConfig}
@@ -210,6 +217,7 @@ var XYRenderer = React.createClass({
 				<XYLabels
 					key="xy-labels"
 					chartProps={_chartProps}
+					allLabelsDragged={allLabelsDragged}
 					displayConfig={this.props.displayConfig}
 					styleConfig={this.props.styleConfig}
 					chartAreaDimensions={chartAreaDimensions}
@@ -538,7 +546,7 @@ var XYLabels = React.createClass({
 		var displayConfig = this.props.displayConfig;
 		var props = this.props;
 		var dimensions = props.dimensions;
-		var padding = computePadding(props, this.props.dimensions.height);
+		var padding = computePadding(props);
 
 		var labelConfig = {
 			xMargin: displayConfig.labelXMargin,
@@ -565,26 +573,32 @@ var XYLabels = React.createClass({
 				var scales = this.props.scale;
 				yScale_info = !chartSetting.altAxis ? scales.primaryScale : scales.secondaryScale;
 				xScale_info = xScaleInfo(this.props.dimensions.width,padding,styleConfig,displayConfig,{dateSettings: this.state.dateScaleInfo});
+
+				var yRange = [
+					this.props.dimensions.height - padding.bottom - displayConfig.margin.bottom,
+					padding.top + displayConfig.margin.top
+				];
+
+				var xRange = props.chartProps.scale.hasDate ? [
+					padding.left + displayConfig.margin.left + this.props.maxTickWidth.primaryScale,
+					xScale_info.rangeR-padding.right-displayConfig.margin.right-this.props.maxTickWidth.secondaryScale - displayConfig.minPaddingOuter
+				] : [];
+
 				scale = {
 					y: {
 						domain: yScale_info.domain,
-						range:[
-							this.props.dimensions.height - padding.bottom - displayConfig.margin.bottom,
-							padding.top + displayConfig.margin.top
-							]
+						range: yRange
 					},
 					x: {
 						domain: xScale_info.domain ? xScale_info.domain : [],
-						range: props.chartProps.scale.hasDate ? [
-							padding.left + displayConfig.margin.left + this.props.maxTickWidth.primaryScale,
-							xScale_info.rangeR-padding.right-displayConfig.margin.right-this.props.maxTickWidth.secondaryScale - displayConfig.minPaddingOuter
-							] : []
+						range: xRange
 					}
 				};
 
 				labelComponents.push(
 					<SvgRectLabel
 						key={i}
+						allLabelsDragged={this.props.allLabelsDragged}
 						text={chartSetting.label}
 						labelConfig={labelConfig}
 						dimensions={this.props.chartAreaDimensions}
@@ -601,6 +615,7 @@ var XYLabels = React.createClass({
 				);
 			}, this));
 		}
+
 		return (
 			<g
 				ref="chartAnnotations"
@@ -880,7 +895,7 @@ function yAxisUsing(location, axis, el, state) {
 	axis.scaleId(scaleId);
 }
 
-function computePadding(props, chartHeight) {
+function computePadding(props) {
 	var labels = props.chartProps._annotations.labels;
 	var displayConfig = props.displayConfig;
 	var _top = (props.labelYMax * props.chartAreaDimensions.height) + displayConfig.afterLegend;
@@ -889,17 +904,12 @@ function computePadding(props, chartHeight) {
 		_top += displayConfig.afterTitle;
 	}
 
-	// Maintain space between legend and chart area unless all legend labels
-	// have been dragged
-	var allLabelsDragged = reduce(labels.values, function(prev, value) {
-		return (prev === true && value.dragged === true);
-	}, true);
-
 	// Reduce top padding if all labels or dragged or there is only one series,
 	// meaning no label will be shown
-	if (allLabelsDragged || props.chartProps.data.length === 1) {
+	if (props.allLabelsDragged || props.chartProps.data.length === 1) {
 		_top -= displayConfig.afterLegend;
 	}
+
 	return {
 		top: _top,
 		right: displayConfig.padding.right,

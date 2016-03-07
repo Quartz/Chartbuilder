@@ -119,14 +119,14 @@ var XY_yScaleSettings = React.createClass({
 				<span className="step-number">{this.props.stepNumber}</span>
 				{this.props.titleOverride ? this.props.titleOverride : "Configure the " + this.props.name + " axis"}
 			</h2>
-			)
+			);
 
-		if(this.props.stepNumber == "") {
+		if (this.props.stepNumber === "") {
 			title_block = (
 				<h2 className="scale-option-title">
 					{this.props.titleOverride ? this.props.titleOverride : "Configure the " + this.props.name + " axis"}
 				</h2>
-				)
+				);
 		}
 
 		return (
