@@ -94,10 +94,11 @@ var ChartGridXY = React.createClass({
 
 		var dimensions = clone(this.props.dimensions);
 
-		if (this.props.hasBoth) {
-			extraPadding.top = extraPadding.top + displayConfig.afterTitle + displayConfig.afterSub;
-		} else if (this.props.hasTitle) {
-			extraPadding.top = extraPadding.top + displayConfig.afterTitle;
+
+		if (this.props.metadata.hasBoth) {
+			extraPadding.top = extraPadding.top + displayConfig.afterTitle + displayConfig.afterSub + displayConfig.afterTopMeta;
+		} else if (this.props.metadata.hasTitle) {
+			extraPadding.top = extraPadding.top + displayConfig.afterTitle + displayConfig.afterTopMeta;
 		}
 
 		/* Divide total width by number of grids, also subtracting the spade to be
@@ -362,7 +363,7 @@ function drawXYChartGrid(el, state) {
 	.left(function(y) {
 		y.key("value")
 			.domain(chartProps.scale.primaryScale.domain)
-			.range([this.height - this.padding.bottom, this.padding.top + displayConfig.afterTitle]);
+			.range([this.height - this.padding.bottom, this.padding.top + displayConfig.afterTitle + displayConfig.afterTopMeta]);
 	})
 	.chartAreaOnTop(false)
 	.mixout("rightAxis")

@@ -35,8 +35,9 @@ var display = {
 	labelXMargin: "0.6em",
 	labelTextMargin: "0.3em",
 	labelRowHeight: "1.2em",
-	afterTitle: "1.6em",
-	afterSub: "1em",
+	afterTitle: "1.2em",
+	afterSub: "1.2em",
+	afterTopMeta: "0.4em",
 	afterLegend: "1.6em",
 	blockerRectOffset: "0.3em",
 	columnPaddingCoefficient: 0.3,
@@ -49,9 +50,9 @@ var display = {
 	},
 	margin: {
 		top: "0.8em",
-		right: "0.5em",
-		bottom: "0.5em",
-		left: "0.5em"
+		right: "0.25em",
+		bottom: "0.15em",
+		left: "0.25em"
 	},
 	padding: {
 		top: 0,

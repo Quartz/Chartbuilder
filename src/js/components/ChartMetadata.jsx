@@ -41,7 +41,7 @@ var chart_sizes = [
 
 var text_input_values = [
 	{ name: "title", content: "Title" },
-	{ name: "sub", content: "Sub" },
+	{ name: "sub", content: "Subtitle" },
 	{ name: "credit", content: "Credit" },
 	{ name: "source", content: "Source" }
 ];
@@ -100,13 +100,16 @@ var ChartMetadata = React.createClass({
 				placeholder={textInput.content}
 				onChange={this._handleMetadataUpdate}
 			/>
-		}, this);
+		}, this)
+			.filter(function(chart_meta_text){
+				return chart_meta_text.key == "sub" ? (metadata.title.length > 0) : true;
+			});
 
 		return (
 			<div className="editor-options">
 				<h2>
 					<span className="step-number">{this.props.stepNumber}</span>
-					<span>Set title, sub, source, credit and size</span>
+					<span>Set title, subtitle, source, credit and size</span>
 				</h2>
 				{textInputs}
 				{this.props.additionalComponents}

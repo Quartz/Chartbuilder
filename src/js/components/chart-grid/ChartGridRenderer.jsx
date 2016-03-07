@@ -71,8 +71,9 @@ var ChartGridRenderer = React.createClass({
 
 		var chartProps = update(_chartProps, { $merge: { scale: scale }});
 
-		/* Pass a boolean that detects whether there is a title */
-		var hasTitle = (this.props.metadata.title.length > 0 && this.props.showMetadata);
+		/* Pass a boolean that detects whether there is a title and sub*/
+		this.props.metadata.hasTitle = this.props.metadata.title.length > 0 && this.props.showMetadata;
+		this.props.metadata.hasBoth = this.props.metadata.hasTitle && this.props.metadata.sub && this.props.metadata.sub.length > 0;
 
 		/* Choose between grid of bars and grid of XY, and transfer all props to
 		 * relevant component
@@ -82,7 +83,6 @@ var ChartGridRenderer = React.createClass({
 				<ChartGridBars
 					{...this.props}
 					scale={scale}
-					hasTitle={hasTitle}
 				/>
 			);
 		} else {
@@ -90,13 +90,10 @@ var ChartGridRenderer = React.createClass({
 				<ChartGridXY
 					{...this.props}
 					scale={scale}
-					hasTitle={hasTitle}
 				/>
 			);
 		}
 
-		/* Pass a boolean that detects whether there is a title and sub*/
-		var hasBoth = (this.props.metadata.title.length > 0 && this.props.metadata.sub.length > 0 && this.props.showMetadata);
 
 		/* Choose between grid of bars and grid of XY, and transfer all props to
 		 * relevant component
@@ -106,7 +103,6 @@ var ChartGridRenderer = React.createClass({
 				<ChartGridBars
 					{...this.props}
 					scale={scale}
-					hasBoth={hasBoth}
 				/>
 			);
 		} else {
@@ -114,7 +110,6 @@ var ChartGridRenderer = React.createClass({
 				<ChartGridXY
 					{...this.props}
 					scale={scale}
-					hasBoth={hasBoth}
 				/>
 			);
 		}

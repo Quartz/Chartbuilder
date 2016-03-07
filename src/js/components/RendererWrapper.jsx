@@ -107,6 +107,10 @@ var RendererWrapper = React.createClass({
 			chartProps = _chartProps;
 		}
 		var state = assign({}, { chartProps: chartProps }, size_calcs);
+
+		// if there's no afterTopMeta use afterTitle
+		state.chartConfig.display.afterTopMeta = state.chartConfig.display.afterTopMeta || 0; 
+		
 		this.setState(state);
 	},
 
@@ -268,19 +272,20 @@ var RendererWrapper = React.createClass({
 					/>
 				);
 				metadataSvg.push(title);
-			}
 
-			if (metadata.sub && metadata.sub !== "") {
-				sub = (
-					<SvgText
-						text={metadata.sub}
-						key="sub"
-						translate={[translate.left + 2, translate.top + 26]}
-						align="top"
-						className="svg-text-sub"
-					/>
-				);
-				metadataSvg.push(sub);
+				// only display a subtitle if there's a title
+				if (metadata.sub && metadata.sub !== "") {
+					sub = (
+						<SvgText
+							text={metadata.sub}
+							key="sub"
+							translate={[translate.left, translate.top + displayConfig.afterTitle]}
+							align="top"
+							className="svg-text-sub"
+						/>
+					);
+					metadataSvg.push(sub);
+				}
 			}
 
 			metadataSvg.push(
