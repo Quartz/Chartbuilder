@@ -8,6 +8,7 @@ var EventEmitter = require("events").EventEmitter;
 
 /* Flux dispatcher */
 var Dispatcher = require("../dispatcher/dispatcher");
+var SessionStore = require("./SessionStore");
 
 /*
  * Each chart type has an associated parser, defined in its chartConfig
@@ -84,6 +85,7 @@ function registeredCallback(payload) {
 		* setting current `chartType`.
 		*/
 		case "receive-model":
+			Dispatcher.waitFor([SessionStore.dispatchToken]);
 			chartType = action.model.metadata.chartType;
 			config = chartConfig[chartType];
 			parser = chartConfig[chartType].parser;

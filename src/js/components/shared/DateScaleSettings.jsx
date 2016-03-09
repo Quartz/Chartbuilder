@@ -122,11 +122,6 @@ var DateScaleSettings = React.createClass({
 	componentWillMount: function() {
 		var props = this.props;
 
-		if (props.scale.dateSettings.inputTZ === null) {
-			//if there isn't a inputTZ specified use the creator's machine's
-			this._handleDateScaleUpdate("inputTZ", props.nowOffset);
-		}
-
 		var dateFormatOptions = map(this._config.dateFormatOptions, function(opt) {
 			if (typeof opt.content === "function") {
 				return {

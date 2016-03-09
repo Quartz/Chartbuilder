@@ -58,7 +58,7 @@ var SessionStore = assign({}, EventEmitter.prototype, {
 
 });
 
-Dispatcher.register(function(payload) {
+function registeredCallback(payload) {
 	var action = payload.action;
 
 	switch(action.eventName) {
@@ -82,7 +82,7 @@ Dispatcher.register(function(payload) {
 	}
 
 	return true;
-});
+}
 
 // Get thousands and decimal separators based on locale
 function detectNumberSeparators() {
@@ -109,5 +109,7 @@ function getTZOffset(date) {
 	_offset.splice(3, 0, ":")
 	return _offset.join("");
 }
+
+SessionStore.dispatchToken = Dispatcher.register(registeredCallback);
 
 module.exports = SessionStore;

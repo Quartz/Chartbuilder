@@ -3,6 +3,7 @@ var map = require("lodash/map");
 var assign = require("lodash/assign");
 var each = require("lodash/each");
 
+var SessionStore = require("../../stores/SessionStore");
 var dataBySeries = require("../../util/parse-data-by-series");
 var help = require("../../util/helper");
 
@@ -26,9 +27,8 @@ function parseChartgrid(config, _chartProps, callback, parseOpts) {
 	// dont check for date column if grid type is bar
 	var checkForDate = chartProps._grid.type !== "bar";
 	var bySeries = dataBySeries(chartProps.input.raw, {
-			checkForDate: checkForDate, 
-			type: chartProps.input.type,
-			inputTZ: chartProps.scale.dateSettings ? chartProps.scale.dateSettings.inputTZ : null
+			checkForDate: checkForDate,
+			type: chartProps.input.type
 		});
 
 	var gridSettings = {
@@ -64,6 +64,7 @@ function parseChartgrid(config, _chartProps, callback, parseOpts) {
 
 	if (bySeries.hasDate) {
 		chartProps.scale.dateSettings = chartProps.scale.dateSettings || clone(config.defaultProps.chartProps.scale.dateSettings);
+		chartProps.scale.dateSettings.inputTZ = chartProps.scale.dateSettings.inputTZ || SessionStore.get("nowOffset")
 		// for dates, default type should be line
 		gridSettings.type = _chartProps._grid.type || "line";
 		isColumnOrBar = (gridSettings.type === "column" || gridSettings.type === "bar");
@@ -76,7 +77,7 @@ function parseChartgrid(config, _chartProps, callback, parseOpts) {
 		var maxPrecision = 5;
 		var factor = Math.pow(10, maxPrecision);
 		gridSettings.type = _chartProps._grid.type || "line";
-		
+
 		_computed = {
 			//TODO look at entries for all series not just the first
 			data: bySeries.series[0].values.map(function(d){return +d.entry}),
@@ -123,7 +124,7 @@ function parseChartgrid(config, _chartProps, callback, parseOpts) {
 						}
 					});
 				}
-				chartProps.mobile.scale.numericSettings = currMobile 
+				chartProps.mobile.scale.numericSettings = currMobile
 			}
 		} else {
 			chartProps.mobile = {};
