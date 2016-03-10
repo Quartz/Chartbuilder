@@ -13,6 +13,7 @@ var d3 = require("d3");
 var d4 = require("d4");
 
 var assign = require("lodash/assign");
+var findKey = require("lodash/findKey");
 var bind = require("lodash/bind");
 var clone = require("lodash/clone");
 var each = require("lodash/each");
@@ -38,6 +39,11 @@ var cb_xy = require("../../charts/cb-charts").cb_xy;
 var help = require("../../util/helper.js");
 
 var scaleNames = ["primaryScale", "secondaryScale"];
+
+var locationKey = {
+	"primary":"right",
+	"secondary":"left"
+};
 
 /**
  * ### Component that renders XY (line, column, dot) charts
@@ -654,7 +660,7 @@ var xy_render_options = {
 				return (d === 0);
 			});
 
-			if (isPrimary) {
+			if (isPrimary && locationKey.primary == "left") {
 				var maxTick = ticks.filter(function(d) {
 					return (d === max);
 				});
@@ -700,8 +706,6 @@ function drawXY(el, state) {
 		left: state.maxTickWidth.primaryScale
 	};
 
-	var mixouts = chartProps._numSecondaryAxis ? [] : ["rightAxis"]
-
 	var xyChart = state.chartRenderer
 		.outerWidth(state.dimensions.width)
 		.outerHeight(state.dimensions.height)
@@ -710,7 +714,7 @@ function drawXY(el, state) {
 		.extraPadding(extraPadding)
 		.mixout("series-label")
 		.using("leftAxis", function(axis){
-			yAxisUsing.call(this,"primary",axis,el,state)
+			yAxisUsing.call(this,findKey(locationKey,function(s){ return s === "left"}),axis,el,state)
 		})
 		.x(function(x) {
 			x.key("entry");
@@ -732,13 +736,13 @@ function drawXY(el, state) {
 				.domain(scale.primaryScale.domain)
 				.range([this.height - this.padding.bottom, state.padding.top])
 		})
-		.left(function(y) {
+		[locationKey.primary](function(y) {
 			y.key("value")
 				.domain(scale.primaryScale.domain)
 				.range([this.height - this.padding.bottom, state.padding.top])
 		})
 		.using("rightAxis", function(axis){
-			yAxisUsing.call(this,"secondary",axis,el,state)
+			yAxisUsing.call(this,findKey(locationKey,function(s){return s === "right"}),axis,el,state)
 		})
 		.chartAreaOnTop(false)
 		.using("xAxis", function(axis) {
@@ -796,7 +800,7 @@ function drawXY(el, state) {
 		});
 
 		if (chartProps._numSecondaryAxis > 0) {
-			xyChart.right(function(y) {
+			xyChart[locationKey.secondary](function(y) {
 				y.key("value")
 					.domain(scale.secondaryScale.domain)
 					.range([this.height - this.padding.bottom, state.padding.top])
@@ -846,13 +850,13 @@ function yAxisUsing(location, axis, el, state) {
 	var isPrimary = location == "primary"
 	var scale = isPrimary ? state.scale.primaryScale : state.scale.secondaryScale;
 	var hasOtherAxis = chartProps._numSecondaryAxis > 0;
-	var scaleId = isPrimary ? "left" : "right";
+	var scaleId = isPrimary ? locationKey.primary : locationKey.secondary;
 
 	if(!hasOtherAxis && !isPrimary) {
 		axis.render = function() {
-			this.container.selectAll(".right.axis").remove();
+			this.container.selectAll("."+locationKey.secondary+".axis").remove();
 		}
-		state.chartProps.extraPadding.right = 0;
+		state.chartProps.extraPadding[locationKey.secondary] = 0;
 		return null;
 	}
 
@@ -887,6 +891,14 @@ function yAxisUsing(location, axis, el, state) {
 		if (hasOtherAxis) {
 			innerTickSize -= state.displayConfig.blockerRectOffset;
 		}
+
+		if(scaleId == "right") {
+			//use a negative tick length if they're on the right axis
+			innerTickSize *= -1
+		}
+
+		
+		
 	} else {
 		innerTickSize = 0;
 	}

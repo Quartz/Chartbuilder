@@ -21,6 +21,11 @@ var xy_config = {
 	xAxisShift: 10
 };
 
+var locationKey = {
+	"primary":"right",
+	"secondary":"left"
+};
+
 var mixin = [
 	{
 		"name": "xAxis",
@@ -62,15 +67,10 @@ var mixin = [
 	cb_mixins.x_axis_label
 ];
 
-var locationKey = {
-	"primary":"left",
-	"secondary":"right"
-};
-
 var using = {
 	lines: function(line,location,singleLineDotThresh,totalLinePoints) {
 		var isPrimary = (location === "primary");
-		var scale = isPrimary ? this.left : this.right;
+		var scale = isPrimary ? this[locationKey.primary] : this[locationKey.secondary];
 		line.beforeRender(function(data) {
 			var isolated_data = [];
 
@@ -118,8 +118,8 @@ var using = {
 
 	bars: function(bar, location) {
 		var isPrimary = (location === "primary");
-		var scale = isPrimary ? this.left : this.right;
-		var yScaleId = (isPrimary) ? "left" : "right";
+		var yScaleId = (isPrimary) ? locationKey.primary : locationKey.secondary;
+		var scale = this[yScaleId]
 		var names = [];
 		var num_column_series = 0;
 
@@ -221,7 +221,7 @@ var using = {
 
 	circles: function(circle, location) {
 		var isPrimary = (location === "primary");
-		var scale = isPrimary ? this.left : this.right;
+		var scale = isPrimary ? this[locationKey.primary] : this[locationKey.secondary];
 		var singleLineDotThresh = false;
 
 		circle.beforeRender(function(data) {
@@ -364,7 +364,7 @@ var cb_xy = d4.chart("cb-xy", function() {
 			label.afterRender(function(curLabel, data, chartArea){
 				var first_tick = this.container.selectAll(".xAxis .tick")[0][0]
 				chartArea.selectAll(".xAxislabel").attr("dx",first_tick.getBoundingClientRect().width/-2)
-			})
+			});
 		})
 		.y(function(y){
 			y.clamp(false);
