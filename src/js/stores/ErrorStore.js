@@ -92,7 +92,7 @@ function registeredCallback(payload) {
 				return errorNames[err_name];
 			});
 
-			var isInvalid = some(_errors.messages, { type: 3 } );
+			var isInvalid = some(_errors.messages, { type: "error" } );
 			_errors.valid = !isInvalid;
 
 			ErrorStore.emitChange();

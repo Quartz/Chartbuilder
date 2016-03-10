@@ -23,9 +23,10 @@ var Canvas = require("./Canvas.jsx");
 var ChartExport = require("./ChartExport.jsx");
 var ChartMetadata = require("./ChartMetadata.jsx");
 var ChartTypeSelector = require("./ChartTypeSelector.jsx");
-var ErrorDisplay = require("./ErrorDisplay.jsx");
 var RendererWrapper = require("./RendererWrapper.jsx");
 var LocalStorageTimer = require("./LocalStorageTimer.jsx");
+
+var AlertGroup = require("chartbuilder-ui").AlertGroup;
 
 var svgWrapperClassName = {
 	desktop: "renderer-svg-desktop",
@@ -120,6 +121,21 @@ var Chartbuilder = React.createClass({
 		SessionStore.removeChangeListener(this._onChange);
 	},
 
+	_renderErrors: function() {
+		if (this.state.errors.messages.length === 0) {
+			return null;
+		} else {
+			return (
+				<div>
+					<h2>Have a look at these issues:</h2>
+					<AlertGroup
+						alerts={this.state.errors.messages}
+					/>
+				</div>
+			);
+		}
+	},
+
 	/*
 	 * Identify the chart type used and render its Editor. The corresponding
 	 * Renderer is rendered within `RendererWrapper`, in case a Chartbuilder chart
@@ -204,15 +220,12 @@ var Chartbuilder = React.createClass({
 						additionalComponents={this.props.additionalComponents.metadata}
 					/>
 					{mobileOverrides}
-					<ErrorDisplay
-						stepNumber={String(editorSteps + 3)}
-						messages={this.state.errors.messages}
-					/>
+					{this._renderErrors()}
 					<ChartExport
 						data={this.state.chartProps.data}
 						svgWrapperClassName={svgWrapperClassName.desktop}
 						metadata={this.state.metadata}
-						stepNumber={String(editorSteps + 4)}
+						stepNumber={String(editorSteps + 3)}
 						additionalComponents={this.props.additionalComponents.misc}
 						model={this.state}
 					/>

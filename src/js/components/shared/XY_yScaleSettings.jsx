@@ -6,7 +6,7 @@ var ScaleReset = require("./ScaleReset.jsx");
 
 /* Chartbuilder UI components */
 var chartbuilderUI = require("chartbuilder-ui");
-var ErrorMessage = require("../shared/ErrorMessage.jsx");
+var AlertGroup = chartbuilderUI.AlertGroup;
 var LabelledTangle = chartbuilderUI.LabelledTangle;
 var TextInput = chartbuilderUI.TextInput;
 
@@ -59,19 +59,9 @@ var XY_yScaleSettings = React.createClass({
 		} else if (this.props.errors.length === 0) {
 			return null;
 		} else {
-			var errors = this.props.errors.map(function(error, i) {
-				return (
-					<ErrorMessage
-						key={i}
-						type={error.type}
-						text={error.text}
-					/>
-				);
-			});
-
 			return (
 				<div className="error-display">
-					{errors}
+					<AlertGroup alerts={this.props.errors} />
 				</div>
 			);
 		}

@@ -11,9 +11,8 @@ var validateChartModel = require("../../util/validate-chart-model");
 
 var chartbuilderUI = require("chartbuilder-ui");
 var TextArea = chartbuilderUI.TextArea;
-var Alert = chartbuilderUI.Alert;
+var AlertGroup = chartbuilderUI.AlertGroup;
 var DataSeriesTypeSettings = require("../shared/DataSeriesTypeSettings.jsx");
-var ErrorMessage = require("../shared/ErrorMessage.jsx");
 
 /**
  * ### Text area component and error messaging for data input
@@ -93,27 +92,13 @@ var DataInput = React.createClass({
 	},
 
 	_renderErrors: function() {
+		if (this.props.errors.length === 0) return null;
 
-		if (this.props.errors.length === 0) {
-			return null;
-		} else {
-
-			var errors = this.props.errors.map(function(error, i) {
-				return (
-					<ErrorMessage
-						key={i}
-						type={error.type}
-						text={error.text}
-					/>
-				);
-			});
-
-			return (
-				<div className="error-display">
-					{errors}
-				</div>
-			);
-		}
+		return (
+			<div className="error-display">
+				<AlertGroup alerts={this.props.errors} />
+			</div>
+		);
 	},
 
 	// Render the data input text area and indicator
