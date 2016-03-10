@@ -1,3 +1,4 @@
+require("sugar-date");
 var assign = require("lodash/assign");
 var EventEmitter = require("events").EventEmitter;
 
