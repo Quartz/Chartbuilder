@@ -12,6 +12,7 @@ var bind = require("lodash/bind");
 var clone = require("lodash/clone");
 var filter = require("lodash/filter");
 var map = require("lodash/map");
+var findKey = require("lodash/findKey");
 
 /* Helper functions */
 var cb_xy = require("../../charts/cb-charts").cb_xy;
@@ -25,6 +26,11 @@ var HiddenSvg = require("../svg/HiddenSvg.jsx");
 
 /* One `GridChart` will be drawn for every column used in our grid */
 var GridChart = require("./GridChart.jsx");
+
+var locationKey = {
+	"primary":"right",
+	"secondary":"left"
+};
 
 /**
  * ### Component that renders xy charts in a chart grid
@@ -240,6 +246,9 @@ function drawXYChartGrid(el, state) {
 	// If this is the bottom row (or the top row in a one-row grid), apply XY
 	// bottom padding and add it back to the height, accounting for chartGrid
 	// afterXY setting
+
+	var axisXPosition = locationKey.primary == "left" ? 0 : state.grid.cols - 1
+
 	if ((state.positions.y === 0) && (state.grid.rows === 1)) {
 		extraPadding.bottom = xyConfig.padding.bottom;
 		chart.outerHeight(state.dimensions.height + xyConfig.padding.bottom - displayConfig.afterLegend);
@@ -251,7 +260,7 @@ function drawXYChartGrid(el, state) {
 		extraPadding.bottom = displayConfig.afterXYBottom;
 	}
 
-	if (state.positions.x === 0) {
+	if (state.positions.x === axisXPosition) {
 		chart.using("series-label",function(lab){
 			lab.x(function() {
 				return 0;
@@ -264,7 +273,8 @@ function drawXYChartGrid(el, state) {
 					});
 			})
 		})
-		.using("leftAxis", function(axis){
+		.using(locationKey.primary + "Axis", function(axis){
+			axis.innerTickSize(locationKey.primary == "left" ? state.dimensions.width : 10);
 			yAxisUsing.call(this, "primary", axis, state);
 		})
 		.using("x-axis-label", function(label) {
@@ -308,10 +318,10 @@ function drawXYChartGrid(el, state) {
 					});
 			});
 		})
-		.using("leftAxis", function(axis){
-			axis.innerTickSize(state.dimensions.width);
+		.using(locationKey.primary + "Axis", function(axis){
+			axis.innerTickSize(locationKey.primary == "left" ? state.dimensions.width : 10);
 			axis.tickValues(help.exactTicks(scale.primaryScale.domain, scale.primaryScale.ticks));
-			axis.tickFormat(function() {
+			axis.tickFormat(function(d) {
 				return "";
 			});
 		})
@@ -357,13 +367,13 @@ function drawXYChartGrid(el, state) {
 		}
 		x.range([rangeL, rangeR]);
 	})
-	.left(function(y) {
+	[locationKey.primary](function(y) {
 		y.key("value")
 			.domain(chartProps.scale.primaryScale.domain)
 			.range([this.height - this.padding.bottom, this.padding.top + displayConfig.afterTitle]);
 	})
 	.chartAreaOnTop(false)
-	.mixout("rightAxis")
+	.mixout(locationKey.secondary + "Axis")
 	.using("xAxis", function(axis) {
 		if (chartProps.scale.hasDate) {
 			axis.tickValues(dateSettings.dateTicks);
@@ -395,7 +405,6 @@ function yAxisUsing(location, axis, state) {
 	var scale = chartProps.scale;
 
 	axis.tickValues(help.exactTicks(scale.primaryScale.domain, scale.primaryScale.ticks));
-	axis.innerTickSize(state.dimensions.width);
 
 	var maxTickVal = d3.max(axis.tickValues());
 	axis.tickFormat(function(d) {
@@ -406,6 +415,7 @@ function yAxisUsing(location, axis, state) {
 				scale.primaryScale.suffix
 			].join("");
 		} else {
+			console.log(d,help.roundToPrecision(d, scale.primaryScale.precision))
 			return help.roundToPrecision(d, scale.primaryScale.precision);
 		}
 	});
