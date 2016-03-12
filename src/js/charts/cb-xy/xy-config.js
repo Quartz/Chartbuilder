@@ -15,7 +15,8 @@ var now = new Date();
 * @property {Nem|number} labelTextMargin - Horiz distance btwn label rect and text
 * @property {Nem|number} labelRowHeight - Vert distance btwn rows of labels
 * items with colors the appropriate indexed CSS class
-* @property {Nem|number} afterTitle - Distance btwn top of title and top of legend or chart
+* @property {Nem|number} afterTitle - Distance btwn top of title and top of legend, sub or chart
+* @property {Nem|number} afterSub - Distance btwn top of sub and top of legend or chart
 * @property {Nem|number} afterLegend - Distance btwn top of legend and top of chart
 * @property {Nem|number} blockerRectOffset - Distance btwn text of axis and its background blocker
 * @property {Nem|number} columnPaddingCoefficient - Distance relative to
@@ -37,6 +38,7 @@ var display = {
 	labelTextMargin: "0.3em",
 	labelRowHeight: "1.2em",
 	afterTitle: "1.6em",
+	afterSub: "1em",
 	afterLegend: "1.6em",
 	blockerRectOffset: "0.3em",
 	columnPaddingCoefficient: 0.3,
@@ -49,9 +51,9 @@ var display = {
 	},
 	margin: {
 		top: "0.8em",
-		right: "0.25em",
-		bottom: "0.15em",
-		left: "0.25em"
+		right: "0.5em",
+		bottom: "0.5em",
+		left: "0.5em"
 	},
 	padding: {
 		top: 0,
@@ -138,6 +140,7 @@ var defaultProps = {
 	metadata: {
 		chartType: 'xy',
 		title: "",
+		sub: "",
 		source: "",
 		credit: "Made with Chartbuilder",
 		size: "auto"
