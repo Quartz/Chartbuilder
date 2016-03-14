@@ -671,9 +671,10 @@ var xy_render_options = {
 				var width = bcr.width;
 				var x = parseFloat(textNode.getAttribute("x"));
 				var newX = x;
-				if (width + (-x) > chart.width - 12) {
-					newX = width - chart.width + chart.margin.left + 12;
-					maxTickText.attr("x", newX);
+				if(locationKey.primary == "left") {
+					if (width + (-x) > chart.width - 12) {
+						newX = width - chart.width + chart.margin.left + 12;
+					}
 				}
 				maxTick.select("rect").attr({
 					x: newX - width,

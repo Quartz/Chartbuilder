@@ -49,7 +49,7 @@ var display = {
 	},
 	margin: {
 		top: "0.8em",
-		right: "0.25em",
+		right: "1.25em",
 		bottom: "0.15em",
 		left: "0.25em"
 	},
