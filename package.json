@@ -77,6 +77,7 @@
     "gulp-gh-pages": "^0.5.4",
     "gulp-stylus": "^2.0.1",
     "gulp-uglify": "^1.1.0",
+    "gulp-util": "^3.0.7",
     "nib": "^1.0.2",
     "nomnom": "^1.8.0",
     "react-addons-test-utils": "^0.14.7",
