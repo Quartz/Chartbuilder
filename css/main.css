@@ -1891,9 +1891,6 @@ svg.renderer-svg tspan {
 .chartbuilder-editor .data-input.dropping .file-drop {
   z-index: 2;
 }
-.chartbuilder-editor .data-input .cb-alert {
-  font-size: 1.2em;
-}
 .chartbuilder-editor .series-control {
   margin: 0 0 10px 0;
 }
