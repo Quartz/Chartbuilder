@@ -7,6 +7,7 @@ var React = require("react");
 var ReactDOM = require("react-dom");
 var PureRenderMixin = require("react-addons-pure-render-mixin");
 var isEqual = require("lodash/isEqual");
+var assign = require("lodash/assign");
 var PropTypes = React.PropTypes;
 var d3 = require("d3");
 
@@ -56,20 +57,11 @@ var SvgRectLabel = React.createClass({
 	},
 
 	getInitialState: function() {
-		return {
+		return assign({
 			dragging: false,
 			origin: { x: 0, y: 0 },
-			element: { x: 0, y: 0 },
-			proportionalComputed: { x: 0, y: 0 },
-			valueComputed: {x: 0, y: 0},
-			values: {x: 0, y: 0},
-			yScale: d3.scale.linear()
-				.domain(this.props.scale.y.domain)
-				.range(this.props.scale.y.range),
-			xScale: d3.time.scale()
-				.domain(this.props.scale.x.domain)
-				.range(this.props.scale.x.range)
-		};
+			values: { x: 0, y: 0 }
+		}, this._computeNewState(this.props));
 	},
 
 	shouldComponentUpdate: function(nextProps, nextState) {
@@ -81,18 +73,24 @@ var SvgRectLabel = React.createClass({
 	},
 
 	componentWillReceiveProps: function(nextProps) {
+		var newState = this._computeNewState(nextProps);
+		this.setState(newState);
+	},
+
+	_computeNewState(props) {
 		var yScale = d3.scale.linear()
-			.domain(nextProps.scale.y.domain)
-			.range(nextProps.scale.y.range);
+			.domain(props.scale.y.domain)
+			.range(props.scale.y.range);
 
 		var xScale = d3.scale.linear()
-			.domain(nextProps.scale.x.domain)
-			.range(nextProps.scale.x.range);
+			.domain(props.scale.x.domain)
+			.range(props.scale.x.range);
 
-		var proportionalComputedPos = this._fromPropotionalPostion(nextProps.settings, nextProps);
+		var proportionalComputedPos = this._fromPropotionalPostion(props.settings, props);
+
 		var valueComputedPos = this._fromValuePosition({
-			x: nextProps.settings.val_x,
-			y: nextProps.settings.val_y
+			x: props.settings.val_x,
+			y: props.settings.val_y
 		}, xScale, yScale);
 
 		var elementPos = {
@@ -100,14 +98,13 @@ var SvgRectLabel = React.createClass({
 			y: valueComputedPos.y || proportionalComputedPos.y
 		};
 
-		this.setState({
+		return {
 			proportionalComputed: proportionalComputedPos,
 			valueComputed: valueComputedPos,
 			element: elementPos,
 			yScale: yScale,
 			xScale: xScale
-		});
-
+		}
 	},
 
 	_getSVGParent: function(el) {
