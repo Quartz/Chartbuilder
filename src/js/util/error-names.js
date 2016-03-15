@@ -46,12 +46,12 @@ var error_names = {
 	},
 	"CANT_AUTO_TYPE": {
 		location: "input",
-		text: "The type of information in the first column of your data cannot be automatically determined. Please seleect one below.",
+		text: "The type of information in the first column of your data cannot be automatically determined. Please select one below.",
 		type: "warning",
 	},
 	"UNEVEN_TICKS": {
 		location: "axis",
-		text: "Your y-axis tick intervals do not divide cleanly",
+		text: "Adjust axis settings to make your y-axis ticks even",
 		type: "warning"
 	},
 	"NO_PREFIX_SUFFIX": {
