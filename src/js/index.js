@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	// Render parent chartbuilder component
 	ReactDOM.render(
 		<Chartbuilder
-			showMobilePreview={true}
+			showMobilePreview={false}
 		/>,
 	container );
 

@@ -93,6 +93,16 @@ var XYRenderer = React.createClass({
 		this.setState({ labelYMax: labelYMax });
 	},
 
+	// Determine how far down vertically the labels should be placed, depending
+	// on presence (or not) of a title
+	_getYOffset: function(props, hasTitle) {
+		if (hasTitle) {
+			return props.displayConfig.margin.top + props.displayConfig.afterTitle;
+		} else {
+			return props.displayConfig.margin.top;
+		}
+	},
+
 	componentWillReceiveProps: function(nextProps) {
 		if (nextProps.chartProps._numSecondaryAxis === 0) {
 			var maxTickWidth = this.state.maxTickWidth;
@@ -108,6 +118,8 @@ var XYRenderer = React.createClass({
 		var axisTicks = [];
 		var labelComponents;
 		var dimensions = this.props.dimensions;
+		var hasTitle = (this.props.metadata.title.length > 0 && this.props.showMetadata);
+		var yOffset = this._getYOffset(this.props, hasTitle);
 
 		// Maintain space between legend and chart area unless all legend labels
 		// have been dragged
@@ -117,13 +129,17 @@ var XYRenderer = React.createClass({
 
 		// Dimensions of the chart area
 		var chartAreaDimensions = {
-			width: (dimensions.width -
-							displayConfig.margin.left - displayConfig.margin.right -
-							displayConfig.padding.left - displayConfig.padding.right -
-							this.state.maxTickWidth.primaryScale - this.state.maxTickWidth.secondaryScale),
-			height: (dimensions.height -
-							 displayConfig.margin.top - displayConfig.margin.bottom -
-							 displayConfig.padding.top - displayConfig.padding.bottom)
+			width: (
+				dimensions.width -
+				displayConfig.margin.left - displayConfig.margin.right -
+				displayConfig.padding.left - displayConfig.padding.right -
+				this.state.maxTickWidth.primaryScale - this.state.maxTickWidth.secondaryScale
+			),
+			height: (
+				dimensions.height -
+				displayConfig.margin.top - displayConfig.margin.bottom -
+				displayConfig.padding.top - displayConfig.padding.bottom
+			)
 		};
 
 		if (this.props.enableResponsive && _chartProps.hasOwnProperty("mobile") && this.props.isSmall) {
@@ -141,7 +157,6 @@ var XYRenderer = React.createClass({
 		// compute margin based on existence of labels and title, based on default
 		// margin set in config
 		var labels = _chartProps._annotations.labels;
-		var hasTitle = (this.props.metadata.title.length > 0 && this.props.showMetadata);
 
 		// compute the max tick width for each scale
 		each(scaleNames, function(scaleKey) {
@@ -203,6 +218,7 @@ var XYRenderer = React.createClass({
 					chartProps={_chartProps}
 					allLabelsDragged={allLabelsDragged}
 					hasTitle={hasTitle}
+					yOffset={yOffset}
 					displayConfig={this.props.displayConfig}
 					styleConfig={this.props.styleConfig}
 					data={dataWithSettings}
@@ -223,6 +239,7 @@ var XYRenderer = React.createClass({
 					chartAreaDimensions={chartAreaDimensions}
 					data={dataWithSettings}
 					hasTitle={hasTitle}
+					yOffset={yOffset}
 					scale={scale}
 					editable={this.props.editable}
 					maxTickWidth={this.state.maxTickWidth}
@@ -265,6 +282,7 @@ var XYChart = React.createClass({
 	propTypes: {
 		chartProps: PropTypes.object.isRequired,
 		hasTitle: PropTypes.bool.isRequired,
+		yOffset: PropTypes.number.isRequired,
 		displayConfig: PropTypes.object.isRequired,
 		styleConfig: PropTypes.object.isRequired,
 		data: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -309,19 +327,6 @@ var XYChart = React.createClass({
 		var el = ReactDOM.findDOMNode(this);
 		drawXY(el, this._getChartState(nextProps));
 		return false;
-	},
-
-	componentWillReceiveProps: function(nextProps) {
-		var yOffset;
-		if (nextProps.hasTitle) {
-			yOffset = nextProps.displayConfig.margin.top + nextProps.displayConfig.afterTitle;
-		} else {
-			yOffset = nextProps.displayConfig.margin.top;
-		}
-
-		this.setState({
-			yOffset: yOffset
-		});
 	},
 
 	_getChartState: function(props) {
@@ -417,7 +422,6 @@ var XYLabels = React.createClass({
 
 	getInitialState: function() {
 		return {
-			yOffset: 10,
 			undraggedLabels: {},
 			dateScaleInfo: null
 		};
@@ -426,15 +430,6 @@ var XYLabels = React.createClass({
 	mixins: [ DateScaleMixin, NumericScaleMixin ],
 
 	componentWillReceiveProps: function(nextProps) {
-		// Determine how far down vertically the labels should be placed, depending
-		// on presence (or not) of a title
-		var yOffset;
-		if (nextProps.hasTitle) {
-			yOffset = nextProps.displayConfig.margin.top + nextProps.displayConfig.afterTitle;
-		} else {
-			yOffset = nextProps.displayConfig.margin.top;
-		}
-
 		/*
 		* We use this XYLabels component's state to save locations of undragged
 		* labels. Dragged labels are saved to the parent store so that they can be
@@ -455,7 +450,6 @@ var XYLabels = React.createClass({
 		}, this), {});
 
 		this.setState({
-			yOffset: yOffset,
 			undraggedLabels: updateUndragged,
 			dateScaleInfo: nextProps.chartProps.scale.hasDate ? this.generateDateScale(nextProps) : null
 		});
@@ -606,7 +600,7 @@ var XYLabels = React.createClass({
 						enableDrag={this._enableDrag}
 						onPositionUpdate={this._handleLabelPositionUpdate}
 						editable={props.editable}
-						offset={{ x: displayConfig.margin.left, y: this.state.yOffset}}
+						offset={{ x: displayConfig.margin.left, y: this.props.yOffset}}
 						colorIndex={chartSetting.colorIndex}
 						settings={labelSettings}
 						prevNode={prevNode}
@@ -620,7 +614,7 @@ var XYLabels = React.createClass({
 			<g
 				ref="chartAnnotations"
 				className="renderer-annotations"
-				transform={"translate(" + [displayConfig.margin.left, this.state.yOffset] + ")" }
+				transform={"translate(" + [displayConfig.margin.left, this.props.yOffset] + ")" }
 			>
 				{labelComponents}
 			</g>
