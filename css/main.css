@@ -568,18 +568,40 @@ body {
   cursor: text;
 }
 .cb-text-area {
+  position: relative;
+}
+.cb-text-area label {
+  position: absolute;
+  top: 10px;
+  left: 15px;
+  color: #cacaca;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 15px;
+  width: 100%;
+}
+.cb-text-area textarea {
   color: #333;
   border: 1px solid #e2e2e2;
   width: 100%;
   font-size: 1.1em;
-  padding: 15px;
+  padding: 35px 15px 15px 15px;
   margin: 0;
   min-height: 10em;
   resize: none;
 }
-.cb-text-area:focus {
+.cb-text-area textarea:focus {
   border: 1px solid #ccc;
   outline: none;
+}
+.cb-text-area.required label:before {
+  content: "*";
+  color: #e55151;
+  margin-right: 5px;
+}
+.cb-text-area.invalid textarea {
+  border-color: #e55151;
 }
 .cb-text-input {
   display: inline-block;
@@ -590,7 +612,7 @@ body {
   font-size: 1.4em;
   top: 21px;
   opacity: 1;
-  margin-left: 10px;
+  left: 10px;
   color: #cacaca;
   position: absolute;
   -webkit-transform: scale(1) translate3d(0, 0, 0);
@@ -609,6 +631,11 @@ body {
   -o-transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
   transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
   z-index: 1;
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
 }
 .cb-text-input label.focus {
   -webkit-transform: scale(0.8) translate3d(0, -11px, 0);
@@ -616,6 +643,14 @@ body {
   -ms-transform: scale(0.8) translate3d(0, -11px, 0);
   -o-transform: scale(0.8) translate3d(0, -11px, 0);
   transform: scale(0.8) translate3d(0, -11px, 0);
+}
+.cb-text-input.required label {
+  width: 90%;
+}
+.cb-text-input.required label:before {
+  content: "*";
+  color: #e55151;
+  margin-right: 5px;
 }
 .cb-text-input input {
   height: 55px;
@@ -628,6 +663,9 @@ body {
 .cb-text-input input:focus {
   border: 1px solid #ccc;
   outline: none;
+}
+.cb-text-input.invalid input {
+  border-color: #e55151;
 }
 .cb-toggle {
   display: block;
