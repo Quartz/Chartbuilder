@@ -499,6 +499,9 @@ span.step-number {
   font-family: Monaco, Lucida Console, monspace;
   height: 12em;
 }
+.data-input label {
+  width: calc(100% - 35px);
+}
 .data-input input[type="file"] {
   pointer-events: none;
   height: 12em;
@@ -762,7 +765,6 @@ span.step-number {
 }
 .chartgrid-editor .editor-options h2 {
   width: 80%;
-  float: left;
 }
 .chartgrid-editor .grid-options {
   display: table;
