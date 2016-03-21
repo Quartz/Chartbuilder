@@ -841,6 +841,12 @@ svg.renderer-svg tspan {
 .d4 {
   font-size: 20px;
 }
+.d4 .leftAxis path.domain {
+  display: none;
+}
+.d4 .xAxis path.domain {
+  display: none;
+}
 .d4 .axis .tick {
   font-family: 'Khula-Light', Arial, Helvetica, sans-serif;
 }

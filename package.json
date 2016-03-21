@@ -1,6 +1,6 @@
 {
   "name": "chartbuilder",
-  "version": "2.5.3",
+  "version": "2.6.0",
   "description": "Easily create beautiful charts",
   "main": "src/js/index.js",
   "scripts": {
@@ -11,7 +11,9 @@
     "test-page": "gulp test-page",
     "dev": "gulp",
     "build": "gulp build",
-    "gh-pages": "npm run build && npm run docs && mv api-docs build && gulp gh-pages"
+    "gh-pages": "npm run build && npm run docs && mv api-docs build && gulp gh-pages",
+    "version": "npm run build && git add -A dist",
+    "postversion": "npm run gh-pages"
   },
   "repository": {
     "type": "git",
