@@ -1906,6 +1906,9 @@ svg.renderer-svg tspan {
   font-family: Monaco, Lucida Console, monspace;
   height: 12em;
 }
+.chartbuilder-editor .data-input label {
+  width: calc(100% - 35px);
+}
 .chartbuilder-editor .data-input input[type="file"] {
   pointer-events: none;
   height: 12em;
@@ -2190,7 +2193,6 @@ svg.renderer-svg tspan {
 }
 .chartbuilder-editor .chartgrid-editor .editor-options h2 {
   width: 80%;
-  float: left;
 }
 .chartbuilder-editor .chartgrid-editor .grid-options {
   display: table;
