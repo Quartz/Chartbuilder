@@ -40,7 +40,7 @@ var chart_sizes = [
 ];
 
 var text_input_values = [
-	{ name: "title", content: "Title" },
+	{ name: "title", content: "Title", isRequired: true },
 	{ name: "credit", content: "Credit" },
 	{ name: "source", content: "Source" }
 ];
@@ -97,6 +97,7 @@ var ChartMetadata = React.createClass({
 				value={metadata[textInput.name]}
 				placeholder={textInput.content}
 				onChange={this._handleMetadataUpdate}
+				isRequired={textInput.isRequired}
 			/>
 		}, this);
 
@@ -131,6 +132,7 @@ var ChartMetadataText = React.createClass({
 					className="meta-option"
 					onChange={this.props.onChange.bind(null, this.props.name)}
 					placeholder={this.props.placeholder}
+					isRequired={this.props.isRequired}
 				/>
 			</div>
 		);
