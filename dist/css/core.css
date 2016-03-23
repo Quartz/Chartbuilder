@@ -499,9 +499,6 @@ span.step-number {
   font-family: Monaco, Lucida Console, monspace;
   height: 12em;
 }
-.data-input label {
-  width: calc(100% - 35px);
-}
 .data-input input[type="file"] {
   pointer-events: none;
   height: 12em;
