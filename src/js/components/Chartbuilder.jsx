@@ -223,6 +223,7 @@ var Chartbuilder = React.createClass({
 					{this._renderErrors()}
 					<ChartExport
 						data={this.state.chartProps.data}
+						enableJSONExport={this.props.enableJSONExport}
 						svgWrapperClassName={svgWrapperClassName.desktop}
 						metadata={this.state.metadata}
 						stepNumber={String(editorSteps + 3)}

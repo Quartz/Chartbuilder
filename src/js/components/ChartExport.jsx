@@ -25,13 +25,19 @@ var ChartExport = React.createClass({
 	propTypes: {
 		stepNumber: PropTypes.string,
 		svgWrapperClassName: PropTypes.string.isRequired,
+		enableJSONExport: PropTypes.bool,
 		sendBase64String: PropTypes.func
+	},
+
+	getDefaultProps: function() {
+		return {
+			enableJSONExport: false,
+		};
 	},
 
 	getInitialState: function() {
 		return {
 			enableSvgExport: true,
-			enableJSONExport: true
 		};
 	},
 
@@ -151,27 +157,28 @@ var ChartExport = React.createClass({
 				key="png-export"
 				className="export-button"
 				onClick={this.downloadPNG}
-				text="Download Image"
+				text="Image"
 			/>
 		];
+
 		if (this.state.enableSvgExport) {
 			chartExportButtons.push(
 				<Button
 					key="svg-export"
 					className="export-button"
 					onClick={this.downloadSVG}
-					text="Download SVG"
+					text="SVG"
 				/>
 			);
 		}
 
-		if (this.state.enableJSONExport) {
+		if (this.props.enableJSONExport) {
 			chartExportButtons.push(
 				<Button
 					key="json-export"
 					className="export-button"
 					onClick={this.downloadJSON}
-					text="Download JSON"
+					text="JSON"
 				/>
 			);
 		}
