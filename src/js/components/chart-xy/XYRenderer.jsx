@@ -24,6 +24,9 @@ var some = require("lodash/some");
 var ChartRendererMixin = require("../mixins/ChartRendererMixin.js");
 var DateScaleMixin = require("../mixins/DateScaleMixin.js");
 var NumericScaleMixin = require("../mixins/NumericScaleMixin.js");
+var LineSeries = require("../series/LineSeries.jsx");
+var BarSeries = require("../series/BarSeries.jsx");
+var MarkSeries = require("../series/MarkSeries.jsx");
 
 
 // Flux actions
@@ -307,27 +310,27 @@ var XYChart = React.createClass({
 
 	mixins: [ DateScaleMixin, NumericScaleMixin ],
 
-	componentDidMount: function() {
-		// Draw chart once mounted
-		var el = ReactDOM.findDOMNode(this);
+	//componentDidMount: function() {
+		//// Draw chart once mounted
+		//var el = ReactDOM.findDOMNode(this);
 
-		if (this.props.chartProps.data.length === 0) {
-			return;
-		} else {
-			// On component mount, delete any existing chart
-			if (el.childNodes[0]) {
-				el.removeChild(el.childNodes[0]);
-			}
-			drawXY(el, this._getChartState(this.props));
-		}
-	},
+		//if (this.props.chartProps.data.length === 0) {
+			//return;
+		//} else {
+			//// On component mount, delete any existing chart
+			//if (el.childNodes[0]) {
+				//el.removeChild(el.childNodes[0]);
+			//}
+			//drawXY(el, this._getChartState(this.props));
+		//}
+	//},
 
-	shouldComponentUpdate: function(nextProps, nextState) {
-		// always update by redrawing the chart
-		var el = ReactDOM.findDOMNode(this);
-		drawXY(el, this._getChartState(nextProps));
-		return false;
-	},
+	//shouldComponentUpdate: function(nextProps, nextState) {
+		//// always update by redrawing the chart
+		//var el = ReactDOM.findDOMNode(this);
+		//drawXY(el, this._getChartState(nextProps));
+		//return false;
+	//},
 
 	_getChartState: function(props) {
 		// Generate and return the state needed to draw the chart. This is what will
@@ -364,9 +367,64 @@ var XYChart = React.createClass({
 	},
 
 	render: function() {
+
+		var dimensions = this.props.dimensions;
+
+		var yScale = d3.scale.linear()
+			.range([dimensions.height, 0])
+			.domain(scale.primaryScale.domain);
+
+		var xScaleSettings = this.generateDateScale(this.props);
+		var xScale = d3.time.scale()
+			.range([0, dimensions.width])
+			.domain(xScaleSettings.domain)
+
+		var line = d3.svg.line()
+			.x(function(d) { return xScale(d.entry); })
+			.y(function(d) { return yScale(d.value); });
+
+		var series = map(this.props.data, function(d, i) {
+			switch (d.type) {
+				case 'line':
+					return (
+						<LineSeries
+							key={i}
+							data={d.values}
+							lineFunc={line}
+							colorIndex={d.colorIndex}
+						/>
+					);
+				case 'column':
+					return (
+						<BarSeries
+							key={i}
+							data={d.values}
+							dimensions={dimensions}
+							xScale={xScale}
+							yScale={yScale}
+							colorIndex={d.colorIndex}
+						/>
+					);
+				case 'scatterPlot':
+					return (
+						<MarkSeries
+							width={dimensions.width}
+							key={i}
+							mark='circle'
+							data={d.values}
+							xScale={xScale}
+							yScale={yScale}
+							colorIndex={d.colorIndex}
+						/>
+					);
+				default:
+					return null;
+			}
+		});
 		// empty <svg:g> that will be drawn into using `ReactDOM.findDOMNode(this)`
 		return (
-			<g className="renderer-chart">
+			<g className="series">
+				{series}
 			</g>
 		);
 	}
