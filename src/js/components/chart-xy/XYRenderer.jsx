@@ -7,6 +7,7 @@ var ReactDOM = require("react-dom");
 var PureRenderMixin = require("react-addons-pure-render-mixin");
 var PropTypes = React.PropTypes;
 var update = require("react-addons-update");
+var rv = require('react-vis');
 
 // Node modules
 var d3 = require("d3");
@@ -213,23 +214,16 @@ var XYRenderer = React.createClass({
 		// chart template, which adds title/credit/source etc
 		return (
 			<g>
-				<XYChart
-					key="xy-chart"
-					chartProps={_chartProps}
-					allLabelsDragged={allLabelsDragged}
-					hasTitle={hasTitle}
-					yOffset={yOffset}
-					displayConfig={this.props.displayConfig}
-					styleConfig={this.props.styleConfig}
-					data={dataWithSettings}
-					dimensions={dimensions}
-					scale={scale}
-					chartAreaDimensions={chartAreaDimensions}
-					metadata={this.props.metadata}
-					labelYMax={this.state.labelYMax}
-					maxTickWidth={this.state.maxTickWidth}
-					axisTicks={axisTicks}
-				/>
+				<rv.XYPlot
+					width={chartAreaDimensions.width}
+					height={chartAreaDimensions.height}
+				>
+					<rv.HorizontalGridLines />
+					<rv.VerticalGridLines />
+					{seriesComponents}
+					<rv.XAxis />
+					<rv.YAxis />
+				</rv.XYPlot>
 				<XYLabels
 					key="xy-labels"
 					chartProps={_chartProps}
@@ -325,7 +319,7 @@ var XYChart = React.createClass({
 	shouldComponentUpdate: function(nextProps, nextState) {
 		// always update by redrawing the chart
 		var el = ReactDOM.findDOMNode(this);
-		drawXY(el, this._getChartState(nextProps));
+		//drawXY(el, this._getChartState(nextProps));
 		return false;
 	},
 

@@ -39,8 +39,8 @@ function dataBySeries(input, opts) {
 				values: parsedInput.data.map(function(d) {
 					return {
 						name: header,
-						entry: d[keyColumn],
-						value: d[header]
+						x: d[keyColumn],
+						y: d[header]
 					};
 				})
 			};

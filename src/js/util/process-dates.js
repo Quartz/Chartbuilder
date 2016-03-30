@@ -251,6 +251,7 @@ var dateFrequencies = {
 
 function humanReadableNumber(n) {
 	//turns a number into an int that is either 1, 2, 5, or a multiple of 10
+	return 1
 	var rounded = Math.round(n);
 	if (rounded < 2) {
 		return 1;
@@ -309,7 +310,7 @@ function autoDateFormatAndFrequency(minDate, maxDate, dateFormat, availableWidth
 	var gapInHours = humanReadableNumber(time_gap / 3600000);
 
 	//make sure that the interval include the maxDate in the interval list
-	maxDate.addMilliseconds(0.1);
+	//maxDate.addMilliseconds(0.1);
 
 	switch (dateFormat) {
 		case "yy":

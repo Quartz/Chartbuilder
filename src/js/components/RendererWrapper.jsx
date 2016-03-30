@@ -18,6 +18,7 @@ var reduce = require("lodash/reduce");
 var keys = require("lodash/keys");
 var update = require("react-addons-update");
 
+var rv = require('react-vis');
 var SvgText = require("./svg/SvgText.jsx");
 
 var ChartViewActions = require("../actions/ChartViewActions");
@@ -281,38 +282,40 @@ var RendererWrapper = React.createClass({
 				/>
 			);
 		}
+		var _chartProps = this.props.model.chartProps;
+		var seriesComponents = _chartProps.chartSettings.map(function(setting, i) {
+			switch (setting.type) {
+				case 'line':
+					return (
+						<rv.LineSeries data={_chartProps.data[i].values} key={i}/>
+					);
+
+				case 'column':
+					return (
+						<rv.VerticalBarSeries data={_chartProps.data[i].values} key={i}/>
+					);
+
+				case 'scatterPlot':
+					return (
+						<rv.MarkSeries data={_chartProps.data[i].values} key={i}/>
+					);
+
+				default:
+					return null;
+			}
+		});
 		return (
 			<div className={["renderer-wrapper", this.state.svgSizeClass, this.props.className].join(" ")}>
-				<svg
-					key={chartType}
-					className={["renderer-svg", svgClassName].join(" ")}
+				<rv.XYPlot
 					width={dimensions.width}
 					height={dimensions.height}
 				>
-					<g className="svg-background-wrap">
-						<rect
-							className="svg-background"
-							width={dimensions.width}
-							height={dimensions.height}
-							x={0}
-							y={0}
-						/>
-					</g>
-					<Renderer
-						width={width}
-						extraHeight={this.state.extraHeight}
-						chartProps={chartProps}
-						dimensions={dimensions}
-						isSmall={isSmall}
-						displayConfig={displayConfig}
-						styleConfig={this.state.styleConfig}
-						showMetadata={this.props.showMetadata}
-						metadata={metadata}
-						editable={this.props.editable}
-						enableResponsive={this.props.enableResponsive}
-					/>
-					{metadataSvg}
-				</svg>
+					<rv.HorizontalGridLines />
+					<rv.VerticalGridLines />
+					{seriesComponents}
+					<rv.XAxis />
+					<rv.YAxis />
+				</rv.XYPlot>
 			</div>
 		);
 	}
