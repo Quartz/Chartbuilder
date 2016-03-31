@@ -248,6 +248,7 @@ svg
 	text.tick
 		font-family $font-sans-light
 		fill $color-chart-axis-text
+		font-size $em_size*0.8
 		shape-rendering crispEdges
 		&[data-anchor="middle"]
 			text
@@ -259,7 +260,7 @@ svg
 		&.orient-top
 			text-anchor start
 		&.orient-bottom
-			text-anchor end
+			text-anchor start
 		&.hidden-svg
 			visibility hidden
 

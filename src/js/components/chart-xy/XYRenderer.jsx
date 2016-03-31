@@ -24,6 +24,8 @@ var some = require("lodash/some");
 var ChartRendererMixin = require("../mixins/ChartRendererMixin.js");
 var DateScaleMixin = require("../mixins/DateScaleMixin.js");
 var NumericScaleMixin = require("../mixins/NumericScaleMixin.js");
+
+// chart elements
 var LineSeries = require("../series/LineSeries.jsx");
 var BarSeries = require("../series/BarSeries.jsx");
 var MarkSeries = require("../series/MarkSeries.jsx");
@@ -378,7 +380,7 @@ var XYChart = React.createClass({
 		console.log('PROPS', props)
 
 		var dimensions = {
-			width: props.dimensions.width - margin_left,
+			width: props.dimensions.width - margin_left * 2,
 			height: props.dimensions.height - margin_top * 2
 		};
 
@@ -390,7 +392,7 @@ var XYChart = React.createClass({
 			<VerticalAxis
 				scaleOptions={scale.primaryScale}
 				orient="left"
-				offset={(props.maxTickWidth.primaryScale - margin_left) * -1}
+				offset={margin_left * -1}
 				width={dimensions.width}
 				scale={primaryScale}
 				key={0}
@@ -448,10 +450,10 @@ var XYChart = React.createClass({
 					return null;
 			}
 		});
-		// empty <svg:g> that will be drawn into using `ReactDOM.findDOMNode(this)`
+
 		return (
 			<g
-				transform={"translate(" + [0, margin_top] + ")"}
+				transform={"translate(" + [margin_left, margin_top] + ")"}
 				className="chart-area xy"
 			>
 				<VerticalGridLines

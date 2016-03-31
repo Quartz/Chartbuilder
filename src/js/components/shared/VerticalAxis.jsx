@@ -2,6 +2,7 @@
 var React = require("react");
 var PropTypes = React.PropTypes;
 var map = require("lodash/map");
+var help = require("../../util/helper.js");
 
 var DY = "0.32em";
 
@@ -38,10 +39,11 @@ var VerticalAxis = React.createClass({
 				<text
 					key={i}
 					className={"tick orient-" + props.orient}
-					transform={"translate(" + [props.offset, props.scale(tickValue)] + ")"}
+					x={0}
+					y={props.scale(tickValue)}
 					dy={DY}
 				>
-					{text}
+					{help.roundToPrecision(tickValue, scaleOptions.precision)}
 				</text>
 			)
 		});
@@ -62,7 +64,7 @@ var VerticalAxis = React.createClass({
 
 		return (
 			<g
-				transform={"translate(" + [transformX, 0] + ")"}
+				transform={"translate(" + [transformX + this.props.offset, 0] + ")"}
 				className="axis vertical-axis"
 			>
 				{text}
