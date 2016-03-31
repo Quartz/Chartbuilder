@@ -28,11 +28,12 @@ var VerticalAxis = React.createClass({
 
 		return map(scaleOptions.tickValues, function(tickValue, i) {
 
+			var formatted = help.roundToPrecision(tickValue, scaleOptions.precision);
 			var text;
 			if (tickValue !== scaleOptions.domain[1]) {
-				text = tickValue;
+				text = formatted
 			} else {
-				text = [scaleOptions.prefix, tickValue, scaleOptions.suffix].join("");
+				text = [scaleOptions.prefix, formatted, scaleOptions.suffix].join("");
 			}
 
 			return (
@@ -43,7 +44,7 @@ var VerticalAxis = React.createClass({
 					y={props.scale(tickValue)}
 					dy={DY}
 				>
-					{help.roundToPrecision(tickValue, scaleOptions.precision)}
+					{text}
 				</text>
 			)
 		});
