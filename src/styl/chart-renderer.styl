@@ -243,3 +243,24 @@ svg
 	stroke-width 3px
 	stroke-linecap round
 	stroke-linejoin round
+
+.axis
+	text.tick
+		font-family $font-sans-light
+		fill $color-chart-axis-text
+		shape-rendering crispEdges
+		&[data-anchor="middle"]
+			text
+				text-anchor middle
+		&.orient-left
+			text-anchor start
+		&.orient-right
+			text-anchor end
+		&.orient-top
+			text-anchor start
+		&.orient-bottom
+			text-anchor end
+
+.grid-lines
+	line.tick
+		stroke $color-chart-gridline

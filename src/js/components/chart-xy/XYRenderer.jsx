@@ -27,6 +27,10 @@ var NumericScaleMixin = require("../mixins/NumericScaleMixin.js");
 var LineSeries = require("../series/LineSeries.jsx");
 var BarSeries = require("../series/BarSeries.jsx");
 var MarkSeries = require("../series/MarkSeries.jsx");
+var VerticalAxis = require("../shared/VerticalAxis.jsx");
+var HorizontalAxis = require("../shared/HorizontalAxis.jsx");
+var VerticalGridLines = require("../shared/VerticalGridLines.jsx");
+var HorizontalGridLines = require("../shared/HorizontalGridLines.jsx");
 
 
 // Flux actions
@@ -367,8 +371,13 @@ var XYChart = React.createClass({
 	},
 
 	render: function() {
+		var margin_top = 40;
+		var margin_left = 20;
 
-		var dimensions = this.props.dimensions;
+		var dimensions = {
+			width: this.props.dimensions.width - margin_left * 2,
+			height: this.props.dimensions.height - margin_top * 2
+		};
 
 		var yScale = d3.scale.linear()
 			.range([dimensions.height, 0])
@@ -423,7 +432,27 @@ var XYChart = React.createClass({
 		});
 		// empty <svg:g> that will be drawn into using `ReactDOM.findDOMNode(this)`
 		return (
-			<g className="series">
+			<g
+				transform={"translate(" + [margin_left, margin_top] + ")"}
+				className="chart-area xy"
+			>
+				<HorizontalGridLines
+					scaleOptions={scale.primaryScale}
+					width={dimensions.width}
+					scale={yScale}
+				/>
+				<VerticalAxis
+					scaleOptions={scale.primaryScale}
+					orient="left"
+					width={dimensions.width}
+					scale={yScale}
+				/>
+				<HorizontalAxis
+					scaleOptions={xScaleSettings}
+					orient="bottom"
+					height={dimensions.height}
+					scale={xScale}
+				/>
 				{series}
 			</g>
 		);
