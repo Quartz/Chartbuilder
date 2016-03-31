@@ -32,7 +32,6 @@ var HorizontalAxis = require("../shared/HorizontalAxis.jsx");
 var VerticalGridLines = require("../shared/VerticalGridLines.jsx");
 var HorizontalGridLines = require("../shared/HorizontalGridLines.jsx");
 
-
 // Flux actions
 var ChartViewActions = require("../../actions/ChartViewActions");
 
@@ -371,60 +370,79 @@ var XYChart = React.createClass({
 	},
 
 	render: function() {
+		var props = this.props;
 		var margin_top = 40;
 		var margin_left = 20;
+		var primaryScale;
+		var secondaryScale;
+		console.log('PROPS', props)
 
 		var dimensions = {
-			width: this.props.dimensions.width - margin_left * 2,
-			height: this.props.dimensions.height - margin_top * 2
+			width: props.dimensions.width - margin_left,
+			height: props.dimensions.height - margin_top * 2
 		};
 
-		var yScale = d3.scale.linear()
+		primaryScale = d3.scale.linear()
 			.range([dimensions.height, 0])
 			.domain(scale.primaryScale.domain);
 
-		var xScaleSettings = this.generateDateScale(this.props);
+		var verticalAxes = [
+			<VerticalAxis
+				scaleOptions={scale.primaryScale}
+				orient="left"
+				offset={(props.maxTickWidth.primaryScale - margin_left) * -1}
+				width={dimensions.width}
+				scale={primaryScale}
+				key={0}
+			/>
+		];
+
+		if (props.chartProps._numSecondaryAxis > 0) {
+			secondaryScale = d3.scale.linear()
+				.range([dimensions.height, 0])
+				.domain(scale.secondaryScale.domain);
+
+			verticalAxes.push(
+				<VerticalAxis
+					scaleOptions={scale.secondaryScale}
+					orient="right"
+					offset={props.maxTickWidth.secondaryScale}
+					width={dimensions.width}
+					scale={secondaryScale}
+					key={1}
+				/>
+			);
+		}
+
+		var xScaleSettings = this.generateDateScale(props);
 		var xScale = d3.time.scale()
-			.range([0, dimensions.width])
+			.range([props.maxTickWidth.primaryScale, dimensions.width])
 			.domain(xScaleSettings.domain)
 
-		var line = d3.svg.line()
-			.x(function(d) { return xScale(d.entry); })
-			.y(function(d) { return yScale(d.value); });
+		var series = map(props.data, function(d, i) {
+			var yScale = (d.altAxis) ? secondaryScale : primaryScale;
 
-		var series = map(this.props.data, function(d, i) {
 			switch (d.type) {
 				case 'line':
 					return (
 						<LineSeries
 							key={i}
+							xScale={xScale}
+							yScale={yScale}
 							data={d.values}
-							lineFunc={line}
 							colorIndex={d.colorIndex}
 						/>
 					);
 				case 'column':
 					return (
-						<BarSeries
-							key={i}
-							data={d.values}
-							dimensions={dimensions}
-							xScale={xScale}
-							yScale={yScale}
-							colorIndex={d.colorIndex}
-						/>
+						<BarSeries key={i} data={d.values} dimensions={dimensions}
+							xScale={xScale} yScale={yScale} colorIndex={d.colorIndex} />
 					);
 				case 'scatterPlot':
 					return (
-						<MarkSeries
-							width={dimensions.width}
-							key={i}
-							mark='circle'
-							data={d.values}
-							xScale={xScale}
-							yScale={yScale}
-							colorIndex={d.colorIndex}
-						/>
+						<MarkSeries width={dimensions.width} key={i} mark='circle'
+							data={d.values} xScale={xScale} yScale={yScale}
+							colorIndex={d.colorIndex} />
 					);
 				default:
 					return null;
@@ -433,20 +451,20 @@ var XYChart = React.createClass({
 		// empty <svg:g> that will be drawn into using `ReactDOM.findDOMNode(this)`
 		return (
 			<g
-				transform={"translate(" + [margin_left, margin_top] + ")"}
+				transform={"translate(" + [0, margin_top] + ")"}
 				className="chart-area xy"
 			>
+				<VerticalGridLines
+					scaleOptions={xScaleSettings}
+					height={dimensions.height}
+					scale={xScale}
+				/>
 				<HorizontalGridLines
 					scaleOptions={scale.primaryScale}
 					width={dimensions.width}
-					scale={yScale}
+					scale={primaryScale}
 				/>
-				<VerticalAxis
-					scaleOptions={scale.primaryScale}
-					orient="left"
-					width={dimensions.width}
-					scale={yScale}
-				/>
+				{verticalAxes}
 				<HorizontalAxis
 					scaleOptions={xScaleSettings}
 					orient="bottom"

@@ -11,12 +11,14 @@ var VerticalAxis = React.createClass({
 		scaleOptions: PropTypes.object,
 		orient: PropTypes.string,
 		width: PropTypes.number,
-		scale: PropTypes.func
+		scale: PropTypes.func,
+		offset: PropTypes.number
 	},
 
 	getDefaultProps: function() {
 		return {
-			orient: "left"
+			orient: "left",
+			offset: 0
 		}
 	},
 
@@ -36,7 +38,7 @@ var VerticalAxis = React.createClass({
 				<text
 					key={i}
 					className={"tick orient-" + props.orient}
-					transform={"translate(0," + props.scale(tickValue) + ")"}
+					transform={"translate(" + [props.offset, props.scale(tickValue)] + ")"}
 					dy={DY}
 				>
 					{text}
