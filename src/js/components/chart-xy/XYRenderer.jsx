@@ -105,9 +105,9 @@ var XYRenderer = React.createClass({
 	// on presence (or not) of a title
 	_getYOffset: function(props, hasTitle) {
 		if (hasTitle) {
-			return props.displayConfig.margin.top + props.displayConfig.afterTitle;
+			return props.displayConfig.afterTitle;
 		} else {
-			return props.displayConfig.margin.top;
+			return 0;
 		}
 	},
 
@@ -217,10 +217,15 @@ var XYRenderer = React.createClass({
 			);
 		}
 
+		var translate = [
+			displayConfig.margin.left,
+			displayConfig.margin.top,
+		];
+
 		// Create array of chart-specific components that will be passed to the Svg
 		// chart template, which adds title/credit/source etc
 		return (
-			<g>
+			<g transform={"translate(" + translate + ")"} className="chart-outer">
 				<XYChart
 					key="xy-chart"
 					chartProps={_chartProps}
@@ -373,27 +378,23 @@ var XYChart = React.createClass({
 
 	render: function() {
 		var props = this.props;
+		var maxTickWidth = props.maxTickWidth;
+		var chartAreaDimensions = props.chartAreaDimensions;
 		var margin_top = 40;
 		var margin_left = 20;
 		var primaryScale;
 		var secondaryScale;
-		console.log('PROPS', props)
-
-		var dimensions = {
-			width: props.dimensions.width - margin_left * 2,
-			height: props.dimensions.height - margin_top * 2
-		};
 
 		primaryScale = d3.scale.linear()
-			.range([dimensions.height, 0])
+			.range([chartAreaDimensions.height, 0])
 			.domain(scale.primaryScale.domain);
 
 		var verticalAxes = [
 			<VerticalAxis
 				scaleOptions={scale.primaryScale}
 				orient="left"
-				offset={margin_left * -1}
-				width={dimensions.width}
+				offset={maxTickWidth.primaryScale * -1}
+				width={chartAreaDimensions.width}
 				scale={primaryScale}
 				key={0}
 			/>
@@ -401,7 +402,7 @@ var XYChart = React.createClass({
 
 		if (props.chartProps._numSecondaryAxis > 0) {
 			secondaryScale = d3.scale.linear()
-				.range([dimensions.height, 0])
+				.range([chartAreaDimensions.height, 0])
 				.domain(scale.secondaryScale.domain);
 
 			verticalAxes.push(
@@ -409,7 +410,7 @@ var XYChart = React.createClass({
 					scaleOptions={scale.secondaryScale}
 					orient="right"
 					offset={props.maxTickWidth.secondaryScale}
-					width={dimensions.width}
+					width={chartAreaDimensions.width}
 					scale={secondaryScale}
 					key={1}
 				/>
@@ -418,7 +419,7 @@ var XYChart = React.createClass({
 
 		var xScaleSettings = this.generateDateScale(props);
 		var xScale = d3.time.scale()
-			.range([props.maxTickWidth.primaryScale, dimensions.width])
+			.range([0, chartAreaDimensions.width])
 			.domain(xScaleSettings.domain)
 
 		var series = map(props.data, function(d, i) {
@@ -437,12 +438,12 @@ var XYChart = React.createClass({
 					);
 				case 'column':
 					return (
-						<BarSeries key={i} data={d.values} dimensions={dimensions}
+						<BarSeries key={i} data={d.values} dimensions={chartAreaDimensions}
 							xScale={xScale} yScale={yScale} colorIndex={d.colorIndex} />
 					);
 				case 'scatterPlot':
 					return (
-						<MarkSeries width={dimensions.width} key={i} mark='circle'
+						<MarkSeries width={chartAreaDimensions.width} key={i} mark='circle'
 							data={d.values} xScale={xScale} yScale={yScale}
 							colorIndex={d.colorIndex} />
 					);
@@ -453,27 +454,29 @@ var XYChart = React.createClass({
 
 		return (
 			<g
-				transform={"translate(" + [margin_left, margin_top] + ")"}
+				transform={"translate(" + [props.maxTickWidth.primaryScale, margin_top] + ")"}
 				className="chart-area xy"
 			>
 				<VerticalGridLines
 					scaleOptions={xScaleSettings}
-					height={dimensions.height}
+					height={chartAreaDimensions.height}
 					scale={xScale}
 				/>
 				<HorizontalGridLines
 					scaleOptions={scale.primaryScale}
-					width={dimensions.width}
+					width={chartAreaDimensions.width}
 					scale={primaryScale}
 				/>
 				{verticalAxes}
 				<HorizontalAxis
 					scaleOptions={xScaleSettings}
 					orient="bottom"
-					height={dimensions.height}
+					height={chartAreaDimensions.height}
 					scale={xScale}
 				/>
-				{series}
+				<g className="series">
+					{series}
+				</g>
 			</g>
 		);
 	}
@@ -721,7 +724,7 @@ var XYLabels = React.createClass({
 			<g
 				ref="chartAnnotations"
 				className="renderer-annotations"
-				transform={"translate(" + [displayConfig.margin.left, this.props.yOffset] + ")" }
+				transform={"translate(" + [0, this.props.yOffset] + ")" }
 			>
 				{labelComponents}
 			</g>

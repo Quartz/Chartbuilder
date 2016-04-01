@@ -22,7 +22,7 @@ var VerticalGridLines = React.createClass({
 					x1={scalePos}
 					x2={scalePos}
 					y1={props.height}
-					y2="18"
+					y2="0"
 				/>
 			)
 		});

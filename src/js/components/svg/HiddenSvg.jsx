@@ -91,7 +91,7 @@ var HiddenSvgAxis = React.createClass({
 			);
 		}, this);
 		return (
-			<g className="hidden-svg" transform={"translate(" + [0, -100] + ")"}>
+			<g className="hidden-svg" transform={"translate(" + [0, 100] + ")"}>
 				<g className="axis">
 					{tickText}
 				</g>
