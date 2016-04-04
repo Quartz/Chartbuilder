@@ -26,6 +26,7 @@ var DateScaleMixin = require("../mixins/DateScaleMixin.js");
 var NumericScaleMixin = require("../mixins/NumericScaleMixin.js");
 
 // chart elements
+var Chart = require("../svg/Chart.jsx");
 var LineSeries = require("../series/LineSeries.jsx");
 var BarSeries = require("../series/BarSeries.jsx");
 var MarkSeries = require("../series/MarkSeries.jsx");
