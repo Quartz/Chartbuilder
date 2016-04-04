@@ -231,9 +231,6 @@ var Chartbuilder = React.createClass({
 						model={this.state}
 					/>
 				</div>
-				<div className="chartbuilder-canvas">
-					<Canvas />
-				</div>
 			</div>
 		);
 	},

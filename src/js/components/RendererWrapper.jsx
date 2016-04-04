@@ -282,22 +282,14 @@ var RendererWrapper = React.createClass({
 			);
 		}
 		return (
-			<div className={["renderer-wrapper", this.state.svgSizeClass, this.props.className].join(" ")}>
+			<div id="renderer" className={["renderer-wrapper", this.state.svgSizeClass, this.props.className].join(" ")}>
+				<div className="target-child"> <h2>{metadata.title}</h2> </div>
 				<svg
 					key={chartType}
-					className={["renderer-svg", svgClassName].join(" ")}
+					className={["target-child", "renderer-svg", svgClassName].join(" ")}
 					width={dimensions.width}
 					height={dimensions.height}
 				>
-					<g className="svg-background-wrap">
-						<rect
-							className="svg-background"
-							width={dimensions.width}
-							height={dimensions.height}
-							x={0}
-							y={0}
-						/>
-					</g>
 					<Renderer
 						width={width}
 						extraHeight={this.state.extraHeight}
@@ -311,7 +303,6 @@ var RendererWrapper = React.createClass({
 						editable={this.props.editable}
 						enableResponsive={this.props.enableResponsive}
 					/>
-					{metadataSvg}
 				</svg>
 			</div>
 		);

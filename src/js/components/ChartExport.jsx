@@ -8,6 +8,7 @@ var d3 = require("d3");
 
 var Button = require("chartbuilder-ui").Button;
 var saveSvgAsPng = require("save-svg-as-png");
+var multiSVGtoPNG = require("../util/multiSvgToPng");
 
 function outerHTML(el) {
 	var outer = document.createElement("div");
@@ -102,7 +103,29 @@ var ChartExport = React.createClass({
 
 	downloadPNG: function() {
 		filename = this._makeFilename("png");
-		saveSvgAsPng.saveSvgAsPng(this.state.chartNode, filename, { scale: 2.0 });
+		//saveSvgAsPng.saveSvgAsPng(this.state.chartNode, filename, { scale: 2.0 });
+
+		multiSVGtoPNG.convertToSVG({
+			input:'#renderer',
+			selector:'.target-child',
+			output:'#temp-svg'
+		});
+		/*
+		Write the now svg only contents of 'output' to a canvas element
+		*/
+		var imgData = multiSVGtoPNG.encode({
+			input:'#temp-svg',
+			output:'#canvas-output',
+			scale: 1
+		});
+		/*
+		Download the rendered images as an .png
+		*/
+	 console.log(imgData)
+		multiSVGtoPNG.downloadPNG({
+			data: imgData,
+			filename: 'testing'
+		});
 	},
 
 	_autoClickDownload: function(filename, href) {

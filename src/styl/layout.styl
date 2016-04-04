@@ -96,14 +96,17 @@ select
 	height 3em
 
 canvas
-	display none
+	position relative
+	width 100%
+	height auto
+	background #f9f9f9
 
 .hide
 	display none
 
 .clearfix
 	clear both
-	
+
 *
 	-ms-overflow-style none
 
@@ -182,7 +185,7 @@ canvas
 	padding 0 10px
 	min-width 100px
 	@import 'chart-editor.styl'
-	
+
 @media screen and (max-width: $single_column_breakpoint)
 	.header
 		position relative
