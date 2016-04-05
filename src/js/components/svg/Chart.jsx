@@ -14,7 +14,8 @@ var Chart = React.createClass({
 		dimensions: PropTypes.object,
 		chartType: PropTypes.string,
 		metadata: PropTypes.object,
-		margin: PropTypes.object
+		margin: PropTypes.object,
+		displayConfig: PropTypes.object
 	},
 
 	_createTitle: function() {
@@ -29,6 +30,15 @@ var Chart = React.createClass({
 		);
 	},
 
+	_getYOffset: function(props) {
+		if (props.metadata.title.length > 0) {
+			return props.displayConfig.afterTitle;
+		} else {
+			return 0;
+		}
+	},
+
+
 	render: function() {
 		var props = this.props;
 		var children = React.Children.toArray(props.children);
@@ -37,7 +47,10 @@ var Chart = React.createClass({
 			return React.cloneElement(child, childProps);
 		});
 
-		var translate = [ props.margin.left, props.margin.top ];
+		var translate = [
+			props.margin.left,
+			props.margin.top + this._getYOffset(props)
+		];
 
 		return (
 			<svg width={props.outerDimensions.width} height={props.outerDimensions.height}>

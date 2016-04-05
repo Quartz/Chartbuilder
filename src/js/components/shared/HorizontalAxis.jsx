@@ -10,8 +10,8 @@ var HorizontalAxis = React.createClass({
 	propTypes: {
 		scaleOptions: PropTypes.object,
 		orient: PropTypes.string,
-		height: PropTypes.number,
-		scale: PropTypes.func
+		dimensions: PropTypes.object,
+		xScale: PropTypes.func
 	},
 
 	getDefaultProps: function() {
@@ -36,7 +36,7 @@ var HorizontalAxis = React.createClass({
 				<text
 					key={i}
 					className={"tick orient-" + props.orient}
-					transform={"translate(" + [props.scale(tickValue), 0] + ")"}
+					transform={"translate(" + [props.xScale(tickValue), 0] + ")"}
 					dy={DY}
 				>
 					{text}
@@ -55,8 +55,9 @@ var HorizontalAxis = React.createClass({
 	},
 
 	render: function() {
-		var ticks = this._generateTicks(this.props);
-		var transformY = this._getTransform(this.props.orient, this.props.height);
+		var props = this.props;
+		var ticks = this._generateTicks(props);
+		var transformY = this._getTransform(props.orient, props.dimensions.height);
 
 		return (
 			<g
