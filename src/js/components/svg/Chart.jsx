@@ -57,8 +57,8 @@ var Chart = React.createClass({
 				<BackgroundRect dimensions={props.outerDimensions} />
 				{this._createTitle()}
 				<g
+					className={"chart chart-" + props.chartType}
 					transform={"translate(" + translate + ")"}
-					clasName={"chart chart-" + props.chartType}
 				>
 					{childrenWithProps}
 				</g>

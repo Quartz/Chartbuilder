@@ -7,13 +7,14 @@ var MarkSeries = React.createClass({
 
 	propTypes: {
 		data: PropTypes.array,
+		dimensions: PropTypes.object,
 		xScale: PropTypes.func,
 		yScale: PropTypes.func
 	},
 
 	render: function() {
 		var props = this.props;
-		var radius = props.width * 0.005;
+		var radius = props.dimensions.width * 0.005;
 		var marks = map(props.data, function(d, i) {
 			return (
 				<circle

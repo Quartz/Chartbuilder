@@ -61,8 +61,8 @@ var HorizontalAxis = React.createClass({
 
 		return (
 			<g
-				transform={"translate(" + [0, transformY + 20] + ")"}
 				className="axis horizontal-axis"
+				transform={"translate(" + [0, transformY + 20] + ")"}
 			>
 				{ticks}
 			</g>

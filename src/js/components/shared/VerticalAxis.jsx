@@ -65,8 +65,8 @@ var VerticalAxis = React.createClass({
 
 		return (
 			<g
-				transform={"translate(" + [transformX + this.props.offset, 0] + ")"}
 				className="axis vertical-axis"
+				transform={"translate(" + [transformX + this.props.offset, 0] + ")"}
 			>
 				{text}
 			</g>

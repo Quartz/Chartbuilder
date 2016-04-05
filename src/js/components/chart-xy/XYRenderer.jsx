@@ -305,7 +305,6 @@ var XYRenderer = React.createClass({
 				{series}
 				<HorizontalAxis scaleOptions={xScaleSettings} orient="bottom" />
 				{verticalAxes}
-				{HiddenAxes}
 				<XYLabels
 					key="xy-labels"
 					chartProps={_chartProps}
@@ -316,6 +315,7 @@ var XYRenderer = React.createClass({
 					updateLabelYMax={this._updateLabelYMax}
 					labelYMax={this.state.labelYMax}
 				/>
+				{HiddenAxes}
 			</Chart>
 		);
 	}
@@ -512,29 +512,23 @@ var XYLabels = React.createClass({
 					prevNode = this._getPrevUndraggedNode(i - 1, this.state.undraggedLabels);
 				}
 
-				var scales = this.props.chartProps.scale;
-				yScale_info = !chartSetting.altAxis ? scales.primaryScale : scales.secondaryScale;
-				xScale_info = xScaleInfo(this.props.outerDimensions.width,padding,styleConfig,displayConfig,{dateSettings: this.state.dateScaleInfo});
+				//var scales = this.props.chartProps.scale;
+				//yScale_info = !chartSetting.altAxis ? props. : scales.secondaryScale;
+				//xScale_info = xScaleInfo(this.props.outerDimensions.width,padding,styleConfig,displayConfig,{dateSettings: this.state.dateScaleInfo});
 
-				var yRange = [
-					this.props.dimensions.height - padding.bottom - displayConfig.margin.bottom,
-					padding.top + displayConfig.margin.top
-				];
+				//var yRange = [
+					//this.props.dimensions.height - padding.bottom - displayConfig.margin.bottom,
+					//padding.top + displayConfig.margin.top
+				//];
 
-				var xRange = props.chartProps.scale.hasDate ? [
-					padding.left + displayConfig.margin.left,
-					xScale_info.rangeR-padding.right-displayConfig.margin.right-this.props.maxTickWidth.secondaryScale - displayConfig.minPaddingOuter
-				] : [];
+				//var xRange = props.chartProps.scale.hasDate ? [
+					//padding.left + displayConfig.margin.left,
+					//xScale_info.rangeR-padding.right-displayConfig.margin.right-this.props.maxTickWidth.secondaryScale - displayConfig.minPaddingOuter
+				//] : [];
 
 				scale = {
-					y: {
-						domain: yScale_info.domain,
-						range: yRange
-					},
-					x: {
-						domain: xScale_info.domain ? xScale_info.domain : [],
-						range: xRange
-					}
+					yScale: props.yScale,
+					xScale: props.xScale,
 				};
 
 				labelComponents.push(
@@ -562,7 +556,7 @@ var XYLabels = React.createClass({
 			<g
 				ref="chartAnnotations"
 				className="renderer-annotations"
-				transform={"translate(" + [0, this.props.yOffset] + ")" }
+				transform={"translate(" + [0, 0] + ")" }
 			>
 				{labelComponents}
 			</g>

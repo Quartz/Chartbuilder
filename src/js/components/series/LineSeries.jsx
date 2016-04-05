@@ -20,10 +20,12 @@ var LineSeries = React.createClass({
 			.y(function(d) { return props.yScale(d.value); });
 
 		return (
-			<path
-				className={"series-line-path color-index-" + props.colorIndex}
-				d={lineFunc(props.data)}
-			/>
+			<g className="series line-series">
+				<path
+					className={"series-line-path color-index-" + props.colorIndex}
+					d={lineFunc(props.data)}
+				/>
+			</g>
 		);
 	}
 
