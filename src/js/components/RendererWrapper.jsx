@@ -24,6 +24,7 @@ var ChartViewActions = require("../actions/ChartViewActions");
 var convertConfig = require("../util/parse-config-values");
 var SessionStore = require("../stores/SessionStore");
 var breakpoints = require("../config/chart-breakpoints");
+var BackgroundRect = require("./svg/BackgroundRect.jsx");
 var ChartFooter = require("./svg/ChartFooter.jsx");
 
 /*
@@ -255,64 +256,48 @@ var RendererWrapper = React.createClass({
 			left: margin.left
 		};
 
-		if (this.props.showMetadata) {
-			if (metadata.title && metadata.title !== "") {
-				title = (
-					<SvgText
-						text={metadata.title}
-						key="title"
-						translate={[translate.left, translate.top]}
-						align="top"
-						className="svg-text-title"
-					/>
-				);
-				metadataSvg.push(title);
-			}
+		//if (this.props.showMetadata) {
+			//if (metadata.title && metadata.title !== "") {
+				//title = (
+					//<SvgText
+						//text={metadata.title}
+						//key="title"
+						//translate={[translate.left, translate.top]}
+						//align="top"
+						//className="svg-text-title"
+					///>
+				//);
+				//metadataSvg.push(title);
+			//}
 
-			metadataSvg.push(
-				<ChartFooter
-					metadata={metadata}
-					extraHeight={this.state.extraHeight}
-					key="chartFooter"
-					translate={translate}
-					onUpdate={this._handleSvgUpdate.bind(null, "extraHeight")}
-					chartWidth={dimensions.width - margin.left - margin.right}
-					className="svg-credit-data"
-				/>
-			);
-		}
+			//metadataSvg.push(
+				//<ChartFooter
+					//metadata={metadata}
+					//extraHeight={this.state.extraHeight}
+					//key="chartFooter"
+					//translate={translate}
+					//onUpdate={this._handleSvgUpdate.bind(null, "extraHeight")}
+					//chartWidth={dimensions.width - margin.left - margin.right}
+					//className="svg-credit-data"
+				///>
+			//);
+		//}
+
 		return (
 			<div className={["renderer-wrapper", this.state.svgSizeClass, this.props.className].join(" ")}>
-				<svg
-					key={chartType}
-					className={["renderer-svg", svgClassName].join(" ")}
-					width={dimensions.width}
-					height={dimensions.height}
-				>
-					<g className="svg-background-wrap">
-						<rect
-							className="svg-background"
-							width={dimensions.width}
-							height={dimensions.height}
-							x={0}
-							y={0}
-						/>
-					</g>
-					<Renderer
-						width={width}
-						extraHeight={this.state.extraHeight}
-						chartProps={chartProps}
-						dimensions={dimensions}
-						isSmall={isSmall}
-						displayConfig={displayConfig}
-						styleConfig={this.state.styleConfig}
-						showMetadata={this.props.showMetadata}
-						metadata={metadata}
-						editable={this.props.editable}
-						enableResponsive={this.props.enableResponsive}
-					/>
-					{metadataSvg}
-				</svg>
+				<Renderer
+					width={width}
+					extraHeight={this.state.extraHeight}
+					chartProps={chartProps}
+					dimensions={dimensions}
+					isSmall={isSmall}
+					displayConfig={displayConfig}
+					styleConfig={this.state.styleConfig}
+					showMetadata={this.props.showMetadata}
+					metadata={metadata}
+					editable={this.props.editable}
+					enableResponsive={this.props.enableResponsive}
+				/>
 			</div>
 		);
 	}

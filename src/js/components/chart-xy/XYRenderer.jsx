@@ -26,6 +26,7 @@ var DateScaleMixin = require("../mixins/DateScaleMixin.js");
 var NumericScaleMixin = require("../mixins/NumericScaleMixin.js");
 
 // chart elements
+var Chart = require("../svg/Chart.jsx");
 var LineSeries = require("../series/LineSeries.jsx");
 var BarSeries = require("../series/BarSeries.jsx");
 var MarkSeries = require("../series/MarkSeries.jsx");
@@ -89,7 +90,7 @@ var XYRenderer = React.createClass({
 		};
 	},
 
-	mixins: [ChartRendererMixin],
+	mixins: [ChartRendererMixin, DateScaleMixin],
 
 	_handleMaxTickWidth: function(k, v) {
 		var maxTickWidth = this.state.maxTickWidth;
@@ -119,9 +120,37 @@ var XYRenderer = React.createClass({
 		}
 	},
 
+	_generateSeries: function(data, xScale, primaryScale, secondaryScale) {
+		return map(data, function(d, i) {
+			var yScale = (d.altAxis) ? secondaryScale : primaryScale;
+			switch (d.type) {
+				case 'line':
+					return (
+						<LineSeries key={i} yScale={yScale}
+						data={d.values} colorIndex={d.colorIndex} />
+					);
+				case 'column':
+					return (
+						<BarSeries key={i} data={d.values}
+							yScale={yScale} colorIndex={d.colorIndex} />
+					);
+				case 'scatterPlot':
+					return (
+						<MarkSeries  key={i} mark='circle' data={d.values}
+							yScale={yScale} colorIndex={d.colorIndex} />
+					);
+				default:
+					return null;
+			}
+		});
+	},
+
 	render: function() {
+		var props = this.props;
 		var _chartProps = this.props.chartProps;
 		var displayConfig = this.props.displayConfig;
+		var maxTickWidth = this.state.maxTickWidth;
+		var scale = _chartProps.scale;
 		var axis = d3.svg.axis();
 		var axisTicks = [];
 		var labelComponents;
@@ -129,11 +158,8 @@ var XYRenderer = React.createClass({
 		var hasTitle = (this.props.metadata.title.length > 0 && this.props.showMetadata);
 		var yOffset = this._getYOffset(this.props, hasTitle);
 
-		// Maintain space between legend and chart area unless all legend labels
-		// have been dragged
-		var allLabelsDragged = reduce(_chartProps._annotations.labels.values, function(prev, value) {
-			return (prev === true && value.dragged === true);
-		}, true);
+		// apply `chartSettings` to data
+		var dataWithSettings = this._applySettingsToData(_chartProps);
 
 		// Dimensions of the chart area
 		var chartAreaDimensions = {
@@ -141,7 +167,7 @@ var XYRenderer = React.createClass({
 				dimensions.width -
 				displayConfig.margin.left - displayConfig.margin.right -
 				displayConfig.padding.left - displayConfig.padding.right -
-				this.state.maxTickWidth.primaryScale - this.state.maxTickWidth.secondaryScale
+				maxTickWidth.primaryScale - maxTickWidth.secondaryScale
 			),
 			height: (
 				dimensions.height -
@@ -149,6 +175,54 @@ var XYRenderer = React.createClass({
 				displayConfig.padding.top - displayConfig.padding.bottom
 			)
 		};
+
+		var primaryScale;
+		var secondaryScale;
+
+		primaryScale = d3.scale.linear()
+			.range([chartAreaDimensions.height, 0])
+			.domain(scale.primaryScale.domain);
+
+		var verticalAxes = [
+			<VerticalAxis
+				scaleOptions={scale.primaryScale}
+				orient="left"
+				offset={maxTickWidth.primaryScale * -1}
+				width={chartAreaDimensions.width}
+				scale={primaryScale}
+				key={0}
+			/>
+		];
+
+		if (props.chartProps._numSecondaryAxis > 0) {
+			secondaryScale = d3.scale.linear()
+				.range([chartAreaDimensions.height, 0])
+				.domain(scale.secondaryScale.domain);
+
+			verticalAxes.push(
+				<VerticalAxis
+					scaleOptions={scale.secondaryScale}
+					orient="right"
+					offset={maxTickWidth.secondaryScale}
+					width={chartAreaDimensions.width}
+					scale={secondaryScale}
+					key={1}
+				/>
+			);
+		}
+
+		var xScaleSettings = this.generateDateScale(props);
+		var xScale = d3.time.scale()
+			.range([0, chartAreaDimensions.width])
+			.domain(xScaleSettings.domain)
+
+		var series = this._generateSeries(dataWithSettings, xScale, primaryScale, secondaryScale);
+
+		// Maintain space between legend and chart area unless all legend labels
+		// have been dragged
+		var allLabelsDragged = reduce(_chartProps._annotations.labels.values, function(prev, value) {
+			return (prev === true && value.dragged === true);
+		}, true);
 
 		if (this.props.enableResponsive && _chartProps.hasOwnProperty("mobile") && this.props.isSmall) {
 			if (_chartProps.mobile.scale) {
@@ -159,9 +233,6 @@ var XYRenderer = React.createClass({
 		} else {
 			scale = _chartProps.scale;
 		}
-
-		// apply `chartSettings` to data
-		var dataWithSettings = this._applySettingsToData(_chartProps);
 		// compute margin based on existence of labels and title, based on default
 		// margin set in config
 		var labels = _chartProps._annotations.labels;
@@ -213,7 +284,7 @@ var XYRenderer = React.createClass({
 		if (this.state.maxTickWidth.primaryScale <= 0) {
 			// We have not yet calculated maxTickWidth
 			return (
-				<g>{HiddenAxes}</g>
+				<svg><g>{HiddenAxes}</g></svg>
 			);
 		}
 
@@ -225,43 +296,21 @@ var XYRenderer = React.createClass({
 		// Create array of chart-specific components that will be passed to the Svg
 		// chart template, which adds title/credit/source etc
 		return (
-			<g transform={"translate(" + translate + ")"} className="chart-outer">
-				<XYChart
-					key="xy-chart"
-					chartProps={_chartProps}
-					allLabelsDragged={allLabelsDragged}
-					hasTitle={hasTitle}
-					yOffset={yOffset}
-					displayConfig={this.props.displayConfig}
-					styleConfig={this.props.styleConfig}
-					data={dataWithSettings}
-					dimensions={dimensions}
-					scale={scale}
-					chartAreaDimensions={chartAreaDimensions}
-					metadata={this.props.metadata}
-					labelYMax={this.state.labelYMax}
-					maxTickWidth={this.state.maxTickWidth}
-					axisTicks={axisTicks}
-				/>
-				<XYLabels
-					key="xy-labels"
-					chartProps={_chartProps}
-					allLabelsDragged={allLabelsDragged}
-					displayConfig={this.props.displayConfig}
-					styleConfig={this.props.styleConfig}
-					chartAreaDimensions={chartAreaDimensions}
-					data={dataWithSettings}
-					hasTitle={hasTitle}
-					yOffset={yOffset}
-					scale={scale}
-					editable={this.props.editable}
-					maxTickWidth={this.state.maxTickWidth}
-					dimensions={dimensions}
-					updateLabelYMax={this._updateLabelYMax}
-					labelYMax={this.state.labelYMax}
-				/>
+			<Chart
+				chartType="xy"
+				metadata={this.props.metadata}
+				outerDimensions={dimensions}
+				dimensions={chartAreaDimensions}
+				margin={{left: displayConfig.margin.left, top: displayConfig.margin.top}}
+				xScale={xScale}
+				yScale={primaryScale}
+			>
+				<VerticalGridLines scaleOptions={xScaleSettings} />
+				<HorizontalGridLines scaleOptions={scale.primaryScale} />
+				{series}
+				{verticalAxes}
 				{HiddenAxes}
-			</g>
+			</Chart>
 		);
 	}
 });
@@ -342,39 +391,39 @@ var XYChart = React.createClass({
 		//return false;
 	//},
 
-	_getChartState: function(props) {
-		// Generate and return the state needed to draw the chart. This is what will
-		// passed to the d4/d3 draw function.
-		var dateSettings;
-		var numericSettings;
-		if (props.chartProps.scale.hasDate) {
-			dateSettings = this.generateDateScale(props);
-		}
-		else if (props.chartProps.scale.isNumeric) {
-			numericSettings = this.generateNumericScale(props)
-		}
+	//_getChartState: function(props) {
+		//// Generate and return the state needed to draw the chart. This is what will
+		//// passed to the d4/d3 draw function.
+		//var dateSettings;
+		//var numericSettings;
+		//if (props.chartProps.scale.hasDate) {
+			//dateSettings = this.generateDateScale(props);
+		//}
+		//else if (props.chartProps.scale.isNumeric) {
+			//numericSettings = this.generateNumericScale(props)
+		//}
 
-		var computedPadding = computePadding(props);
-		var hasColumn = some(props.chartProps.chartSettings, function(setting) {
-			return setting.type == "column";
-		});
+		//var computedPadding = computePadding(props);
+		//var hasColumn = some(props.chartProps.chartSettings, function(setting) {
+			//return setting.type == "column";
+		//});
 
-		return {
-			chartRenderer: cb_xy(),
-			styleConfig: props.styleConfig,
-			displayConfig: props.displayConfig,
-			dateSettings: dateSettings,
-			numericSettings: numericSettings,
-			maxTickWidth: props.maxTickWidth,
-			hasColumn: hasColumn,
-			axisTicks: props.axisTicks,
-			dimensions: props.dimensions,
-			data: props.data,
-			padding: computedPadding,
-			chartProps: props.chartProps,
-			scale: props.scale
-		};
-	},
+		//return {
+			//chartRenderer: cb_xy(),
+			//styleConfig: props.styleConfig,
+			//displayConfig: props.displayConfig,
+			//dateSettings: dateSettings,
+			//numericSettings: numericSettings,
+			//maxTickWidth: props.maxTickWidth,
+			//hasColumn: hasColumn,
+			//axisTicks: props.axisTicks,
+			//dimensions: props.dimensions,
+			//data: props.data,
+			//padding: computedPadding,
+			//chartProps: props.chartProps,
+			//scale: props.scale
+		//};
+	//},
 
 	render: function() {
 		var props = this.props;
@@ -421,36 +470,6 @@ var XYChart = React.createClass({
 		var xScale = d3.time.scale()
 			.range([0, chartAreaDimensions.width])
 			.domain(xScaleSettings.domain)
-
-		var series = map(props.data, function(d, i) {
-			var yScale = (d.altAxis) ? secondaryScale : primaryScale;
-
-			switch (d.type) {
-				case 'line':
-					return (
-						<LineSeries
-							key={i}
-							xScale={xScale}
-							yScale={yScale}
-							data={d.values}
-							colorIndex={d.colorIndex}
-						/>
-					);
-				case 'column':
-					return (
-						<BarSeries key={i} data={d.values} dimensions={chartAreaDimensions}
-							xScale={xScale} yScale={yScale} colorIndex={d.colorIndex} />
-					);
-				case 'scatterPlot':
-					return (
-						<MarkSeries width={chartAreaDimensions.width} key={i} mark='circle'
-							data={d.values} xScale={xScale} yScale={yScale}
-							colorIndex={d.colorIndex} />
-					);
-				default:
-					return null;
-			}
-		});
 
 		return (
 			<g

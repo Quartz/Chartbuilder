@@ -7,21 +7,21 @@ var VerticalGridLines = React.createClass({
 	propTypes: {
 		scaleOptions: PropTypes.object,
 		orient: PropTypes.string,
-		height: PropTypes.number,
-		scale: PropTypes.func
+		dimensions: PropTypes.object,
+		xScale: PropTypes.func
 	},
 
 	_generateTicks: function(props) {
 		var scaleOptions = props.scaleOptions;
 		return map(scaleOptions.dateTicks, function(tickValue, i) {
-			var scalePos = props.scale(tickValue);
+			var scalePos = props.xScale(tickValue);
 			return (
 				<line
 					key={i}
 					className="tick"
 					x1={scalePos}
 					x2={scalePos}
-					y1={props.height}
+					y1={props.dimensions.height}
 					y2="0"
 				/>
 			)
