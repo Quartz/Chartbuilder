@@ -1,7 +1,5 @@
 var React = require("react");
 var PropTypes = React.PropTypes;
-var map = require("lodash/map");
-var assign = require("lodash/assign");
 var BackgroundRect = require("./BackgroundRect.jsx");
 var SvgText = require("./SvgText.jsx");
 
@@ -14,12 +12,15 @@ var SvgWrapper = React.createClass({
 		displayConfig: PropTypes.object
 	},
 
-	_createTitle: function() {
+	_createTitle: function(props) {
 		return (
 			<SvgText
-				text={this.props.metadata.title}
+				text={props.metadata.title}
 				key="title"
-				translate={[5, 10]}
+				translate={[
+					props.displayConfig.margin.left,
+					props.displayConfig.margin.top
+				]}
 				align="top"
 				className="svg-text-title"
 			/>
@@ -36,12 +37,8 @@ var SvgWrapper = React.createClass({
 
 	render: function() {
 		var props = this.props;
-		var children = React.Children.toArray(props.children);
-		var childrenWithProps = map(children, function(child) {
-			var childProps = assign({}, props, child.props);
-			return React.cloneElement(child, childProps);
-		});
 
+		// Add to the chart margin if title is present
 		var translate = [
 			props.displayConfig.margin.left,
 			props.displayConfig.margin.top + this._getYOffset(props)
@@ -50,11 +47,8 @@ var SvgWrapper = React.createClass({
 		return (
 			<svg width={props.outerDimensions.width} height={props.outerDimensions.height}>
 				<BackgroundRect dimensions={props.outerDimensions} />
-				{this._createTitle()}
-				<g
-					className="chart-margin"
-					transform={"translate(" + translate + ")"}
-				>
+				{this._createTitle(props)}
+				<g className="chart-margin" transform={"translate(" + translate + ")"} >
 					{props.children}
 				</g>
 			</svg>
