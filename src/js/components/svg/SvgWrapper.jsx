@@ -5,14 +5,10 @@ var assign = require("lodash/assign");
 var BackgroundRect = require("./BackgroundRect.jsx");
 var SvgText = require("./SvgText.jsx");
 
-var Chart = React.createClass({
+var SvgWrapper = React.createClass({
 
 	propTypes: {
-		xScale: PropTypes.func,
-		yScale: PropTypes.func,
 		outerDimensions: PropTypes.object,
-		dimensions: PropTypes.object,
-		chartType: PropTypes.string,
 		metadata: PropTypes.object,
 		margin: PropTypes.object,
 		displayConfig: PropTypes.object
@@ -38,7 +34,6 @@ var Chart = React.createClass({
 		}
 	},
 
-
 	render: function() {
 		var props = this.props;
 		var children = React.Children.toArray(props.children);
@@ -48,8 +43,8 @@ var Chart = React.createClass({
 		});
 
 		var translate = [
-			props.margin.left,
-			props.margin.top + this._getYOffset(props)
+			props.displayConfig.margin.left,
+			props.displayConfig.margin.top + this._getYOffset(props)
 		];
 
 		return (
@@ -57,10 +52,10 @@ var Chart = React.createClass({
 				<BackgroundRect dimensions={props.outerDimensions} />
 				{this._createTitle()}
 				<g
-					className={"chart chart-" + props.chartType}
+					className="chart-margin"
 					transform={"translate(" + translate + ")"}
 				>
-					{childrenWithProps}
+					{props.children}
 				</g>
 			</svg>
 		);
@@ -68,4 +63,4 @@ var Chart = React.createClass({
 
 });
 
-module.exports = Chart;
+module.exports = SvgWrapper;

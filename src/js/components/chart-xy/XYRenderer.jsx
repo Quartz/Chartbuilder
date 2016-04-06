@@ -26,7 +26,8 @@ var DateScaleMixin = require("../mixins/DateScaleMixin.js");
 var NumericScaleMixin = require("../mixins/NumericScaleMixin.js");
 
 // chart elements
-var Chart = require("../svg/Chart.jsx");
+var XYChart = require("./XYChart.jsx");
+var SvgWrapper = require("../svg/SvgWrapper.jsx");
 var LineSeries = require("../series/LineSeries.jsx");
 var BarSeries = require("../series/BarSeries.jsx");
 var MarkSeries = require("../series/MarkSeries.jsx");
@@ -279,44 +280,47 @@ var XYRenderer = React.createClass({
 			);
 		}
 
-		var margin = {
-			left: displayConfig.margin.left + maxTickWidth.primaryScale,
-			top: displayConfig.margin.top,
-			bottom: displayConfig.margin.bottom,
-			right: displayConfig.margin.right + maxTickWidth.secondaryScale,
-		};
+		var chartAreaTranslateY = (allLabelsDragged) ? 0 : displayConfig.afterLegend;
 
 		// Create array of chart-specific components that will be passed to the Svg
 		// chart template, which adds title/credit/source etc
 		return (
-			<Chart
-				chartType="xy"
-				metadata={this.props.metadata}
+			<SvgWrapper
 				outerDimensions={dimensions}
+				metadata={this.props.metadata}
 				displayConfig={displayConfig}
-				dimensions={chartAreaDimensions}
-				margin={margin}
-				xScale={xScale}
-				yScale={primaryScale}
-				editable={this.props.editable}
 			>
-				<VerticalGridLines scaleOptions={xScaleSettings} />
-				<HorizontalGridLines scaleOptions={scale.primaryScale} />
-				{series}
-				<HorizontalAxis scaleOptions={xScaleSettings} orient="bottom" />
-				{verticalAxes}
+<XYChart
+	chartType="xy"
+	dimensions={chartAreaDimensions}
+	editable={this.props.editable}
+	xScale={xScale}
+	yScale={primaryScale}
+	translate={[maxTickWidth.primaryScale, chartAreaTranslateY]}
+>
+	<VerticalGridLines scaleOptions={xScaleSettings} />
+	<HorizontalGridLines scaleOptions={scale.primaryScale} />
+	{series}
+	<HorizontalAxis scaleOptions={xScaleSettings} orient="bottom" />
+	{verticalAxes}
+</XYChart>
 				<XYLabels
 					key="xy-labels"
 					chartProps={_chartProps}
 					allLabelsDragged={allLabelsDragged}
+					dimensions={chartAreaDimensions}
+					editable={this.props.editable}
+					displayConfig={displayConfig}
 					styleConfig={this.props.styleConfig}
 					maxTickWidth={maxTickWidth}
+					xScale={xScale}
+					yScale={primaryScale}
 					data={dataWithSettings}
 					updateLabelYMax={this._updateLabelYMax}
 					labelYMax={this.state.labelYMax}
 				/>
 				{HiddenAxes}
-			</Chart>
+			</SvgWrapper>
 		);
 	}
 });
