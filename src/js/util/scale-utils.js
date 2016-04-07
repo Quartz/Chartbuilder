@@ -3,21 +3,22 @@ var clone = require("lodash/clone");
 var reduce = require("lodash/reduce");
 var map = require("lodash/map");
 var processDates = require("./process-dates");
+var help = require("./helper");
 
 function generateScale(props, width) {
 	var scaleOpts = props.chartProps.scale;
 	if (scaleOpts.dateSettings) {
-		return generateDateScale(props, width);
+		return _dateScale(props, width);
 	}
 	if (scaleOpts.numericSettings) {
-		return generateNumericScale(props, width);
+		return _linearScale(props, width);
 	}
 	else {
-		return generateOrdinalScale(props, width);
+		return _ordinalScale(props, width);
 	}
 }
 
-function generateDateScale(props, width) {
+function _dateScale(props, width) {
 	// Return the ticks used for a time scale based on the time span and settings
 	var formatAndFreq = {};
 	var _dateSettings = clone(props.chartProps.scale.dateSettings, true);
@@ -37,9 +38,7 @@ function generateDateScale(props, width) {
 	var maxDate = dateRange[1];
 
 	var extraPadding = props.chartProps.extraPadding;
-	var width = props.dimensions.width;
-	var availableWidth = props.dimensions.width - extraPadding.left - extraPadding.right;
-	var autoSettings = processDates.autoDateFormatAndFrequency(minDate, maxDate, dateFormat, availableWidth);
+	var autoSettings = processDates.autoDateFormatAndFrequency(minDate, maxDate, dateFormat, width);
 
 	if (dateFrequency !== "auto") {
 		var freqSettings = processDates.dateFrequencies[dateFrequency];
@@ -61,12 +60,38 @@ function generateDateScale(props, width) {
 
 }
 
-function generateNumericScale(props, width) {
+function _linearScale(props, width) {
+	var numericSettings = props.chartProps.scale.numericSettings;
 
+	var scale = d3.scale.linear()
+		.domain(numericSettings.domain)
+		.range([0, width]);
+
+	return {
+		scaleFunc: scale,
+		ticks: numericSettings.tickValues,
+		tickFormat: function(d) {
+			return help.roundToPrecision(d, numericSettings.precision);
+		}
+	};
 }
 
-function generateOrdinalScale(props, width) {
+function _ordinalScale(props, width) {
+	var entries = map(props.chartProps.data[0].values, function(value) {
+		return value.entry;
+	})
 
+	var scale = d3.scale.ordinal()
+		.domain(entries)
+		.rangePoints([0, width], 0.4);
+
+	return {
+		scaleFunc: scale,
+		ticks: entries,
+		tickFormat: function(d) {
+			return d;
+		}
+	};
 }
 
 module.exports = {

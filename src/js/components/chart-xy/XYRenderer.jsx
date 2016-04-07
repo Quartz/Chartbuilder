@@ -530,7 +530,7 @@ var XYLabels = React.createClass({
 
 				scale = {
 					yScale: props.yScale,
-					xScale: props.xScale,
+					xScale: props.xScale.scaleFunc,
 				};
 
 				labelComponents.push(
