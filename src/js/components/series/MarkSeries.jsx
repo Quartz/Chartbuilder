@@ -8,7 +8,7 @@ var MarkSeries = React.createClass({
 	propTypes: {
 		data: PropTypes.array,
 		dimensions: PropTypes.object,
-		xScale: PropTypes.func,
+		xScale: PropTypes.object,
 		yScale: PropTypes.func
 	},
 
@@ -20,7 +20,7 @@ var MarkSeries = React.createClass({
 				<circle
 					key={i}
 					r={radius}
-					cx={props.xScale(d.entry)}
+					cx={props.xScale.scaleFunc(d.entry)}
 					cy={props.yScale(d.value)}
 					className={"color-index-" + props.colorIndex}
 				/>

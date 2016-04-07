@@ -92,7 +92,7 @@ var XYRenderer = React.createClass({
 		};
 	},
 
-	mixins: [ChartRendererMixin, DateScaleMixin],
+	mixins: [ChartRendererMixin],
 
 	_handleMaxTickWidth: function(k, v) {
 		var maxTickWidth = this.state.maxTickWidth;
