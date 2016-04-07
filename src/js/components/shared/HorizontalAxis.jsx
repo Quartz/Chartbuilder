@@ -11,7 +11,7 @@ var HorizontalAxis = React.createClass({
 		scaleOptions: PropTypes.object,
 		orient: PropTypes.string,
 		dimensions: PropTypes.object,
-		xScale: PropTypes.func
+		xScale: PropTypes.object
 	},
 
 	getDefaultProps: function() {
@@ -21,22 +21,16 @@ var HorizontalAxis = React.createClass({
 	},
 
 	_generateTicks: function(props) {
-		var scaleOptions = props.scaleOptions;
+		var xScale = props.xScale;
 
-		return map(scaleOptions.dateTicks, function(tickValue, i) {
-			var text;
-			var formattedDate = scaleOptions.dateFormatter(tickValue);
-			if (tickValue !== scaleOptions.domain[1]) {
-				text = formattedDate;
-			} else {
-				text = [scaleOptions.prefix, formattedDate, scaleOptions.suffix].join("");
-			}
+		return map(xScale.ticks, function(tickValue, i) {
+			var text = xScale.tickFormat(tickValue);
 
 			return (
 				<text
 					key={i}
 					className={"tick orient-" + props.orient}
-					transform={"translate(" + [props.xScale(tickValue), 0] + ")"}
+					transform={"translate(" + [props.xScale.scaleFunc(tickValue), 0] + ")"}
 					dy={DY}
 				>
 					{text}

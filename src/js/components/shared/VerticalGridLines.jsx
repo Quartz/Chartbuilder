@@ -5,16 +5,14 @@ var map = require("lodash/map");
 var VerticalGridLines = React.createClass({
 
 	propTypes: {
-		scaleOptions: PropTypes.object,
 		orient: PropTypes.string,
 		dimensions: PropTypes.object,
-		xScale: PropTypes.func
+		xScale: PropTypes.object
 	},
 
 	_generateTicks: function(props) {
-		var scaleOptions = props.scaleOptions;
-		return map(scaleOptions.dateTicks, function(tickValue, i) {
-			var scalePos = props.xScale(tickValue);
+		return map(props.xScale.ticks, function(tickValue, i) {
+			var scalePos = props.xScale.scaleFunc(tickValue);
 			return (
 				<line
 					key={i}

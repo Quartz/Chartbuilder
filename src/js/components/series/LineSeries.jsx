@@ -7,16 +7,15 @@ var LineSeries = React.createClass({
 
 	propTypes: {
 		data: PropTypes.array,
-		xScale: PropTypes.func,
-		yScale: PropTypes.func,
-		altAxis: PropTypes.bool
+		xScale: PropTypes.object,
+		yScale: PropTypes.func
 	},
 
 	render: function() {
 		var props = this.props;
 
 		var lineFunc = line
-			.x(function(d) { return props.xScale(d.entry); })
+			.x(function(d) { return props.xScale.scaleFunc(d.entry); })
 			.y(function(d) { return props.yScale(d.value); });
 
 		return (

@@ -46,6 +46,7 @@ var HiddenSvg = require("../svg/HiddenSvg.jsx");
 // Helpers
 var cb_xy = require("../../charts/cb-charts").cb_xy;
 var help = require("../../util/helper.js");
+var scaleUtils = require("../../util/scale-utils.js");
 
 var scaleNames = ["primaryScale", "secondaryScale"];
 
@@ -203,10 +204,7 @@ var XYRenderer = React.createClass({
 			);
 		}
 
-		var xScaleSettings = this.generateDateScale(props);
-		var xScale = d3.time.scale()
-			.range([0, chartAreaDimensions.width])
-			.domain(xScaleSettings.domain)
+		var xScale = scaleUtils.generateScale(props, chartAreaDimensions.width);
 
 		var series = this._generateSeries(dataWithSettings, xScale, primaryScale, secondaryScale);
 
@@ -290,20 +288,20 @@ var XYRenderer = React.createClass({
 				metadata={this.props.metadata}
 				displayConfig={displayConfig}
 			>
-<XYChart
-	chartType="xy"
-	dimensions={chartAreaDimensions}
-	editable={this.props.editable}
-	xScale={xScale}
-	yScale={primaryScale}
-	translate={[maxTickWidth.primaryScale, chartAreaTranslateY]}
->
-	<VerticalGridLines scaleOptions={xScaleSettings} />
-	<HorizontalGridLines scaleOptions={scale.primaryScale} />
-	{series}
-	<HorizontalAxis scaleOptions={xScaleSettings} orient="bottom" />
-	{verticalAxes}
-</XYChart>
+				<XYChart
+					chartType="xy"
+					dimensions={chartAreaDimensions}
+					editable={this.props.editable}
+					xScale={xScale}
+					yScale={primaryScale}
+					translate={[maxTickWidth.primaryScale, chartAreaTranslateY]}
+				>
+					<VerticalGridLines />
+					<HorizontalGridLines scaleOptions={scale.primaryScale} />
+					{series}
+					<HorizontalAxis orient="bottom" />
+					{verticalAxes}
+				</XYChart>
 				<XYLabels
 					key="xy-labels"
 					chartProps={_chartProps}
