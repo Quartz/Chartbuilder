@@ -5,35 +5,41 @@ var map = require("lodash/map");
 var processDates = require("./process-dates");
 var help = require("./helper");
 
-function generateScale(props, range) {
-	var scaleOpts = props.chartProps.scale;
-	if (scaleOpts.dateSettings) {
-		return _dateScale(props, range);
+/**
+ * generateScale
+ *
+ * @param scaleOptions
+ * @param data
+ * @param range
+ * @returns {scale: d3 scale, tickValues: array, tickFormat: format func}
+ */
+function generateScale(scaleOptions, data, range) {
+	if (scaleOptions.dateSettings) {
+		return _dateScale(scaleOptions, data, range);
 	}
-	if (scaleOpts.numericSettings) {
-		return _linearScale(props, range);
+	if (scaleOptions.numericSettings) {
+		return _linearScale(scaleOptions, data, range);
 	}
 	else {
-		return _ordinalScale(props, range);
+		return _ordinalScale(scaleOptions, data, range);
 	}
 }
 
-function _dateScale(props, range) {
+function _dateScale(scaleOptions, data, range) {
 	// Return the ticks used for a time scale based on the time span and settings
 	var formatAndFreq = {};
-	var _dateSettings = clone(props.chartProps.scale.dateSettings, true);
+	var _dateSettings = scaleOptions.dateSettings;
 	var dateFormat = _dateSettings.dateFormat;
 	var dateFrequency = _dateSettings.dateFrequency;
 
-	// Create a flat array of all dates so that we know that we can calculate
-	// the earliest and latest
-	var allDates = reduce(props.chartProps.data, function(prevArr, series) {
-		return map(series.values, function(values) {
-			return values.entry;
-		}).concat(prevArr);
-	}, []);
+	// grab the first series to get the first/last dates
+	var firstSeries = data[0].values;
+	// make sure dates are in chronological order
+	var dateRange = [
+		firstSeries[0].entry,
+		firstSeries[firstSeries.length - 1].entry
+	].sort(d3.ascending);
 
-	var dateRange = d3.extent(allDates);
 	var minDate = dateRange[0];
 	var maxDate = dateRange[1];
 
@@ -54,44 +60,30 @@ function _dateScale(props, range) {
 	}
 
 	return {
-		scaleFunc: d3.time.scale().range(range).domain([minDate, maxDate]),
-		ticks: formatAndFreq.frequency,
+		scale: d3.time.scale().range(range).domain([minDate, maxDate]),
+		tickValues: formatAndFreq.frequency,
 		tickFormat: processDates.dateParsers[formatAndFreq.format]
 	};
-
 }
 
-function _linearScale(props, range) {
-	var numericSettings = props.chartProps.scale.numericSettings;
-
-	var scale = d3.scale.linear()
-		.domain(numericSettings.domain)
-		.range(range);
-
+function _linearScale(scaleOptions, data, range) {
+	var numericSettings = scaleOptions.numericSettings;
 	return {
-		scaleFunc: scale,
-		ticks: numericSettings.tickValues,
+		scale: d3.scale.linear().domain(numericSettings.domain).range(range),
+		tickValues: numericSettings.tickValues,
 		tickFormat: function(d) {
 			return help.roundToPrecision(d, numericSettings.precision);
 		}
 	};
 }
 
-function _ordinalScale(props, range) {
-	var entries = map(props.chartProps.data[0].values, function(value) {
+function _ordinalScale(scaleOptions, data, range) {
+	var entries = map(data[0].values, function(value) {
 		return value.entry;
-	})
-
-	var scale = d3.scale.ordinal()
-		.domain(entries)
-		.rangePoints(range, 0.4);
-
+	});
 	return {
-		scaleFunc: scale,
-		ticks: entries,
-		tickFormat: function(d) {
-			return d;
-		}
+		scale: d3.scale.ordinal().domain(entries).rangePoints(range, 0.4),
+		tickValues: entries,
 	};
 }
 

@@ -7,7 +7,7 @@ var LineSeries = React.createClass({
 
 	propTypes: {
 		data: PropTypes.array,
-		xScale: PropTypes.object,
+		xScale: PropTypes.func,
 		yScale: PropTypes.func
 	},
 
@@ -15,7 +15,7 @@ var LineSeries = React.createClass({
 		var props = this.props;
 
 		var lineFunc = line
-			.x(function(d) { return props.xScale.scaleFunc(d.entry); })
+			.x(function(d) { return props.xScale(d.entry); })
 			.y(function(d) { return props.yScale(d.value); });
 
 		return (

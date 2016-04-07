@@ -6,7 +6,7 @@ var assign = require("lodash/assign");
 var XYChart = React.createClass({
 
 	propTypes: {
-		xScale: PropTypes.object,
+		xScale: PropTypes.func,
 		yScale: PropTypes.func,
 		dimensions: PropTypes.object,
 		chartType: PropTypes.string,

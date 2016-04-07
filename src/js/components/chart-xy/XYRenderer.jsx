@@ -204,9 +204,8 @@ var XYRenderer = React.createClass({
 			);
 		}
 
-		var xScale = scaleUtils.generateScale(props, [0, chartAreaDimensions.width]);
-
-		var series = this._generateSeries(dataWithSettings, xScale, primaryScale, secondaryScale);
+		var xAxis = scaleUtils.generateScale(_chartProps.scale, _chartProps.data, [0, chartAreaDimensions.width])
+		var series = this._generateSeries(dataWithSettings, xAxis.scale, primaryScale, secondaryScale);
 
 		// Maintain space between legend and chart area unless all legend labels
 		// have been dragged
@@ -292,14 +291,19 @@ var XYRenderer = React.createClass({
 					chartType="xy"
 					dimensions={chartAreaDimensions}
 					editable={this.props.editable}
-					xScale={xScale}
+					xScale={xAxis.scale}
 					yScale={primaryScale}
 					translate={[maxTickWidth.primaryScale, chartAreaTranslateY]}
 				>
-					<VerticalGridLines />
-					<HorizontalGridLines scaleOptions={scale.primaryScale} />
+					<VerticalGridLines tickValues={xAxis.tickValues} />
+					<HorizontalGridLines tickValues={scale.primaryScale.tickValues} />
 					{series}
-					<HorizontalAxis orient="bottom" />
+					<HorizontalAxis
+						tickFormat={xAxis.tickFormat}
+						tickValues={xAxis.tickValues}
+						orient="bottom"
+						scale={xAxis.scale}
+					/>
 					{verticalAxes}
 				</XYChart>
 				<XYLabels
@@ -311,7 +315,7 @@ var XYRenderer = React.createClass({
 					displayConfig={displayConfig}
 					styleConfig={this.props.styleConfig}
 					maxTickWidth={maxTickWidth}
-					xScale={xScale}
+					xScale={xAxis.scale}
 					yScale={primaryScale}
 					data={dataWithSettings}
 					updateLabelYMax={this._updateLabelYMax}
@@ -530,7 +534,7 @@ var XYLabels = React.createClass({
 
 				scale = {
 					yScale: props.yScale,
-					xScale: props.xScale.scaleFunc,
+					xScale: props.xScale,
 				};
 
 				labelComponents.push(

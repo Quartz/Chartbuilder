@@ -78,14 +78,6 @@ var SvgRectLabel = React.createClass({
 	},
 
 	_computeNewState: function(props) {
-		//var yScale = d3.scale.linear()
-			//.domain(props.scale.y.domain)
-			//.range(props.scale.y.range);
-
-		//var xScale = d3.scale.linear()
-			//.domain(props.scale.x.domain)
-			//.range(props.scale.x.range);
-
 		var xScale = props.scale.xScale;
 		var yScale = props.scale.yScale;
 

@@ -12,14 +12,17 @@ var VerticalAxis = React.createClass({
 		scaleOptions: PropTypes.object,
 		orient: PropTypes.string,
 		width: PropTypes.number,
-		scale: PropTypes.func,
-		offset: PropTypes.number
+		yScale: PropTypes.func,
+		offset: PropTypes.number,
+		tickvalues: PropTypes.array,
+		tickformat: PropTypes.func
 	},
 
 	getDefaultProps: function() {
 		return {
 			orient: "left",
-			offset: 0
+			offset: 0,
+			tickFormat: function(d) { return d; }
 		}
 	},
 
@@ -27,7 +30,6 @@ var VerticalAxis = React.createClass({
 		var scaleOptions = props.scaleOptions;
 
 		return map(scaleOptions.tickValues, function(tickValue, i) {
-
 			var formatted = help.roundToPrecision(tickValue, scaleOptions.precision);
 			var text;
 			if (tickValue !== scaleOptions.domain[1]) {
@@ -48,7 +50,6 @@ var VerticalAxis = React.createClass({
 				</text>
 			)
 		});
-
 	},
 
 	_getTransformX: function(orient, width) {

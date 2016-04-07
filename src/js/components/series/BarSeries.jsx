@@ -7,13 +7,13 @@ var BarSeries = React.createClass({
 	propTypes: {
 		data: PropTypes.array,
 		dimensions: PropTypes.object,
-		xScale: PropTypes.object,
+		xScale: PropTypes.func,
 		yScale: PropTypes.func
 	},
 
 	render: function() {
 		var props = this.props;
-		var xRange = props.xScale.scaleFunc.range();
+		var xRange = props.xScale.range();
 		var effectiveChartWidth = xRange[1] - xRange[0];
 		var rectWidth = effectiveChartWidth / props.data.length;
 		var yVal = props.yScale.range()[1];
