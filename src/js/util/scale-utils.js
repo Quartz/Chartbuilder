@@ -5,20 +5,20 @@ var map = require("lodash/map");
 var processDates = require("./process-dates");
 var help = require("./helper");
 
-function generateScale(props, width) {
+function generateScale(props, range) {
 	var scaleOpts = props.chartProps.scale;
 	if (scaleOpts.dateSettings) {
-		return _dateScale(props, width);
+		return _dateScale(props, range);
 	}
 	if (scaleOpts.numericSettings) {
-		return _linearScale(props, width);
+		return _linearScale(props, range);
 	}
 	else {
-		return _ordinalScale(props, width);
+		return _ordinalScale(props, range);
 	}
 }
 
-function _dateScale(props, width) {
+function _dateScale(props, range) {
 	// Return the ticks used for a time scale based on the time span and settings
 	var formatAndFreq = {};
 	var _dateSettings = clone(props.chartProps.scale.dateSettings, true);
@@ -37,8 +37,9 @@ function _dateScale(props, width) {
 	var minDate = dateRange[0];
 	var maxDate = dateRange[1];
 
-	var extraPadding = props.chartProps.extraPadding;
-	var autoSettings = processDates.autoDateFormatAndFrequency(minDate, maxDate, dateFormat, width);
+	if (dateFrequency === "auto" || dateFormat === "auto") {
+		var autoSettings = processDates.autoDateFormatAndFrequency(minDate, maxDate, dateFormat, range[1]);
+	}
 
 	if (dateFrequency !== "auto") {
 		var freqSettings = processDates.dateFrequencies[dateFrequency];
@@ -53,19 +54,19 @@ function _dateScale(props, width) {
 	}
 
 	return {
-		scaleFunc: d3.time.scale().range([0, width]).domain([minDate, maxDate]),
+		scaleFunc: d3.time.scale().range(range).domain([minDate, maxDate]),
 		ticks: formatAndFreq.frequency,
 		tickFormat: processDates.dateParsers[formatAndFreq.format]
 	};
 
 }
 
-function _linearScale(props, width) {
+function _linearScale(props, range) {
 	var numericSettings = props.chartProps.scale.numericSettings;
 
 	var scale = d3.scale.linear()
 		.domain(numericSettings.domain)
-		.range([0, width]);
+		.range(range);
 
 	return {
 		scaleFunc: scale,
@@ -76,14 +77,14 @@ function _linearScale(props, width) {
 	};
 }
 
-function _ordinalScale(props, width) {
+function _ordinalScale(props, range) {
 	var entries = map(props.chartProps.data[0].values, function(value) {
 		return value.entry;
 	})
 
 	var scale = d3.scale.ordinal()
 		.domain(entries)
-		.rangePoints([0, width], 0.4);
+		.rangePoints(range, 0.4);
 
 	return {
 		scaleFunc: scale,

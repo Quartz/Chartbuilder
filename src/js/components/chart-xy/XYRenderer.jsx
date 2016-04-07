@@ -204,7 +204,7 @@ var XYRenderer = React.createClass({
 			);
 		}
 
-		var xScale = scaleUtils.generateScale(props, chartAreaDimensions.width);
+		var xScale = scaleUtils.generateScale(props, [0, chartAreaDimensions.width]);
 
 		var series = this._generateSeries(dataWithSettings, xScale, primaryScale, secondaryScale);
 
