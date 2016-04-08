@@ -157,7 +157,7 @@ var XYRenderer = React.createClass({
 		var axis = d3.svg.axis();
 		var axisTicks = [];
 		var labelComponents;
-		var chartAreaTranslateY = this.state.labelYMax;
+		console.log(this.state.labelYMax);
 		var hasTitle = (this.props.metadata.title.length > 0 && this.props.showMetadata);
 
 		// Maintain space between legend and chart area unless all legend labels
@@ -173,9 +173,12 @@ var XYRenderer = React.createClass({
 			allLabelsDragged: allLabelsDragged
 		});
 
+		var extraHeight = (base_dimensions.height * this.state.labelYMax)
+		var chartAreaTranslateY = extraHeight;
+
 		var outerDimensions = {
 			width: base_dimensions.width,
-			height: base_dimensions.height
+			height: base_dimensions.height + extraHeight
 		};
 
 		if (!allLabelsDragged) {
@@ -222,7 +225,7 @@ var XYRenderer = React.createClass({
 		];
 
 		if (props.chartProps._numSecondaryAxis > 0) {
-			yAxisSecondary = scaleUtils.generateScale("linear", _chartProp.scale.secondaryScale, null, yRange);
+			yAxisSecondary = scaleUtils.generateScale("linear", _chartProps.scale.secondaryScale, null, yRange);
 
 			verticalAxes.push(
 				<VerticalAxis
@@ -231,6 +234,7 @@ var XYRenderer = React.createClass({
 					tickFormat={yAxisSecondary.tickFormat}
 					tickValues={yAxisSecondary.tickValues}
 					orient="right"
+					width={chartAreaDimensions.width}
 					offset={maxTickWidth.secondaryScale}
 					scale={yAxisSecondary.scale}
 					key={1}
