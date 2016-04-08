@@ -1,7 +1,7 @@
 // Svg text elements used to describe chart
 var React = require("react");
 var PropTypes = React.PropTypes;
-var line = d3.svg.line();
+var line = require("d3").svg.line();
 
 var LineSeries = React.createClass({
 

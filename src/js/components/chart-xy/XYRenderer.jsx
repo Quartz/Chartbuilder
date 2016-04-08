@@ -10,7 +10,6 @@ var update = require("react-addons-update");
 
 // Node modules
 var d3 = require("d3");
-var d4 = require("d4");
 
 var assign = require("lodash/assign");
 var bind = require("lodash/bind");
@@ -44,9 +43,9 @@ var SvgRectLabel = require("../svg/SvgRectLabel.jsx");
 var HiddenSvg = require("../svg/HiddenSvg.jsx");
 
 // Helpers
-var cb_xy = require("../../charts/cb-charts").cb_xy;
 var help = require("../../util/helper.js");
 var scaleUtils = require("../../util/scale-utils.js");
+var xyDimensions = require("../../charts/cb-xy/xy-dimensions.js");
 
 var scaleNames = ["primaryScale", "secondaryScale"];
 
@@ -158,8 +157,32 @@ var XYRenderer = React.createClass({
 		var axis = d3.svg.axis();
 		var axisTicks = [];
 		var labelComponents;
-		var dimensions = this.props.dimensions;
+		var chartAreaTranslateY = this.state.labelYMax;
 		var hasTitle = (this.props.metadata.title.length > 0 && this.props.showMetadata);
+
+		// Maintain space between legend and chart area unless all legend labels
+		// have been dragged
+		var allLabelsDragged = reduce(_chartProps._annotations.labels.values, function(prev, value) {
+			return (prev === true && value.dragged === true);
+		}, true);
+
+		var base_dimensions = xyDimensions(props.width, {
+			displayConfig: displayConfig,
+			enableResponsive: props.enableResponsive,
+			metadata: props.metadata,
+			allLabelsDragged: allLabelsDragged
+		});
+
+		var outerDimensions = {
+			width: base_dimensions.width,
+			height: base_dimensions.height
+		};
+
+		if (!allLabelsDragged) {
+			chartAreaTranslateY += displayConfig.afterLegend;
+		} else {
+			outerDimensions.height -= displayConfig.afterLegend;
+		}
 
 		// apply `chartSettings` to data
 		var dataWithSettings = this._applySettingsToData(_chartProps);
@@ -167,13 +190,13 @@ var XYRenderer = React.createClass({
 		// Dimensions of the chart area
 		var chartAreaDimensions = {
 			width: (
-				dimensions.width -
+				base_dimensions.width -
 				displayConfig.margin.left - displayConfig.margin.right -
 				displayConfig.padding.left - displayConfig.padding.right -
 				maxTickWidth.primaryScale - maxTickWidth.secondaryScale
 			),
 			height: (
-				dimensions.height -
+				base_dimensions.height -
 				displayConfig.margin.top - displayConfig.margin.bottom -
 				displayConfig.padding.top - displayConfig.padding.bottom
 			)
@@ -216,12 +239,6 @@ var XYRenderer = React.createClass({
 		}
 
 		var series = this._generateSeries(dataWithSettings, xAxis.scale, yAxisPrimary.scale, yAxisSecondary.scale);
-
-		// Maintain space between legend and chart area unless all legend labels
-		// have been dragged
-		var allLabelsDragged = reduce(_chartProps._annotations.labels.values, function(prev, value) {
-			return (prev === true && value.dragged === true);
-		}, true);
 
 		if (this.props.enableResponsive && _chartProps.hasOwnProperty("mobile") && this.props.isSmall) {
 			if (_chartProps.mobile.scale) {
@@ -270,7 +287,7 @@ var XYRenderer = React.createClass({
 			return (
 				<HiddenSvg.HiddenSvgAxis
 					className="tick"
-					chartWidth={dimensions.width}
+					chartWidth={chartAreaDimensions.width}
 					maxTickWidth={this.state.maxTickWidth[axis.name]}
 					formattedText={axis.formattedTicks}
 					blockerRectOffset={this.props.displayConfig.blockerRectOffset}
@@ -287,13 +304,11 @@ var XYRenderer = React.createClass({
 			);
 		}
 
-		var chartAreaTranslateY = (allLabelsDragged) ? 0 : displayConfig.afterLegend;
-
 		// Create array of chart-specific components that will be passed to the Svg
 		// chart template, which adds title/credit/source etc
 		return (
 			<SvgWrapper
-				outerDimensions={dimensions}
+				outerDimensions={outerDimensions}
 				metadata={this.props.metadata}
 				displayConfig={displayConfig}
 			>
@@ -438,10 +453,6 @@ var XYLabels = React.createClass({
 		return labelYMax;
 	},
 
-	_computePadding: function(props) {
-		return computePadding(props)
-	},
-
 	_enableDrag: function() {
 		// tell the parent app that dragging has been enabled
 		var annotations = this.props.chartProps._annotations;
@@ -504,7 +515,6 @@ var XYLabels = React.createClass({
 		var displayConfig = this.props.displayConfig;
 		var props = this.props;
 		var dimensions = props.dimensions;
-		var padding = computePadding(props);
 
 		var labelConfig = {
 			xMargin: displayConfig.labelXMargin,
@@ -527,20 +537,6 @@ var XYLabels = React.createClass({
 					labelSettings = this.state.undraggedLabels[i];
 					prevNode = this._getPrevUndraggedNode(i - 1, this.state.undraggedLabels);
 				}
-
-				//var scales = this.props.chartProps.scale;
-				//yScale_info = !chartSetting.altAxis ? props. : scales.secondaryScale;
-				//xScale_info = xScaleInfo(this.props.outerDimensions.width,padding,styleConfig,displayConfig,{dateSettings: this.state.dateScaleInfo});
-
-				//var yRange = [
-					//this.props.dimensions.height - padding.bottom - displayConfig.margin.bottom,
-					//padding.top + displayConfig.margin.top
-				//];
-
-				//var xRange = props.chartProps.scale.hasDate ? [
-					//padding.left + displayConfig.margin.left,
-					//xScale_info.rangeR-padding.right-displayConfig.margin.right-this.props.maxTickWidth.secondaryScale - displayConfig.minPaddingOuter
-				//] : [];
 
 				scale = {
 					yScale: props.yScale,
@@ -580,294 +576,5 @@ var XYLabels = React.createClass({
 	}
 
 });
-
-d3.selection.prototype.moveToFront = function() {
-  return this.each(function(){
-    this.parentNode.appendChild(this);
-  });
-};
-
-var xy_render_options = {
-	axis : {
-		afterRender: function(feature,data,chartArea,selection,isPrimary) {
-			/* SO HERES THE DEAL
-			// this is a lot of effort to customize axes
-			// what we do at Quartz instead of this is build
-			// our own d3 that draws axes exactly how we want them
-			// If you're getting serious about customization,
-			// I suggest you do the same.
-			*/
-			var chart = this;
-			var ticks = selection.selectAll(".tick");
-			var text = ticks.selectAll("text");
-			var max = d3.max(this.y.domain());
-
-			ticks.classed("zero", function(d) {
-				return (d === 0);
-			});
-
-			if (isPrimary) {
-				var maxTick = ticks.filter(function(d) {
-					return (d === max);
-				});
-				var maxTickRect = maxTick.selectAll("rect").data([0]).enter().append("rect");
-				var maxTickText = maxTick.select("text");
-				var textNode = maxTickText.node();
-				var bcr = textNode.getBoundingClientRect();
-				var width = bcr.width;
-				var x = parseFloat(textNode.getAttribute("x"));
-				var newX = x;
-				if (width + (-x) > chart.width - 12) {
-					newX = width - chart.width + chart.margin.left + 12;
-					maxTickText.attr("x", newX);
-				}
-				maxTick.select("rect").attr({
-					x: newX - width,
-					y: (-1 * bcr.height / 2),
-					width: width + 6,
-					height: bcr.height
-				});
-				maxTickText.moveToFront();
-			}
-		}
-	}
-}
-
-function drawXY(el, state) {
-	var chartProps = state.chartProps;
-	var dateSettings = state.dateSettings;
-	var numericSettings = state.numericSettings;
-	var displayConfig = state.displayConfig;
-	var styleConfig = state.styleConfig;
-	var hasOtherAxis = chartProps._numSecondaryAxis > 0;
-	var scale = state.scale;
-	//var borderSpace = help.combineMarginPadding(chartProps.margin,chartProps.padding);
-
-	// set the `extraPadding` based on pre-computed `maxTickWidth` values,
-	// generated by the `HiddenAxes` component
-	var extraPadding = {
-		top: chartProps.extraPadding.top,
-		right: Math.max(state.maxTickWidth.secondaryScale, displayConfig.minPaddingOuter),
-		bottom: chartProps.extraPadding.bottom,
-		left: state.maxTickWidth.primaryScale
-	};
-
-	var mixouts = chartProps._numSecondaryAxis ? [] : ["rightAxis"]
-
-	var xyChart = state.chartRenderer
-		.outerWidth(state.dimensions.width)
-		.outerHeight(state.dimensions.height)
-		.margin(displayConfig.margin)
-		.padding(state.padding)
-		.extraPadding(extraPadding)
-		.mixout("series-label")
-		.using("leftAxis", function(axis){
-			yAxisUsing.call(this,"primary",axis,el,state)
-		})
-		.x(function(x) {
-			x.key("entry");
-			var o = xScaleInfo(this.width,this.padding,styleConfig,displayConfig,state);
-			if (state.dateSettings) {
-				x.scale("time");
-				x.domain(o.domain);
-				x.range([o.rangeL, o.rangeR]);
-			}
-			else if (state.numericSettings) {
-				x.scale("linear");
-				x.clamp(false)
-				x.domain(o.domain);
-				x.range([o.rangeL, o.rangeR]);
-			}
-		})
-		.y(function(y) {
-			y.key("value")
-				.domain(scale.primaryScale.domain)
-				.range([this.height - this.padding.bottom, state.padding.top])
-		})
-		.left(function(y) {
-			y.key("value")
-				.domain(scale.primaryScale.domain)
-				.range([this.height - this.padding.bottom, state.padding.top])
-		})
-		.using("rightAxis", function(axis){
-			yAxisUsing.call(this,"secondary",axis,el,state)
-		})
-		.chartAreaOnTop(false)
-		.using("xAxis", function(axis) {
-
-			axis.beforeRender(function(data) {
-				// Center ticks if all data series are columns
-				var numColumns = filter(data, function(d) {
-					return d.type === "column";
-				}).length;
-
-				// Don't display the x axis grid tick if all series are columns
-				if (numColumns === data.length) {
-					axis.innerTickSize(styleConfig.overtick_bottom);
-				} else {
-					axis.innerTickSize(styleConfig.overtick_bottom);
-					this.container.selectAll(".xAxis .tick").attr("data-anchor", "start");
-				}
-			});
-
-			if (dateSettings) {
-				var curOffset = Date.create().getTimezoneOffset()
-				axis.tickValues(dateSettings.dateTicks);
-				var displayTZ = state.chartProps.scale.dateSettings.displayTZ;
-				var inputOffset = state.chartProps.scale.dateSettings.inputTZ ? -help.TZOffsetToMinutes(state.chartProps.scale.dateSettings.inputTZ) : curOffset;
-				var timeOffset = 0;
-				axis.tickFormat(function(d,i) {
-
-					if(displayTZ === "as-entered") {
-						timeOffset = curOffset - inputOffset;
-					}
-
-					return dateSettings.dateFormatter(d.clone(),i,timeOffset);
-				});
-			}
-
-			if(numericSettings) {
-				axis.tickValues(numericSettings.tickValues)
-				axis.tickFormat(function(d,i) {
-					return (i == 0 ? numericSettings.prefix : "") +  help.roundToPrecision(d, numericSettings.precision);
-				})
-
-			}
-
-		})
-		.using("x-axis-label", function(label) {
-			label.beforeRender(function(data){
-					return [{
-						ypos: numericSettings ? state.dimensions.height - state.padding.bottom + state.styleConfig.overtick_bottom : 0,
-						xval: numericSettings ? scale.numericSettings.domain[0] : 0,
-						text: numericSettings ? numericSettings.suffix : "",
-						dy: "1.6em"
-					}]
-				})
-
-		});
-
-		if (chartProps._numSecondaryAxis > 0) {
-			xyChart.right(function(y) {
-				y.key("value")
-					.domain(scale.secondaryScale.domain)
-					.range([this.height - this.padding.bottom, state.padding.top])
-				}
-			);
-		}
-
-	d3.select(el)
-		.datum(state.data)
-		.call(xyChart);
-}
-
-function xScaleInfo(width, padding, styleConfig, displayConfig, state) {
-	var hasMultipleYAxes = false
-	if(state.secondaryScale) {
-		hasMultipleYAxes = true;
-	}
-	if (state.chartProps && state.chartProps._numSecondaryAxis) {
-		hasMultipleYAxes = true;
-	}
-
-	var domain = null
-	if(state.dateSettings) {
-		domain = state.dateSettings.domain;
-	}
-	else if (state.numericSettings){
-		domain = state.numericSettings.domain;
-	}
-
-	var o = {
-		rangeL: padding.left + styleConfig.xOverTick,
-		rangeR: width - padding.right - (hasMultipleYAxes ? styleConfig.xOverTick : 0),
-		domain: domain
-	}
-
-	if (state.hasColumn) {
-		var numData = state.chartProps.data[0].values.length;
-		var widthPerColumn = width / numData;
-		o.rangeL += (widthPerColumn * displayConfig.columnPaddingCoefficient);
-		o.rangeR -= (widthPerColumn * displayConfig.columnPaddingCoefficient);
-	}
-	return o;
-}
-
-function yAxisUsing(location, axis, el, state) {
-	var chartProps = state.chartProps;
-	var isPrimary = location == "primary"
-	var scale = isPrimary ? state.scale.primaryScale : state.scale.secondaryScale;
-	var hasOtherAxis = chartProps._numSecondaryAxis > 0;
-	var scaleId = isPrimary ? "left" : "right";
-
-	if(!hasOtherAxis && !isPrimary) {
-		axis.render = function() {
-			this.container.selectAll(".right.axis").remove();
-		}
-		state.chartProps.extraPadding.right = 0;
-		return null;
-	}
-
-	// axis tick values have been computed by parent compnent in order to draw
-	// hidden axes, so we pass them in here
-	var axisTicks = isPrimary ? state.axisTicks[0] : state.axisTicks[1];
-	axis.tickValues(axisTicks.tickValues);
-
-	// format using our precision and suffix/prefix
-	axis.tickFormat(function(d) {
-		if (d == axisTicks.max) {
-			return [
-				scale.prefix,
-				help.roundToPrecision(d, scale.precision),
-				scale.suffix
-			].join("");
-		} else {
-			return help.roundToPrecision(d, scale.precision);
-		}
-	});
-
-	axis.afterRender(function(feature,data,chartArea,selection) {
-		this.container.select(".axis." + scaleId).selectAll(".tick text")
-			.attr("data-color-index", scale.colorIndex);
-
-		xy_render_options.axis.afterRender.call(this,feature,data,chartArea,selection,isPrimary);
-	});
-
-	var innerTickSize;
-	if (isPrimary) {
-		innerTickSize = this.width - this.padding.left - this.padding.right;
-		if (hasOtherAxis) {
-			innerTickSize -= state.displayConfig.blockerRectOffset;
-		}
-	} else {
-		innerTickSize = 0;
-	}
-
-	axis.innerTickSize( innerTickSize );
-	axis.scaleId(scaleId);
-}
-
-function computePadding(props) {
-	var labels = props.chartProps._annotations.labels;
-	var displayConfig = props.displayConfig;
-	var _top = (props.labelYMax * props.dimensions.height) + displayConfig.afterLegend;
-
-	if (props.hasTitle) {
-		_top += displayConfig.afterTitle;
-	}
-
-	// Reduce top padding if all labels or dragged or there is only one series,
-	// meaning no label will be shown
-	if (props.allLabelsDragged || props.chartProps.data.length === 1) {
-		_top -= displayConfig.afterLegend;
-	}
-
-	return {
-		top: _top,
-		right: displayConfig.padding.right,
-		bottom: displayConfig.padding.bottom,
-		left: displayConfig.padding.left
-	};
-}
 
 module.exports = XYRenderer;

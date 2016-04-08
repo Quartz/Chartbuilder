@@ -170,16 +170,16 @@ var RendererWrapper = React.createClass({
 		this.setState(update(this.state, { $merge: newSetting }));
 	},
 
-	_calculateDimensions: function(width, displayConfig) {
-		var calculator = this.state.chartConfig.calculateDimensions;
-		return calculator(width, {
-			model: this.props.model,
-			displayConfig: displayConfig,
-			enableResponsive: this.props.enableResponsive,
-			extraHeight: this.state.extraHeight,
-			showMetadata: this.props.showMetadata
-		});
-	},
+	//_calculateDimensions: function(width, displayConfig) {
+		//var calculator = this.state.chartConfig.calculateDimensions;
+		//return calculator(width, {
+			//model: this.props.model,
+			//displayConfig: displayConfig,
+			//enableResponsive: this.props.enableResponsive,
+			//extraHeight: this.state.extraHeight,
+			//showMetadata: this.props.showMetadata
+		//});
+	//},
 
 	render: function() {
 		var chartType = this.props.model.metadata.chartType;
@@ -211,19 +211,7 @@ var RendererWrapper = React.createClass({
 			}});
 		}
 
-		var dimensions = this._calculateDimensions(width, displayConfig);
-
-		try {
-			if (isNaN(dimensions.width)) {
-				throw new TypeError("In RendererWrapper, `dimensions.height` must be a number");
-			}
-			if (isNaN(dimensions.height)) {
-				throw new TypeError("In RendererWrapper, `dimensions.width` must be a number");
-			}
-		} catch (e) {
-			console.error(e.name, e.message);
-		}
-
+		//var dimensions = this._calculateDimensions(width, displayConfig);
 		var Renderer = chartRenderers[chartType];
 		var chartProps;
 		var metadata;
@@ -249,12 +237,12 @@ var RendererWrapper = React.createClass({
 		var metadataSvg = [];
 		var title;
 
-		var translate = {
-			top: margin.top,
-			right: dimensions.width - margin.right,
-			bottom: dimensions.height - margin.bottom,
-			left: margin.left
-		};
+		//var translate = {
+			//top: margin.top,
+			//right: dimensions.width - margin.right,
+			//bottom: dimensions.height - margin.bottom,
+			//left: margin.left
+		//};
 
 		//if (this.props.showMetadata) {
 			//if (metadata.title && metadata.title !== "") {
@@ -289,7 +277,6 @@ var RendererWrapper = React.createClass({
 					width={width}
 					extraHeight={this.state.extraHeight}
 					chartProps={chartProps}
-					dimensions={dimensions}
 					isSmall={isSmall}
 					displayConfig={displayConfig}
 					styleConfig={this.state.styleConfig}
