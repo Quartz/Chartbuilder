@@ -5,32 +5,30 @@ var map = require("lodash/map");
 var processDates = require("./process-dates");
 var help = require("./helper");
 
+var scale_types = {
+	"linear": _linearScale,
+	"ordinal": _ordinalScale,
+	"time": _timeScale
+};
+
 /**
  * generateScale
  *
+ * @param type
  * @param scaleOptions
  * @param data
  * @param range
  * @returns {scale: d3 scale, tickValues: array, tickFormat: format func}
  */
-function generateScale(scaleOptions, data, range) {
-	if (scaleOptions.dateSettings) {
-		return _dateScale(scaleOptions, data, range);
-	}
-	if (scaleOptions.numericSettings) {
-		return _linearScale(scaleOptions, data, range);
-	}
-	else {
-		return _ordinalScale(scaleOptions, data, range);
-	}
+function generateScale(type, scaleOptions, data, range) {
+	return scale_types[type](scaleOptions, data, range);
 }
 
-function _dateScale(scaleOptions, data, range) {
+function _timeScale(scaleOptions, data, range) {
 	// Return the ticks used for a time scale based on the time span and settings
 	var formatAndFreq = {};
-	var _dateSettings = scaleOptions.dateSettings;
-	var dateFormat = _dateSettings.dateFormat;
-	var dateFrequency = _dateSettings.dateFrequency;
+	var dateFormat = scaleOptions.dateFormat;
+	var dateFrequency = scaleOptions.dateFrequency;
 
 	// grab the first series to get the first/last dates
 	var firstSeries = data[0].values;
@@ -67,12 +65,11 @@ function _dateScale(scaleOptions, data, range) {
 }
 
 function _linearScale(scaleOptions, data, range) {
-	var numericSettings = scaleOptions.numericSettings;
 	return {
-		scale: d3.scale.linear().domain(numericSettings.domain).range(range),
-		tickValues: numericSettings.tickValues,
+		scale: d3.scale.linear().domain(scaleOptions.domain).range(range),
+		tickValues: scaleOptions.tickValues,
 		tickFormat: function(d) {
-			return help.roundToPrecision(d, numericSettings.precision);
+			return help.roundToPrecision(d, scaleOptions.precision);
 		}
 	};
 }

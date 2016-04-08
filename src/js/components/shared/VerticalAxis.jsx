@@ -9,13 +9,14 @@ var DY = "0.32em";
 var VerticalAxis = React.createClass({
 
 	propTypes: {
-		scaleOptions: PropTypes.object,
 		orient: PropTypes.string,
 		width: PropTypes.number,
 		yScale: PropTypes.func,
 		offset: PropTypes.number,
-		tickvalues: PropTypes.array,
-		tickformat: PropTypes.func
+		tickValues: PropTypes.array,
+		tickFormat: PropTypes.func,
+		prefix: PropTypes.string,
+		suffix: PropTypes.string
 	},
 
 	getDefaultProps: function() {
@@ -27,15 +28,14 @@ var VerticalAxis = React.createClass({
 	},
 
 	_generateText: function(props) {
-		var scaleOptions = props.scaleOptions;
-
-		return map(scaleOptions.tickValues, function(tickValue, i) {
-			var formatted = help.roundToPrecision(tickValue, scaleOptions.precision);
+		var numTicks = props.tickValues.length;
+		return map(props.tickValues, function(tickValue, i) {
+			var formatted = props.tickFormat(tickValue)
 			var text;
-			if (tickValue !== scaleOptions.domain[1]) {
-				text = formatted
+			if (i === (numTicks - 1)) {
+				text = [props.prefix, formatted, props.suffix].join("");
 			} else {
-				text = [scaleOptions.prefix, formatted, scaleOptions.suffix].join("");
+				text = formatted;
 			}
 
 			return (

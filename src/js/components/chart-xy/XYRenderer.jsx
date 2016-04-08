@@ -114,6 +114,16 @@ var XYRenderer = React.createClass({
 		}
 	},
 
+	_generateXAxis: function(scale, data, range) {
+		if (scale.dateSettings) {
+			return scaleUtils.generateScale("time", scale.dateSettings, data, range)
+		} else if (scale.numericSettings) {
+			return scaleUtils.generateScale("linear", scale.numericSettings, null, range)
+		} else {
+			return scaleUtils.generateScale("ordinal", null, null, range)
+		}
+	},
+
 	_generateSeries: function(data, xScale, primaryScale, secondaryScale) {
 		return map(data, function(d, i) {
 			var yScale = (d.altAxis) ? secondaryScale : primaryScale;
@@ -169,43 +179,43 @@ var XYRenderer = React.createClass({
 			)
 		};
 
-		var primaryScale;
-		var secondaryScale;
-
-		primaryScale = d3.scale.linear()
-			.range([chartAreaDimensions.height, 0])
-			.domain(scale.primaryScale.domain);
+		var yRange = [chartAreaDimensions.height, 0];
+		var xRange = [0, chartAreaDimensions.width];
+		var xAxis = this._generateXAxis(scale, _chartProps.data, xRange);
+		var yAxisPrimary = scaleUtils.generateScale("linear", scale.primaryScale, null, yRange);
+		var yAxisSecondary = { scale: null };
 
 		var verticalAxes = [
 			<VerticalAxis
-				scaleOptions={scale.primaryScale}
+				prefix={scale.primaryScale.prefix}
+				suffix={scale.primaryScale.suffix}
+				tickFormat={yAxisPrimary.tickFormat}
+				tickValues={yAxisPrimary.tickValues}
 				orient="left"
 				offset={maxTickWidth.primaryScale * -1}
-				width={chartAreaDimensions.width}
-				scale={primaryScale}
+				scale={yAxisPrimary.scale}
 				key={0}
 			/>
 		];
 
 		if (props.chartProps._numSecondaryAxis > 0) {
-			secondaryScale = d3.scale.linear()
-				.range([chartAreaDimensions.height, 0])
-				.domain(scale.secondaryScale.domain);
+			yAxisSecondary = scaleUtils.generateScale("linear", _chartProp.scale.secondaryScale, null, yRange);
 
 			verticalAxes.push(
 				<VerticalAxis
-					scaleOptions={scale.secondaryScale}
+					prefix={scale.secondaryScale.prefix}
+					suffix={scale.secondaryScale.suffix}
+					tickFormat={yAxisSecondary.tickFormat}
+					tickValues={yAxisSecondary.tickValues}
 					orient="right"
 					offset={maxTickWidth.secondaryScale}
-					width={chartAreaDimensions.width}
-					scale={secondaryScale}
+					scale={yAxisSecondary.scale}
 					key={1}
 				/>
 			);
 		}
 
-		var xAxis = scaleUtils.generateScale(_chartProps.scale, _chartProps.data, [0, chartAreaDimensions.width])
-		var series = this._generateSeries(dataWithSettings, xAxis.scale, primaryScale, secondaryScale);
+		var series = this._generateSeries(dataWithSettings, xAxis.scale, yAxisPrimary.scale, yAxisSecondary.scale);
 
 		// Maintain space between legend and chart area unless all legend labels
 		// have been dragged
@@ -292,7 +302,7 @@ var XYRenderer = React.createClass({
 					dimensions={chartAreaDimensions}
 					editable={this.props.editable}
 					xScale={xAxis.scale}
-					yScale={primaryScale}
+					yScale={yAxisPrimary.scale}
 					translate={[maxTickWidth.primaryScale, chartAreaTranslateY]}
 				>
 					<VerticalGridLines tickValues={xAxis.tickValues} />
@@ -316,7 +326,7 @@ var XYRenderer = React.createClass({
 					styleConfig={this.props.styleConfig}
 					maxTickWidth={maxTickWidth}
 					xScale={xAxis.scale}
-					yScale={primaryScale}
+					yScale={yAxisPrimary.scale}
 					data={dataWithSettings}
 					updateLabelYMax={this._updateLabelYMax}
 					labelYMax={this.state.labelYMax}

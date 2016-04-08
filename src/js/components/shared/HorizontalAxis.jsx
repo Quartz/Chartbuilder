@@ -8,7 +8,6 @@ var DY = "0.32em"
 var HorizontalAxis = React.createClass({
 
 	propTypes: {
-		scaleOptions: PropTypes.object,
 		orient: PropTypes.string,
 		dimensions: PropTypes.object,
 		xScale: PropTypes.func,
