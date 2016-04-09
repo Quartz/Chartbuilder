@@ -119,7 +119,7 @@ var XYRenderer = React.createClass({
 		} else if (scale.numericSettings) {
 			return scaleUtils.generateScale("linear", scale.numericSettings, null, range)
 		} else {
-			return scaleUtils.generateScale("ordinal", null, null, range)
+			return scaleUtils.generateScale("ordinal", null, data, range)
 		}
 	},
 
@@ -191,6 +191,7 @@ var XYRenderer = React.createClass({
 			height: base_dimensions.height + extraHeight
 		};
 
+		// TODO: way of doing this cleaner?
 		if (!allLabelsDragged) {
 			chartAreaTranslateY += displayConfig.afterLegend;
 		} else {
@@ -198,6 +199,7 @@ var XYRenderer = React.createClass({
 		}
 
 		// apply `chartSettings` to data
+		// TODO: possibly not necessary wo d4
 		var dataWithSettings = this._applySettingsToData(_chartProps);
 
 		// Dimensions of the chart area
@@ -218,6 +220,8 @@ var XYRenderer = React.createClass({
 		var yRange = [chartAreaDimensions.height, 0];
 		var xRange = [0, chartAreaDimensions.width];
 		var xAxis = this._generateXAxis(scale, _chartProps.data, xRange);
+		// linear x axis used for placing annotations based on scale
+		var xAxisLinear = scaleUtils.generateScale("linear", {domain: xRange}, null, xRange);
 		var yAxisPrimary = scaleUtils.generateScale("linear", scale.primaryScale, null, yRange);
 		var yAxisSecondary = { scale: null };
 
@@ -354,7 +358,7 @@ var XYRenderer = React.createClass({
 					displayConfig={displayConfig}
 					styleConfig={this.props.styleConfig}
 					maxTickWidth={maxTickWidth}
-					xScale={xAxis.scale}
+					xScale={xAxisLinear.scale}
 					yScale={yAxisPrimary.scale}
 					data={dataWithSettings}
 					updateLabelYMax={this._updateLabelYMax}

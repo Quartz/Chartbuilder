@@ -14,6 +14,12 @@ var BarSeries = React.createClass({
 		yScale: PropTypes.array // each bar can have different yscale
 	},
 
+	getDefaultProps: function() {
+		return {
+			groupPadding: 0.2
+		}
+	},
+
 	_createDataArray: function(data) {
 		if (isArray(data[0])) {
 			return data;
@@ -25,8 +31,13 @@ var BarSeries = React.createClass({
 	render: function() {
 		var props = this.props;
 		var data = this._createDataArray(props.data);
-		var innerWidth = props.dimensions.width / data[0].length;
-		var innerScale = ordinal().domain(Object.keys(data)).rangeRoundBands([0, innerWidth])
+		var numDataPoints = data[0].length;
+		var innerWidth = props.dimensions.width / numDataPoints;
+		var groupOuterPadding = Math.max(0.1, (1.6 / numDataPoints));
+
+		var innerScale = ordinal().domain(Object.keys(data))
+		.rangeRoundBands([0, innerWidth], 0, groupOuterPadding);
+
 		var rectWidth = innerScale.rangeBand();
 
 		var rects = map(data, function(series, ix) {

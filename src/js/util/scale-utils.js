@@ -79,7 +79,7 @@ function _ordinalScale(scaleOptions, data, range) {
 		return value.entry;
 	});
 	return {
-		scale: d3.scale.ordinal().domain(entries).rangeBands(range, 0.4, 0.2),
+		scale: d3.scale.ordinal().domain(entries).rangePoints(range, 0.8),
 		tickValues: entries,
 	};
 }
