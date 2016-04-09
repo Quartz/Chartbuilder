@@ -124,7 +124,10 @@ var XYRenderer = React.createClass({
 	},
 
 	_generateSeries: function(data, xScale, primaryScale, secondaryScale) {
-		return map(data, function(d, i) {
+		var colData = [];
+		var colYScales = [];
+		var colColors = [];
+		var series = map(data, function(d, i) {
 			var yScale = (d.altAxis) ? secondaryScale : primaryScale;
 			switch (d.type) {
 				case 'line':
@@ -133,10 +136,10 @@ var XYRenderer = React.createClass({
 						data={d.values} colorIndex={d.colorIndex} />
 					);
 				case 'column':
-					return (
-						<BarSeries key={i} data={d.values}
-							yScale={yScale} colorIndex={d.colorIndex} />
-					);
+					colData.push(d.values);
+					colYScales.push(yScale);
+					colColors.push(d.colorIndex);
+					return null;
 				case 'scatterPlot':
 					return (
 						<MarkSeries  key={i} mark='circle' data={d.values}
@@ -146,6 +149,14 @@ var XYRenderer = React.createClass({
 					return null;
 			}
 		});
+		if (colData.length > 0) {
+			series.push(
+				<BarSeries key="bar" data={colData}
+					yScale={colYScales} colorIndex={colColors} />
+			);
+		}
+
+		return series;
 	},
 
 	render: function() {
@@ -157,7 +168,6 @@ var XYRenderer = React.createClass({
 		var axis = d3.svg.axis();
 		var axisTicks = [];
 		var labelComponents;
-		console.log(this.state.labelYMax);
 		var hasTitle = (this.props.metadata.title.length > 0 && this.props.showMetadata);
 
 		// Maintain space between legend and chart area unless all legend labels
