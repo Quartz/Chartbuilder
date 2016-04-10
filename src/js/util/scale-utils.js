@@ -20,7 +20,7 @@ var scale_types = {
  * @param range
  * @returns {scale: d3 scale, tickValues: array, tickFormat: format func}
  */
-function generateScale(type, scaleOptions, data, range) {
+function generate_scale(type, scaleOptions, data, range) {
 	return scale_types[type](scaleOptions, data, range);
 }
 
@@ -84,6 +84,40 @@ function _ordinalScale(scaleOptions, data, range) {
 	};
 }
 
+/**
+ * get_tick_widths
+ *
+ * @param scaleOptions object
+ * @param font string
+ * @returns {width: [number], max: number}
+ */
+function get_tick_widths(scaleOptions, font) {
+	if (!scaleOptions) return { width: [], max: 0};
+
+	var numTicks = scaleOptions.tickValues.length - 1;
+	var formattedTicks = reduce(scaleOptions.tickValues, function(prev, tick, i) {
+		if (i === numTicks) {
+			return prev.concat([
+				scaleOptions.prefix,
+				help.roundToPrecision(tick, scaleOptions.precision),
+				scaleOptions.suffix
+			].join(""));
+		} else {
+			return prev.concat(help.roundToPrecision(tick, scaleOptions.precision));
+		}
+	}, []);
+
+	var widths = map(formattedTicks, function(text) {
+		return help.computeTextWidth(text, font);
+	});
+
+	return {
+		widths: widths,
+		max: d3.max(widths.slice(0, -1)) // ignore the top tick
+	};
+}
+
 module.exports = {
-	generateScale: generateScale
+	generateScale: generate_scale,
+	getTickWidths: get_tick_widths
 };

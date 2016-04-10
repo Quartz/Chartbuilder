@@ -83,7 +83,7 @@ var XYRenderer = React.createClass({
 	getInitialState: function() {
 		return {
 			labelYMax: 0,
-			tickWidths: this._getTickWidths(this.props)
+			tickWidths: this._getTickWidths(this.props.chartProps.scale)
 		};
 	},
 
@@ -94,46 +94,16 @@ var XYRenderer = React.createClass({
 	},
 
 	// compute the max tick width for each scale
-	_getTickWidths: function(props) {
-		var tickWidths = {};
-
-		each(scaleNames, function(scaleKey) {
-			var currScale = props.chartProps.scale[scaleKey];
-			if (currScale) {
-				var numTicks = currScale.tickValues.length - 1;
-				var formattedTicks = reduce(currScale.tickValues, function(prev, tick, i) {
-					if (i === numTicks) {
-						var prefsuf = [
-							currScale.prefix,
-							help.roundToPrecision(tick, currScale.precision),
-							currScale.suffix
-						].join("");
-						return prev.concat(prefsuf);
-					} else {
-						return prev.concat(help.roundToPrecision(tick, currScale.precision));
-					}
-				}, []);
-				var widths = map(formattedTicks, function(text) {
-					//TODO: fonts dynamically identified, or at least defined in config
-					return help.computeTextWidth(text, "16px Khula-Light");
-				});
-				tickWidths[scaleKey] = {
-					widths: widths,
-					max: d3.max(widths.slice(0, -1))
-				};
-			} else {
-				tickWidths[scaleKey] = {
-					widths: [],
-					max: 0
-				};
-			}
-		}, this);
-
-		return tickWidths;
+	_getTickWidths: function(scales) {
+		return reduce(scaleNames, function(prev, key, i) {
+			//TODO: fonts dynamically identified, or at least defined in config
+			prev[key] = scaleUtils.getTickWidths(scales[key], "16px Khula-Light");
+			return prev;
+		}, {});
 	},
 
 	componentWillReceiveProps: function(nextProps) {
-		this.setState({ tickWidths: this._getTickWidths(nextProps) });
+		this.setState({ tickWidths: this._getTickWidths(nextProps.chartProps.scale) });
 	},
 
 	_generateXAxis: function(scale, data, range) {
