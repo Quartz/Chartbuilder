@@ -2,50 +2,49 @@
 // combining any of these types, as well as time series
 
 // React
-var React = require("react");
-var ReactDOM = require("react-dom");
-var PureRenderMixin = require("react-addons-pure-render-mixin");
-var PropTypes = React.PropTypes;
-var update = require("react-addons-update");
+var React               = require("react");
+var ReactDOM            = require("react-dom");
+var PureRenderMixin     = require("react-addons-pure-render-mixin");
+var PropTypes           = React.PropTypes;
+var update              = require("react-addons-update");
 
 // Node modules
-var d3 = require("d3");
+var d3                  = require("d3");
+var assign              = require("lodash/assign");
+var bind                = require("lodash/bind");
+var clone               = require("lodash/clone");
+var each                = require("lodash/each");
+var filter              = require("lodash/filter");
+var map                 = require("lodash/map");
+var reduce              = require("lodash/reduce");
+var some                = require("lodash/some");
 
-var assign = require("lodash/assign");
-var bind = require("lodash/bind");
-var clone = require("lodash/clone");
-var each = require("lodash/each");
-var filter = require("lodash/filter");
-var map = require("lodash/map");
-var reduce = require("lodash/reduce");
-var some = require("lodash/some");
-
-var ChartRendererMixin = require("../mixins/ChartRendererMixin.js");
-var DateScaleMixin = require("../mixins/DateScaleMixin.js");
-var NumericScaleMixin = require("../mixins/NumericScaleMixin.js");
+var ChartRendererMixin  = require("../mixins/ChartRendererMixin.js");
+var DateScaleMixin      = require("../mixins/DateScaleMixin.js");
+var NumericScaleMixin   = require("../mixins/NumericScaleMixin.js");
 
 // chart elements
-var XYChart = require("./XYChart.jsx");
-var SvgWrapper = require("../svg/SvgWrapper.jsx");
-var LineSeries = require("../series/LineSeries.jsx");
-var BarSeries = require("../series/BarSeries.jsx");
-var MarkSeries = require("../series/MarkSeries.jsx");
-var VerticalAxis = require("../shared/VerticalAxis.jsx");
-var HorizontalAxis = require("../shared/HorizontalAxis.jsx");
-var VerticalGridLines = require("../shared/VerticalGridLines.jsx");
+// TODO: factor these into their own lib
+var XYChart             = require("./XYChart.jsx");
+var SvgWrapper          = require("../svg/SvgWrapper.jsx");
+var LineSeries          = require("../series/LineSeries.jsx");
+var BarSeries           = require("../series/BarSeries.jsx");
+var MarkSeries          = require("../series/MarkSeries.jsx");
+var VerticalAxis        = require("../shared/VerticalAxis.jsx");
+var HorizontalAxis      = require("../shared/HorizontalAxis.jsx");
+var VerticalGridLines   = require("../shared/VerticalGridLines.jsx");
 var HorizontalGridLines = require("../shared/HorizontalGridLines.jsx");
 
 // Flux actions
-var ChartViewActions = require("../../actions/ChartViewActions");
+var ChartViewActions    = require("../../actions/ChartViewActions");
 
 // Svg components
-var SvgRectLabel = require("../svg/SvgRectLabel.jsx");
-var HiddenSvg = require("../svg/HiddenSvg.jsx");
+var SvgRectLabel        = require("../svg/SvgRectLabel.jsx");
 
 // Helpers
-var help = require("../../util/helper.js");
-var scaleUtils = require("../../util/scale-utils.js");
-var xyDimensions = require("../../charts/cb-xy/xy-dimensions.js");
+var help                = require("../../util/helper.js");
+var scaleUtils          = require("../../util/scale-utils.js");
+var xyDimensions        = require("../../charts/cb-xy/xy-dimensions.js");
 
 var scaleNames = ["primaryScale", "secondaryScale"];
 
@@ -84,33 +83,57 @@ var XYRenderer = React.createClass({
 	getInitialState: function() {
 		return {
 			labelYMax: 0,
-			maxTickWidth: {
-				primaryScale: 0,
-				secondaryScale: 0
-			}
+			tickWidths: this._getTickWidths(this.props)
 		};
 	},
 
 	mixins: [ChartRendererMixin],
 
-	_handleMaxTickWidth: function(k, v) {
-		var maxTickWidth = this.state.maxTickWidth;
-		maxTickWidth[k] = v;
-		this._handleStateUpdate("maxTickWidth", maxTickWidth);
-	},
-
 	_updateLabelYMax: function(labelYMax) {
 		this.setState({ labelYMax: labelYMax });
 	},
 
-	// Determine how far down vertically the labels should be placed, depending
-	// on presence (or not) of a title
+	// compute the max tick width for each scale
+	_getTickWidths: function(props) {
+		var tickWidths = {};
+
+		each(scaleNames, function(scaleKey) {
+			var currScale = props.chartProps.scale[scaleKey];
+			if (currScale) {
+				var numTicks = currScale.tickValues.length - 1;
+				var formattedTicks = reduce(currScale.tickValues, function(prev, tick, i) {
+					if (i === numTicks) {
+						var prefsuf = [
+							currScale.prefix,
+							help.roundToPrecision(tick, currScale.precision),
+							currScale.suffix
+						].join("");
+						return prev.concat(prefsuf);
+					} else {
+						return prev.concat(help.roundToPrecision(tick, currScale.precision));
+					}
+				}, []);
+				var widths = map(formattedTicks, function(text) {
+					//TODO: fonts dynamically identified, or at least defined in config
+					return help.computeTextWidth(text, "16px Khula-Light");
+				});
+				tickWidths[scaleKey] = {
+					widths: widths,
+					max: d3.max(widths.slice(0, -1))
+				};
+			} else {
+				tickWidths[scaleKey] = {
+					widths: [],
+					max: 0
+				};
+			}
+		}, this);
+
+		return tickWidths;
+	},
+
 	componentWillReceiveProps: function(nextProps) {
-		if (nextProps.chartProps._numSecondaryAxis === 0) {
-			var maxTickWidth = this.state.maxTickWidth;
-			maxTickWidth.secondaryScale = 0;
-			this.setState({ maxTickWidth: maxTickWidth });
-		}
+		this.setState({ tickWidths: this._getTickWidths(nextProps) });
 	},
 
 	_generateXAxis: function(scale, data, range) {
@@ -155,7 +178,6 @@ var XYRenderer = React.createClass({
 					yScale={colYScales} colorIndex={colColors} />
 			);
 		}
-
 		return series;
 	},
 
@@ -163,12 +185,12 @@ var XYRenderer = React.createClass({
 		var props = this.props;
 		var _chartProps = this.props.chartProps;
 		var displayConfig = this.props.displayConfig;
-		var maxTickWidth = this.state.maxTickWidth;
+		var tickWidths = this.state.tickWidths;
 		var scale = _chartProps.scale;
 		var axis = d3.svg.axis();
-		var axisTicks = [];
 		var labelComponents;
 		var hasTitle = (this.props.metadata.title.length > 0 && this.props.showMetadata);
+		var tickTextHeight = help.computeTextWidth("M", "16px Khula-Light");
 
 		// Maintain space between legend and chart area unless all legend labels
 		// have been dragged
@@ -208,7 +230,7 @@ var XYRenderer = React.createClass({
 				base_dimensions.width -
 				displayConfig.margin.left - displayConfig.margin.right -
 				displayConfig.padding.left - displayConfig.padding.right -
-				maxTickWidth.primaryScale - maxTickWidth.secondaryScale
+				tickWidths.primaryScale.max - tickWidths.secondaryScale.max
 			),
 			height: (
 				base_dimensions.height -
@@ -231,8 +253,10 @@ var XYRenderer = React.createClass({
 				suffix={scale.primaryScale.suffix}
 				tickFormat={yAxisPrimary.tickFormat}
 				tickValues={yAxisPrimary.tickValues}
+				tickWidths={tickWidths.primaryScale.widths}
+				tickTextHeight={tickTextHeight}
 				orient="left"
-				offset={maxTickWidth.primaryScale * -1}
+				offset={tickWidths.primaryScale.max * -1}
 				scale={yAxisPrimary.scale}
 				key={0}
 			/>
@@ -247,9 +271,11 @@ var XYRenderer = React.createClass({
 					suffix={scale.secondaryScale.suffix}
 					tickFormat={yAxisSecondary.tickFormat}
 					tickValues={yAxisSecondary.tickValues}
+					tickTextHeight={tickTextHeight}
+					tickWidths={tickWidths.secondaryScale.widths}
 					orient="right"
 					width={chartAreaDimensions.width}
-					offset={maxTickWidth.secondaryScale}
+					offset={tickWidths.secondaryScale.max}
 					scale={yAxisSecondary.scale}
 					key={1}
 				/>
@@ -271,57 +297,6 @@ var XYRenderer = React.createClass({
 		// margin set in config
 		var labels = _chartProps._annotations.labels;
 
-		// compute the max tick width for each scale
-		each(scaleNames, function(scaleKey) {
-			var currScale = scale[scaleKey];
-
-			if (currScale) {
-				// get the tick values so that we can pass them both to the actual chart
-				// renderer and to the component that will render hidden ticks
-				var tickValues = currScale.tickValues;
-
-				var skipFirstNode = filter(tickValues, function(d) {
-					return (d !== currScale.domain[1]);
-				});
-
-				var formattedTicks = map(skipFirstNode, function(tick) {
-					return help.roundToPrecision(tick, currScale.precision);
-				});
-
-				axisTicks.push({
-					name: scaleKey,
-					tickValues: tickValues,
-					formattedTicks: formattedTicks,
-					precision: currScale.precision,
-					max: currScale.domain[1]
-				});
-			}
-		}, this);
-
-		// Render hidden y-axis ticks in order to compute the maxTickWidth
-		// independent of rendering the chart itself, this is needed to set the
-		// appropriate padding for the chart. We must do this for each y-axis.
-		var HiddenAxes = map(axisTicks, bind(function(axis, i) {
-			return (
-				<HiddenSvg.HiddenSvgAxis
-					className="tick"
-					chartWidth={chartAreaDimensions.width}
-					maxTickWidth={this.state.maxTickWidth[axis.name]}
-					formattedText={axis.formattedTicks}
-					blockerRectOffset={this.props.displayConfig.blockerRectOffset}
-					key={i}
-					onUpdate={this._handleMaxTickWidth.bind(null, axis.name)}
-				/>
-			);
-		}, this));
-
-		if (this.state.maxTickWidth.primaryScale <= 0) {
-			// We have not yet calculated maxTickWidth
-			return (
-				<svg><g>{HiddenAxes}</g></svg>
-			);
-		}
-
 		// Create array of chart-specific components that will be passed to the Svg
 		// chart template, which adds title/credit/source etc
 		return (
@@ -336,7 +311,7 @@ var XYRenderer = React.createClass({
 					editable={this.props.editable}
 					xScale={xAxis.scale}
 					yScale={yAxisPrimary.scale}
-					translate={[maxTickWidth.primaryScale, chartAreaTranslateY]}
+					translate={[tickWidths.primaryScale.max, chartAreaTranslateY]}
 				>
 					<VerticalGridLines tickValues={xAxis.tickValues} />
 					<HorizontalGridLines tickValues={scale.primaryScale.tickValues} />
@@ -357,14 +332,13 @@ var XYRenderer = React.createClass({
 					editable={this.props.editable}
 					displayConfig={displayConfig}
 					styleConfig={this.props.styleConfig}
-					maxTickWidth={maxTickWidth}
+					tickWidths={tickWidths}
 					xScale={xAxisLinear.scale}
 					yScale={yAxisPrimary.scale}
 					data={dataWithSettings}
 					updateLabelYMax={this._updateLabelYMax}
 					labelYMax={this.state.labelYMax}
 				/>
-				{HiddenAxes}
 			</SvgWrapper>
 		);
 	}
@@ -390,7 +364,6 @@ var XYRenderer = React.createClass({
  *   labelYMax: PropTypes.number,
  *   updateLabelYMax: PropTypes.func,
  *   maxTickWidth: PropTypes.object,
- *   axisTicks: PropTypes.array
  * },
  * @instance
  * @memberof XYRenderer
@@ -413,8 +386,7 @@ var XYLabels = React.createClass({
 		//metadata: PropTypes.object,
 		labelYMax: PropTypes.number,
 		updateLabelYMax: PropTypes.func,
-		maxTickWidth: PropTypes.object,
-		axisTicks: PropTypes.array
+		maxTickWidth: PropTypes.object
 	},
 
 	getInitialState: function() {

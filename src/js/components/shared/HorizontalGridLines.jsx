@@ -14,14 +14,15 @@ var VerticalGridLines = React.createClass({
 	_generateTicks: function(props) {
 		return map(props.tickValues, function(tickValue, i) {
 			var scalePos = props.yScale(tickValue);
+			var x1 = props.translate[0] * -1;
 			return (
 				<line
 					key={i}
 					className="tick"
 					y1={scalePos}
 					y2={scalePos}
-					x1={props.dimensions.width}
-					x2="0"
+					x1={x1}
+					x2={props.dimensions.width}
 				/>
 			)
 		});

@@ -16,21 +16,30 @@ var VerticalAxis = React.createClass({
 		tickValues: PropTypes.array,
 		tickFormat: PropTypes.func,
 		prefix: PropTypes.string,
-		suffix: PropTypes.string
+		suffix: PropTypes.string,
+		tickWidths: PropTypes.array
 	},
 
 	getDefaultProps: function() {
 		return {
 			orient: "left",
 			offset: 0,
-			tickFormat: function(d) { return d; }
+			tickFormat: function(d) { return d; },
+			concealerPadding: {
+				width: 4,
+				height: 4
+			}
 		}
 	},
 
 	_generateText: function(props) {
 		var numTicks = props.tickValues.length;
+		var concealerHeight = props.tickTextHeight + props.concealerPadding.height;
+
 		return map(props.tickValues, function(tickValue, i) {
 			var formatted = props.tickFormat(tickValue)
+			var rectX = (props.orient === "left") ? 0 : props.tickWidths[i] * -1;
+
 			var text;
 			if (i === (numTicks - 1)) {
 				text = [props.prefix, formatted, props.suffix].join("");
@@ -39,16 +48,22 @@ var VerticalAxis = React.createClass({
 			}
 
 			return (
-				<text
-					key={i}
-					className={"tick orient-" + props.orient}
-					x={0}
-					y={props.scale(tickValue)}
-					dy={DY}
+				<g key={i} className="concealer-label"
+					 transform={"translate(" + [0, props.scale(tickValue)] + ")"}
 				>
-					{text}
-				</text>
+					<rect
+						className="tick-blocker-rect"
+						width={props.tickWidths[i] + props.concealerPadding.width}
+						height={concealerHeight}
+						x={rectX}
+						y={concealerHeight / -2}
+					/>
+					<text className={"tick orient-" + props.orient} x={0} y={0} dy={DY} >
+						{text}
+					</text>
+				</g>
 			)
+
 		});
 	},
 

@@ -109,10 +109,8 @@ function compute_scale_domain(scaleObj, data, opts) {
  * @return {number} Rounded number
  */
 function round_to_precision(num, precision, supress_thou_sep) {
-	if (num === 0) {
-		//zero should always be "0"
-		return "0";
-	}
+	//zero should always be "0"
+	if (num === 0) return "0";
 
 	var s = Math.round(num * Math.pow(10,precision)) / Math.pow(10,precision);
 	s = s + "";
@@ -216,7 +214,7 @@ function merge_or_apply(defaults, source) {
 }
 
 /**
- * Given a the domain of a scale suggest the most numerous number 
+ * Given a the domain of a scale suggest the most numerous number
  * of round number ticks that it cold be divided into while still containing
  values evenly divisible by 1, 2, 2.5, 5, 10, or 25.
  * @param {array} domain - An array of two number like objects
@@ -280,6 +278,15 @@ function tz_offset_to_minutes(offset) {
 	return (offset[0]*60) + (sign * offset[1])
 }
 
+function compute_text_width(text, font) {
+	// re-use canvas object for better performance
+	var canvas = compute_text_width.canvas || (compute_text_width.canvas = document.createElement("canvas"));
+	var context = canvas.getContext("2d");
+	context.font = font;
+	var metrics = context.measureText(text);
+	return (Math.round(metrics.width * 100) / 100);
+};
+
 /**
  * Helper functions!
  * @name helper
@@ -293,7 +300,8 @@ var helper = {
 	transformCoords: transform_coords,
 	mergeOrApply: merge_or_apply,
 	suggestTickNum: suggest_tick_num,
-	TZOffsetToMinutes: tz_offset_to_minutes
+	TZOffsetToMinutes: tz_offset_to_minutes,
+	computeTextWidth: compute_text_width
 };
 
 module.exports = helper;
