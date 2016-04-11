@@ -116,6 +116,18 @@ var XYRenderer = React.createClass({
 		}
 	},
 
+	_xAxisTextAnchor: function(chartProps) {
+		var hasDate = (chartProps.scale.hasOwnProperty("dateSettings"));
+		var hasNonCol = some(chartProps.chartSettings, function(setting) {
+			return setting.type !== "column";
+		});
+		if (hasDate && hasNonCol) {
+			return "start";
+		} else {
+			return "middle";
+		}
+	},
+
 	_generateSeries: function(data, xScale, primaryScale, secondaryScale) {
 		var colData = [];
 		var colYScales = [];
@@ -157,7 +169,6 @@ var XYRenderer = React.createClass({
 		var displayConfig = this.props.displayConfig;
 		var tickWidths = this.state.tickWidths;
 		var scale = _chartProps.scale;
-		var axis = d3.svg.axis();
 		var labelComponents;
 		var hasTitle = (this.props.metadata.title.length > 0 && this.props.showMetadata);
 		var tickTextHeight = help.computeTextWidth("M", "16px Khula-Light");
@@ -289,6 +300,7 @@ var XYRenderer = React.createClass({
 					<HorizontalAxis
 						tickFormat={xAxis.tickFormat}
 						tickValues={xAxis.tickValues}
+						textAnchor={this._xAxisTextAnchor(_chartProps)}
 						orient="bottom"
 						scale={xAxis.scale}
 					/>

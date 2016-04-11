@@ -12,38 +12,38 @@ var HorizontalAxis = React.createClass({
 		dimensions: PropTypes.object,
 		xScale: PropTypes.func,
 		tickValues: PropTypes.array,
-		tickFormat: PropTypes.func
+		tickFormat: PropTypes.func,
+		textAnchor: PropTypes.string
 	},
 
 	getDefaultProps: function() {
 		return {
 			orient: "bottom",
-			tickFormat: function(d) { return d; }
+			tickFormat: function(d) { return d; },
+			textAnchor: "middle"
 		}
 	},
 
 	_generateTicks: function(props) {
 		return map(props.tickValues, function(tickValue, i) {
-			var text = props.tickFormat(tickValue);
-
 			return (
 				<text
 					key={i}
+					textAnchor={props.textAnchor}
 					className={"tick orient-" + props.orient}
 					transform={"translate(" + [props.xScale(tickValue), 0] + ")"}
 					dy={DY}
 				>
-					{text}
+					{props.tickFormat(tickValue)}
 				</text>
 			)
 		});
-
 	},
 
 	_getTransform: function(orient, height) {
-		if (orient == "top") {
+		if (orient === "top") {
 			return 0;
-		} else if (orient == "bottom") {
+		} else if (orient === "bottom") {
 			return height;
 		}
 	},

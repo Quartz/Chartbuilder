@@ -1,6 +1,7 @@
 var React = require("react");
 var PropTypes = React.PropTypes;
 var map = require("lodash/map");
+var cx = require("classnames");
 
 var VerticalGridLines = React.createClass({
 
@@ -15,10 +16,11 @@ var VerticalGridLines = React.createClass({
 		return map(props.tickValues, function(tickValue, i) {
 			var scalePos = props.yScale(tickValue);
 			var x1 = props.translate[0] * -1;
+			var className = cx("tick", { zero: (tickValue === 0) });
 			return (
 				<line
 					key={i}
-					className="tick"
+					className={className}
 					y1={scalePos}
 					y2={scalePos}
 					x1={x1}
@@ -29,11 +31,9 @@ var VerticalGridLines = React.createClass({
 	},
 
 	render: function() {
-		var ticks = this._generateTicks(this.props);
-
 		return (
-			<g className="grid-lines horizontal-grid-lines" >
-				{ticks}
+			<g className="grid-lines horizontal-grid-lines">
+				{this._generateTicks(this.props)}
 			</g>
 		);
 	}

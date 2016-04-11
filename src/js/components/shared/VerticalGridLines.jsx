@@ -28,11 +28,9 @@ var VerticalGridLines = React.createClass({
 	},
 
 	render: function() {
-		var ticks = this._generateTicks(this.props);
-
 		return (
-			<g className="grid-lines vertical-grid-lines" >
-				{ticks}
+			<g className="grid-lines vertical-grid-lines">
+				{this._generateTicks(this.props)}
 			</g>
 		);
 	}
