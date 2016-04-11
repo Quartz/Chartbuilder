@@ -40,7 +40,7 @@ var BarSeries = React.createClass({
 
 		var rectWidth = innerScale.rangeBand();
 
-		var rects = map(data, function(series, ix) {
+		var rects = map(bars, function(bar, ix) {
 			return map(series, function(d, i) {
 				var yVal = props.yScale[ix](d.value);
 				return (

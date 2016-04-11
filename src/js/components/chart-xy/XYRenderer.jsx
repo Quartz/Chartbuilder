@@ -26,15 +26,15 @@ var NumericScaleMixin   = require("../mixins/NumericScaleMixin.js");
 // chart elements
 // TODO: factor these into their own lib
 var XYChart             = require("./XYChart.jsx");
-var SvgWrapper          = require("../svg/SvgWrapper.jsx");
-var LineSeries          = require("../series/LineSeries.jsx");
-var LineMarkSeries      = require("../series/LineMarkSeries.jsx");
-var BarSeries           = require("../series/BarSeries.jsx");
-var MarkSeries          = require("../series/MarkSeries.jsx");
-var VerticalAxis        = require("../shared/VerticalAxis.jsx");
+var BarGroup            = require("../series/BarGroup.jsx");
 var HorizontalAxis      = require("../shared/HorizontalAxis.jsx");
-var VerticalGridLines   = require("../shared/VerticalGridLines.jsx");
 var HorizontalGridLines = require("../shared/HorizontalGridLines.jsx");
+var LineMarkSeries      = require("../series/LineMarkSeries.jsx");
+var LineSeries          = require("../series/LineSeries.jsx");
+var MarkSeries          = require("../series/MarkSeries.jsx");
+var SvgWrapper          = require("../svg/SvgWrapper.jsx");
+var VerticalAxis        = require("../shared/VerticalAxis.jsx");
+var VerticalGridLines   = require("../shared/VerticalGridLines.jsx");
 
 // Flux actions
 var ChartViewActions    = require("../../actions/ChartViewActions");
@@ -129,48 +129,49 @@ var XYRenderer = React.createClass({
 		}
 	},
 
-	_generateSeries: function(data, xScale, primaryScale, secondaryScale) {
+	_generateSeries: function(chartProps, xScale, primaryScale, secondaryScale) {
 		// TODO:
 		// put renderLinePoints thresholds in config
 		// clean up the bar implementation w bargroup and not pushing to arrays
-		var pointsPerSeries = data[0].values.length;
-		var colData = [];
-		var colYScales = [];
-		var colColors = [];
-		var renderLinePoints = (pointsPerSeries < 10 && pointsPerSeries * data.length < 50);
-		var series = map(data, function(d, i) {
-			var yScale = (d.altAxis) ? secondaryScale : primaryScale;
-			switch (d.type) {
+		var pointsPerSeries = chartProps.data[0].values.length;
+		var renderLinePoints = (pointsPerSeries < 10 && pointsPerSeries * chartProps.data.length < 50);
+
+		var columns = [];
+		var series = map(chartProps.data, function(d, i) {
+			var setting = chartProps.chartSettings[i];
+			var yScale = (setting.altAxis) ? secondaryScale : primaryScale;
+			switch (setting.type) {
 				case 'line':
 					if (renderLinePoints) {
 						return (
 							<LineMarkSeries key={i} yScale={yScale}
-							data={d.values} colorIndex={d.colorIndex} />
+							data={d.values} colorIndex={setting.colorIndex} />
 						);
 					} else {
 						return (
 							<LineSeries key={i} yScale={yScale}
-							data={d.values} colorIndex={d.colorIndex} />
+							data={d.values} colorIndex={setting.colorIndex} />
 						);
 					}
 				case 'column':
-					colData.push(d.values);
-					colYScales.push(yScale);
-					colColors.push(d.colorIndex);
+					columns.push({
+						data: d.values,
+						yScale: yScale,
+						colorIndex: setting.colorIndex
+					});
 					return null;
 				case 'scatterPlot':
 					return (
 						<MarkSeries key={i} mark='circle' data={d.values}
-							yScale={yScale} colorIndex={d.colorIndex} />
+							yScale={yScale} colorIndex={setting.colorIndex} />
 					);
 				default:
 					return null;
 			}
 		});
-		if (colData.length > 0) {
-			series.push(
-				<BarSeries key="bar" data={colData}
-					yScale={colYScales} colorIndex={colColors} />
+		if (columns.length > 0) {
+			series.unshift(
+				<BarGroup key="bar" bars={columns} />
 			);
 		}
 		return series;
@@ -276,7 +277,7 @@ var XYRenderer = React.createClass({
 			);
 		}
 
-		var series = this._generateSeries(dataWithSettings, xAxis.scale, yAxisPrimary.scale, yAxisSecondary.scale);
+		var series = this._generateSeries(_chartProps, xAxis.scale, yAxisPrimary.scale, yAxisSecondary.scale);
 
 		if (this.props.enableResponsive && _chartProps.hasOwnProperty("mobile") && this.props.isSmall) {
 			if (_chartProps.mobile.scale) {
@@ -330,7 +331,6 @@ var XYRenderer = React.createClass({
 					tickWidths={tickWidths}
 					xScale={xAxisLinear.scale}
 					yScale={yAxisPrimary.scale}
-					data={dataWithSettings}
 					updateLabelYMax={this._updateLabelYMax}
 					labelYMax={this.state.labelYMax}
 				/>
@@ -371,7 +371,6 @@ var XYLabels = React.createClass({
 		//hasTitle: PropTypes.bool.isRequired,
 		//displayConfig: PropTypes.object.isRequired,
 		styleConfig: PropTypes.object.isRequired,
-		data: PropTypes.arrayOf(PropTypes.object).isRequired,
 		//dimensions: PropTypes.shape({
 			//width: PropTypes.number,
 			//height: PropTypes.number
