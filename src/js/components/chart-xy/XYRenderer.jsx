@@ -130,6 +130,9 @@ var XYRenderer = React.createClass({
 	},
 
 	_generateSeries: function(data, xScale, primaryScale, secondaryScale) {
+		// TODO:
+		// put renderLinePoints thresholds in config
+		// clean up the bar implementation w bargroup and not pushing to arrays
 		var pointsPerSeries = data[0].values.length;
 		var colData = [];
 		var colYScales = [];
