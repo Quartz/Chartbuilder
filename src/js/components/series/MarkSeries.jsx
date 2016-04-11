@@ -25,10 +25,12 @@ var MarkSeries = React.createClass({
 					className={"color-index-" + props.colorIndex}
 				/>
 			);
-		})
+		});
+
 		return (
-			<g className="mark-series">{marks}</g>
+			<g className="series mark-series">{marks}</g>
 		);
+
 	}
 
 });

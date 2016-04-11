@@ -28,6 +28,7 @@ var NumericScaleMixin   = require("../mixins/NumericScaleMixin.js");
 var XYChart             = require("./XYChart.jsx");
 var SvgWrapper          = require("../svg/SvgWrapper.jsx");
 var LineSeries          = require("../series/LineSeries.jsx");
+var LineMarkSeries      = require("../series/LineMarkSeries.jsx");
 var BarSeries           = require("../series/BarSeries.jsx");
 var MarkSeries          = require("../series/MarkSeries.jsx");
 var VerticalAxis        = require("../shared/VerticalAxis.jsx");
@@ -129,17 +130,26 @@ var XYRenderer = React.createClass({
 	},
 
 	_generateSeries: function(data, xScale, primaryScale, secondaryScale) {
+		var pointsPerSeries = data[0].values.length;
 		var colData = [];
 		var colYScales = [];
 		var colColors = [];
+		var renderLinePoints = (pointsPerSeries < 10 && pointsPerSeries * data.length < 50);
 		var series = map(data, function(d, i) {
 			var yScale = (d.altAxis) ? secondaryScale : primaryScale;
 			switch (d.type) {
 				case 'line':
-					return (
-						<LineSeries key={i} yScale={yScale}
-						data={d.values} colorIndex={d.colorIndex} />
-					);
+					if (renderLinePoints) {
+						return (
+							<LineMarkSeries key={i} yScale={yScale}
+							data={d.values} colorIndex={d.colorIndex} />
+						);
+					} else {
+						return (
+							<LineSeries key={i} yScale={yScale}
+							data={d.values} colorIndex={d.colorIndex} />
+						);
+					}
 				case 'column':
 					colData.push(d.values);
 					colYScales.push(yScale);
@@ -147,7 +157,7 @@ var XYRenderer = React.createClass({
 					return null;
 				case 'scatterPlot':
 					return (
-						<MarkSeries  key={i} mark='circle' data={d.values}
+						<MarkSeries key={i} mark='circle' data={d.values}
 							yScale={yScale} colorIndex={d.colorIndex} />
 					);
 				default:
