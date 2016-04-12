@@ -40,6 +40,10 @@ function parseDelimInput(input, opts) {
 		inputTZ: "Z"
 	});
 
+	if (opts.checkForDate === false) {
+		_defaultOpts.type = "ordinal";
+	}
+
 	parseErrors = [];
 	// create regex of special characters we want to strip out as well as our
 	// computed locale-specific thousands separator.
@@ -64,7 +68,7 @@ function parseDelimInput(input, opts) {
 		hasDate = _defaultOpts.type ? _defaultOpts.type == "date" : index_types[0] === "date";
 		isNumeric = _defaultOpts.type ? _defaultOpts.type == "numeric" : index_types[0] === "number";
 
-		if(isNumeric && !_defaultOpts.type) {
+		if(isNumeric && !_defaultOpts.type && _defaultOpts.checkForDate) {
 			// if the entries are certain four digit numbers that look like years reparse as years if there isn't a specified type
 			var entry_extent = d3.extent(all_entry_values);
 			if(entry_extent[0] > 1500 && entry_extent[1] < 3000) {
