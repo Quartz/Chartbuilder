@@ -48,10 +48,11 @@ var ChartExport = React.createClass({
 		// SVG output won't work on most non-Chrome browsers, so we try it first. If
 		// `createSVGFile()` doesnt work we will disable svg download but still allow png.
 		// TODO: figure out what exactly is breaking FF
-		var chart = document
-			.getElementsByClassName(this.props.svgWrapperClassName)[0]
-			.getElementsByClassName("renderer-svg")[0];
+		//var chart = document
+			//.getElementsByClassName(this.props.svgWrapperClassName)[0]
+			//.getElementsByClassName("renderer-svg")[0];
 
+		var chart = document.getElementById("thechart");
 		this.setState({
 			chartNode: chart,
 			enableSvgExport: true
@@ -59,10 +60,11 @@ var ChartExport = React.createClass({
 	},
 
 	componentWillReceiveProps: function(nextProps) {
-		var chart = document
-			.getElementsByClassName(this.props.svgWrapperClassName)[0]
-			.getElementsByClassName("renderer-svg")[0];
+		//var chart = document
+			//.getElementsByClassName(this.props.svgWrapperClassName)[0]
+			//.getElementsByClassName("renderer-svg")[0];
 
+		var chart = document.getElementById("thechart");
 		this.setState({ chartNode: chart });
 	},
 
@@ -101,8 +103,16 @@ var ChartExport = React.createClass({
 	},
 
 	downloadPNG: function() {
+		var self = this;
 		filename = this._makeFilename("png");
-		saveSvgAsPng.saveSvgAsPng(this.state.chartNode, filename, { scale: 2.0 });
+		domtoimage.toPng(this.state.chartNode)
+			.then(function(dataUrl) {
+				self._autoClickDownload(filename, dataUrl)
+			})
+			.catch(function (error) {
+				console.error('oops, something went wrong!', error);
+			});
+		//saveSvgAsPng.saveSvgAsPng(this.state.chartNode, filename, { scale: 2.0 });
 	},
 
 	_autoClickDownload: function(filename, href) {
@@ -120,15 +130,22 @@ var ChartExport = React.createClass({
 		var filename = this._makeFilename("svg");
 		var chart = this._addIDsForIllustrator(this.state.chartNode);
 		var autoClickDownload = this._autoClickDownload;
-		saveSvgAsPng.svgAsDataUri(chart, {
-			cleanFontDefs: true,
-			fontFamilyRemap: {
-				"Khula-Light": "Khula Light",
-				"Khula-Regular": "Khula",
-			}
-		}, function(uri) {
-			autoClickDownload(filename, uri);
-		});
+		domtoimage.toSvg(chart)
+			.then(function(dataUrl) {
+				autoClickDownload(filename, dataUrl)
+			})
+			.catch(function (error) {
+				console.error('oops, something went wrong!', error);
+			});
+		//saveSvgAsPng.svgAsDataUri(chart, {
+			//cleanFontDefs: true,
+			//fontFamilyRemap: {
+				//"Khula-Light": "Khula Light",
+				//"Khula-Regular": "Khula",
+			//}
+		//}, function(uri) {
+			//autoClickDownload(filename, uri);
+		//});
 	},
 
 	downloadJSON: function() {

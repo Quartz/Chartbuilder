@@ -14,17 +14,20 @@ var SvgWrapper = React.createClass({
 
 	_createTitle: function(props) {
 		return (
-			<SvgText
-				text={props.metadata.title}
-				key="title"
-				translate={[
-					props.displayConfig.margin.left,
-					props.displayConfig.margin.top
-				]}
-				align="top"
-				className="svg-text-title"
-			/>
-		);
+			<h2>{props.metadata.title}</h2>
+		)
+		//return (
+			//<SvgText
+				//text={props.metadata.title}
+				//key="title"
+				//translate={[
+					//props.displayConfig.margin.left,
+					//props.displayConfig.margin.top
+				//]}
+				//align="top"
+				//className="svg-text-title"
+			///>
+		//);
 	},
 
 	_getYOffset: function(props) {
@@ -37,7 +40,8 @@ var SvgWrapper = React.createClass({
 
 	render: function() {
 		var props = this.props;
-		var yOffset = this._getYOffset(props);
+		//var yOffset = this._getYOffset(props);
+		var yOffset = 0;
 		var outerDimensions = {
 			width: props.outerDimensions.width,
 			height: props.outerDimensions.height + yOffset
@@ -50,13 +54,14 @@ var SvgWrapper = React.createClass({
 		];
 
 		return (
-			<svg width={outerDimensions.width} height={outerDimensions.height}>
-				<BackgroundRect dimensions={outerDimensions} />
+			<div id="notthechart">
 				{this._createTitle(props)}
-				<g className="chart-margin" transform={"translate(" + translate + ")"} >
-					{props.children}
-				</g>
-			</svg>
+				<svg width={outerDimensions.width} height={outerDimensions.height}>
+					<g className="chart-margin" transform={"translate(" + translate + ")"} >
+						{props.children}
+					</g>
+				</svg>
+			</div>
 		);
 	}
 

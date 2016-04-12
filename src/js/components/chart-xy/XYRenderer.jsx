@@ -209,11 +209,11 @@ var XYRenderer = React.createClass({
 		};
 
 		// TODO: way of doing this cleaner?
-		if (!allLabelsDragged) {
-			chartAreaTranslateY += displayConfig.afterLegend;
-		} else {
-			outerDimensions.height -= displayConfig.afterLegend;
-		}
+		//if (!allLabelsDragged) {
+			//chartAreaTranslateY += displayConfig.afterLegend;
+		//} else {
+			//outerDimensions.height -= displayConfig.afterLegend;
+		//}
 
 		// apply `chartSettings` to data
 		// TODO: possibly not necessary wo d4
@@ -295,31 +295,7 @@ var XYRenderer = React.createClass({
 		// Create array of chart-specific components that will be passed to the Svg
 		// chart template, which adds title/credit/source etc
 		return (
-			<SvgWrapper
-				outerDimensions={outerDimensions}
-				metadata={this.props.metadata}
-				displayConfig={displayConfig}
-			>
-				<XYChart
-					chartType="xy"
-					dimensions={chartAreaDimensions}
-					editable={this.props.editable}
-					xScale={xAxis.scale}
-					yScale={yAxisPrimary.scale}
-					translate={[tickWidths.primaryScale.max, chartAreaTranslateY]}
-				>
-					<VerticalGridLines tickValues={xAxis.tickValues} />
-					<HorizontalGridLines tickValues={scale.primaryScale.tickValues} />
-					{series}
-					<HorizontalAxis
-						tickFormat={xAxis.tickFormat}
-						tickValues={xAxis.tickValues}
-						textAnchor={this._xAxisTextAnchor(_chartProps)}
-						orient="bottom"
-						scale={xAxis.scale}
-					/>
-					{verticalAxes}
-				</XYChart>
+			<div>
 				<XYLabels
 					key="xy-labels"
 					chartProps={_chartProps}
@@ -334,7 +310,33 @@ var XYRenderer = React.createClass({
 					updateLabelYMax={this._updateLabelYMax}
 					labelYMax={this.state.labelYMax}
 				/>
-			</SvgWrapper>
+				<SvgWrapper
+					outerDimensions={outerDimensions}
+					metadata={this.props.metadata}
+					displayConfig={displayConfig}
+				>
+					<XYChart
+						chartType="xy"
+						dimensions={chartAreaDimensions}
+						editable={this.props.editable}
+						xScale={xAxis.scale}
+						yScale={yAxisPrimary.scale}
+						translate={[tickWidths.primaryScale.max, chartAreaTranslateY]}
+					>
+						<VerticalGridLines tickValues={xAxis.tickValues} />
+						<HorizontalGridLines tickValues={scale.primaryScale.tickValues} />
+						{series}
+						<HorizontalAxis
+							tickFormat={xAxis.tickFormat}
+							tickValues={xAxis.tickValues}
+							textAnchor={this._xAxisTextAnchor(_chartProps)}
+							orient="bottom"
+							scale={xAxis.scale}
+						/>
+						{verticalAxes}
+					</XYChart>
+				</SvgWrapper>
+			</div>
 		);
 	}
 });
@@ -528,34 +530,40 @@ var XYLabels = React.createClass({
 				};
 
 				labelComponents.push(
-					<SvgRectLabel
-						key={i}
-						allLabelsDragged={this.props.allLabelsDragged}
-						text={chartSetting.label}
-						labelConfig={labelConfig}
-						dimensions={this.props.dimensions}
-						index={i}
-						enableDrag={this._enableDrag}
-						onPositionUpdate={this._handleLabelPositionUpdate}
-						editable={props.editable}
-						offset={{ x: displayConfig.margin.left, y: 0}}
-						colorIndex={chartSetting.colorIndex}
-						settings={labelSettings}
-						prevNode={prevNode}
-						scale={scale}
-					/>
-				);
+					<h3 key={i} style={{marginRight: "15px", color: "purple", display: "inline"}}
+					>{chartSetting.label}</h3>
+				)
+
+				//labelComponents.push(
+					//<SvgRectLabel
+						//key={i}
+						//allLabelsDragged={this.props.allLabelsDragged}
+						//text={chartSetting.label}
+						//labelConfig={labelConfig}
+						//dimensions={this.props.dimensions}
+						//index={i}
+						//enableDrag={this._enableDrag}
+						//onPositionUpdate={this._handleLabelPositionUpdate}
+						//editable={props.editable}
+						//offset={{ x: displayConfig.margin.left, y: 0}}
+						//colorIndex={chartSetting.colorIndex}
+						//settings={labelSettings}
+						//prevNode={prevNode}
+						//scale={scale}
+					///>
+				//);
 			}, this));
 		}
 
 		return (
-			<g
+			<div
+				style={{fontFamily: "Khula-Bold"}}
 				ref="chartAnnotations"
 				className="renderer-annotations"
 				transform={"translate(" + [0, 0] + ")" }
 			>
 				{labelComponents}
-			</g>
+			</div>
 		);
 	}
 
