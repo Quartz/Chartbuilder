@@ -2,6 +2,7 @@
 var React = require("react");
 var PropTypes = React.PropTypes;
 var map = require("lodash/map");
+var help = require("../../util/helper.js");
 
 var DY = "0.32em"
 
@@ -16,23 +17,69 @@ var HorizontalAxis = React.createClass({
 		textAnchor: PropTypes.string
 	},
 
+	getInitialState: function() {
+		return {
+			lastTickWidth: 0
+		}
+	},
+
+	componentDidMount: function() {
+		this._setLastTickWidth(this.props);
+	},
+
+	componentWillReceiveProps: function(nextProps) {
+		this._setLastTickWidth(nextProps);
+	},
+
 	getDefaultProps: function() {
 		return {
 			orient: "bottom",
 			tickFormat: function(d) { return d; },
-			textAnchor: "middle"
+			textAnchor: "middle",
+			fontFamily: "16px Khula-Light"
 		}
 	},
 
+	_setLastTickWidth: function(props) {
+		var tickValues = props.tickValues;
+		var lastTick = props.tickFormat(tickValues[tickValues.length - 1]);
+		var lastTickWidth;
+
+		switch (props.textAnchor) {
+			case 'middle':
+				lastTickWidth = help.computeTextWidth(lastTick, props.fontFamily) / 2;
+				break;
+			case 'start':
+				lastTickWidth = help.computeTextWidth(lastTick, props.fontFamily);
+				break;
+			case 'end':
+				lastTickWidth = 0;
+				break;
+			default:
+				lastTickWidth = 0;
+				break;
+		}
+
+		if (lastTickWidth !== this.state.lastTickWidth) {
+			this.setState({ lastTickWidth: lastTickWidth });
+		};
+	},
+
 	_generateTicks: function(props) {
+		var lastTickWidth = this.state.lastTickWidth;
+
 		return map(props.tickValues, function(tickValue, i) {
+			var xVal = props.xScale(tickValue);
+
+			// offset a tick label that is over the edge
+			if (xVal + lastTickWidth > props.dimensions.width) {
+				xVal += (props.dimensions.width - (xVal + lastTickWidth));
+			}
+
 			return (
-				<text
-					key={i}
-					textAnchor={props.textAnchor}
+				<text key={i} textAnchor={props.textAnchor}
 					className={"tick orient-" + props.orient}
-					transform={"translate(" + [props.xScale(tickValue), 0] + ")"}
-					dy={DY}
+					x={xVal} y={0} dy={DY}
 				>
 					{props.tickFormat(tickValue)}
 				</text>
