@@ -2,6 +2,7 @@ var React = require("react");
 var PropTypes = React.PropTypes;
 var BackgroundRect = require("./BackgroundRect.jsx");
 var SvgText = require("./SvgText.jsx");
+var ChartFooter = require("./ChartFooter.jsx");
 
 var SvgWrapper = React.createClass({
 
@@ -37,6 +38,7 @@ var SvgWrapper = React.createClass({
 
 	render: function() {
 		var props = this.props;
+		var margin = props.displayConfig.margin;
 		var yOffset = this._getYOffset(props);
 		var outerDimensions = {
 			width: props.outerDimensions.width,
@@ -44,18 +46,29 @@ var SvgWrapper = React.createClass({
 		};
 
 		// Add to the chart margin if title is present
-		var translate = [
-			props.displayConfig.margin.left,
-			props.displayConfig.margin.top + yOffset
-		];
+
+		var translate = {
+			top: margin.top,
+			right: outerDimensions.width - margin.right,
+			bottom: outerDimensions.height - margin.bottom,
+			left: margin.left
+		};
 
 		return (
 			<svg width={outerDimensions.width} height={outerDimensions.height}>
 				<BackgroundRect dimensions={outerDimensions} />
 				{this._createTitle(props)}
-				<g className="chart-margin" transform={"translate(" + translate + ")"} >
+				<g
+					className="chart-margin"
+					transform={"translate(" + [translate.left, translate.top + this._getYOffset(props)] + ")"} >
 					{props.children}
 				</g>
+				<ChartFooter
+					metadata={props.metadata}
+					key="chartFooter"
+					translate={translate}
+					className="svg-credit-data"
+				/>
 			</svg>
 		);
 	}

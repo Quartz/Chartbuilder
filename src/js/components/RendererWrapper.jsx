@@ -233,44 +233,6 @@ var RendererWrapper = React.createClass({
 			metadata = this.props.model.metadata;
 		}
 
-		var margin = this.state.chartConfig.display.margin;
-		var metadataSvg = [];
-		var title;
-
-		//var translate = {
-			//top: margin.top,
-			//right: dimensions.width - margin.right,
-			//bottom: dimensions.height - margin.bottom,
-			//left: margin.left
-		//};
-
-		//if (this.props.showMetadata) {
-			//if (metadata.title && metadata.title !== "") {
-				//title = (
-					//<SvgText
-						//text={metadata.title}
-						//key="title"
-						//translate={[translate.left, translate.top]}
-						//align="top"
-						//className="svg-text-title"
-					///>
-				//);
-				//metadataSvg.push(title);
-			//}
-
-			//metadataSvg.push(
-				//<ChartFooter
-					//metadata={metadata}
-					//extraHeight={this.state.extraHeight}
-					//key="chartFooter"
-					//translate={translate}
-					//onUpdate={this._handleSvgUpdate.bind(null, "extraHeight")}
-					//chartWidth={dimensions.width - margin.left - margin.right}
-					//className="svg-credit-data"
-				///>
-			//);
-		//}
-
 		return (
 			<div className={["renderer-wrapper", this.state.svgSizeClass, this.props.className].join(" ")}>
 				<Renderer
