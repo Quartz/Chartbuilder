@@ -26,6 +26,19 @@ var init_data_ordinal_single = [
 	"travelability\t0"
 ].join("\n");
 
+var init_data_linear = [
+	"value	foo",
+	"1	$6,530",
+	"2	$8,711",
+	"3	$7,907",
+	"4	$9,507",
+	"5	$9,293",
+	"6	$13,865",
+	"7	$15,779",
+	"8	$9,360",
+	"9	$8,000"
+].join("\n");
+
 var init_data_time = [
 	"Date	End of month	3-month moving average",
 	"10/31/1984	886.79	749.9866667",
@@ -725,6 +738,7 @@ module.exports = {
 	init_data_ordinal: init_data_ordinal,
 	init_data_ordinal_multiple: init_data_ordinal_multiple,
 	init_data_ordinal_single: init_data_ordinal_single,
+	init_data_linear: init_data_linear,
 	init_data_time: init_data_time,
 	init_data_time_multiple: init_data_time_multiple,
 	init_data_time_single: init_data_time_single,

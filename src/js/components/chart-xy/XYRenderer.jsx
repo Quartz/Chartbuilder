@@ -312,6 +312,9 @@ var XYRenderer = React.createClass({
 					<HorizontalGridLines tickValues={scale.primaryScale.tickValues} />
 					{series}
 					<HorizontalAxis
+						prefix={(scale.numericSettings) ? scale.numericSettings.prefix : ""}
+						suffix={(scale.numericSettings) ? scale.numericSettings.suffix : ""}
+						tickTextHeight={tickTextHeight}
 						tickFormat={xAxis.tickFormat}
 						tickValues={xAxis.tickValues}
 						textAnchor={this._xAxisTextAnchor(_chartProps)}
