@@ -39,7 +39,6 @@ var HorizontalAxis = React.createClass({
 			orient: "bottom",
 			tickFormat: function(d) { return d; },
 			textAnchor: "middle",
-			fontFamily: "16px Khula-Light",
 			prefix: "",
 			suffix: "",
 			tickTextHeight: 0
@@ -55,16 +54,16 @@ var HorizontalAxis = React.createClass({
 
 		switch (props.textAnchor) {
 			case 'middle':
-				lastTickWidth = help.computeTextWidth(lastTick, props.fontFamily) / 2;
-				firstTickWidth = help.computeTextWidth(firstTick, props.fontFamily) / 2;
+				lastTickWidth = help.computeTextWidth(lastTick, props.tickFont) / 2;
+				firstTickWidth = help.computeTextWidth(firstTick, props.tickFont) / 2;
 				break;
 			case 'start':
-				lastTickWidth = help.computeTextWidth(lastTick, props.fontFamily);
+				lastTickWidth = help.computeTextWidth(lastTick, props.tickFont);
 				firstTickWidth = 0;
 				break;
 			case 'end':
 				lastTickWidth = 0;
-				firstTickWidth = help.computeTextWidth(firstTick, props.fontFamily);
+				firstTickWidth = help.computeTextWidth(firstTick, props.tickFont);
 				break;
 			default:
 				lastTickWidth = 0;
@@ -145,8 +144,9 @@ var HorizontalAxis = React.createClass({
 
 		return (
 			<g
+				style={{ font: props.tickFont }}
 				className="axis horizontal-axis"
-				transform={"translate(" + [0, transformY + 20] + ")"}
+				transform={"translate(" + [0, props.tickTextHeight + transformY + props.styleConfig.overtick_bottom] + ")"}
 			>
 				{ticks}
 				{suffix}

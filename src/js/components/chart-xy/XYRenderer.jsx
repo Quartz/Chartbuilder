@@ -67,6 +67,7 @@ var XYRenderer = React.createClass({
 			labelRectSize: PropTypes.number.isRequired,
 			afterLegend: PropTypes.number.isRequired
 		}).isRequired,
+		styleConfig: PropTypes.object,
 		chartProps: PropTypes.shape({
 			chartSettings: PropTypes.array.isRequired,
 			data: PropTypes.array.isRequired,
@@ -83,8 +84,7 @@ var XYRenderer = React.createClass({
 
 	getInitialState: function() {
 		return {
-			labelYMax: 0,
-			tickWidths: this._getTickWidths(this.props.chartProps.scale)
+			labelYMax: 0
 		};
 	},
 
@@ -95,16 +95,12 @@ var XYRenderer = React.createClass({
 	},
 
 	// compute the max tick width for each scale
-	_getTickWidths: function(scales) {
+	_getTickWidths: function(scales, tickFont) {
 		return reduce(scaleNames, function(prev, key, i) {
 			//TODO: fonts dynamically identified, or at least defined in config
-			prev[key] = scaleUtils.getTickWidths(scales[key], "16px Khula-Light");
+			prev[key] = scaleUtils.getTickWidths(scales[key], tickFont);
 			return prev;
 		}, {});
-	},
-
-	componentWillReceiveProps: function(nextProps) {
-		this.setState({ tickWidths: this._getTickWidths(nextProps.chartProps.scale) });
 	},
 
 	_generateXAxis: function(scale, data, range) {
@@ -177,15 +173,34 @@ var XYRenderer = React.createClass({
 		return series;
 	},
 
+	_getXOuterPadding: function() {
+		// add outer padding to x scale if column is present
+		var cols = this.props.chartProps.chartSettings.filter(function(d) {
+			return d.type === "column";
+		});
+		if (cols.length > 0) {
+			return this.props.displayConfig.columnOuterPadding;
+		} else {
+			return 0;
+		}
+	},
+
 	render: function() {
 		var props = this.props;
 		var _chartProps = this.props.chartProps;
 		var displayConfig = this.props.displayConfig;
-		var tickWidths = this.state.tickWidths;
 		var scale = _chartProps.scale;
 		var labelComponents;
 		var hasTitle = (this.props.metadata.title.length > 0 && this.props.showMetadata);
-		var tickTextHeight = help.computeTextWidth("M", "16px Khula-Light");
+
+		var tickFont = [
+			props.styleConfig.fontSizes.medium,
+			"px ",
+			props.styleConfig.fontFamily
+		].join("");
+
+		var tickWidths = this._getTickWidths(_chartProps.scale, tickFont);
+		var tickTextHeight = help.computeTextWidth("M", tickFont);
 
 		// Maintain space between legend and chart area unless all legend labels
 		// have been dragged
@@ -215,17 +230,14 @@ var XYRenderer = React.createClass({
 			outerDimensions.height -= displayConfig.afterLegend;
 		}
 
-		// apply `chartSettings` to data
-		// TODO: possibly not necessary wo d4
-		var dataWithSettings = this._applySettingsToData(_chartProps);
-
 		// Dimensions of the chart area
 		var chartAreaDimensions = {
 			width: (
 				base_dimensions.width -
 				displayConfig.margin.left - displayConfig.margin.right -
 				displayConfig.padding.left - displayConfig.padding.right -
-				tickWidths.primaryScale.max - tickWidths.secondaryScale.max
+				tickWidths.primaryScale.max - tickWidths.secondaryScale.max -
+				props.styleConfig.xOverTick
 			),
 			height: (
 				base_dimensions.height -
@@ -235,8 +247,10 @@ var XYRenderer = React.createClass({
 		};
 
 		var yRange = [chartAreaDimensions.height, 0];
-		var xRange = [0, chartAreaDimensions.width];
-		var xAxis = this._generateXAxis(scale, _chartProps.data, xRange);
+		var xPadding = chartAreaDimensions.width * this._getXOuterPadding()
+		var xRange = [xPadding, chartAreaDimensions.width - xPadding];
+		var xAxis = this._generateXAxis(scale, _chartProps.data, xRange)
+
 		// linear x axis used for placing annotations based on scale
 		var xAxisLinear = scaleUtils.generateScale("linear", {domain: xRange}, null, xRange);
 		var yAxisPrimary = scaleUtils.generateScale("linear", scale.primaryScale, null, yRange);
@@ -299,14 +313,17 @@ var XYRenderer = React.createClass({
 				outerDimensions={outerDimensions}
 				metadata={this.props.metadata}
 				displayConfig={displayConfig}
+				styleConfig={this.props.styleConfig}
 			>
 				<XYChart
-					chartType="xy"
 					dimensions={chartAreaDimensions}
+					styleConfig={this.props.styleConfig}
+					displayConfig={displayConfig}
 					editable={this.props.editable}
 					xScale={xAxis.scale}
 					yScale={yAxisPrimary.scale}
 					translate={[tickWidths.primaryScale.max, chartAreaTranslateY]}
+					tickFont={tickFont}
 				>
 					<VerticalGridLines tickValues={xAxis.tickValues} />
 					<HorizontalGridLines tickValues={scale.primaryScale.tickValues} />
@@ -319,13 +336,13 @@ var XYRenderer = React.createClass({
 						tickValues={xAxis.tickValues}
 						textAnchor={this._xAxisTextAnchor(_chartProps)}
 						orient="bottom"
-						scale={xAxis.scale}
 					/>
 					{verticalAxes}
 				</XYChart>
 				<XYLabels
 					key="xy-labels"
 					chartProps={_chartProps}
+					font={tickFont}
 					allLabelsDragged={allLabelsDragged}
 					dimensions={chartAreaDimensions}
 					editable={this.props.editable}
@@ -553,6 +570,7 @@ var XYLabels = React.createClass({
 
 		return (
 			<g
+				style={{ font: props.font }}
 				ref="chartAnnotations"
 				className="renderer-annotations"
 				transform={"translate(" + [0, 0] + ")" }

@@ -211,7 +211,6 @@ var RendererWrapper = React.createClass({
 			}});
 		}
 
-		//var dimensions = this._calculateDimensions(width, displayConfig);
 		var Renderer = chartRenderers[chartType];
 		var chartProps;
 		var metadata;

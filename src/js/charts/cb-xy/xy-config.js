@@ -39,7 +39,8 @@ var display = {
 	afterTitle: "1.6em",
 	afterLegend: "1.6em",
 	blockerRectOffset: "0.3em",
-	columnPaddingCoefficient: 0.3,
+	columnOuterPadding: 0.04, // % of width to pad for columns
+	columnInnerPadding: 2.2, // % of col group width to pad btwn each
 	minPaddingOuter: "1em",
 	bottomPaddingWithoutFooter: "3em",
 	aspectRatio: {
@@ -56,7 +57,7 @@ var display = {
 	padding: {
 		top: 0,
 		right: 0,
-		bottom: "4em",
+		bottom: "5em",
 		left: 0
 	}
 };

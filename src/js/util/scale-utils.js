@@ -78,8 +78,9 @@ function _ordinalScale(scaleOptions, data, range) {
 	var entries = map(data[0].values, function(value) {
 		return value.entry;
 	});
+
 	return {
-		scale: d3.scale.ordinal().domain(entries).rangePoints(range, 0.8),
+		scale: d3.scale.ordinal().domain(entries).rangeRoundPoints(range, 1.0),
 		tickValues: entries,
 	};
 }

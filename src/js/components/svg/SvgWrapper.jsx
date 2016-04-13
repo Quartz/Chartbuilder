@@ -14,8 +14,15 @@ var SvgWrapper = React.createClass({
 	},
 
 	_createTitle: function(props) {
+		var titleFont = [
+			props.styleConfig.fontSizes.large,
+			"px ",
+			props.styleConfig.fontFamily
+		].join("");
+
 		return (
 			<SvgText
+				style={{ font: titleFont }}
 				text={props.metadata.title}
 				key="title"
 				translate={[

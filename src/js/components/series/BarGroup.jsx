@@ -23,10 +23,10 @@ var BarGroup = React.createClass({
 		var props = this.props;
 		var numDataPoints = props.bars[0].data.length;
 		var innerWidth = props.dimensions.width / numDataPoints;
-		var groupOuterPadding = Math.max(0.1, (1.6 / numDataPoints));
+		var groupInnerPadding = Math.max(0.1, (props.displayConfig.columnInnerPadding / numDataPoints));
 
 		var innerScale = ordinal().domain(Object.keys(props.bars))
-			.rangeRoundBands([0, innerWidth], 0, groupOuterPadding);
+			.rangeRoundBands([0, innerWidth], 0, groupInnerPadding);
 
 		var rectWidth = innerScale.rangeBand();
 
@@ -46,7 +46,7 @@ var BarGroup = React.createClass({
 				);
 			})
 
-			return <g className="bar-series">{rects}</g>;
+			return <g key={ix} className="bar-series">{rects}</g>;
 		});
 
 		return <g className="bar-series-group">{groups}</g>;

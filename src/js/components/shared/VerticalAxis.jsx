@@ -25,16 +25,12 @@ var VerticalAxis = React.createClass({
 			orient: "left",
 			offset: 0,
 			tickFormat: function(d) { return d; },
-			concealerPadding: {
-				width: 4,
-				height: 4
-			}
 		}
 	},
 
 	_generateText: function(props) {
 		var numTicks = props.tickValues.length;
-		var concealerHeight = props.tickTextHeight + props.concealerPadding.height;
+		var concealerHeight = props.tickTextHeight + props.displayConfig.blockerRectOffset;
 
 		return map(props.tickValues, function(tickValue, i) {
 			var formatted = props.tickFormat(tickValue)
@@ -53,7 +49,7 @@ var VerticalAxis = React.createClass({
 				>
 					<rect
 						className="tick-blocker-rect"
-						width={props.tickWidths[i] + props.concealerPadding.width}
+						width={props.tickWidths[i] + props.displayConfig.blockerRectOffset}
 						height={concealerHeight}
 						x={rectX}
 						y={concealerHeight / -2}
@@ -81,6 +77,7 @@ var VerticalAxis = React.createClass({
 
 		return (
 			<g
+				style={{ font: this.props.tickFont }}
 				className="axis vertical-axis"
 				transform={"translate(" + [transformX + this.props.offset, 0] + ")"}
 			>
