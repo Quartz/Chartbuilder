@@ -239,26 +239,27 @@ var XYRenderer = React.createClass({
 			outerDimensions.height -= displayConfig.afterLegend;
 		}
 
-		// y axis
+		// y axis and scales
 		var yRange = [chartAreaDimensions.height, props.styleConfig.overtick_top];
 		var yAxes = {
 			primaryScale: scaleUtils.generateScale("linear", scale.primaryScale, null, yRange),
 			secondaryScale: scaleUtils.generateScale("linear", scale.secondaryScale, null, yRange)
 		}
 
-		// x axis
+		// x axis and scales
 		var xPadding = (
 			chartAreaDimensions.width * this._getXOuterPadding(hasColumn) +
 			props.styleConfig.xOverTick
 		);
 		var xRange = [xPadding, chartAreaDimensions.width - xPadding];
-		var xAxis = this._generateXAxis(scale, _chartProps.data, xRange)
+		var xAxis = this._generateXAxis(scale, _chartProps.data, xRange);
 		// linear x axis used for placing annotations based on scale
 		var xAxisLinear = scaleUtils.generateScale("linear", {domain: xRange}, null, xRange);
 
-		// create 1-2 vertical axes
+		// create 1 or 2 vertical axes
 		var verticalAxes = map(scaleNames, function(key, i) {
 			if (!scale[key]) return null;
+
 			var scaleOptions = scale[key];
 			var axis = yAxes[key];
 			var orient = displayConfig.yAxisOrient[key];
@@ -299,6 +300,7 @@ var XYRenderer = React.createClass({
 			displayConfig={displayConfig}
 			styleConfig={this.props.styleConfig}
 		>
+			{/* main chart area */}
 			<XYChart
 				chartType="xy"
 				dimensions={chartAreaDimensions}
@@ -324,6 +326,7 @@ var XYRenderer = React.createClass({
 				/>
 				{verticalAxes}
 			</XYChart>
+			{/* chart legend */}
 			<XYLabels
 				key="xy-labels"
 				chartProps={_chartProps}
