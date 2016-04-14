@@ -215,21 +215,6 @@ var XYRenderer = React.createClass({
 			allLabelsDragged: allLabelsDragged
 		});
 
-		var extraHeight = (base_dimensions.height * this.state.labelYMax)
-		var chartAreaTranslateY = extraHeight;
-
-		var outerDimensions = {
-			width: base_dimensions.width,
-			height: base_dimensions.height + extraHeight
-		};
-
-		// TODO: way of doing this cleaner?
-		if (!allLabelsDragged) {
-			chartAreaTranslateY += displayConfig.afterLegend;
-		} else {
-			outerDimensions.height -= displayConfig.afterLegend;
-		}
-
 		// Dimensions of the chart area
 		var chartAreaDimensions = {
 			width: (
@@ -245,6 +230,21 @@ var XYRenderer = React.createClass({
 				displayConfig.padding.top - displayConfig.padding.bottom
 			)
 		};
+
+		var extraHeight = (chartAreaDimensions.height * this.state.labelYMax)
+		var chartAreaTranslateY = extraHeight;
+
+		var outerDimensions = {
+			width: base_dimensions.width,
+			height: base_dimensions.height + extraHeight
+		};
+
+		// TODO: way of doing this cleaner?
+		if (!allLabelsDragged) {
+			chartAreaTranslateY += displayConfig.afterLegend;
+		} else {
+			outerDimensions.height -= displayConfig.afterLegend;
+		}
 
 		var yRange = [chartAreaDimensions.height, 0];
 		var xPadding = chartAreaDimensions.width * this._getXOuterPadding()
