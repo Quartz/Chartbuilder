@@ -21,6 +21,7 @@ var scale_types = {
  * @returns {scale: d3 scale, tickValues: array, tickFormat: format func}
  */
 function generate_scale(type, scaleOptions, data, range) {
+	if (!scaleOptions) return {};
 	return scale_types[type](scaleOptions, data, range);
 }
 

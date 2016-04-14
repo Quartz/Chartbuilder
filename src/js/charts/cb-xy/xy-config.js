@@ -45,6 +45,10 @@ var display = {
 	columnInnerPadding: 2.2, // % of col group width to pad btwn each
 	minPaddingOuter: "1em",
 	bottomPaddingWithoutFooter: "3em",
+	yAxisOrient: {
+		primaryScale: "left",
+		secondaryScale: "right",
+	},
 	aspectRatio: {
 		wide: (9 / 16),
 		longSpot: (4 / 3),

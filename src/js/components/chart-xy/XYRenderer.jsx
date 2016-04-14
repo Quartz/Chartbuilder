@@ -101,9 +101,9 @@ var XYRenderer = React.createClass({
 
 	// get x-axis which can be one of many types
 	_generateXAxis: function(scale, data, range) {
-		if (scale.dateSettings) {
+		if (scale.hasDate) {
 			return scaleUtils.generateScale("time", scale.dateSettings, data, range)
-		} else if (scale.numericSettings) {
+		} else if (scale.isNumeric) {
 			return scaleUtils.generateScale("linear", scale.numericSettings, null, range)
 		} else {
 			return scaleUtils.generateScale("ordinal", null, data, range)
@@ -139,7 +139,9 @@ var XYRenderer = React.createClass({
 	},
 
 	// create flat array of series components based on data and scales
-	_generateSeries: function(xScale, primaryScale, secondaryScale) {
+	_generateSeries: function(xScale, yAxes) {
+		var primaryScale = yAxes.primaryScale.scale;
+		var secondaryScale = yAxes.secondaryScale.scale;
 		var chartProps = this.props.chartProps;
 
 		// should lines contain dots
@@ -149,10 +151,10 @@ var XYRenderer = React.createClass({
 
 		// create hash of { type: [ components ] }
 		// by passing type and props to seriesUtils.createSeries
-		var series = reduce(chartProps.data, function(prev, d, i) {
+		var series = reduce(chartProps.data, function(seriesMap, d, i) {
 			var setting = chartProps.chartSettings[i];
 			var type = setting.type;
-			prev[type] = prev[type] || [];
+			seriesMap[type] = seriesMap[type] || [];
 
 			var seriesProps = {
 				key: i,
@@ -162,14 +164,13 @@ var XYRenderer = React.createClass({
 			}
 
 			if (setting.type === "line" && renderLinePoints) {
-				prev[type].push(seriesUtils.createSeries("lineMark", seriesProps));
+				seriesMap[type].push(seriesUtils.createSeries("lineMark", seriesProps));
 			} else if (setting.type === "column") {
-				prev[type].push(seriesProps);
+				seriesMap[type].push(seriesProps);
 			} else {
-				prev[type].push(seriesUtils.createSeries(type, seriesProps));
+				seriesMap[type].push(seriesUtils.createSeries(type, seriesProps));
 			}
-			return prev;
-
+			return seriesMap;
 		}, {});
 
 		// parse column separately because its data passed to a group
@@ -248,43 +249,34 @@ var XYRenderer = React.createClass({
 
 		// linear x axis used for placing annotations based on scale
 		var xAxisLinear = scaleUtils.generateScale("linear", {domain: xRange}, null, xRange);
-		var yAxisPrimary = scaleUtils.generateScale("linear", scale.primaryScale, null, yRange);
-		var yAxisSecondary = { scale: null };
-
-		var verticalAxes = [
-			<VerticalAxis
-				prefix={scale.primaryScale.prefix}
-				suffix={scale.primaryScale.suffix}
-				tickFormat={yAxisPrimary.tickFormat}
-				tickValues={yAxisPrimary.tickValues}
-				tickWidths={tickWidths.primaryScale.widths}
-				tickTextHeight={tickTextHeight}
-				orient="left"
-				offset={tickWidths.primaryScale.max * -1}
-				scale={yAxisPrimary.scale}
-				key={0}
-			/>
-		];
-
-		if (props.chartProps._numSecondaryAxis > 0) {
-			yAxisSecondary = scaleUtils.generateScale("linear", _chartProps.scale.secondaryScale, null, yRange);
-
-			verticalAxes.push(
-				<VerticalAxis
-					prefix={scale.secondaryScale.prefix}
-					suffix={scale.secondaryScale.suffix}
-					tickFormat={yAxisSecondary.tickFormat}
-					tickValues={yAxisSecondary.tickValues}
-					tickTextHeight={tickTextHeight}
-					tickWidths={tickWidths.secondaryScale.widths}
-					orient="right"
-					width={chartAreaDimensions.width}
-					offset={tickWidths.secondaryScale.max}
-					scale={yAxisSecondary.scale}
-					key={1}
-				/>
-			);
+		var yAxes = {
+			primaryScale: scaleUtils.generateScale("linear", scale.primaryScale, null, yRange),
+			secondaryScale: scaleUtils.generateScale("linear", scale.secondaryScale, null, yRange)
 		}
+
+		var verticalAxes = map(scaleNames, function(key, i) {
+			if (!scale[key]) return null;
+			var scaleOptions = scale[key];
+			var axis = yAxes[key];
+			var orient = displayConfig.yAxisOrient[key];
+			var maxTickWidth = tickWidths[key].max;
+			var offset = (orient === "left") ? maxTickWidth * -1 : maxTickWidth;
+			return (
+				<VerticalAxis
+					key={i}
+					prefix={scaleOptions.prefix}
+					suffix={scaleOptions.suffix}
+					tickFormat={axis.tickFormat}
+					tickValues={axis.tickValues}
+					tickWidths={tickWidths[key].widths}
+					tickTextHeight={tickTextHeight}
+					orient={orient}
+					offset={offset}
+					width={chartAreaDimensions.width}
+					scale={axis.scale}
+				/>
+			)
+		});
 
 		if (this.props.enableResponsive && _chartProps.hasOwnProperty("mobile") && this.props.isSmall) {
 			if (_chartProps.mobile.scale) {
@@ -309,13 +301,13 @@ var XYRenderer = React.createClass({
 				displayConfig={displayConfig}
 				editable={this.props.editable}
 				xScale={xAxis.scale}
-				yScale={yAxisPrimary.scale}
+				yScale={yAxes.primaryScale.scale}
 				translate={[tickWidths.primaryScale.max, chartAreaTranslateY]}
 				tickFont={tickFont}
 			>
 				<VerticalGridLines tickValues={xAxis.tickValues} />
 				<HorizontalGridLines tickValues={scale.primaryScale.tickValues} />
-				{this._generateSeries(xAxis.scale, yAxisPrimary.scale, yAxisSecondary.scale)}
+				{this._generateSeries(xAxis.scale, yAxes)}
 				<HorizontalAxis
 					prefix={(scale.numericSettings) ? scale.numericSettings.prefix : ""}
 					suffix={(scale.numericSettings) ? scale.numericSettings.suffix : ""}
@@ -338,7 +330,7 @@ var XYRenderer = React.createClass({
 				styleConfig={this.props.styleConfig}
 				tickWidths={tickWidths}
 				xScale={xAxisLinear.scale}
-				yScale={yAxisPrimary.scale}
+				yScale={yAxes.primaryScale.scale}
 				updateLabelYMax={this._updateLabelYMax}
 				labelYMax={this.state.labelYMax}
 			/>
