@@ -16,7 +16,8 @@ var XYChart = React.createClass({
 
 	getDefaultProps: function() {
 		return {
-			translate: [0, 0]
+			translate: [0, 0],
+			tickTextHeight: 0
 		}
 	},
 

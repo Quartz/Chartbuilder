@@ -40,8 +40,7 @@ var HorizontalAxis = React.createClass({
 			tickFormat: function(d) { return d; },
 			textAnchor: "middle",
 			prefix: "",
-			suffix: "",
-			tickTextHeight: 0
+			suffix: ""
 		}
 	},
 

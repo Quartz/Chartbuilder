@@ -139,7 +139,7 @@ var XYRenderer = React.createClass({
 	},
 
 	// create flat array of series components based on data and scales
-	_generateSeries: function(xScale, yAxes) {
+	_generateSeries: function(yAxes) {
 		var primaryScale = yAxes.primaryScale.scale;
 		var secondaryScale = yAxes.secondaryScale.scale;
 		var chartProps = this.props.chartProps;
@@ -205,6 +205,7 @@ var XYRenderer = React.createClass({
 		var tickWidths = this._getTickWidths(_chartProps.scale, tickFont);
 		var tickTextHeight = help.computeTextWidth("M", tickFont);
 
+		// get base dimensions as defined by aspect ratio
 		var base_dimensions = xyDimensions(props.width, {
 			displayConfig: displayConfig,
 			enableResponsive: props.enableResponsive,
@@ -224,9 +225,11 @@ var XYRenderer = React.createClass({
 			)
 		};
 
+		// height needed to account for legend labels
 		var extraHeight = (chartAreaDimensions.height * this.state.labelYMax)
 		var chartAreaTranslateY = extraHeight;
 
+		// dimensions of entire canvas, base + label height
 		var outerDimensions = {
 			width: base_dimensions.width,
 			height: base_dimensions.height + extraHeight
@@ -239,21 +242,24 @@ var XYRenderer = React.createClass({
 			outerDimensions.height -= displayConfig.afterLegend;
 		}
 
-		var yRange = [chartAreaDimensions.height, 0];
+		// y axis
+		var yRange = [chartAreaDimensions.height, props.styleConfig.overtick_top];
+		var yAxes = {
+			primaryScale: scaleUtils.generateScale("linear", scale.primaryScale, null, yRange),
+			secondaryScale: scaleUtils.generateScale("linear", scale.secondaryScale, null, yRange)
+		}
+
+		// x axis
 		var xPadding = (
 			chartAreaDimensions.width * this._getXOuterPadding(hasColumn) +
 			props.styleConfig.xOverTick
 		);
 		var xRange = [xPadding, chartAreaDimensions.width - xPadding];
 		var xAxis = this._generateXAxis(scale, _chartProps.data, xRange)
-
 		// linear x axis used for placing annotations based on scale
 		var xAxisLinear = scaleUtils.generateScale("linear", {domain: xRange}, null, xRange);
-		var yAxes = {
-			primaryScale: scaleUtils.generateScale("linear", scale.primaryScale, null, yRange),
-			secondaryScale: scaleUtils.generateScale("linear", scale.secondaryScale, null, yRange)
-		}
 
+		// create vertical axes
 		var verticalAxes = map(scaleNames, function(key, i) {
 			if (!scale[key]) return null;
 			var scaleOptions = scale[key];
@@ -269,7 +275,6 @@ var XYRenderer = React.createClass({
 					tickFormat={axis.tickFormat}
 					tickValues={axis.tickValues}
 					tickWidths={tickWidths[key].widths}
-					tickTextHeight={tickTextHeight}
 					orient={orient}
 					offset={offset}
 					width={chartAreaDimensions.width}
@@ -278,6 +283,7 @@ var XYRenderer = React.createClass({
 			)
 		});
 
+		// mobile overrides TODO: do we actually need this?
 		if (this.props.enableResponsive && _chartProps.hasOwnProperty("mobile") && this.props.isSmall) {
 			if (_chartProps.mobile.scale) {
 				scale = assign({}, _chartProps.scale, _chartProps.mobile.scale);
@@ -288,6 +294,7 @@ var XYRenderer = React.createClass({
 			scale = _chartProps.scale;
 		}
 
+		// draw the chart
 		return (
 		<SvgWrapper
 			outerDimensions={outerDimensions}
@@ -296,6 +303,7 @@ var XYRenderer = React.createClass({
 			styleConfig={this.props.styleConfig}
 		>
 			<XYChart
+				chartType="xy"
 				dimensions={chartAreaDimensions}
 				styleConfig={this.props.styleConfig}
 				displayConfig={displayConfig}
@@ -303,15 +311,15 @@ var XYRenderer = React.createClass({
 				xScale={xAxis.scale}
 				yScale={yAxes.primaryScale.scale}
 				translate={[tickWidths.primaryScale.max, chartAreaTranslateY]}
+				tickTextHeight={tickTextHeight}
 				tickFont={tickFont}
 			>
 				<VerticalGridLines tickValues={xAxis.tickValues} />
 				<HorizontalGridLines tickValues={scale.primaryScale.tickValues} />
-				{this._generateSeries(xAxis.scale, yAxes)}
+				{this._generateSeries(yAxes)}
 				<HorizontalAxis
 					prefix={(scale.numericSettings) ? scale.numericSettings.prefix : ""}
 					suffix={(scale.numericSettings) ? scale.numericSettings.suffix : ""}
-					tickTextHeight={tickTextHeight}
 					tickFormat={xAxis.tickFormat}
 					tickValues={xAxis.tickValues}
 					textAnchor={this._xAxisTextAnchor(_chartProps, hasColumn)}
@@ -343,23 +351,17 @@ var XYRenderer = React.createClass({
  * ### Component that renders the legend labels for an XY chart
  * See `React.PropTypes` declaration for properties:
  * @example
- * propTypes: {
- *   chartProps: PropTypes.object.isRequired,
- *   hasTitle: PropTypes.bool.isRequired,
- *   displayConfig: PropTypes.object.isRequired,
- *   styleConfig: PropTypes.object.isRequired,
- *   data: PropTypes.arrayOf(PropTypes.object).isRequired,
- *   dimensions: PropTypes.shape({
- *     width: PropTypes.number,
- *     height: PropTypes.number
- *   }).isRequired,
- *   scale: PropTypes.object.isRequired,
- *   chartAreaDimensions: PropTypes.object,
- *   metadata: PropTypes.object,
- *   labelYMax: PropTypes.number,
- *   updateLabelYMax: PropTypes.func,
- *   maxTickWidth: PropTypes.object,
- * },
+	propTypes: {
+		chartProps: PropTypes.object.isRequired,
+		editable: PropTypes.bool,
+		displayConfig: PropTypes.object.isRequired,
+		styleConfig: PropTypes.object.isRequired,
+		xScale: PropTypes.func.isRequired,
+		yScale: PropTypes.func.isRequired,
+		dimensions: PropTypes.object,
+		labelYMax: PropTypes.number,
+		updateLabelYMax: PropTypes.func
+	},
  * @instance
  * @memberof XYRenderer
  */
@@ -368,29 +370,20 @@ var XYLabels = React.createClass({
 	propTypes: {
 		chartProps: PropTypes.object.isRequired,
 		editable: PropTypes.bool,
-		//hasTitle: PropTypes.bool.isRequired,
-		//displayConfig: PropTypes.object.isRequired,
+		displayConfig: PropTypes.object.isRequired,
 		styleConfig: PropTypes.object.isRequired,
-		//dimensions: PropTypes.shape({
-			//width: PropTypes.number,
-			//height: PropTypes.number
-		//}).isRequired,
-		//scale: PropTypes.object.isRequired,
-		//chartAreaDimensions: PropTypes.object,
-		//metadata: PropTypes.object,
+		xScale: PropTypes.func.isRequired,
+		yScale: PropTypes.func.isRequired,
+		dimensions: PropTypes.object,
 		labelYMax: PropTypes.number,
-		updateLabelYMax: PropTypes.func,
-		maxTickWidth: PropTypes.object
+		updateLabelYMax: PropTypes.func
 	},
 
 	getInitialState: function() {
 		return {
-			undraggedLabels: {},
-			dateScaleInfo: null
+			undraggedLabels: {}
 		};
 	},
-
-	mixins: [ DateScaleMixin, NumericScaleMixin ],
 
 	componentWillReceiveProps: function(nextProps) {
 		/*
@@ -413,8 +406,7 @@ var XYLabels = React.createClass({
 		}, this), {});
 
 		this.setState({
-			undraggedLabels: updateUndragged,
-			dateScaleInfo: nextProps.chartProps.scale.hasDate ? this.generateDateScale(nextProps) : null
+			undraggedLabels: updateUndragged
 		});
 	},
 
