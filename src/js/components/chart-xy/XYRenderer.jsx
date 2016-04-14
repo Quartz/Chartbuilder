@@ -19,10 +19,6 @@ var map                 = require("lodash/map");
 var reduce              = require("lodash/reduce");
 var some                = require("lodash/some");
 
-var ChartRendererMixin  = require("../mixins/ChartRendererMixin.js");
-var DateScaleMixin      = require("../mixins/DateScaleMixin.js");
-var NumericScaleMixin   = require("../mixins/NumericScaleMixin.js");
-
 // chart elements
 // TODO: factor these into their own lib
 var XYChart             = require("./XYChart.jsx");
@@ -78,8 +74,6 @@ var XYRenderer = React.createClass({
 		return { labelYMax: 0 };
 	},
 
-	mixins: [ChartRendererMixin],
-
 	_updateLabelYMax: function(labelYMax) {
 		this.setState({ labelYMax: labelYMax });
 	},
@@ -106,13 +100,12 @@ var XYRenderer = React.createClass({
 		} else if (scale.isNumeric) {
 			return scaleUtils.generateScale("linear", scale.numericSettings, null, range)
 		} else {
-			return scaleUtils.generateScale("ordinal", null, data, range)
+			return scaleUtils.generateScale("ordinal", scale, data, range)
 		}
 	},
 
 	// conditionally anchor x axis text based on type of axis
-	_xAxisTextAnchor: function(chartProps, hasCol) {
-		var hasDate = (chartProps.scale.hasOwnProperty("dateSettings"));
+	_xAxisTextAnchor: function(chartProps, hasDate, hasCol) {
 		if (hasDate && !hasCol) {
 			return "start";
 		} else {
@@ -129,8 +122,8 @@ var XYRenderer = React.createClass({
 		}
 	},
 
-	// Maintain space between legend and chart unless all legend labels
-	// have been dragged or if labels not displayed
+	// Add space between legend and chart unless all legend labels
+	// dragged or if labels not displayed
 	_applyLabelOffset: function(labels, data) {
 		var hasUndraggedLabel = some(labels.values, function(value) {
 			return !value.dragged;
@@ -151,26 +144,26 @@ var XYRenderer = React.createClass({
 
 		// create hash of { type: [ components ] }
 		// by passing type and props to seriesUtils.createSeries
-		var series = reduce(chartProps.data, function(seriesMap, d, i) {
+		var series = reduce(chartProps.data, function(seriesByType, d, i) {
 			var setting = chartProps.chartSettings[i];
 			var type = setting.type;
-			seriesMap[type] = seriesMap[type] || [];
+			seriesByType[type] = seriesByType[type] || [];
 
 			var seriesProps = {
 				key: i,
 				data: d.values,
-				yScale: ((setting.altAxis) ? secondaryScale : primaryScale),
+				yScale: (setting.altAxis ? secondaryScale : primaryScale),
 				colorIndex: setting.colorIndex
 			}
 
 			if (setting.type === "line" && renderLinePoints) {
-				seriesMap[type].push(seriesUtils.createSeries("lineMark", seriesProps));
+				seriesByType[type].push(seriesUtils.createSeries("lineMark", seriesProps));
 			} else if (setting.type === "column") {
-				seriesMap[type].push(seriesProps);
+				seriesByType[type].push(seriesProps);
 			} else {
-				seriesMap[type].push(seriesUtils.createSeries(type, seriesProps));
+				seriesByType[type].push(seriesUtils.createSeries(type, seriesProps));
 			}
-			return seriesMap;
+			return seriesByType;
 		}, {});
 
 		// parse column separately because its data passed to a group
@@ -182,30 +175,34 @@ var XYRenderer = React.createClass({
 		}
 
 		// return with desired stacking order
-		return flatten([ columnGroup, series.line, series.scatterPlot ]);
+		return flatten([
+			columnGroup,
+			series.line,
+			series.scatterPlot
+		]);
 	},
 
 	render: function() {
+		// grab some props for convenience
 		var props = this.props;
 		var _chartProps = this.props.chartProps;
 		var displayConfig = this.props.displayConfig;
+		var styleConfig = this.props.styleConfig;
 		var margin = displayConfig.margin;
 		var scale = _chartProps.scale;
-		var labelComponents;
+
+		// bools that affect how chart will render
 		var hasTitle = (props.metadata.title.length > 0 && props.showMetadata);
 		var hasColumn = this._chartHasColumn(_chartProps.chartSettings);
 		var applyLabelOffset = this._applyLabelOffset(_chartProps._annotations.labels, _chartProps.data)
 
-		var tickFont = [
-			props.styleConfig.fontSizes.medium,
-			"px ",
-			props.styleConfig.fontFamily
-		].join("");
-
+		// set the tick font and measure the ticks
+		var tickFont = styleConfig.fontSizes.medium + "px " + styleConfig.fontFamily;
 		var tickWidths = this._getTickWidths(_chartProps.scale, tickFont);
 		var tickTextHeight = help.computeTextWidth("M", tickFont);
 
-		// get base dimensions as defined by aspect ratio
+		// set the dimensions of inner and outer. much of this will be unnecessary
+		// if we draw stuff in HTML
 		var base_dimensions = xyDimensions(props.width, {
 			displayConfig: displayConfig,
 			enableResponsive: props.enableResponsive,
@@ -259,7 +256,7 @@ var XYRenderer = React.createClass({
 		// linear x axis used for placing annotations based on scale
 		var xAxisLinear = scaleUtils.generateScale("linear", {domain: xRange}, null, xRange);
 
-		// create vertical axes
+		// create 1-2 vertical axes
 		var verticalAxes = map(scaleNames, function(key, i) {
 			if (!scale[key]) return null;
 			var scaleOptions = scale[key];
@@ -322,7 +319,7 @@ var XYRenderer = React.createClass({
 					suffix={(scale.numericSettings) ? scale.numericSettings.suffix : ""}
 					tickFormat={xAxis.tickFormat}
 					tickValues={xAxis.tickValues}
-					textAnchor={this._xAxisTextAnchor(_chartProps, hasColumn)}
+					textAnchor={this._xAxisTextAnchor(_chartProps, scale.hasDate, hasColumn)}
 					orient="bottom"
 				/>
 				{verticalAxes}
@@ -380,9 +377,7 @@ var XYLabels = React.createClass({
 	},
 
 	getInitialState: function() {
-		return {
-			undraggedLabels: {}
-		};
+		return { undraggedLabels: {} };
 	},
 
 	componentWillReceiveProps: function(nextProps) {
@@ -437,7 +432,7 @@ var XYLabels = React.createClass({
 	},
 
 	_handleLabelPositionUpdate: function(ix, pos) {
-		/* If a label is dragged, update its position in the parent app */
+		// If a label is dragged, update its position in the parent app
 		if (pos.dragged) {
 			var values = clone(this.props.chartProps._annotations.labels.values);
 			values[ix] = pos;
@@ -448,7 +443,7 @@ var XYLabels = React.createClass({
 				}
 			}});
 			ChartViewActions.updateChartProp("_annotations", annotations);
-		/* Otherwise if undragged, update in XYLabls state */
+		/* Otherwise if undragged, update in XYLabels state */
 		} else {
 			var undragged = this.state.undraggedLabels;
 			undragged[ix] = pos;
@@ -473,9 +468,7 @@ var XYLabels = React.createClass({
 	 * @memberof XYLabels
 	 */
 	_getPrevUndraggedNode: function(ix, undraggedLabels) {
-		if (ix < 0) {
-			return null;
-		}
+		if (ix < 0) return null;
 
 		if (undraggedLabels[ix]) {
 			return undraggedLabels[ix];
@@ -484,13 +477,15 @@ var XYLabels = React.createClass({
 		}
 	},
 
+	// create array of SvgRectLabel components
 	render: function() {
-		// create array of SvgRectLabel components
-		var labels = this.props.chartProps._annotations.labels;
-		var styleConfig = this.props.styleConfig;
-		var displayConfig = this.props.displayConfig;
+		// get props for convenience
 		var props = this.props;
+		var labels = props.chartProps._annotations.labels;
+		var styleConfig = props.styleConfig;
+		var displayConfig = props.displayConfig;
 		var dimensions = props.dimensions;
+		var labelComponents = [];
 
 		var labelConfig = {
 			xMargin: displayConfig.labelXMargin,
@@ -499,12 +494,12 @@ var XYLabels = React.createClass({
 			rectSize: displayConfig.labelRectSize
 		};
 
-		var labelComponents = [];
 		if (this.props.chartProps.data.length > 1) {
-			each(this.props.chartProps.data, bind(function(d, i) {
-				var labelSettings = {};
+			labelComponents = map(this.props.chartProps.data, bind(function(d, i) {
 				var prevNode = null;
+				var labelSettings = {};
 				var chartSetting = this.props.chartProps.chartSettings[i];
+				var scale = { yScale: props.yScale, xScale: props.xScale, };
 
 				// Use existing positions if possible
 				if (labels.values[i].dragged) {
@@ -514,21 +509,15 @@ var XYLabels = React.createClass({
 					prevNode = this._getPrevUndraggedNode(i - 1, this.state.undraggedLabels);
 				}
 
-				scale = {
-					yScale: props.yScale,
-					xScale: props.xScale,
-				};
-
-				labelComponents.push(
+				return (
 					<SvgRectLabel
-						key={i}
+						key={i} index={i}
 						text={chartSetting.label}
 						labelConfig={labelConfig}
 						dimensions={this.props.dimensions}
-						index={i}
 						enableDrag={this._enableDrag}
-						onPositionUpdate={this._handleLabelPositionUpdate}
 						editable={props.editable}
+						onPositionUpdate={this._handleLabelPositionUpdate}
 						offset={{ x: displayConfig.margin.left, y: 0}}
 						colorIndex={chartSetting.colorIndex}
 						settings={labelSettings}
@@ -540,12 +529,7 @@ var XYLabels = React.createClass({
 		}
 
 		return (
-			<g
-				style={{ font: props.font }}
-				ref="chartAnnotations"
-				className="renderer-annotations"
-				transform={"translate(" + [0, 0] + ")" }
-			>
+			<g style={{ font: props.font }} className="renderer-annotations">
 				{labelComponents}
 			</g>
 		);

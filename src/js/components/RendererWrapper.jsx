@@ -170,17 +170,6 @@ var RendererWrapper = React.createClass({
 		this.setState(update(this.state, { $merge: newSetting }));
 	},
 
-	//_calculateDimensions: function(width, displayConfig) {
-		//var calculator = this.state.chartConfig.calculateDimensions;
-		//return calculator(width, {
-			//model: this.props.model,
-			//displayConfig: displayConfig,
-			//enableResponsive: this.props.enableResponsive,
-			//extraHeight: this.state.extraHeight,
-			//showMetadata: this.props.showMetadata
-		//});
-	//},
-
 	render: function() {
 		var chartType = this.props.model.metadata.chartType;
 		var width = this.props.width || this.state.domNodeWidth;

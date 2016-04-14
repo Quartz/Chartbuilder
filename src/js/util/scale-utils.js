@@ -81,7 +81,7 @@ function _ordinalScale(scaleOptions, data, range) {
 	});
 
 	return {
-		scale: d3.scale.ordinal().domain(entries).rangeRoundPoints(range, 1.0),
+		scale: d3.scale.ordinal().domain(entries).rangeRoundPoints(range, 1.0), // TODO: hardcode
 		tickValues: entries,
 	};
 }

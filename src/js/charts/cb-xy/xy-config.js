@@ -39,9 +39,8 @@ var display = {
 	afterTitle: "1.6em",
 	afterLegend: "1.3em",
 	blockerRectOffset: "0.3em",
-	blockerRectOffset: "0.3em",
 	lineMarkThreshold: 10, // render marks (dots) on lines if data < N
-	columnOuterPadding: 0.04, // % of width to pad for columns
+	columnOuterPadding: 0.01, // % of width to pad for columns
 	columnInnerPadding: 2.2, // % of col group width to pad btwn each
 	minPaddingOuter: "1em",
 	bottomPaddingWithoutFooter: "3em",
