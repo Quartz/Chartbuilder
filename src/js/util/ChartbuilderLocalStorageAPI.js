@@ -9,8 +9,8 @@ module.exports = {
 	defaultChart: function() {
 		var default_model = chartConfig.xy.defaultProps;
 		default_model.chartProps.input = {
-			raw: testInput.init_data_linear
-			//raw: defaultInput
+			//raw: testInput.init_data_ordinal
+			raw: defaultInput
 		};
 
 		ChartServerActions.receiveModel(default_model);
