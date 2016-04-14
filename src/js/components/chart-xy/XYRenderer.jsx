@@ -203,9 +203,9 @@ var XYRenderer = React.createClass({
 		var tickTextHeight = help.computeTextWidth("M", tickFont);
 
 		// Maintain space between legend and chart area unless all legend labels
-		// have been dragged
+		// have been dragged or if labels not displayed
 		var allLabelsDragged = reduce(_chartProps._annotations.labels.values, function(prev, value) {
-			return (prev === true && value.dragged === true);
+			return (prev === true && (value.dragged === true || !value.hasOwnProperty("dragged")));
 		}, true);
 
 		var base_dimensions = xyDimensions(props.width, {
