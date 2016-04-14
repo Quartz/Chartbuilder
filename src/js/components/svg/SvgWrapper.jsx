@@ -47,12 +47,11 @@ var SvgWrapper = React.createClass({
 		var props = this.props;
 		var margin = props.displayConfig.margin;
 		var yOffset = this._getYOffset(props);
+		// Add to the chart margin if title is present
 		var outerDimensions = {
 			width: props.outerDimensions.width,
 			height: props.outerDimensions.height + yOffset
 		};
-
-		// Add to the chart margin if title is present
 
 		var translate = {
 			top: margin.top,

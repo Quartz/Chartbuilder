@@ -188,6 +188,7 @@ var XYRenderer = React.createClass({
 		var props = this.props;
 		var _chartProps = this.props.chartProps;
 		var displayConfig = this.props.displayConfig;
+		var margin = displayConfig.margin;
 		var scale = _chartProps.scale;
 		var labelComponents;
 		var hasTitle = (props.metadata.title.length > 0 && props.showMetadata);
@@ -212,15 +213,12 @@ var XYRenderer = React.createClass({
 		// Dimensions of the chart area
 		var chartAreaDimensions = {
 			width: (
-				base_dimensions.width -
-				displayConfig.margin.left - displayConfig.margin.right -
+				base_dimensions.width - margin.left - margin.right -
 				displayConfig.padding.left - displayConfig.padding.right -
-				tickWidths.primaryScale.max - tickWidths.secondaryScale.max -
-				props.styleConfig.xOverTick
+				tickWidths.primaryScale.max - tickWidths.secondaryScale.max
 			),
 			height: (
-				base_dimensions.height -
-				displayConfig.margin.top - displayConfig.margin.bottom -
+				base_dimensions.height - margin.top - margin.bottom -
 				displayConfig.padding.top - displayConfig.padding.bottom
 			)
 		};
@@ -241,7 +239,10 @@ var XYRenderer = React.createClass({
 		}
 
 		var yRange = [chartAreaDimensions.height, 0];
-		var xPadding = chartAreaDimensions.width * this._getXOuterPadding(hasColumn)
+		var xPadding = (
+			chartAreaDimensions.width * this._getXOuterPadding(hasColumn) +
+			props.styleConfig.xOverTick
+		);
 		var xRange = [xPadding, chartAreaDimensions.width - xPadding];
 		var xAxis = this._generateXAxis(scale, _chartProps.data, xRange)
 
