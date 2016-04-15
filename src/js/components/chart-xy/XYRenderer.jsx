@@ -105,6 +105,7 @@ var XYRenderer = React.createClass({
 	},
 
 	// conditionally anchor x axis text based on type of axis
+	// TODO: put outside XY renderer so that grid can use this
 	_xAxisTextAnchor: function(chartProps, hasDate, hasCol) {
 		if (hasDate && !hasCol) {
 			return "start";
@@ -114,6 +115,7 @@ var XYRenderer = React.createClass({
 	},
 
 	// add specified column padding to x axis if chart contains column
+	// TODO: put outside XY renderer so that grid can use this
 	_getXOuterPadding: function(hasCol) {
 		if (hasCol) {
 			return this.props.displayConfig.columnOuterPadding;
@@ -124,7 +126,7 @@ var XYRenderer = React.createClass({
 
 	// Add space between legend and chart unless all legend labels
 	// dragged or if labels not displayed
-	_applyLabelOffset: function(labels, data) {
+	_needsLabelOffset: function(labels, data) {
 		var hasUndraggedLabel = some(labels.values, function(value) {
 			return !value.dragged;
 		}, true);
@@ -174,7 +176,7 @@ var XYRenderer = React.createClass({
 			});
 		}
 
-		// return with desired stacking order
+		// return components by type with desired stacking order
 		return flatten([
 			columnGroup,
 			series.line,
@@ -194,7 +196,7 @@ var XYRenderer = React.createClass({
 		// bools that affect how chart will render
 		var hasTitle = (props.metadata.title.length > 0 && props.showMetadata);
 		var hasColumn = this._chartHasColumn(_chartProps.chartSettings);
-		var applyLabelOffset = this._applyLabelOffset(_chartProps._annotations.labels, _chartProps.data)
+		var needsLabelOffset = this._needsLabelOffset(_chartProps._annotations.labels, _chartProps.data)
 
 		// set the tick font and measure the ticks
 		var tickFont = styleConfig.fontSizes.medium + "px " + styleConfig.fontFamily;
@@ -232,8 +234,8 @@ var XYRenderer = React.createClass({
 			height: base_dimensions.height + extraHeight
 		};
 
-		// TODO: way of doing this cleaner?
-		if (applyLabelOffset) {
+		// account for legend label offset
+		if (needsLabelOffset) {
 			chartAreaTranslateY += displayConfig.afterLegend;
 		} else {
 			outerDimensions.height -= displayConfig.afterLegend;
@@ -332,7 +334,7 @@ var XYRenderer = React.createClass({
 				key="xy-labels"
 				chartProps={_chartProps}
 				font={tickFont}
-				applyLabelOffset={applyLabelOffset}
+				needsLabelOffset={needsLabelOffset}
 				dimensions={chartAreaDimensions}
 				editable={this.props.editable}
 				displayConfig={displayConfig}
@@ -534,7 +536,7 @@ var XYLabels = React.createClass({
 
 		// account for chart being moved up on all labels dragged
 		var translateY = 0;
-		if (!props.applyLabelOffset) {
+		if (!props.needsLabelOffset) {
 			translateY = 0 - displayConfig.afterLegend;
 		}
 
