@@ -1,24 +1,31 @@
 var React = require("react");
 var PropTypes = React.PropTypes;
 var map = require("lodash/map");
+var keys = require("lodash/keys");
 var reduce = require("lodash/reduce");
 var isArray = require("lodash/isArray");
 var ordinal = require("d3").scale.ordinal;
+var rect = React.createFactory('rect');
 
 var scale_map = {
 	vertical: {
-		"x": "xScale",
-		"y": "yScale",
-		"width": "width",
-		"height": "height",
+		"ordinalScale": "xScale",
+		"ordinalVal": "x",
+		"ordinalSize": "width",
+		"linearScale": "yScale",
+		"linearVal": "y",
+		"linearSize": "height"
 	},
 	horizontal: {
-		"x": "yScale",
-		"y": "xScale",
-		"width": "height",
-		"height": "width",
+		"ordinalScale": "yScale",
+		"ordinalVal": "y",
+		"ordinalSize": "height",
+		"linearScale": "xScale",
+		"linearVal": "x",
+		"linearSize": "width"
 	},
 };
+var map_keys = keys(scale_map.vertical);
 
 var BarGroup = React.createClass({
 
@@ -36,38 +43,41 @@ var BarGroup = React.createClass({
 		}
 	},
 
+	_makeBarProps: function(bar, i, mapping, linearScale, ordinalScale, size, offset) {
+		var ps = this.props;
+		var barProps = { key: i, colorIndex: bar.colorIndex };
+		barProps[mapping.ordinalVal] = ordinalScale(bar.entry) + offset;
+		barProps[mapping.ordinalSize] = size;
+		barProps[mapping.linearVal] = 0;
+		barProps[mapping.linearSize] = linearScale(bar.value);
+		return barProps;
+	},
+
 	render: function() {
 		var props = this.props;
+		var mapping = scale_map[props.orientation];
 		var numDataPoints = props.bars[0].data.length;
 		var scales = scale_map[props.orientation];
-		var xScaleKey = scale_map[props.orientation].x;
-		var yScaleKey = scale_map[props.orientation].y;
+		var makeBarProps = this._makeBarProps;
 
-		var innerWidth = props.dimensions.height / numDataPoints;
+		var innerSize = props.dimensions[mapping.ordinalSize] / numDataPoints;
 		var groupInnerPadding = Math.max(0.1, (props.displayConfig.columnInnerPadding / numDataPoints));
 
 		var innerScale = ordinal().domain(Object.keys(props.bars))
-			.rangeRoundBands([0, innerWidth], 0, groupInnerPadding);
+			.rangeRoundBands([0, innerSize], 0, groupInnerPadding);
 
-		var rectWidth = innerScale.rangeBand();
+		var rectSize = innerScale.rangeBand();
 
 		var groups = map(props.bars, function(bar, ix) {
 			var rects = map(bar.data, function(d, i) {
-				var yScale = bar[yScaleKey] || props[yScaleKey];
-				var xScale = bar[xScaleKey] || props[xScaleKey];
-				var yVal = yScale(d.value);
+				var ordinalScale = bar[mapping.ordinalScale] || props[mapping.ordinalScale];
+				var linearScale = bar[mapping.linearScale] || props[mapping.linearScale];
+				var ordinalOffset = innerScale(ix) - innerSize / 2;
+
 				return (
-					<rect
-						className={"color-index-" + bar.colorIndex}
-						key={i}
-						width={yVal}
-						y={xScale(d.entry) + innerScale(ix) - innerWidth / 2}
-						x={0}
-						height={rectWidth}
-					/>
+					rect(makeBarProps(d, i, mapping, linearScale, ordinalScale, rectSize, ordinalOffset))
 				);
 			})
-
 			return <g key={ix} className="bar-series">{rects}</g>;
 		});
 
