@@ -3,19 +3,20 @@
  * Render a grid of N columns by N rows of bar (row) charts
 */
 
-var React = require("react");
-var PropTypes = React.PropTypes;
-var update = require("react-addons-update");
-var d4 = require("d4");
+var React           = require("react");
+var PropTypes       = React.PropTypes;
+var update          = require("react-addons-update");
+var d4              = require("d4");
 
-var bind = require("lodash/bind");
-var clone = require("lodash/clone");
-var map = require("lodash/map");
-var reduce = require("lodash/reduce");
+var bind            = require("lodash/bind");
+var clone           = require("lodash/clone");
+var map             = require("lodash/map");
+var reduce          = require("lodash/reduce");
 
-var SessionStore = require("../../stores/SessionStore");
-var separators = SessionStore.get("separators");
-var formatThousands = require("d3").format(separators.thousands);
+var SessionStore    = require("../../stores/SessionStore");
+var separators      = SessionStore.get("separators");
+var d3 = require("d3");
+var formatThousands = d3.format(separators.thousands);
 
 /* Helper functions */
 var cb_bar_grid = require("../../charts/cb-charts").cb_bar_grid;
@@ -24,11 +25,11 @@ var help = require("../../util/helper.js");
 /* Renderer mixins */
 var ChartRendererMixin = require("../mixins/ChartRendererMixin.js");
 
-/* Svg components */
-var HiddenSvg = require("../svg/HiddenSvg.jsx");
-
 /* One `GridChart` will be drawn for every column used in our grid */
-var GridChart = require("./GridChart.jsx");
+var HorizontalGridLines = require("../shared/HorizontalGridLines.jsx");
+var SvgWrapper          = require("../svg/SvgWrapper.jsx");
+var scaleUtils          = require("../../util/scale-utils.js");
+var VerticalAxis        = require("../shared/VerticalAxis.jsx");
 
 /**
  * ### Component that renders bar (row) charts in a chart grid
@@ -64,155 +65,77 @@ var ChartGridBars = React.createClass({
 	},
 
 	render: function() {
-		var displayConfig = this.props.displayConfig;
-		var hiddenSvg = [];
-
-		var chartProps = update(this.props.chartProps, { $merge: {
-			data: this._applySettingsToData(this.props.chartProps, { barHeight: displayConfig.barHeight }),
-			scale: this.props.scale
-		}});
-		var scale = chartProps.scale.primaryScale;
-
-		/*
-		 * Set `extraPadding.left` to the width of the widest axis tick.
-		*/
-		var extraPadding = {
-			top: chartProps.extraPadding.top,
-			right: chartProps.extraPadding.right,
-			bottom: chartProps.extraPadding.bottom,
-			left: this.state.maxTickWidth
-		};
-
-		var dimensions = clone(this.props.dimensions);
-
-		/* Divide total width by number of grids */
-		var dimensionsPerGrid = {
-			width: (dimensions.width - this.state.maxTickWidth) / chartProps._grid.cols
-		};
-
-		/* Height of each grid block */
-		dimensionsPerGrid.height = (dimensions.height) / chartProps._grid.rows;
-
-		if (this.props.hasTitle) {
-			extraPadding.top = extraPadding.top + displayConfig.afterTitle;
-			dimensionsPerGrid.height -= displayConfig.afterTitle;
-		}
-
-
-		/* Get the number of charts and only render that many */
-		var numCharts = chartProps._grid.rows * chartProps._grid.cols;
-
-		/*
-		 * Render a hidden set of SVG axis labels in order to find out the
-		 * maximum width the labels will take up. Doing this in a hidden component
-		 * cuts down on the number of chart redraws. The max width is set to this
-		 * component as `this.state.maxTickWidth`.
-		*/
+		var props = this.props;
+		var displayConfig = props.displayConfig;
+		var margin = displayConfig.margin;
+		var styleConfig = props.styleConfig;
+		var chartProps = props.chartProps;
+		var dimensions = props.dimensions;
+		var tickFont = styleConfig.fontSizes.medium + "px " + styleConfig.fontFamily;
+		var tickTextHeight = help.computeTextWidth("M", tickFont);
 
 		/* Get the text values used for the labels */
 		var tickLabels = map(chartProps.data[0].values, function(d) {
 			return d.entry;
 		});
 
-		/* render a hidden SVG to get the width of the y axis labels */
-		hiddenSvg.push(
-			<HiddenSvg.HiddenSvgAxis
-				className="tick"
-				chartWidth={dimensions.width}
-				maxTickWidth={this.state.maxTickWidth}
-				formattedText={tickLabels}
-				blockerRectOffset={this.props.displayConfig.blockerRectOffset}
-				onUpdate={this._handleStateUpdate.bind(null, "maxTickWidth")}
-				key="hiddenText"
-			/>
-		);
+		var tickWidths = map(tickLabels, function(t) {
+			return help.computeTextWidth(t, tickFont);
+		});
 
-		if (this.state.maxTickWidth <= 0) {
-			// We have not yet calculated maxTickWidth
-			return (
-				<g>{hiddenSvg}</g>
-			);
-		}
-
-		/*
-		 * A second hidden SVG is rendered to calculate whether the labels to the
-		 * right of bars exceed the width of the chart area. This is set to
-		 * `this.state.barLabelOverlap` and will be passed to the `GridChart`.
-		*/
-		var barLabels = reduce(chartProps.data, function(arr, d) {
-			return map(d.values, function(val, i) {
-				var formatted = format_bar_labels(val.value);
-				if (i === 0) {
-					formatted = scale.prefix + formatted + scale.suffix;
-				}
-				return {
-					value: val.value,
-					formatted: formatted
-				};
-			}).concat(arr);
-		}, []);
-
-		/* Relative position of chart area, used to place hidden labels correctly */
-		var offset = {
-			left: displayConfig.padding.left + displayConfig.margin.left,
-			right: displayConfig.padding.right + displayConfig.margin.right
+		var maxTickWidth = d3.max(tickWidths);
+		var chartAreaDimensions = {
+			width: (
+				dimensions.width - margin.left - margin.right -
+				displayConfig.padding.left - displayConfig.padding.right -
+				maxTickWidth
+			),
+			height: (
+				dimensions.height - margin.top - margin.bottom -
+				displayConfig.padding.top - displayConfig.padding.bottom
+			)
 		};
 
-		hiddenSvg.push(
-			<HiddenSvg.HiddenSvgBarLabels
-				className="concealer-label"
-				labelOverlap={this.state.barLabelOverlap}
-				chartWidth={dimensionsPerGrid.width}
-				margin={displayConfig.margin}
-				blockerRectOffset={this.props.displayConfig.blockerRectOffset + 5}
-				formattedText={barLabels}
-				scale={scale}
-				offset={offset}
-				onUpdate={this._handleStateUpdate.bind(null, "barLabelOverlap")}
-				key="hiddenLabel"
-			/>
-		);
-		var gridCharts = map(chartProps.data.slice(0, numCharts), bind(function(d, i) {
-			// Get the props we need for each chart
-			var gridChartProps = {
-				chartSettings: chartProps.chartSettings[i],
-				data: [d],
-				scale: chartProps.scale,
-				margin: this.props.displayConfig.margin,
-				extraPadding: extraPadding
-			};
-
-			return (
-				<GridChart
-					chartProps={gridChartProps}
-					rendererFunc={drawBarChartGrid}
-					displayConfig={displayConfig}
-					styleConfig={this.props.styleConfig}
-					key={i}
-					index={i}
-					barLabelOverlap={this.state.barLabelOverlap}
-					grid={chartProps._grid}
-					dimensions={dimensionsPerGrid}
-					padding={displayConfig.padding}
-				/>
-			);
-		}, this));
-
-		/*
-		 * Pass the following JSX components to the `Svg` component, which will
-		 * render all SVG. See `../svg/Svg.jsx`.
-		*/
-		var chartComponents = [
-		];
+		var xRange = [0, chartAreaDimensions.width];
+		var xAxis = scaleUtils.generateScale("linear", chartProps.scale.primaryScale, chartProps.data, xRange);
+		var yRange = [chartAreaDimensions.height, 0];
+		var yAxis = scaleUtils.generateScale("ordinal", chartProps.scale.primaryScale, chartProps.data, yRange);
+		console.log(yAxis)
 
 		return (
-			<g>
-				<g key="chart-wrapper" className="renderer-chart-wrapper">
-					{gridCharts}
-				</g>
-				<g key="chart-annotations" className="chart-annotations"></g>
-				{ hiddenSvg }
+			<SvgWrapper
+				outerDimensions={dimensions}
+				metadata={this.props.metadata}
+				displayConfig={displayConfig}
+				styleConfig={this.props.styleConfig}
+			>
+			<g
+				className="chart chart-bar"
+				transform={ "translate(" + [maxTickWidth, 0] + ")" }
+			>
+				<HorizontalGridLines
+					dimensions={chartAreaDimensions}
+					translate={[maxTickWidth, 0]}
+					displayConfig={displayConfig}
+					styleConfig={this.props.styleConfig}
+					yScale={yAxis.scale}
+					tickValues={yAxis.tickValues}
+				/>
+				<VerticalAxis
+					tickFont={tickFont}
+					dimensions={chartAreaDimensions}
+					tickTextHeight={tickTextHeight}
+					offset={maxTickWidth * -1}
+					displayConfig={displayConfig}
+					styleConfig={this.props.styleConfig}
+					tickValues={tickLabels}
+					tickWidths={tickWidths}
+					orient={"left"}
+					width={chartAreaDimensions.width}
+					scale={yAxis.scale}
+				/>
 			</g>
+			</SvgWrapper>
 		);
 	}
 });

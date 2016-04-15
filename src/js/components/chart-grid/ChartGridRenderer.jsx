@@ -12,6 +12,7 @@ var chartSizes = require("../../config/chart-sizes");
 var clone = require("lodash/clone");
 var assign = require("lodash/assign");
 var each = require("lodash/each");
+var gridDimensions = require("../../charts/cb-chart-grid/chart-grid-dimensions");
 
 /* Chart grid types */
 var ChartGridBars = require("./ChartGridBars.jsx");
@@ -55,9 +56,17 @@ var ChartGridRenderer = React.createClass({
 	},
 
 	render: function() {
+		var props = this.props;
 		var _chartProps = this.props.chartProps;
 		var gridTypeRenderer;
-		var dimensions;
+		var dimensions = gridDimensions(props.width, {
+			metadata: props.metadata,
+			grid: _chartProps._grid,
+			data: _chartProps.data,
+			displayConfig: props.displayConfig,
+			showMetadata: props.showMetadata
+		});
+
 		var scale;
 		if (this.props.enableResponsive && _chartProps.hasOwnProperty("mobile") && this.props.isSmall) {
 			if (_chartProps.mobile.scale) {
@@ -81,6 +90,7 @@ var ChartGridRenderer = React.createClass({
 			gridTypeRenderer = (
 				<ChartGridBars
 					{...this.props}
+					dimensions={dimensions}
 					scale={scale}
 					hasTitle={hasTitle}
 				/>
@@ -89,6 +99,7 @@ var ChartGridRenderer = React.createClass({
 			gridTypeRenderer = (
 				<ChartGridXY
 					{...this.props}
+					dimensions={dimensions}
 					scale={scale}
 					hasTitle={hasTitle}
 				/>

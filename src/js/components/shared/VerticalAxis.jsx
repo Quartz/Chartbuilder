@@ -18,7 +18,8 @@ var VerticalAxis = React.createClass({
 		prefix: PropTypes.string,
 		suffix: PropTypes.string,
 		tickWidths: PropTypes.array,
-		colorIndex: PropTypes.number
+		colorIndex: PropTypes.number,
+		tickTextHeight: PropTypes.number
 	},
 
 	getDefaultProps: function() {
