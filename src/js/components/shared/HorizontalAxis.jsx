@@ -143,8 +143,8 @@ var HorizontalAxis = React.createClass({
 
 		return (
 			<g
-				style={{ font: props.tickFont }}
 				className="axis horizontal-axis"
+				style={{ font: props.tickFont }}
 				transform={"translate(" + [0, props.tickTextHeight + transformY + props.styleConfig.overtick_bottom] + ")"}
 			>
 				{ticks}

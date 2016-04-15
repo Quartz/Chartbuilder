@@ -277,6 +277,7 @@ var XYRenderer = React.createClass({
 					offset={offset}
 					width={chartAreaDimensions.width}
 					scale={axis.scale}
+					colorIndex={scaleOptions.colorIndex}
 				/>
 			)
 		});
@@ -531,8 +532,16 @@ var XYLabels = React.createClass({
 			}, this));
 		}
 
+		// account for chart being moved up on all labels dragged
+		var translateY = 0;
+		if (!props.applyLabelOffset) {
+			translateY = 0 - displayConfig.afterLegend;
+		}
+
 		return (
-			<g style={{ font: props.font }} className="renderer-annotations">
+			<g
+				transform={ "translate(" + [0, translateY] + ")" }
+				className="renderer-annotations" style={{ font: props.font }}>
 				{labelComponents}
 			</g>
 		);
