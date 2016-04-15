@@ -27,8 +27,10 @@ var ChartRendererMixin = require("../mixins/ChartRendererMixin.js");
 
 /* One `GridChart` will be drawn for every column used in our grid */
 var HorizontalGridLines = require("../shared/HorizontalGridLines.jsx");
+var BarGroup            = require("../series/BarGroup.jsx");
 var SvgWrapper          = require("../svg/SvgWrapper.jsx");
 var scaleUtils          = require("../../util/scale-utils.js");
+var seriesUtils         = require("../../util/series-utils.js");
 var VerticalAxis        = require("../shared/VerticalAxis.jsx");
 
 /**
@@ -100,7 +102,25 @@ var ChartGridBars = React.createClass({
 		var xAxis = scaleUtils.generateScale("linear", chartProps.scale.primaryScale, chartProps.data, xRange);
 		var yRange = [chartAreaDimensions.height, 0];
 		var yAxis = scaleUtils.generateScale("ordinal", chartProps.scale.primaryScale, chartProps.data, yRange);
-		console.log(yAxis)
+
+		var barProps = map(props.chartProps.data, function(d, i) {
+			var setting = props.chartProps.chartSettings[i];
+			return {
+				key: i,
+				data: d.values,
+				colorIndex: setting.colorIndex
+			};
+		});
+
+		var bars = seriesUtils.createSeries("column", {
+			key: "bar",
+			bars: barProps,
+			orientation: "horizontal",
+			dimensions: chartAreaDimensions,
+			yScale: yAxis.scale,
+			xScale: xAxis.scale,
+			displayConfig: displayConfig
+		});
 
 		return (
 			<SvgWrapper
@@ -134,6 +154,7 @@ var ChartGridBars = React.createClass({
 					width={chartAreaDimensions.width}
 					scale={yAxis.scale}
 				/>
+				{bars}
 			</g>
 			</SvgWrapper>
 		);
