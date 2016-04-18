@@ -1,5 +1,6 @@
 var React = require("react");
 var PropTypes = React.PropTypes;
+var assign = require("lodash/assign");
 var map = require("lodash/map");
 var keys = require("lodash/keys");
 var reduce = require("lodash/reduce");
@@ -8,7 +9,7 @@ var ordinal = require("d3").scale.ordinal;
 var rect = React.createFactory('rect');
 
 // parse props differently if bar is horizontal/vertical
-var scale_map = {
+var orientation_map = {
 	vertical: {
 		"ordinalScale": "xScale",
 		"ordinalVal": "x",
@@ -57,7 +58,7 @@ var BarGroup = React.createClass({
 
 	render: function() {
 		var props = this.props;
-		var mapping = scale_map[props.orientation];
+		var mapping = orientation_map[props.orientation];
 		var numDataPoints = props.bars[0].data.length;
 		var makeBarProps = this._makeBarProps;
 
@@ -74,11 +75,12 @@ var BarGroup = React.createClass({
 				var ordinalScale = bar[mapping.ordinalScale] || props[mapping.ordinalScale];
 				var linearScale = bar[mapping.linearScale] || props[mapping.linearScale];
 				var ordinalOffset = innerScale(ix) - innerSize / 2;
+				var barProps = makeBarProps(d, i, mapping, linearScale, ordinalScale, rectSize, ordinalOffset);
+				barProps.className = "color-index-" + bar.colorIndex;
 
-				return (
-					rect(makeBarProps(d, i, mapping, linearScale, ordinalScale, rectSize, ordinalOffset))
-				);
-			})
+				return rect(barProps);
+			});
+
 			return <g key={ix} className="bar-series">{rects}</g>;
 		});
 

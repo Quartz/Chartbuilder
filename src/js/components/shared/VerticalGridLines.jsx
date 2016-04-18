@@ -8,7 +8,10 @@ var VerticalGridLines = React.createClass({
 		orient: PropTypes.string,
 		dimensions: PropTypes.object,
 		xScale: PropTypes.func,
-		tickValues: PropTypes.array
+		tickValues: PropTypes.array,
+		y1: PropTypes.number,
+		y2: PropTypes.number,
+		className: PropTypes.string
 	},
 
 	_generateTicks: function(props) {
@@ -17,11 +20,11 @@ var VerticalGridLines = React.createClass({
 			return (
 				<line
 					key={i}
-					className="tick"
+					className={["tick", props.className].join(" ")}
 					x1={scalePos}
 					x2={scalePos}
-					y1={0}
-					y2={props.dimensions.height + props.styleConfig.overtick_bottom}
+					y1={props.y1 || 0}
+					y2={props.y2 || props.dimensions.height + props.styleConfig.overtick_bottom}
 				/>
 			)
 		});

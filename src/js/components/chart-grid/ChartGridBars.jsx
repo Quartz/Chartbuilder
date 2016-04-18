@@ -103,7 +103,7 @@ var ChartGridBars = React.createClass({
 
 		var xRange = [props.styleConfig.xOverTick, chartAreaDimensions.width];
 		var xAxis = scaleUtils.generateScale("linear", chartProps.scale.primaryScale, chartProps.data, xRange);
-		var yRange = [chartAreaDimensions.height, displayConfig.afterLegend];
+		var yRange = [chartAreaDimensions.height, 0];
 		var yAxis = scaleUtils.generateScale("ordinal", chartProps.scale.primaryScale, chartProps.data, yRange);
 
 		var barProps = map(props.chartProps.data, function(d, i) {
@@ -123,31 +123,39 @@ var ChartGridBars = React.createClass({
 		return (
 			<SvgWrapper
 				outerDimensions={dimensions}
-				metadata={this.props.metadata}
+				metadata={props.metadata}
 				displayConfig={displayConfig}
-				styleConfig={this.props.styleConfig}
+				styleConfig={props.styleConfig}
 			>
 			<XYChart
 				chartType="bar"
 				dimensions={chartAreaDimensions}
-				styleConfig={this.props.styleConfig}
+				styleConfig={props.styleConfig}
 				displayConfig={displayConfig}
-				editable={this.props.editable}
+				editable={props.editable}
 				xScale={xAxis.scale}
 				yScale={yAxis.scale}
 				translate={[maxTickWidth, 0]}
 				tickTextHeight={tickTextHeight}
 				tickFont={tickFont}
 			>
-				<SeriesLabel text={"Apples"} colorIndex={0} />
+				<SeriesLabel
+					text={chartProps.chartSettings[0].label}
+					colorIndex={chartProps.chartSettings[0].colorIndex}
+					translate={ [ xAxis.scale(0), 0 ] }
+				/>
 				<HorizontalGridLines tickValues={yAxis.tickValues} />
-				<VerticalGridLines tickValues={[0]} />
 				<VerticalAxis
 					offset={maxTickWidth * -1}
 					tickValues={tickLabels}
 					tickWidths={tickWidths}
 				/>
 				{bars}
+				<VerticalGridLines
+					tickValues={[0]}
+					y1={props.displayConfig.afterLegend}
+					className="zero"
+				/>
 			</XYChart>
 			</SvgWrapper>
 		);

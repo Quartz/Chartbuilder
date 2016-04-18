@@ -81,9 +81,6 @@ svg
     fill none
     stroke-width 1px
 
-  line.zero
-    stroke $color-chart-zeroline
-    shape-rendering crispEdges
 
   .margins
     .line, .other-line
@@ -238,6 +235,9 @@ svg
 	line.tick
 		stroke $color-chart-gridline
 		stroke-width 1px
+		shape-rendering crispEdges
+	line.zero
+		stroke $color-chart-zeroline
 		shape-rendering crispEdges
 
 .concealer-label
