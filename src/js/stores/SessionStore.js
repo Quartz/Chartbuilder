@@ -10,7 +10,10 @@ var _session = {
 	separators: detectNumberSeparators(),
 	emSize: 10,
 	width: 640,
-	timerOn: (localStorage.hasOwnProperty("model") === true),
+	timerOn: (function() {
+		if (localStorage) return ( localStorage.hasOwnProperty("model") === true );
+		return false;
+	})(),
 	nowOffset: getTZOffset(now),
 	now: now
 };

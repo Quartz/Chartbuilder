@@ -216,7 +216,7 @@ function merge_or_apply(defaults, source) {
 }
 
 /**
- * Given a the domain of a scale suggest the most numerous number 
+ * Given a the domain of a scale suggest the most numerous number
  * of round number ticks that it cold be divided into while still containing
  values evenly divisible by 1, 2, 2.5, 5, 10, or 25.
  * @param {array} domain - An array of two number like objects

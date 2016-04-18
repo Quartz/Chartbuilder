@@ -23,9 +23,17 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 	// clone so that we aren't modifying original
 	// this can probably be avoided by applying new settings differently
 	var chartProps = JSON.parse(JSON.stringify(_chartProps));
+
 	var bySeries = dataBySeries(chartProps.input.raw, {
 		checkForDate: true,
-		type: chartProps.input.type
+		type: chartProps.input.type,
+		inputTZ: (function() {
+			if (chartProps.scale.dateSettings) {
+				return chartProps.scale.dateSettings.inputTZ;
+			} else {
+				return "Z";
+			}
+		})()
 	});
 
 	var labels = chartProps._annotations.labels;

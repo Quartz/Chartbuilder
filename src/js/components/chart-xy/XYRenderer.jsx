@@ -759,11 +759,9 @@ function drawXY(el, state) {
 				var inputOffset = state.chartProps.scale.dateSettings.inputTZ ? -help.TZOffsetToMinutes(state.chartProps.scale.dateSettings.inputTZ) : curOffset;
 				var timeOffset = 0;
 				axis.tickFormat(function(d,i) {
-
-					if(displayTZ === "as-entered") {
+					if (displayTZ === "as-entered") {
 						timeOffset = curOffset - inputOffset;
 					}
-
 					return dateSettings.dateFormatter(d.clone(),i,timeOffset);
 				});
 			}
