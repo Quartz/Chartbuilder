@@ -27,11 +27,14 @@ var ChartRendererMixin = require("../mixins/ChartRendererMixin.js");
 
 /* One `GridChart` will be drawn for every column used in our grid */
 var HorizontalGridLines = require("../shared/HorizontalGridLines.jsx");
+var VerticalGridLines   = require("../shared/VerticalGridLines.jsx");
 var BarGroup            = require("../series/BarGroup.jsx");
 var SvgWrapper          = require("../svg/SvgWrapper.jsx");
 var scaleUtils          = require("../../util/scale-utils.js");
 var seriesUtils         = require("../../util/series-utils.js");
+var XYChart             = require("../chart-xy/XYChart.jsx");
 var VerticalAxis        = require("../shared/VerticalAxis.jsx");
+var SeriesLabel         = require("../shared/SeriesLabel.jsx");
 
 /**
  * ### Component that renders bar (row) charts in a chart grid
@@ -98,28 +101,23 @@ var ChartGridBars = React.createClass({
 			)
 		};
 
-		var xRange = [0, chartAreaDimensions.width];
+		var xRange = [props.styleConfig.xOverTick, chartAreaDimensions.width];
 		var xAxis = scaleUtils.generateScale("linear", chartProps.scale.primaryScale, chartProps.data, xRange);
-		var yRange = [chartAreaDimensions.height, 0];
+		var yRange = [chartAreaDimensions.height, displayConfig.afterLegend];
 		var yAxis = scaleUtils.generateScale("ordinal", chartProps.scale.primaryScale, chartProps.data, yRange);
 
 		var barProps = map(props.chartProps.data, function(d, i) {
-			var setting = props.chartProps.chartSettings[i];
 			return {
 				key: i,
 				data: d.values,
-				colorIndex: setting.colorIndex
+				colorIndex: props.chartProps.chartSettings[i].colorIndex
 			};
 		});
 
 		var bars = seriesUtils.createSeries("column", {
 			key: "bar",
 			bars: barProps,
-			orientation: "horizontal",
-			dimensions: chartAreaDimensions,
-			yScale: yAxis.scale,
-			xScale: xAxis.scale,
-			displayConfig: displayConfig
+			orientation: "horizontal"
 		});
 
 		return (
@@ -129,33 +127,28 @@ var ChartGridBars = React.createClass({
 				displayConfig={displayConfig}
 				styleConfig={this.props.styleConfig}
 			>
-			<g
-				className="chart chart-bar"
-				transform={ "translate(" + [maxTickWidth, 0] + ")" }
+			<XYChart
+				chartType="bar"
+				dimensions={chartAreaDimensions}
+				styleConfig={this.props.styleConfig}
+				displayConfig={displayConfig}
+				editable={this.props.editable}
+				xScale={xAxis.scale}
+				yScale={yAxis.scale}
+				translate={[maxTickWidth, 0]}
+				tickTextHeight={tickTextHeight}
+				tickFont={tickFont}
 			>
-				<HorizontalGridLines
-					dimensions={chartAreaDimensions}
-					translate={[maxTickWidth, 0]}
-					displayConfig={displayConfig}
-					styleConfig={this.props.styleConfig}
-					yScale={yAxis.scale}
-					tickValues={yAxis.tickValues}
-				/>
+				<SeriesLabel text={"Apples"} colorIndex={0} />
+				<HorizontalGridLines tickValues={yAxis.tickValues} />
+				<VerticalGridLines tickValues={[0]} />
 				<VerticalAxis
-					tickFont={tickFont}
-					dimensions={chartAreaDimensions}
-					tickTextHeight={tickTextHeight}
 					offset={maxTickWidth * -1}
-					displayConfig={displayConfig}
-					styleConfig={this.props.styleConfig}
 					tickValues={tickLabels}
 					tickWidths={tickWidths}
-					orient={"left"}
-					width={chartAreaDimensions.width}
-					scale={yAxis.scale}
 				/>
 				{bars}
-			</g>
+			</XYChart>
 			</SvgWrapper>
 		);
 	}

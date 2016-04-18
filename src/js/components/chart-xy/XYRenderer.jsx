@@ -278,7 +278,7 @@ var XYRenderer = React.createClass({
 					orient={orient}
 					offset={offset}
 					width={chartAreaDimensions.width}
-					scale={axis.scale}
+					yScale={axis.scale}
 					colorIndex={scaleOptions.colorIndex}
 				/>
 			)

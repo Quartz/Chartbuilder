@@ -47,7 +47,7 @@ var VerticalAxis = React.createClass({
 
 			return (
 				<g key={i} className="concealer-label"
-					 transform={"translate(" + [0, props.scale(tickValue)] + ")"}
+					 transform={"translate(" + [0, props.yScale(tickValue)] + ")"}
 				>
 					<rect
 						className="tick-blocker-rect"
