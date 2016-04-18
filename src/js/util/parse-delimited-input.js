@@ -33,6 +33,9 @@ var newLineRegex = /\r\n|\r|\n/;
 var parseErrors = [];
 
 function parseDelimInput(input, opts) {
+	var hasDate = null;
+	var isNumeric = null;
+
 	opts = opts || {};
 	var _defaultOpts = defaults(opts, {
 		delimiter: parseUtils.detectDelimiter(input),
