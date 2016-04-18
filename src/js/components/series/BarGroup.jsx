@@ -7,6 +7,7 @@ var isArray = require("lodash/isArray");
 var ordinal = require("d3").scale.ordinal;
 var rect = React.createFactory('rect');
 
+// parse props differently if bar is horizontal/vertical
 var scale_map = {
 	vertical: {
 		"ordinalScale": "xScale",
@@ -25,7 +26,6 @@ var scale_map = {
 		"linearSize": "width"
 	},
 };
-var map_keys = keys(scale_map.vertical);
 
 var BarGroup = React.createClass({
 
@@ -48,8 +48,10 @@ var BarGroup = React.createClass({
 		var barProps = { key: i, colorIndex: bar.colorIndex };
 		barProps[mapping.ordinalVal] = ordinalScale(bar.entry) + offset;
 		barProps[mapping.ordinalSize] = size;
-		barProps[mapping.linearVal] = 0;
-		barProps[mapping.linearSize] = linearScale(bar.value);
+		// linearVal needs to be negative if number is neg else 0
+		// see https://bl.ocks.org/mbostock/2368837
+		barProps[mapping.linearVal] = linearScale(Math.min(0, bar.value));
+		barProps[mapping.linearSize] = Math.abs(linearScale(bar.value) - linearScale(0));
 		return barProps;
 	},
 
@@ -57,7 +59,6 @@ var BarGroup = React.createClass({
 		var props = this.props;
 		var mapping = scale_map[props.orientation];
 		var numDataPoints = props.bars[0].data.length;
-		var scales = scale_map[props.orientation];
 		var makeBarProps = this._makeBarProps;
 
 		var innerSize = props.dimensions[mapping.ordinalSize] / numDataPoints;
