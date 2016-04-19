@@ -9,7 +9,7 @@ module.exports = {
 	defaultChart: function() {
 		var default_model = chartConfig.chartgrid.defaultProps;
 		default_model.chartProps.input = {
-			raw: testInput.init_data_ordinal
+			raw: testInput.init_data_ordinal_multiple
 			//raw: defaultInput
 		};
 

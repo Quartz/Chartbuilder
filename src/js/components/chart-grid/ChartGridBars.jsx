@@ -136,8 +136,10 @@ var ChartGridBars = React.createClass({
 		var yRangeOuter = [chartAreaDimensions.height, 0];
 
 		var gridScales = gridUtils.createGridScales(chartProps._grid, xRangeOuter, yRangeOuter);
-		var xAxis = scaleUtils.generateScale("linear", chartProps.scale.primaryScale, chartProps.data, gridScales.cols.range());
-		var yAxis = scaleUtils.generateScale("ordinal", chartProps.scale.primaryScale, chartProps.data, gridScales.rows.rangeExtent());
+		var xRangeInner = [0, gridScales.cols.rangeBand()];
+		var yRangeInner = [props.displayConfig.afterLegend, gridScales.rows.rangeBand()];
+		var xAxis = scaleUtils.generateScale("linear", chartProps.scale.primaryScale, chartProps.data, xRangeInner);
+		var yAxis = scaleUtils.generateScale("ordinal", chartProps.scale.primaryScale, chartProps.data, yRangeInner);
 
 		var outer = React.createFactory(XYChart);
 		var outerProps = {
@@ -164,6 +166,7 @@ var ChartGridBars = React.createClass({
 				displayConfig={displayConfig}
 				styleConfig={props.styleConfig}
 			>
+			{/*
 			<HorizontalGridLines
 				tickValues={yAxis.tickValues}
 				dimensions={{
@@ -176,9 +179,11 @@ var ChartGridBars = React.createClass({
 				translate={[0, 0]}
 				tickValues={tickLabels}
 			/>
+			*/}
 			<g transform={ "translate(" + [maxTickWidth, 0] + ")" }>
 				{grid}
 			</g>
+			{/*
 			<VerticalAxis
 				tickValues={tickLabels}
 				tickWidths={tickWidths}
@@ -190,6 +195,7 @@ var ChartGridBars = React.createClass({
 				tickTextHeight={tickTextHeight}
 				tickFont={tickFont}
 			/>
+			*/}
 			</SvgWrapper>
 		);
 	}

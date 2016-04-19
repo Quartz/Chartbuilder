@@ -34,8 +34,8 @@ function create_grid_scales(gridSettings, xRange, yRange) {
 	var rowDomain = d3.range(0, gridSettings.rows);
 
 	return {
-		cols: d3.scale.ordinal().domain(colDomain).rangeBands(xRange, 0),
-		rows: d3.scale.ordinal().domain(rowDomain).rangeBands(yRange, 0)
+		cols: d3.scale.ordinal().domain(colDomain).rangeBands(xRange, 0.1, 0),
+		rows: d3.scale.ordinal().domain(rowDomain).rangeBands(yRange, 0.1, 0)
 	}
 }
 
