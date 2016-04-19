@@ -2,7 +2,6 @@ var React = require("react");
 var d3 = require("d3");
 var map = require("lodash/map");
 var assign = require("lodash/assign");
-var scaleUtils = require("./scale-utils");
 
 /**
  * make_mults
@@ -37,17 +36,6 @@ function create_grid_scales(gridSettings, xRange, yRange) {
 		cols: d3.scale.ordinal().domain(colDomain).rangeBands(xRange, 0.1, 0),
 		rows: d3.scale.ordinal().domain(rowDomain).rangeBands(yRange, 0.1, 0)
 	}
-}
-
-function GridWrapper(Outer, Data) {
-	return React.createClass({
-		render: function() {
-			return (
-				<Outer {...this.props}>
-				</Outer>
-			)
-		}
-	})
 }
 
 module.exports = {

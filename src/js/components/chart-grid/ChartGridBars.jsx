@@ -159,6 +159,41 @@ var ChartGridBars = React.createClass({
 
 		var grid = gridUtils.makeMults(outer, outerProps, chartProps._grid, chartProps.data, gridScales, this._barGridBlock);
 
+		var verticalAxes = map(gridScales.rows.domain(), function(row, i) {
+			var yPos = gridScales.rows(i);
+			return (
+				<g
+					key={"grid-row-" + i}
+					transform={ "translate(" + [0, yPos] + ")" }
+					className="axis grid-row-axis"
+				>
+					<HorizontalGridLines
+						tickValues={yAxis.tickValues}
+						dimensions={{
+							width: dimensions.width - margin.right - margin.left,
+							height: dimensions.height
+						}}
+						yScale={yAxis.scale}
+						styleConfig={props.styleConfig}
+						displayConfig={displayConfig}
+						translate={[0, 0]}
+						tickValues={tickLabels}
+					/>
+					<VerticalAxis
+						tickValues={tickLabels}
+						tickWidths={tickWidths}
+						dimensions={chartAreaDimensions}
+						styleConfig={props.styleConfig}
+						displayConfig={displayConfig}
+						xScale={xAxis.scale}
+						yScale={yAxis.scale}
+						tickTextHeight={tickTextHeight}
+						tickFont={tickFont}
+					/>
+				</g>
+			)
+		});
+
 		return (
 			<SvgWrapper
 				outerDimensions={dimensions}
@@ -166,36 +201,10 @@ var ChartGridBars = React.createClass({
 				displayConfig={displayConfig}
 				styleConfig={props.styleConfig}
 			>
-			{/*
-			<HorizontalGridLines
-				tickValues={yAxis.tickValues}
-				dimensions={{
-					width: dimensions.width - margin.right - margin.left,
-					height: dimensions.height
-				}}
-				yScale={yAxis.scale}
-				styleConfig={props.styleConfig}
-				displayConfig={displayConfig}
-				translate={[0, 0]}
-				tickValues={tickLabels}
-			/>
-			*/}
-			<g transform={ "translate(" + [maxTickWidth, 0] + ")" }>
-				{grid}
-			</g>
-			{/*
-			<VerticalAxis
-				tickValues={tickLabels}
-				tickWidths={tickWidths}
-				dimensions={chartAreaDimensions}
-				styleConfig={props.styleConfig}
-				displayConfig={displayConfig}
-				xScale={xAxis.scale}
-				yScale={yAxis.scale}
-				tickTextHeight={tickTextHeight}
-				tickFont={tickFont}
-			/>
-			*/}
+				{verticalAxes}
+				<g transform={ "translate(" + [maxTickWidth, 0] + ")" }>
+					{grid}
+				</g>
 			</SvgWrapper>
 		);
 	}
