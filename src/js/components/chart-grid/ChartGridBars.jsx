@@ -32,6 +32,7 @@ var BarGroup            = require("../series/BarGroup.jsx");
 var SvgWrapper          = require("../svg/SvgWrapper.jsx");
 var scaleUtils          = require("../../util/scale-utils.js");
 var seriesUtils         = require("../../util/series-utils.js");
+var gridUtils           = require("../../util/grid-utils.js");
 var XYChart             = require("../chart-xy/XYChart.jsx");
 var VerticalAxis        = require("../shared/VerticalAxis.jsx");
 var SeriesLabel         = require("../shared/SeriesLabel.jsx");
@@ -69,6 +70,36 @@ var ChartGridBars = React.createClass({
 		};
 	},
 
+	_barGridBlock: function(d, i) {
+		var props = this.props;
+
+		var barProps = {
+			key: i,
+			data: d.values,
+			colorIndex: props.chartProps.chartSettings[i].colorIndex
+		};
+
+		var bar = seriesUtils.createSeries("column", {
+			key: "bar",
+			bars: [ barProps ],
+			orientation: "horizontal"
+		});
+
+		return [
+			<SeriesLabel
+				key="label"
+				text={props.chartProps.chartSettings[i].label}
+				colorIndex={props.chartProps.chartSettings[i].colorIndex}
+			/>,
+			bar,
+			<VerticalGridLines
+				key="vert"
+				tickValues={[0]}
+				className="zero"
+			/>
+		];
+	},
+
 	render: function() {
 		var props = this.props;
 		var displayConfig = props.displayConfig;
@@ -101,24 +132,30 @@ var ChartGridBars = React.createClass({
 			)
 		};
 
-		var xRange = [props.styleConfig.xOverTick, chartAreaDimensions.width];
-		var xAxis = scaleUtils.generateScale("linear", chartProps.scale.primaryScale, chartProps.data, xRange);
-		var yRange = [chartAreaDimensions.height, 0];
-		var yAxis = scaleUtils.generateScale("ordinal", chartProps.scale.primaryScale, chartProps.data, yRange);
+		var xRangeOuter = [0, chartAreaDimensions.width];
+		var yRangeOuter = [chartAreaDimensions.height, 0];
 
-		var barProps = map(props.chartProps.data, function(d, i) {
-			return {
-				key: i,
-				data: d.values,
-				colorIndex: props.chartProps.chartSettings[i].colorIndex
-			};
-		});
+		var gridScales = gridUtils.createGridScales(chartProps._grid, xRangeOuter, yRangeOuter);
+		var xAxis = scaleUtils.generateScale("linear", chartProps.scale.primaryScale, chartProps.data, gridScales.cols.range());
+		var yAxis = scaleUtils.generateScale("ordinal", chartProps.scale.primaryScale, chartProps.data, gridScales.rows.rangeExtent());
 
-		var bars = seriesUtils.createSeries("column", {
-			key: "bar",
-			bars: barProps,
-			orientation: "horizontal"
-		});
+		var outer = React.createFactory(XYChart);
+		var outerProps = {
+			chartType: "bar",
+			dimensions: {
+				width: gridScales.cols.rangeBand(),
+				height: gridScales.rows.rangeBand()
+			},
+			styleConfig: props.styleConfig,
+			displayConfig: displayConfig,
+			editable: props.editable,
+			xScale: xAxis.scale,
+			yScale: yAxis.scale,
+			tickTextHeight: tickTextHeight,
+			tickFont: tickFont
+		};
+
+		var grid = gridUtils.makeMults(outer, outerProps, chartProps._grid, chartProps.data, gridScales, this._barGridBlock);
 
 		return (
 			<SvgWrapper
@@ -127,36 +164,32 @@ var ChartGridBars = React.createClass({
 				displayConfig={displayConfig}
 				styleConfig={props.styleConfig}
 			>
-			<XYChart
-				chartType="bar"
+			<HorizontalGridLines
+				tickValues={yAxis.tickValues}
+				dimensions={{
+					width: dimensions.width - margin.right - margin.left,
+					height: dimensions.height
+				}}
+				yScale={yAxis.scale}
+				styleConfig={props.styleConfig}
+				displayConfig={displayConfig}
+				translate={[0, 0]}
+				tickValues={tickLabels}
+			/>
+			<g transform={ "translate(" + [maxTickWidth, 0] + ")" }>
+				{grid}
+			</g>
+			<VerticalAxis
+				tickValues={tickLabels}
+				tickWidths={tickWidths}
 				dimensions={chartAreaDimensions}
 				styleConfig={props.styleConfig}
 				displayConfig={displayConfig}
-				editable={props.editable}
 				xScale={xAxis.scale}
 				yScale={yAxis.scale}
-				translate={[maxTickWidth, 0]}
 				tickTextHeight={tickTextHeight}
 				tickFont={tickFont}
-			>
-				<SeriesLabel
-					text={chartProps.chartSettings[0].label}
-					colorIndex={chartProps.chartSettings[0].colorIndex}
-					translate={ [ xAxis.scale(0), 0 ] }
-				/>
-				<HorizontalGridLines tickValues={yAxis.tickValues} />
-				<VerticalAxis
-					offset={maxTickWidth * -1}
-					tickValues={tickLabels}
-					tickWidths={tickWidths}
-				/>
-				{bars}
-				<VerticalGridLines
-					tickValues={[0]}
-					y1={props.displayConfig.afterLegend}
-					className="zero"
-				/>
-			</XYChart>
+			/>
 			</SvgWrapper>
 		);
 	}
