@@ -107,6 +107,7 @@ var ChartGridBars = React.createClass({
 		var styleConfig = props.styleConfig;
 		var chartProps = props.chartProps;
 		var dimensions = props.dimensions;
+		var primaryScale = chartProps.scale.primaryScale;
 		var tickFont = styleConfig.fontSizes.medium + "px " + styleConfig.fontFamily;
 		var tickTextHeight = help.computeTextWidth("M", tickFont);
 
@@ -135,11 +136,18 @@ var ChartGridBars = React.createClass({
 		var xRangeOuter = [0, chartAreaDimensions.width];
 		var yRangeOuter = [chartAreaDimensions.height, 0];
 
-		var gridScales = gridUtils.createGridScales(chartProps._grid, xRangeOuter, yRangeOuter);
+		var gridScales = gridUtils.createGridScales(chartProps._grid, {
+			x: xRangeOuter,
+			y: yRangeOuter
+		}, {
+			xInnerPadding: 0.2, // TODO: put these in config
+			xOuterPadding: 0
+		});
+
 		var xRangeInner = [0, gridScales.cols.rangeBand()];
 		var yRangeInner = [props.displayConfig.afterLegend, gridScales.rows.rangeBand()];
-		var xAxis = scaleUtils.generateScale("linear", chartProps.scale.primaryScale, chartProps.data, xRangeInner);
-		var yAxis = scaleUtils.generateScale("ordinal", chartProps.scale.primaryScale, chartProps.data, yRangeInner);
+		var xAxis = scaleUtils.generateScale("linear", primaryScale, chartProps.data, xRangeInner);
+		var yAxis = scaleUtils.generateScale("ordinal", primaryScale, chartProps.data, yRangeInner);
 
 		var Outer = React.createFactory(XYChart);
 		var outerProps = {
