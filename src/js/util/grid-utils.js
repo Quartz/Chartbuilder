@@ -12,23 +12,32 @@ var assign = require("lodash/assign");
  * @param howToRender { func that tells how to evaluate the components?? }
  * @returns {[chart components]}
  */
-function make_mults(outer, outerProps, grid, data, scales, renderData) {
+function make_mults(Outer, outerProps, data, gridScales, renderDataFunc) {
+	var colDomain = gridScales.cols.domain();
+	var numCols = colDomain[colDomain.length - 1] + 1;
+
+	var grid_dimensions = {
+		width: gridScales.cols.rangeBand(),
+		height: gridScales.rows.rangeBand()
+	};
+
 	return map(data, function(d, i) {
 		var pos = {
-			col: i % grid.cols,
-			row: (i === 0) ? 0 : Math.floor( i / grid.cols )
+			col: i % numCols,
+			row: (i === 0) ? 0 : Math.floor( i / numCols )
 		};
 
 		var gridProps = assign({}, outerProps, {
 			key: i,
-			translate: [ scales.cols(pos.col), scales.rows(pos.row) ]
+			translate: [ gridScales.cols(pos.col), gridScales.rows(pos.row) ],
+			dimensions: grid_dimensions
 		});
 
-		return outer(gridProps, renderData(d, i));
+		return Outer(gridProps, renderDataFunc(d, i));
 	});
 }
 
-function create_grid_scales(gridSettings, xRange, yRange) {
+function create_grid_scales(gridSettings, xRange, yRange, innerPadding, outerPadding) {
 	var colDomain = d3.range(0, gridSettings.cols);
 	var rowDomain = d3.range(0, gridSettings.rows);
 

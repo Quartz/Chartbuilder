@@ -141,13 +141,9 @@ var ChartGridBars = React.createClass({
 		var xAxis = scaleUtils.generateScale("linear", chartProps.scale.primaryScale, chartProps.data, xRangeInner);
 		var yAxis = scaleUtils.generateScale("ordinal", chartProps.scale.primaryScale, chartProps.data, yRangeInner);
 
-		var outer = React.createFactory(XYChart);
+		var Outer = React.createFactory(XYChart);
 		var outerProps = {
 			chartType: "bar",
-			dimensions: {
-				width: gridScales.cols.rangeBand(),
-				height: gridScales.rows.rangeBand()
-			},
 			styleConfig: props.styleConfig,
 			displayConfig: displayConfig,
 			editable: props.editable,
@@ -157,15 +153,15 @@ var ChartGridBars = React.createClass({
 			tickFont: tickFont
 		};
 
-		var grid = gridUtils.makeMults(outer, outerProps, chartProps._grid, chartProps.data, gridScales, this._barGridBlock);
+		var grid = gridUtils.makeMults(Outer, outerProps, chartProps.data, gridScales, this._barGridBlock);
 
 		var verticalAxes = map(gridScales.rows.domain(), function(row, i) {
 			var yPos = gridScales.rows(i);
 			return (
 				<g
+					className="axis grid-row-axis"
 					key={"grid-row-" + i}
 					transform={ "translate(" + [0, yPos] + ")" }
-					className="axis grid-row-axis"
 				>
 					<HorizontalGridLines
 						tickValues={yAxis.tickValues}
@@ -202,7 +198,10 @@ var ChartGridBars = React.createClass({
 				styleConfig={props.styleConfig}
 			>
 				{verticalAxes}
-				<g transform={ "translate(" + [maxTickWidth, 0] + ")" }>
+				<g
+					className="grid-wrapper"
+					transform={ "translate(" + [maxTickWidth, 0] + ")" }
+				>
 					{grid}
 				</g>
 			</SvgWrapper>
