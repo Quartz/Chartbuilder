@@ -25,6 +25,7 @@ var convertConfig = require("../util/parse-config-values");
 var SessionStore = require("../stores/SessionStore");
 var breakpoints = require("../config/chart-breakpoints");
 var ChartFooter = require("./svg/ChartFooter.jsx");
+var AnnotationLayer = require("./shared/annotations/AnnotationLayer.jsx")
 
 /*
  * `chartConfig` is an object that sets default properties for chart types, and
@@ -313,6 +314,7 @@ var RendererWrapper = React.createClass({
 					/>
 					{metadataSvg}
 				</svg>
+				<AnnotationLayer />
 			</div>
 		);
 	}
