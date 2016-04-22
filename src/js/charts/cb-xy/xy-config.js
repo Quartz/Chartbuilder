@@ -1,4 +1,5 @@
 var ChartConfig = require("../ChartConfig");
+var now = new Date();
 
 /**
  * ### Configuration of an XY chart
@@ -30,6 +31,7 @@ var ChartConfig = require("../ChartConfig");
 * @property {object} margin - Distances btwn outer chart elements and container
 * @property {object} padding - Distances btwn inner chart elements and container
 */
+
 var display = {
 	labelRectSize: "0.6em",
 	labelXMargin: "0.6em",
@@ -95,7 +97,9 @@ var defaultProps = {
 			},
 			dateSettings: {
 				dateFrequency: "auto",
-				dateFormat: "auto"
+				dateFormat: "auto",
+				inputTZ: null,
+				displayTZ: "as-entered"
 			},
 			numericSettings: {
 				ticks: null,

@@ -23,9 +23,10 @@ var Canvas = require("./Canvas.jsx");
 var ChartExport = require("./ChartExport.jsx");
 var ChartMetadata = require("./ChartMetadata.jsx");
 var ChartTypeSelector = require("./ChartTypeSelector.jsx");
-var ErrorDisplay = require("./ErrorDisplay.jsx");
 var RendererWrapper = require("./RendererWrapper.jsx");
 var LocalStorageTimer = require("./LocalStorageTimer.jsx");
+
+var AlertGroup = require("chartbuilder-ui").AlertGroup;
 
 var svgWrapperClassName = {
 	desktop: "renderer-svg-desktop",
@@ -64,6 +65,11 @@ function getStateFromStores() {
  * @property {function} onStateChange - Callback when state is changed
  * @property {Object} additionalComponents - Optional additional React components
  * @property {string} renderedSVGClassName - Optional class name for chart SVG class
+ * @property {function} validateMeta - validate function that passes in the metadata where you can return an array of errors to be render under the ChartMeta ie: [{
+ * 				location : "",
+ *				text : "The title field is empty",
+ *				type : "error"
+ *			}]
  * @example
  * var React = require("react");
  * var Chartbuilder = require("./components/Chartbuilder.jsx");
@@ -83,6 +89,7 @@ var Chartbuilder = React.createClass({
 		showMobilePreview: PropTypes.bool,
 		onSave: PropTypes.func,
 		onStateChange: PropTypes.func,
+		validateMeta: PropTypes.func,
 		additionalComponents: PropTypes.shape({
 			metadata: PropTypes.array,
 			misc: PropTypes.object
@@ -118,6 +125,29 @@ var Chartbuilder = React.createClass({
 		ChartMetadataStore.removeChangeListener(this._onChange);
 		ErrorStore.removeChangeListener(this._onChange);
 		SessionStore.removeChangeListener(this._onChange);
+	},
+
+	_renderErrors: function() {
+
+		var metadataErrors = [];
+		if (this.props.validateMeta) {
+			metadataErrors = this.props.validateMeta(this.state.metadata);
+		}
+
+		var errorArrMessage = this.state.errors.messages.concat(metadataErrors);
+
+		if (errorArrMessage.length === 0) {
+			return null;
+		} else {
+			return (
+				<div>
+					<h2>Have a look at these issues:</h2>
+					<AlertGroup
+						alerts={errorArrMessage}
+					/>
+				</div>
+			);
+		}
 	},
 
 	/*
@@ -193,6 +223,7 @@ var Chartbuilder = React.createClass({
 					/>
 					<Editor
 						errors={this.state.errors}
+						session={this.state.session}
 						chartProps={this.state.chartProps}
 						numColors={numColors}
 					/>
@@ -203,15 +234,13 @@ var Chartbuilder = React.createClass({
 						additionalComponents={this.props.additionalComponents.metadata}
 					/>
 					{mobileOverrides}
-					<ErrorDisplay
-						stepNumber={String(editorSteps + 3)}
-						messages={this.state.errors.messages}
-					/>
+					{this._renderErrors()}
 					<ChartExport
 						data={this.state.chartProps.data}
+						enableJSONExport={this.props.enableJSONExport}
 						svgWrapperClassName={svgWrapperClassName.desktop}
 						metadata={this.state.metadata}
-						stepNumber={String(editorSteps + 4)}
+						stepNumber={String(editorSteps + 3)}
 						additionalComponents={this.props.additionalComponents.misc}
 						model={this.state}
 					/>
@@ -235,6 +264,7 @@ var Chartbuilder = React.createClass({
 	_onChange: function() {
 		// On change, update and save state.
 		var state = getStateFromStores();
+
 		this.setState(state);
 
 		if (this.props.autosave && !this.state.session.timerOn) {
@@ -248,7 +278,9 @@ var Chartbuilder = React.createClass({
 				chartProps: state.chartProps,
 				metadata: state.metadata
 			});
+
 		}
+
 	}
 
 });

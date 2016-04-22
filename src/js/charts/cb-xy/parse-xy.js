@@ -6,6 +6,7 @@ var filter = require("lodash/filter");
 
 var dataBySeries = require("../../util/parse-data-by-series");
 var help = require("../../util/helper");
+var SessionStore = require("../../stores/SessionStore");
 
 var scaleNames = ["primaryScale", "secondaryScale"];
 
@@ -22,8 +23,11 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 	// clone so that we aren't modifying original
 	// this can probably be avoided by applying new settings differently
 	var chartProps = JSON.parse(JSON.stringify(_chartProps));
+	var bySeries = dataBySeries(chartProps.input.raw, {
+		checkForDate: true,
+		type: chartProps.input.type
+	});
 
-	var bySeries = dataBySeries(chartProps.input.raw, { checkForDate: true, type: chartProps.input.type });
 	var labels = chartProps._annotations.labels;
 	var allColumn = true;
 	// check if either scale contains columns, as we'll need to zero the axis
@@ -177,6 +181,7 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 	if (bySeries.hasDate) {
 		scale.hasDate = bySeries.hasDate;
 		scale.dateSettings = chartProps.scale.dateSettings || clone(config.defaultProps.chartProps.scale.dateSettings);
+		scale.dateSettings.inputTZ = scale.dateSettings.inputTZ || SessionStore.get("nowOffset")
 	}
 
 	if (bySeries.isNumeric) {

@@ -2,7 +2,9 @@
 var React = require("react");
 var PropTypes = React.PropTypes;
 var ChartViewActions = require("../../actions/ChartViewActions");
-var markdown = require("markdown").markdown;
+var markdown = require("markdown-it")();
+var reduce = require("lodash/reduce");
+var map = require("lodash/map");
 
 var config = {
 	textDy: 0.7,
@@ -150,38 +152,43 @@ var SvgText = React.createClass({
 		}
 	},
 
-	_markdownToTspans: function(input,that,index) {
-		if (!input) return null;
+	_markdownToTspans: function(token) {
+		if (!token) return null;
+		var children = token[0].children;
 
-		var type = input.shift();
-
-		return input.map(function(item,i) {
-			var fill;
-			if (typeof item == "string") {
-				fill = "​" + item // add a zero width space to the beginging of the string
-
+		// take markdown-it parsed markdown and return an array of objs like
+		// { tags: ["em", "strong"], content: "some text…"
+		var tagged = reduce(children, function(prev, child) {
+			if (child.nesting === 1) {
+				prev[prev.length - 1].tags = prev[prev.length - 1].tags.concat([child.tag]);
+				return prev;
+			} else if (child.nesting === 0 && child.content !== "") {
+				prev[prev.length - 1].content = child.content;
+				prev = prev.concat([{ tags: [] }]);
+				return prev;
+			} else {
+				return prev;
 			}
-			else {
-				fill = that._markdownToTspans(item,that,index+1)[0]
-			}
+		}, [{ tags: [] }]);
 
-			return <tspan
-					className = {type}
-					key={Math.random() + "." + index}
-				>
-					{fill}
+		return tagged.map(function(input, index) {
+			if (!input.content) return null;
+
+			return (
+				<tspan className = {input.tags.join(" ")} key={index} >
+					{input.content}
 				</tspan>
+			);
 		});
+
 	},
 
 	render: function() {
 		var textNodes;
 		var parsed_text;
 		var mdToSpans = this._markdownToTspans;
-		var that = this;
 		if (this.props.wrap) {
 			textNodes = this.state.lines.map(function(text, i) {
-				parsed_text = markdown.parse(text)[1];
 				return (
 					<text
 						dy={(i * config.textLineHeight).toString() + "em"}
@@ -189,13 +196,12 @@ var SvgText = React.createClass({
 						x="0"
 						key={i}
 					>
-						{mdToSpans(parsed_text,that,0)}
+						{ mdToSpans(markdown.parseInline(this.props.text)) }
 					</text>
 				);
 			});
 		} else {
 			var dy;
-			parsed_text = markdown.parse(this.props.text)[1]
 			if (this.props.align === "bottom") {
 				dy = "-0.35em";
 			} else if (this.props.align === "top"){
@@ -205,14 +211,10 @@ var SvgText = React.createClass({
 			}
 
 			textNodes = (
-				<text
-					y="0"
-					x="0"
-					dy={dy}
-				>
-					{mdToSpans(parsed_text,that,0)}
+				<text y="0" x="0" dy={dy} >
+					{mdToSpans(markdown.parseInline(this.props.text))}
 				</text>
-			)
+			);
 		}
 		return (
 			<g

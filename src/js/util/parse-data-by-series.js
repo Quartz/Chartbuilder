@@ -6,7 +6,7 @@
 // ```
 
 var datePattern = /date|time|year/i;
-var parseDelimInput = require("./parse-delimited-input");
+var parseDelimInput = require("./parse-delimited-input").parser;
 
 // Parse data by series. Options:
 // checkForDate: bool | tell parser to return dates if key column is date/time/year

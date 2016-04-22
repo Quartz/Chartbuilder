@@ -52,12 +52,11 @@ function validateDataInput(chartProps) {
 	}
 
 	// Whether a column has something that is NaN but is not nothing (blank) or `null`
-	var nanSeries = dataPointTest(
+	var nanSeries = somePointTest(
 			series,
 			function(val) {
 				return (isNaN(val.value) && val.value !== undefined && val.value !== "");
-			},
-			function(nan, vals) { return nan.length > 0;}
+			}
 		);
 
 	if (nanSeries) {
@@ -72,10 +71,9 @@ function validateDataInput(chartProps) {
 
 	//Whether an entry column that is supposed to be a Number is not in fact a number
 	if(isNumeric || chartProps.input.type == "numeric") {
-		var badNumSeries = dataPointTest(
+		var badNumSeries = somePointTest(
 				series,
-				function(val) { return isNaN(val.entry); },
-				function(bn,vals) { return bn.length > 0;}
+				function(val) { return isNaN(val.entry); }
 			);
 
 		if (badNumSeries) {
@@ -85,7 +83,7 @@ function validateDataInput(chartProps) {
 
 	// Whether an entry column that is supposed to be a date is not in fact a date
 	if(hasDate || chartProps.input.type == "date") {
-		var badDateSeries = dataPointTest(
+		var badDateSeries = somePointTest(
 				series,
 				function(val) { return !val.entry.getTime || isNaN(val.entry.getTime()); },
 				function(bd,vals) { return bd.length > 0;}
@@ -94,10 +92,16 @@ function validateDataInput(chartProps) {
 		if (badDateSeries) {
 			inputErrors.push("NOT_DATES");
 		}
+
+		var tz_pattern = /([+-]\d\d:*\d\d)/gi;
+		var found_timezones = input.match(tz_pattern);
+		if(found_timezones && found_timezones.length != series[0].values.length) {
+			inputErrors.push("UNEVEN_TZ");
+		}
 	}
 
-	// Whether a column has NaN
-	var largeNumbers = dataPointTest(
+	// Whether a column has numbers that should be divided
+	var largeNumbers = somePointTest(
 			series,
 			function(val) { return Math.floor(val.value).toString().length > 4; },
 			function(largeNums, vals) { return largeNums.length > 0;}
@@ -126,8 +130,16 @@ function validateDataInput(chartProps) {
 
 }
 
+// Func that checks wheter a single data point failes a test.
+// Will return as soon as failure is found
+function somePointTest(series, someTest) {
+	return some(series, function(s) {
+		return some(s.values, someTest);
+	});
+}
+
+// Func that checks wheter all data points pass a test
 function dataPointTest(series, filterTest, someTest) {
-	// A function to systemitize looping through every datapoint
 	var vals = map(series, function(d,i) {
 		return filter(d.values, filterTest);
 	});

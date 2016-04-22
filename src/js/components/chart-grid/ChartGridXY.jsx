@@ -370,8 +370,16 @@ function drawXYChartGrid(el, state) {
 	.using("xAxis", function(axis) {
 		if (chartProps.scale.hasDate) {
 			axis.tickValues(dateSettings.dateTicks);
-			axis.tickFormat(function(d) {
-				return dateSettings.dateFormatter(d);
+			var curOffset = Date.create().getTimezoneOffset();
+			var displayTZ = state.chartProps.scale.dateSettings.displayTZ;
+			var inputOffset = state.chartProps.scale.dateSettings.inputTZ ? -help.TZOffsetToMinutes(state.chartProps.scale.dateSettings.inputTZ) : curOffset;
+			var timeOffset = 0;
+			axis.tickFormat(function(d,i) {
+				if(displayTZ === "as-entered") {
+					timeOffset = curOffset - inputOffset;
+				}
+
+				return dateSettings.dateFormatter(d.clone(),i,timeOffset);
 			});
 		}
 

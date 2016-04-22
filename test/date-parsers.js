@@ -3,14 +3,19 @@ require("sugar-date"); // sugar is used for date parsing
 
 var processDates = require("../src/js/util/process-dates");
 var dateParsers = processDates.dateParsers;
+var now = new Date();
 var date1 = new Date(1982, 0, 1);
 var date2 = new Date(1998, 4, 15);
 var date3 = new Date(2015, 7, 31);
 var date4 = new Date(2015, 2, 1);
+
+var date5 = new Date.create("2016-02-02T12:00:00" + now.getUTCOffset());
+var date6 = new Date.create("2016-02-02T12:00:00-0500");
+
 var p;
 
 test("date parsers", function(t) {
-	t.plan(28);
+	t.plan(30);
 
 	p = dateParsers["lmdy"];
 	t.equal(p(date1), "1/1/82", "lmdy format");
@@ -57,6 +62,10 @@ test("date parsers", function(t) {
 	t.equal(p(date1), "1982", "MM format");
 	t.equal(p(date2), "May", "MM format");
 	t.equal(p(date3), "August", "MM format");
+
+	p = dateParsers["h"]
+	t.equal(p(date5), "12pm", "h format")
+	t.equal(p(date6, 0, now.getTimezoneOffset() - 300), "12pm", "h format, timezone adjusted")
 
 	t.end();
 });

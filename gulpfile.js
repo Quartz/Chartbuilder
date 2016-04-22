@@ -21,6 +21,7 @@ var uglify = require("gulp-uglify");
 
 // local modules
 var config = require("./gulp/config");
+var gutil = require("gulp-util")
 
 gulp.task("stylus", function () {
 	return gulp.src(config.paths.src.styl + "/main.styl")
@@ -83,7 +84,7 @@ gulp.task("browserify:prod", function () {
 	return bundler.bundle()
 		.pipe(source("main.js"))
 		.pipe(buffer())
-		.pipe(uglify())
+		.pipe(uglify().on("error", gutil.log))
 		.pipe(gulp.dest(config.paths.build.js));
 });
 

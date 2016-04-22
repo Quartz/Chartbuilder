@@ -529,9 +529,6 @@ span.step-number {
 .data-input.dropping .file-drop {
   z-index: 2;
 }
-.data-input .cb-alert {
-  font-size: 1.2em;
-}
 .series-control {
   margin: 0 0 10px 0;
 }
@@ -565,6 +562,14 @@ span.step-number {
   font-size: 16px;
   line-height: 24px;
 }
+@media screen and (max-width: $single_column_breakpoint) {
+  .series-control .axis-color {
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    width: 100%;
+  }
+}
 .series-label {
   margin: 10px 0;
 }
@@ -588,6 +593,11 @@ span.step-number {
   width: 78%;
   float: left;
   margin-right: 4px;
+}
+@media screen and (max-width: $single_column_breakpoint) {
+  .series-label-input.cb-text-input {
+    width: 100%;
+  }
 }
 .cb-text-input {
   width: 100%;
@@ -619,6 +629,14 @@ span.step-number {
   float: right;
   padding-left: 0px;
   width: calc(100% - 55px);
+}
+@media screen and (max-width: $single_column_breakpoint) {
+  .axissection,
+  .colorsection {
+    width: 100%;
+    margin-bottom: 5px;
+    margin-top: 10px;
+  }
 }
 .typesection {
   width: 100%;
@@ -678,6 +696,18 @@ span.step-number {
 .scale-tangle-inputs .cb-labelled-tangle .cb-tangle {
   margin-left: 5px;
 }
+@media screen and (max-width: $single_column_breakpoint) {
+  .scale-tangle-inputs {
+    display: block;
+    padding-bottom: 10px;
+  }
+  .scale-tangle-inputs .cb-labelled-tangle {
+    display: block;
+  }
+  .scale-tangle-inputs .cb-labelled-tangle label {
+    width: 5em;
+  }
+}
 .editor-label {
   font-size: 18px;
   font-family: 'Khula-Regular', Arial, Helvetica, sans-serif;
@@ -725,6 +755,14 @@ span.step-number {
   line-height: 24px;
   color: #bebebe;
 }
+@media screen and (max-width: $single_column_breakpoint) {
+  .chartgrid-editor .series-control .colorsection {
+    width: 100%;
+  }
+}
+.chartgrid-editor .editor-options h2 {
+  width: 80%;
+}
 .chartgrid-editor .grid-options {
   display: table;
   border-collapse: separate;
@@ -749,9 +787,15 @@ span.step-number {
 .chartgrid-editor .series-label-input {
   width: 80%;
 }
+@media screen and (max-width: $single_column_breakpoint) {
+  .chartgrid-editor .series-label-input.cb-text-input {
+    width: 100%;
+  }
+}
 .chartgrid-editor .universal-toggle {
   display: block;
-  width: 98%;
+  width: auto;
+  margin-bottom: 2em;
 }
 .mobile-overrides> h2:first-child {
   font-family: "Khula-Bold", Arial, sans-serif;
@@ -796,6 +840,12 @@ svg.renderer-svg tspan {
 .d4 {
   font-size: 20px;
 }
+.d4 .leftAxis path.domain {
+  display: none;
+}
+.d4 .xAxis path.domain {
+  display: none;
+}
 .d4 .axis .tick {
   font-family: 'Khula-Light', Arial, Helvetica, sans-serif;
 }
@@ -834,6 +884,9 @@ svg.renderer-svg tspan {
 }
 .d4 .axis[data-scale="time"] .tick:first-child text {
   text-anchor: start;
+}
+.d4 .xAxislabel {
+  fill: #666;
 }
 .d4 .concealer-label {
   font-family: 'Khula-Light', Arial, Helvetica, sans-serif;
@@ -914,6 +967,8 @@ svg.renderer-svg tspan {
 .svg-label-text {
   font-size: 20px;
   font-family: 'Khula-Light', Arial, Helvetica, sans-serif;
+}
+.svg-label-text.draggable {
   cursor: move;
 }
 .crosshair line {

@@ -11,9 +11,8 @@ var validateChartModel = require("../../util/validate-chart-model");
 
 var chartbuilderUI = require("chartbuilder-ui");
 var TextArea = chartbuilderUI.TextArea;
-var Alert = chartbuilderUI.Alert;
+var AlertGroup = chartbuilderUI.AlertGroup;
 var DataSeriesTypeSettings = require("../shared/DataSeriesTypeSettings.jsx");
-var ErrorMessage = require("../shared/ErrorMessage.jsx");
 
 /**
  * ### Text area component and error messaging for data input
@@ -43,29 +42,21 @@ var DataInput = React.createClass({
 	},
 
 	_handleReparseUpdate: function(k, v) {
-		// reset the raw input value
-		var input;
-
-		if(k == "input") {
+		if (k == "input") {
 			input = update(this.props.chartProps.input, { $merge: {
 				raw: v,
 				type: undefined
 			}});
 			ChartViewActions.updateInput(k, input);
 		} else if (k == "type") {
-			input = update(this.props.chartProps.input, { $merge: { type: v.type }});
+			input = update(this.props.chartProps.input, { $set: {
+				raw: v.raw,
+				type: v.type
+			}});
 			ChartViewActions.updateAndReparse("input", input);
+		} else {
+			return;
 		}
-		var newInput = { raw: v };
-		ChartViewActions.updateInput(k, newInput);
-	},
-
-	componentDidMount: function() {
-		this.setState(this.props.errors);
-	},
-
-	componentWillReceiveProps: function(nextProps) {
-		this.setState(this.props.errors);
 	},
 
 	_toggleDropState: function(e) {
@@ -101,44 +92,33 @@ var DataInput = React.createClass({
 	},
 
 	_renderErrors: function() {
+		if (this.props.errors.length === 0) return null;
 
-		if (this.props.errors.length === 0) {
-			return null;
-		} else {
-
-			var errors = this.props.errors.map(function(error, i) {
-				return (
-					<ErrorMessage
-						key={i}
-						type={error.type}
-						text={error.text}
-					/>
-				);
-			});
-
-			return (
-				<div className="error-display">
-					{errors}
-				</div>
-			);
-		}
+		return (
+			<div className="error-display">
+				<AlertGroup alerts={this.props.errors} />
+			</div>
+		);
 	},
 
 	// Render the data input text area and indicator
 	_renderDataInput: function() {
 
 		var errors = this._renderErrors();
+		var isValid = this.props.errors.length === 0;
 
 		return (
 			<div className={this.props.className}
 				onDragOver={this._toggleDropState}
 			>
-				<label>If you have a json file to load, drop that here</label>
 				<TextArea
 					value={this.props.chartProps.input.raw}
 					onChange={this._handleReparseUpdate.bind(null, "input")}
 					className="data-input"
 					defaultValue={this.props.chartProps.input.raw}
+					placeholder="If you have a json file to load, drop that here"
+					isRequired={true}
+					isValid={isValid}
 				/>
 				{errors}
 				<DataSeriesTypeSettings

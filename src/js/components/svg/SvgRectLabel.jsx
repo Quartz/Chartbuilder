@@ -7,6 +7,7 @@ var React = require("react");
 var ReactDOM = require("react-dom");
 var PureRenderMixin = require("react-addons-pure-render-mixin");
 var isEqual = require("lodash/isEqual");
+var assign = require("lodash/assign");
 var PropTypes = React.PropTypes;
 var d3 = require("d3");
 
@@ -56,49 +57,54 @@ var SvgRectLabel = React.createClass({
 	},
 
 	getInitialState: function() {
-		return {
+		return assign({
 			dragging: false,
 			origin: { x: 0, y: 0 },
-			element: { x: 0, y: 0 },
-			proportionalComputed: { x: 0, y: 0 },
-			valueComputed: {x: 0, y: 0},
-			values: {x: 0, y: 0},
-			yScale: d3.scale.linear()
-				.domain(this.props.scale.y.domain)
-				.range(this.props.scale.y.range),
-			xScale: d3.time.scale()
-				.domain(this.props.scale.x.domain)
-				.range(this.props.scale.x.range)
-		};
+			values: { x: 0, y: 0 }
+		}, this._computeNewState(this.props));
 	},
 
 	shouldComponentUpdate: function(nextProps, nextState) {
 		var newProps = (!isEqual(this.props, nextProps));
 		var newDrag = (this.state.dragging !== nextState.dragging);
-		return (newProps || newDrag || nextState.dragging);
+		var hasValCoords = (nextProps.settings.val_x && nextProps.settings.val_y);
+
+		return (newProps || newDrag || nextState.dragging || hasValCoords);
 	},
 
 	componentWillReceiveProps: function(nextProps) {
-		var proportionalComputedPos = this._fromPropotionalPostion(nextProps.settings,nextProps);
-		var valueComputedPos = this._fromValuePosition({x:nextProps.settings.val_x, y:nextProps.settings.val_y});
+		var newState = this._computeNewState(nextProps);
+		this.setState(newState);
+	},
+
+	_computeNewState: function(props) {
+		var yScale = d3.scale.linear()
+			.domain(props.scale.y.domain)
+			.range(props.scale.y.range);
+
+		var xScale = d3.scale.linear()
+			.domain(props.scale.x.domain)
+			.range(props.scale.x.range);
+
+		var proportionalComputedPos = this._fromPropotionalPostion(props.settings, props);
+
+		var valueComputedPos = this._fromValuePosition({
+			x: props.settings.val_x,
+			y: props.settings.val_y
+		}, xScale, yScale);
+
 		var elementPos = {
 			x: valueComputedPos.x || proportionalComputedPos.x,
 			y: valueComputedPos.y || proportionalComputedPos.y
-		}
+		};
 
-		this.setState({
+		return {
 			proportionalComputed: proportionalComputedPos,
 			valueComputed: valueComputedPos,
 			element: elementPos,
-			yScale: this.state.yScale
-				.domain(nextProps.scale.y.domain)
-				.range(nextProps.scale.y.range),
-			xScale: this.state.xScale
-				.domain(nextProps.scale.x.domain)
-				.range(nextProps.scale.x.range),
-
-			});
-
+			yScale: yScale,
+			xScale: xScale
+		}
 	},
 
 	_getSVGParent: function(el) {
@@ -155,8 +161,6 @@ var SvgRectLabel = React.createClass({
 			valueComputed : this._toValuePosition({x: this.props.settings.val_x, y:this.props.settings.val_y})
 		});
 
-
-
 		e.stopPropagation();
 		e.preventDefault();
 	},
@@ -188,20 +192,26 @@ var SvgRectLabel = React.createClass({
 
 	_onMouseUp: function(e) {
 		this.setState({ dragging: false });
-		var pos = this._toProportionalPosition(this.state.element);
-		var vals = this._toValuePosition(this.state.element)
-		this._updatePosition({
-			name: this.props.text,
-			x: pos.x,
-			y: pos.y,
-			val_y: vals.y,
-			val_x: vals.x,
-			dragged: true
-		});
-
+		this._refreshPosition();
 
 		e.stopPropagation();
 		e.preventDefault();
+	},
+
+	_refreshPosition: function(){
+		if(this.props.settings.dragged) {
+			var pos = this._toProportionalPosition(this.state.element);
+			var vals = this._toValuePosition(this.state.element);
+			this._updatePosition({
+				name: this.props.text,
+				x: pos.x,
+				y: pos.y,
+				val_y: vals.y,
+				val_x: vals.x,
+				dragged: true
+			});
+		}
+
 	},
 
 	_updatePosition: function(posObj) {
@@ -254,7 +264,7 @@ var SvgRectLabel = React.createClass({
 
 
 		return {
-			x: pos.y !== 0 ? xScale.invert(pos.x+this.props.offset.x):null,
+			x: pos.x !== 0 ? xScale.invert(pos.x+this.props.offset.x):null,
 			y: pos.y !== 0 ? yScale.invert(pos.y+this.props.offset.y):null
 		};
 	},
