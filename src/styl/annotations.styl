@@ -1,0 +1,67 @@
+.blurb
+	width 5em
+	
+	font-size 2em
+	padding 5px
+	box-sizing border-box
+	z-index 10
+	
+	&[data-mode="edit"]
+		background-color #ccc
+		
+	&*
+		box-sizing border-box
+	
+	p
+		z-index 1
+		width 100%
+
+	svg
+		position absolute
+		overflow visible
+		top 0
+		left 0
+		width 100%
+		path 
+			fill none
+			stroke $qz-body-black
+			
+		circle
+			opacity 0
+			fill black
+			fill-opacity 0
+			stroke $qz-gray-1
+			stroke-width 2px
+			stroke-dasharray 5,5
+			
+			&:hover
+				opacity 1
+				cursor move
+		z-index 0
+		
+	.content
+		width 100%
+		height 100%
+		z-index 1
+		span
+			cursor text
+			
+		.end-mark
+			width 1px
+			height 1px
+			display inline-block
+		
+	.interface
+		position absolute
+		top -3px
+		left -3px
+		width calc(100%+6px)
+		height calc(100%+6px)
+		&:hover
+			border 2px dashed $qz-gray-1
+		cursor move
+	span
+		font-family $qz-sans-bold
+		
+	span + span
+		font-family $qz-serif

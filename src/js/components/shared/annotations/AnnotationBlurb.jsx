@@ -33,6 +33,8 @@ var AnnotationBlurb = React.createClass({
 			dragging: false,
 			mode: "drag",
 			clickOrigin: {x: 0, y: 0},
+			tout: this.props.tout,
+			copy: this.props.copy,
 			elementPos: this.props.pos,
 			arrow: this.props.arrow
 		};
@@ -61,7 +63,7 @@ var AnnotationBlurb = React.createClass({
 				y: endMarkBB.top - nodeBB.top + 3
 			}
 		}
-		
+		console.log(arrow)
 
 		this.setState({
 			node: node,
@@ -235,7 +237,6 @@ var AnnotationBlurb = React.createClass({
 			top:  this.props.y(this.state.dragging ? this.state.elementPos.y : this.props.pos.y) 
 		};
 
-
 		return (
 			<div
 			 className="blurb"
@@ -282,7 +283,7 @@ var AnnotationBlurb = React.createClass({
 				 	/>
 				 	<path
 				 		markerEnd="url(#arrowhead)"
-				 		d={ "M" + [this.state.arrowStart.x, this.state.arrowStart.y].join(",") + "L" + [this.state.arrowEnd.x, this.state.arrowEnd.y].join(",")}
+				 		d={ "M" + [this.state.arrow.start.x, this.state.arrow.start.y].join(",") + "L" + [this.state.arrow.end.x, this.state.arrow.end.y].join(",")}
 				 	/>
 				 </svg>
 

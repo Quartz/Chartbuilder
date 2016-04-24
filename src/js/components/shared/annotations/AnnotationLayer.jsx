@@ -43,13 +43,14 @@ var AnnotationLayer = React.createClass({
 
 		var that = this;
 		var blurbs = this.props.blurbs.map(function(d,i) {
+			// arrow={{start: d.arrowStart, end: d.arrowEnd}}
+
 			return (<AnnotationBlurb 
 					key={"blurb" + i}
 					index={d.index}
 					tout={d.tout}
 					copy={d.copy}
 					pos={d.pos}
-					arrow={{start: d.arrowStart, end: d.arrowEnd}}
 					onBlurbUpdate={that._handleBlurbUpdate}
 				/>)
 		})	
