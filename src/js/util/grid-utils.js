@@ -51,8 +51,10 @@ function create_grid_scales(gridOpts, outerRange, _opts) {
 	var opts = defaults(_opts, gridScaleDefaults);
 
 	return {
-		cols: ordinal().domain(colDomain).rangeBands(outerRange.x, opts.xInnerPadding, opts.xOuterPadding),
-		rows: ordinal().domain(rowDomain).rangeBands(outerRange.y, opts.yInnerPadding, opts.yOuterPadding)
+		cols: ordinal().domain(colDomain)
+					.rangeBands(outerRange.x, opts.xInnerPadding, opts.xOuterPadding),
+		rows: ordinal().domain(rowDomain)
+					.rangeBands(outerRange.y, opts.yInnerPadding, opts.yOuterPadding)
 	}
 }
 
