@@ -53,13 +53,18 @@ gulp.task("stylus:core", ["clean-dist"], function () {
 		.pipe(gulp.dest(config.paths.dist.css));
 });
 
-gulp.task("browserify:dev", function () {
+gulp.task("browserify:dev", function (done) {
 	var bundler = browserify(config.paths.src.js + "/index.js", {
 		debug: true
 	})
 	.transform(envify({ NODE_ENV: "dev" }));
 
 	return bundler.bundle()
+		.on('error', function(err) {
+			console.error('ERROR IN JS');
+			console.error(err.message);
+			done();
+		})
 		.pipe(source("main.js"))
 		.pipe(gulp.dest(config.paths.build.js))
 		.pipe(reload({ stream:true }));
