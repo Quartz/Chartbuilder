@@ -16,7 +16,9 @@ var AnnotationLayer = React.createClass({
 			defaultBlurb: {
 				tout: "New Blurb",
 				copy: "Lorem ipsume dolor sit amet.",
-				pos: {x: 100, y: 100}
+				pos: {x: 100, y: 100},
+				arrowStart: {x: 100, y: 100},
+				arrowEnd: {x: 100, y: 200},
 			}
 		};
 	},
@@ -37,9 +39,12 @@ var AnnotationLayer = React.createClass({
 		this.props.blurbs.push(blurb)	
 	},
 
+	componentWillMount: function() {
+		this._addBlurb()
+	},
+
 	render: function() {
 		//CHANGE
-		this._addBlurb()
 
 		var that = this;
 		var blurbs = this.props.blurbs.map(function(d,i) {
@@ -51,14 +56,32 @@ var AnnotationLayer = React.createClass({
 					copy={d.copy}
 					pos={d.pos}
 					onBlurbUpdate={that._handleBlurbUpdate}
+					arrow={{
+						start: d.arrowStart,
+						end: d.arrowEnd,
+						snapTo: null
+					}}
 				/>)
 		})	
 		return (
-			<div>
+			<div className="annotation-layer">
 				{blurbs}
 				<svg>
 					<defs>
-						<marker id="arrowhead" orient="auto" viewBox="0 0 5.108 8.18" markerHeight="8.18" markerWidth="5.108" refY="4.09" refX="5"><polygon points="0.745,8.05 0.07,7.312 3.71,3.986 0.127,0.599 0.815,-0.129 5.179,3.999" fill="#4C4C4C"></polygon></marker>
+						<marker
+							id="arrowhead"
+							orient="auto"
+							viewBox="0 0 5.108 8.18"
+							markerHeight="8.18"
+							markerWidth="5.108"
+							refY="4.09"
+							refX="5"
+						>
+							<polygon 
+								points="0.745,8.05 0.07,7.312 3.71,3.986 0.127,0.599 0.815,-0.129 5.179,3.999" 
+								fill="#4C4C4C"
+							/>
+						</marker>
 					</defs>
 				</svg>
 			</div>
