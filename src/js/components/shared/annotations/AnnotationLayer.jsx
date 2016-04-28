@@ -70,12 +70,12 @@ var AnnotationLayer = React.createClass({
 					<defs>
 						<marker
 							id="arrowhead"
-							orient="auto"
 							viewBox="0 0 5.108 8.18"
 							markerHeight="8.18"
 							markerWidth="5.108"
 							refY="4.09"
 							refX="5"
+							orient="auto"
 						>
 							<polygon 
 								points="0.745,8.05 0.07,7.312 3.71,3.986 0.127,0.599 0.815,-0.129 5.179,3.999" 
