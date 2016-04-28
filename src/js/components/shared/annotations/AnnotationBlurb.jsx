@@ -1,6 +1,8 @@
 var React = require('react');
 var ReactDom = require("react-dom");
 
+var swoopyArrow = require("../swoopyArrows.js").swoopy;
+
 var AnnotationBlurb = React.createClass({
 
 	propTypes: {
@@ -15,14 +17,15 @@ var AnnotationBlurb = React.createClass({
 
 	getDefaultProps: function() {
 		return {
+			index: null,
 			tout: "",
 			copy: "",
 			pos: {x: 0, y: 0},
 			x: function(d){return d + "px"},
 			y: function(d){return d + "px"},
 			arrow: {
-				start: {x: 10, y: 100},
-				end: {x: 10, y: 200},
+				start: {x: 10, y: 50},
+				end: {x: 20, y: 100},
 				snapTo: "textEnd"
 			}
 		};
@@ -34,6 +37,7 @@ var AnnotationBlurb = React.createClass({
 			mode: "drag",
 			clickOrigin: {x: 0, y: 0},
 			tout: this.props.tout,
+			target: null,
 			copy: this.props.copy,
 			elementPos: this.props.pos,
 			arrow: this.props.arrow
@@ -63,7 +67,6 @@ var AnnotationBlurb = React.createClass({
 				y: endMarkBB.top - nodeBB.top + 3
 			}
 		}
-		console.log(arrow)
 
 		this.setState({
 			node: node,
@@ -71,6 +74,8 @@ var AnnotationBlurb = React.createClass({
 			endMarkBB: endMarkBB,
 			arrow: arrow
 		})
+
+
 
 
 		if(this.state.mode == "drag") {
@@ -81,7 +86,7 @@ var AnnotationBlurb = React.createClass({
 	},
 
 	_updatePostition: function(pos) {
-		this.props.onPositionUpdate(this.props.index, pos)
+		this.props.onBlurbUpdate(this.props.index, pos, "pos")
 	},
 
 	_getMousePosition: function(e) {
@@ -101,12 +106,12 @@ var AnnotationBlurb = React.createClass({
 		if(e.button !== 0) { return; }
 
 		if(this.state.mode == "drag") {
-
 			this.setState({
 				dragging: true,
 				target: target,
 				clickOrigin: this._getMousePosition(e)
 			})
+
 
 			e.stopPropagation();
 			e.preventDefault();
@@ -114,7 +119,7 @@ var AnnotationBlurb = React.createClass({
 	},
 
 	_handleInterfaceMouseDown: function(e) {
-		this._handleMouseDownForDraggableElements(e, "blurb")
+		this._handleMouseDownForDraggableElements(e, "pos")
 	},
 
 	_handleArrowEndMouseDown: function(e) {
@@ -127,18 +132,16 @@ var AnnotationBlurb = React.createClass({
 
 	_handleMouseMove: function(e) {
 		if(!this.state.dragging) { return; }
-
-		var mousePos = this._getMousePosition(e)
+		var mousePos = this._getMousePosition(e);
 		var delta = {
-			x: (mousePos.x - this.state.origin.x),
-			y: (mousePos.y - this.state.origin.y)
+			x: (mousePos.x - this.state.clickOrigin.x),
+			y: (mousePos.y - this.state.clickOrigin.y)
 		}
 
 		var newPos;
 		var stateUpdate = {};
-
 		switch(this.state.target) {
-			case "blurb":
+			case "pos":
 				propPos = this.props.pos
 				this.setState({
 					pos: {
@@ -183,6 +186,7 @@ var AnnotationBlurb = React.createClass({
 
 	_handleMouseUp: function(e) {
 		var pos;
+		var target = this.state.target;
 
 		this.setState({
 			dragging: false,
@@ -190,7 +194,7 @@ var AnnotationBlurb = React.createClass({
 		})
 
 		switch(this.state.target) {
-			case "blurb":
+			case "pos":
 				pos = this.state.pos;
 				break
 			case "arrowEnd":
@@ -200,10 +204,10 @@ var AnnotationBlurb = React.createClass({
 				pos = this.state.arrow.start
 				break
 			default:
-
 		}
 
-		this.props.onPositionUpdate(this.props.index, pos, target);
+		
+		this.props.onBlurbUpdate(this.props.index, pos, target);
 
 		e.stopPropagation();
 		e.preventDefault();
@@ -230,12 +234,17 @@ var AnnotationBlurb = React.createClass({
 	},
 
 	render: function() {
-
 		var style = {
 			position: "absolute",
 			left: this.props.x(this.state.dragging ? this.state.elementPos.x : this.props.pos.x) ,
 			top:  this.props.y(this.state.dragging ? this.state.elementPos.y : this.props.pos.y) 
 		};
+
+		var swoopy = swoopyArrow()
+		  .angle(Math.PI/3)
+		  .clockwise(this.state.arrow.start.x < this.state.arrow.end.x ? true : false)
+		  .x(function(d) { return d.x; })
+		  .y(function(d) { return d.y; });
 
 		return (
 			<div
@@ -252,13 +261,13 @@ var AnnotationBlurb = React.createClass({
 				 >
 				 	<p>
 				 		<span
-				 			contentEditable="true"
+				 			// contentEditable="true"
 				 			onKeyDown={this._handleToutKeyDown}
 				 		>
 				 			{this.state.tout}
 				 		</span>
 				 		<span
-				 			contentEditable="true"
+				 			// contentEditable="true"
 				 			onKeyDown={this._handleCopyKeyDown}
 				 		>
 				 			{(this.state.tout ? " " : "") + this.state.copy}
@@ -283,7 +292,7 @@ var AnnotationBlurb = React.createClass({
 				 	/>
 				 	<path
 				 		markerEnd="url(#arrowhead)"
-				 		d={ "M" + [this.state.arrow.start.x, this.state.arrow.start.y].join(",") + "L" + [this.state.arrow.end.x, this.state.arrow.end.y].join(",")}
+				 		d={swoopy([this.state.arrow.start, this.state.arrow.end])}
 				 	/>
 				 </svg>
 

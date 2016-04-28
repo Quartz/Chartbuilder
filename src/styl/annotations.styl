@@ -1,7 +1,7 @@
 .blurb
-	width 5em
+	width 20em
 	
-	font-size 2em
+	font-size 1em
 	padding 5px
 	box-sizing border-box
 	z-index 10
@@ -24,7 +24,8 @@
 		width 100%
 		path 
 			fill none
-			stroke $qz-body-black
+			stroke $color-body-text
+			stroke-width 1px
 			
 		circle
 			opacity 0
@@ -58,10 +59,10 @@
 		width calc(100%+6px)
 		height calc(100%+6px)
 		&:hover
-			border 2px dashed $qz-gray-1
+			border 2px dashed #999
 		cursor move
 	span
-		font-family $qz-sans-bold
+		font-family $font-sans-bold
 		
 	span + span
-		font-family $qz-serif
+		font-family $font-sans
