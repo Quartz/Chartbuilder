@@ -39,7 +39,7 @@ var AnnotationBlurb = React.createClass({
 			tout: this.props.tout,
 			target: null,
 			copy: this.props.copy,
-			elementPos: this.props.pos,
+			pos: this.props.pos,
 			arrow: this.props.arrow
 		};
 	},
@@ -61,12 +61,12 @@ var AnnotationBlurb = React.createClass({
 
 		var arrow = this.state.arrow;
 
-		if(this.props.snapTo == "textEnd") {
+		// if(this.props.arrow.snapTo == "textEnd") {
 			arrow.start = {
-				x: endMarkBB.left - this.state.elementPos.x,
+				x: endMarkBB.left - this.state.pos.x,
 				y: endMarkBB.top - nodeBB.top + 3
 			}
-		}
+		// }
 
 		this.setState({
 			node: node,
@@ -76,17 +76,11 @@ var AnnotationBlurb = React.createClass({
 		})
 
 
-
-
 		if(this.state.mode == "drag") {
 			this._addDragEvents();
 		}
 
 		this.forceUpdate();
-	},
-
-	_updatePostition: function(pos) {
-		this.props.onBlurbUpdate(this.props.index, pos, "pos")
 	},
 
 	_getMousePosition: function(e) {
@@ -158,7 +152,8 @@ var AnnotationBlurb = React.createClass({
 						end: {
 							x: propPos.x + delta.x,
 							y: propPos.y + delta.y
-						}
+						},
+						start: this.state.arrow.start
 					}
 				})
 				break
@@ -167,6 +162,7 @@ var AnnotationBlurb = React.createClass({
 				propPos = this.props.arrow.start
 				this.setState({
 					arrow: {
+						end: this.state.arrow.end,
 						start: {
 							x: propPos.x + delta.x,
 							y: propPos.y + delta.y
@@ -193,7 +189,7 @@ var AnnotationBlurb = React.createClass({
 			target: null
 		})
 
-		switch(this.state.target) {
+		switch(target) {
 			case "pos":
 				pos = this.state.pos;
 				break
@@ -206,7 +202,6 @@ var AnnotationBlurb = React.createClass({
 			default:
 		}
 
-		
 		this.props.onBlurbUpdate(this.props.index, pos, target);
 
 		e.stopPropagation();
@@ -236,13 +231,13 @@ var AnnotationBlurb = React.createClass({
 	render: function() {
 		var style = {
 			position: "absolute",
-			left: this.props.x(this.state.dragging ? this.state.elementPos.x : this.props.pos.x) ,
-			top:  this.props.y(this.state.dragging ? this.state.elementPos.y : this.props.pos.y) 
+			left: this.props.x(this.state.dragging ? this.state.pos.x : this.props.pos.x) ,
+			top:  this.props.y(this.state.dragging ? this.state.pos.y : this.props.pos.y) 
 		};
-
+		console.log(this.state.arrow)
 		var swoopy = swoopyArrow()
 		  .angle(Math.PI/3)
-		  .clockwise(this.state.arrow.start.x < this.state.arrow.end.x ? true : false)
+		  .clockwise((this.state.arrow.start.x < this.state.arrow.end.x) ? true : false)
 		  .x(function(d) { return d.x; })
 		  .y(function(d) { return d.y; });
 
@@ -261,13 +256,13 @@ var AnnotationBlurb = React.createClass({
 				 >
 				 	<p>
 				 		<span
-				 			// contentEditable="true"
+				 			contentEditable="true"
 				 			onKeyDown={this._handleToutKeyDown}
 				 		>
 				 			{this.state.tout}
 				 		</span>
 				 		<span
-				 			// contentEditable="true"
+				 			contentEditable="true"
 				 			onKeyDown={this._handleCopyKeyDown}
 				 		>
 				 			{(this.state.tout ? " " : "") + this.state.copy}
