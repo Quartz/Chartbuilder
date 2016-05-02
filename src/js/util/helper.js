@@ -287,6 +287,14 @@ function compute_text_width(text, font) {
 	return (Math.round(metrics.width * 100) / 100);
 };
 
+function add_pref_suf(tickText, renderPrefSuf, prefix, suffix) {
+	if (renderPrefSuf) {
+		return [prefix, tickText, suffix].join("");
+	} else {
+		return tickText;
+	}
+}
+
 /**
  * Helper functions!
  * @name helper
@@ -301,7 +309,8 @@ var helper = {
 	mergeOrApply: merge_or_apply,
 	suggestTickNum: suggest_tick_num,
 	TZOffsetToMinutes: tz_offset_to_minutes,
-	computeTextWidth: compute_text_width
+	computeTextWidth: compute_text_width,
+	addPrefSuf: add_pref_suf
 };
 
 module.exports = helper;

@@ -14,6 +14,7 @@ var VerticalGridLines = React.createClass({
 		className: PropTypes.string
 	},
 
+	// TODO: put this in scale-utils or somehwere bc also used by HorizontalGridLines
 	_getRangeExtent: function(scale) {
 		if (scale.rangeExtent) {
 			return scale.rangeExtent();
