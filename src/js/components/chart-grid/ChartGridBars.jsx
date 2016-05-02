@@ -153,12 +153,14 @@ var ChartGridBars = React.createClass({
 			x: xRangeOuter,
 			y: yRangeOuter
 		}, {
-			xInnerPadding: 0.2, // TODO: put these in config
-			xOuterPadding: 0
+			xInnerPadding: 0.05, // TODO: put these in config
+			xOuterPadding: 0,
+			yInnerPadding: 0.15
 		});
 
 		var _tmpXAxis = scaleUtils.generateScale("linear", primaryScale, chartProps.data, [0, gridScales.cols.rangeBand()]);
 
+		// todo: this is a bit ugly
 		var barLabelsMaxX = reduce(chartProps.data, function(currMax, d, i) {
 			return Math.max(currMax, reduce(d.values, function(prev, v, i) {
 				var renderPrefSuf = (i === 0);
