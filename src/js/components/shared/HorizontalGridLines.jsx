@@ -12,7 +12,16 @@ var VerticalGridLines = React.createClass({
 		yScale: PropTypes.func
 	},
 
+	_getRangeExtent: function(scale) {
+		if (scale.rangeExtent) {
+			return scale.rangeExtent();
+		} else {
+			return scale.range();
+		}
+	},
+
 	_generateTicks: function(props) {
+		var getRange = this._getRangeExtent;
 		return map(props.tickValues, function(tickValue, i) {
 			var scalePos = props.yScale(tickValue);
 			var x1 = props.translate[0] * -1;
@@ -24,7 +33,7 @@ var VerticalGridLines = React.createClass({
 					y1={scalePos}
 					y2={scalePos}
 					x1={x1}
-					x2={props.dimensions.width}
+					x2={props.x2 || getRange(props.xScale)[1]}
 				/>
 			)
 		});

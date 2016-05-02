@@ -180,11 +180,8 @@ var ChartGridBars = React.createClass({
 				>
 					<HorizontalGridLines
 						tickValues={yAxis.tickValues}
-						dimensions={{
-							width: dimensions.width - margin.right - margin.left,
-							height: dimensions.height
-						}}
 						yScale={yAxis.scale}
+						x2={dimensions.width - margin.right - margin.left}
 						styleConfig={props.styleConfig}
 						displayConfig={displayConfig}
 						translate={[0, 0]}
@@ -212,13 +209,18 @@ var ChartGridBars = React.createClass({
 				displayConfig={displayConfig}
 				styleConfig={props.styleConfig}
 			>
+			<g
+				className="grid-wrapper"
+				transform={ "translate(" + [0, props.displayConfig.padding.top] + ")" }
+			>
 				{verticalAxes}
 				<g
-					className="grid-wrapper"
+					className="grid-charts"
 					transform={ "translate(" + [maxTickWidth, 0] + ")" }
 				>
 					{grid}
 				</g>
+			</g>
 			</SvgWrapper>
 		);
 	}
