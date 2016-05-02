@@ -14,7 +14,8 @@ var SeriesLabel = React.createClass({
 		return {
 			translate: [0, 0],
 			text: "SeriesLabel",
-			colorIndex: 0
+			colorIndex: 0,
+			xVal: 0
 		};
 	},
 
@@ -25,6 +26,7 @@ var SeriesLabel = React.createClass({
 			<text
 				className={"series-label color-index-" + props.colorIndex}
 				transform={"translate(" + props.translate + ")"}
+				x={props.xScale(props.xVal)}
 			>
 				{props.text}
 			</text>

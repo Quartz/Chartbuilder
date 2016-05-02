@@ -90,6 +90,7 @@ var ChartGridBars = React.createClass({
 		return [
 			<SeriesLabel
 				key="label"
+				xVal={0}
 				text={props.chartProps.chartSettings[i].label}
 				colorIndex={props.chartProps.chartSettings[i].colorIndex}
 			/>,
@@ -135,7 +136,7 @@ var ChartGridBars = React.createClass({
 			)
 		};
 
-		var xRangeOuter = [0, chartAreaDimensions.width];
+		var xRangeOuter = [props.styleConfig.xOverTick, chartAreaDimensions.width];
 		var yRangeOuter = [chartAreaDimensions.height, 0];
 
 		var gridScales = gridUtils.createGridScales(chartProps._grid, {
