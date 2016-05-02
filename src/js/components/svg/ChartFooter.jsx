@@ -47,7 +47,7 @@ var ChartFooter = React.createClass({
 					text={sourceLineText}
 					translate={[this.props.translate.right, this.props.translate.bottom]}
 					className={"svg-text-source right"}
-				/>;
+				/>
 			</g>
 		);
 	}
