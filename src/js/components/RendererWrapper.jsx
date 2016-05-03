@@ -186,7 +186,6 @@ var RendererWrapper = React.createClass({
 		var width = this.props.width || this.state.domNodeWidth;
 		var displayConfig = this.state.chartConfig.display;
 		var svgClassName = this.props.svgClassName || '';
-
 		if (!width) {
 			return <div style={{ width: "100%" }}></div>;
 		}
@@ -314,7 +313,9 @@ var RendererWrapper = React.createClass({
 					/>
 					{metadataSvg}
 				</svg>
-				<AnnotationLayer />
+				<AnnotationLayer 
+					chartProps={this.props.model.chartProps}
+				/>
 			</div>
 		);
 	}

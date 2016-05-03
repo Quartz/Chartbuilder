@@ -7,7 +7,8 @@ var clone = require("lodash/clone");
 var AnnotationLayer = React.createClass({
 
 	propTypes: {
-		blurbs: React.PropTypes.array
+		blurbs: React.PropTypes.array,
+		chartProps: React.PropTypes.object
 	},
 
 	getDefaultProps: function() {
@@ -19,6 +20,7 @@ var AnnotationLayer = React.createClass({
 				pos: {x: 100, y: 100},
 				arrowStart: {x: 100, y: 100},
 				arrowEnd: {x: 100, y: 200},
+				arrowClockwise: true
 			}
 		};
 	},
@@ -45,10 +47,8 @@ var AnnotationLayer = React.createClass({
 
 	render: function() {
 		//CHANGE
-
 		var that = this;
 		var blurbs = this.props.blurbs.map(function(d,i) {
-			// arrow={{start: d.arrowStart, end: d.arrowEnd}}
 			return (<AnnotationBlurb 
 					key={"blurb" + i}
 					index={d.index}
@@ -59,7 +59,8 @@ var AnnotationLayer = React.createClass({
 					arrow={{
 						start: d.arrowStart,
 						end: d.arrowEnd,
-						snapTo: null
+						snapTo: null,
+						clockwise: d.arrowClockwise
 					}}
 				/>)
 		})	
@@ -77,7 +78,7 @@ var AnnotationLayer = React.createClass({
 							refX="5"
 							orient="auto"
 						>
-							<polygon 
+							<polygon
 								points="0.745,8.05 0.07,7.312 3.71,3.986 0.127,0.599 0.815,-0.129 5.179,3.999" 
 								fill="#4C4C4C"
 							/>

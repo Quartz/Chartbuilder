@@ -21,12 +21,13 @@ var AnnotationBlurb = React.createClass({
 			tout: "",
 			copy: "",
 			pos: {x: 0, y: 0},
-			x: function(d){return d + "px"},
-			y: function(d){return d + "px"},
+			x: function(d){return d},
+			y: function(d){return d},
 			arrow: {
 				start: {x: 10, y: 50},
 				end: {x: 20, y: 100},
-				snapTo: "textEnd"
+				snapTo: "textEnd",
+				clockwise: true
 			}
 		};
 	},
@@ -52,29 +53,7 @@ var AnnotationBlurb = React.createClass({
 	},
 
 	componentDidMount: function() {
-		var node = ReactDom.findDOMNode(this);
-		var endMark = node.querySelector("span.end-mark")
-
-		var nodeBB = node.getBoundingClientRect()
-		var endMarkBB = endMark.getBoundingClientRect()
-		var parent = node.parentNode;
-
-		var arrow = this.state.arrow;
-
-		// if(this.props.arrow.snapTo == "textEnd") {
-			arrow.start = {
-				x: endMarkBB.left - this.state.pos.x,
-				y: endMarkBB.top - nodeBB.top + 3
-			}
-		// }
-
-		this.setState({
-			node: node,
-			parent: parent,
-			endMarkBB: endMarkBB,
-			arrow: arrow
-		})
-
+		this._placeArrow();
 
 		if(this.state.mode == "drag") {
 			this._addDragEvents();
@@ -147,6 +126,7 @@ var AnnotationBlurb = React.createClass({
 
 			case "arrowEnd":
 				propPos = this.props.arrow.end
+				
 				this.setState({
 					arrow: {
 						end: {
@@ -218,17 +198,52 @@ var AnnotationBlurb = React.createClass({
 		this._updateText("tout", newText)
 	},
 
-	_handleSpanKeyDown: function(e) {
+	_handleCopyKeyDown: function(e) {
 		var newText = ReactDom.findDOMNode(e.target).textContent
 		this._updateText("copy", newText)
 	},
 
+	_handleArrowDoubleClick: function(d) {
+		this.props.onBlurbUpdate(this.props.index, !this.state.arrow.clockwise, "arrowClockwise");
+	},
+
 	_updateText: function(key, newText) {
-		this.state[key] = newText;
+		var stateUpdate = {}
+		stateUpdate[key] = newText;
+		this.setState(stateUpdate);
+		this._placeArrow();
+	},
+
+	_placeArrow: function(){
+		var node = ReactDom.findDOMNode(this);
+		var endMark = node.querySelector("span.end-mark")
+
+		var nodeBB = node.getBoundingClientRect()
+		var endMarkBB = endMark.getBoundingClientRect()
+		var parent = node.parentNode;
+
+		var arrow = this.state.arrow;
+
+		// if(this.props.arrow.snapTo == "textEnd") {
+			arrow.start = {
+				x: endMarkBB.left - this.state.pos.x,
+				y: endMarkBB.top - nodeBB.top + 3
+			}
+		// }
+
+		this.setState({
+			node: node,
+			parent: parent,
+			endMarkBB: endMarkBB,
+			arrow: arrow
+		})
+
 		this.forceUpdate()
 	},
 
 	render: function() {
+
+		console.log(this.props.scales)
 		var style = {
 			position: "absolute",
 			left: this.props.x(this.state.dragging ? this.state.pos.x : this.props.pos.x) ,
@@ -238,6 +253,7 @@ var AnnotationBlurb = React.createClass({
 		var swoopy = swoopyArrow()
 		  .angle(Math.PI/3)
 		  .clockwise((this.state.arrow.start.x < this.state.arrow.end.x) ? true : false)
+		  // .clockwise(this.state.arrow.clockwise)
 		  .x(function(d) { return d.x; })
 		  .y(function(d) { return d.y; });
 
@@ -259,13 +275,13 @@ var AnnotationBlurb = React.createClass({
 				 			contentEditable="true"
 				 			onKeyDown={this._handleToutKeyDown}
 				 		>
-				 			{this.state.tout}
+				 			{this.state.tout.trim()}
 				 		</span>
 				 		<span
 				 			contentEditable="true"
 				 			onKeyDown={this._handleCopyKeyDown}
 				 		>
-				 			{(this.state.tout ? " " : "") + this.state.copy}
+				 			{(this.state.tout ? " " : "") + this.state.copy.trim()}
 				 		</span>
 				 		<span className="end-mark" />
 				 	</p>
@@ -277,6 +293,7 @@ var AnnotationBlurb = React.createClass({
 				 		cy={this.state.arrow.start.y}
 				 		r="10px"
 				 		onMouseDown={this._handleArrowStartMouseDown}
+				 		onDoubleClick={this._handleArrowDoubleClick}
 				 	/>
 
 				 	<circle
@@ -284,6 +301,7 @@ var AnnotationBlurb = React.createClass({
 				 		cy={this.state.arrow.end.y}
 				 		r="10px"
 				 		onMouseDown={this._handleArrowEndMouseDown}
+				 		onDoubleClick={this._handleArrowDoubleClick}
 				 	/>
 				 	<path
 				 		markerEnd="url(#arrowhead)"
