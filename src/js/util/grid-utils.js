@@ -23,13 +23,15 @@ var gridScaleDefaults = {
 function make_mults(Outer, outerProps, data, gridScales, renderDataFunc) {
 	var colDomain = gridScales.cols.domain();
 	var numCols = colDomain[colDomain.length - 1] + 1;
+	// only render number of grid blocks that are selected
+	var numCharts = gridScales.cols.domain().length * gridScales.rows.domain().length;
 
 	var grid_dimensions = {
 		width: gridScales.cols.rangeBand(),
 		height: gridScales.rows.rangeBand()
 	};
 
-	return map(data, function(d, i) {
+	return map(data.slice(0, numCharts), function(d, i) {
 		var pos = {
 			col: i % numCols,
 			row: (i === 0) ? 0 : Math.floor( i / numCols )

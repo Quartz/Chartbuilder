@@ -31,11 +31,12 @@ var BlockerRect = React.createClass({
 
 		return map(props.data, function(label, i) {
 			var rectX = (props.orient === "left") ? 0 : props.labelWidths[i] * -1;
+			var labelWidths = props.labelWidths[props.seriesNumber];
 			return (
 				<rect
 					className="blocker-rect"
 					key={i}
-					width={props.labelWidths[i] + props.displayConfig.blockerRectOffset * 2}
+					width={labelWidths[i] + props.displayConfig.blockerRectOffset * 2}
 					height={concealerHeight}
 					x={props.xScale(label.value)}
 					y={props.yScale(label.entry) - (concealerHeight / 2)}

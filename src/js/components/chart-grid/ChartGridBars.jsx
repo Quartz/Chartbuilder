@@ -102,6 +102,7 @@ var ChartGridBars = React.createClass({
 			bar,
 			<BlockerRects
 				key="blockers"
+				seriesNumber={i}
 				data={d.values}
 			/>,
 			<BarLabels
@@ -176,11 +177,12 @@ var ChartGridBars = React.createClass({
 		// todo: this is a bit ugly
 		var barLabels = { widths: [], xVals: []};
 		each(chartProps.data, function(series, i) {
+			barLabels.widths[i] = [];
 			each(series.values, function(val, ix) {
 				var renderPrefSuf = (ix === 0);
 				var formatted = help.addPrefSuf(val.value, renderPrefSuf, primaryScale.prefix, primaryScale.suffix);
 				var txtWidth = help.computeTextWidth(formatted, tickFont);
-				barLabels.widths.push(txtWidth);
+				barLabels.widths[i].push(txtWidth);
 				barLabels.xVals.push(txtWidth + _tmpXAxis.scale(val.value) + props.displayConfig.blockerRectOffset);
 			});
 		});
@@ -193,9 +195,6 @@ var ChartGridBars = React.createClass({
 		var yRangeInner = [props.displayConfig.afterLegend, gridScales.rows.rangeBand()];
 		var xAxis = scaleUtils.generateScale("linear", primaryScale, chartProps.data, xRangeInner);
 		var yAxis = scaleUtils.generateScale("ordinal", primaryScale, chartProps.data, yRangeInner);
-
-		console.log('outer', yRangeOuter, 'inner', yRangeInner)
-		console.log(gridScales.rows.rangeBand())
 
 		var Outer = React.createFactory(XYChart);
 		var outerProps = {
