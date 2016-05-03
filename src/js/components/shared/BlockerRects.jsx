@@ -38,7 +38,7 @@ var BlockerRect = React.createClass({
 					key={i}
 					width={labelWidths[i] + props.displayConfig.blockerRectOffset * 2}
 					height={concealerHeight}
-					x={props.xScale(label.value)}
+					x={props.xScale(Math.max(0, label.value))}
 					y={props.yScale(label.entry) - (concealerHeight / 2)}
 				/>
 			);

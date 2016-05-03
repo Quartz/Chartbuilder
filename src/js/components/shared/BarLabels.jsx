@@ -44,7 +44,7 @@ var BarLabels = React.createClass({
 					key={i}
 					className="bar-label"
 					transform={"translate(" + props.translate + ")"}
-					x={props.displayConfig.blockerRectOffset + props.xScale(d.value)}
+					x={props.displayConfig.blockerRectOffset + props.xScale(Math.max(0, d.value))}
 					y={props.yScale(d.entry)}
 					dy={props.dy}
 				>

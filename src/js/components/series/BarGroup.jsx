@@ -16,7 +16,8 @@ var orientation_map = {
 		"ordinalSize": "width",
 		"linearScale": "yScale",
 		"linearVal": "y",
-		"linearSize": "height"
+		"linearSize": "height",
+		"linearCalculation": Math.max.bind(null, 0)
 	},
 	horizontal: {
 		"ordinalScale": "yScale",
@@ -24,7 +25,8 @@ var orientation_map = {
 		"ordinalSize": "height",
 		"linearScale": "xScale",
 		"linearVal": "x",
-		"linearSize": "width"
+		"linearSize": "width",
+		"linearCalculation": Math.min.bind(null, 0)
 	},
 };
 
@@ -45,13 +47,13 @@ var BarGroup = React.createClass({
 	},
 
 	_makeBarProps: function(bar, i, mapping, linearScale, ordinalScale, size, offset) {
-		var ps = this.props;
+		var props = this.props;
 		var barProps = { key: i, colorIndex: bar.colorIndex };
 		barProps[mapping.ordinalVal] = ordinalScale(bar.entry) + offset;
 		barProps[mapping.ordinalSize] = size;
 		// linearVal needs to be negative if number is neg else 0
 		// see https://bl.ocks.org/mbostock/2368837
-		barProps[mapping.linearVal] = linearScale(Math.min(0, bar.value));
+		barProps[mapping.linearVal] = linearScale(mapping.linearCalculation(bar.value));
 		barProps[mapping.linearSize] = Math.abs(linearScale(bar.value) - linearScale(0));
 		return barProps;
 	},
