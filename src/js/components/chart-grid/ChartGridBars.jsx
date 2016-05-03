@@ -147,9 +147,15 @@ var ChartGridBars = React.createClass({
 			),
 			height: (
 				dimensions.height - margin.top - margin.bottom -
-				displayConfig.padding.top - displayConfig.padding.bottom
+				((displayConfig.padding.top + displayConfig.padding.bottom) * chartProps._grid.rows)
 			)
 		};
+
+		var outerDimensions = {
+			width: dimensions.width,
+			height: dimensions.height -
+				(displayConfig.padding.top + displayConfig.padding.bottom) * (chartProps._grid.rows - 1)
+		}
 
 		// range for all charts in grid (outer)
 		var xRangeOuter = [props.styleConfig.xOverTick, chartAreaDimensions.width];
@@ -187,6 +193,9 @@ var ChartGridBars = React.createClass({
 		var yRangeInner = [props.displayConfig.afterLegend, gridScales.rows.rangeBand()];
 		var xAxis = scaleUtils.generateScale("linear", primaryScale, chartProps.data, xRangeInner);
 		var yAxis = scaleUtils.generateScale("ordinal", primaryScale, chartProps.data, yRangeInner);
+
+		console.log('outer', yRangeOuter, 'inner', yRangeInner)
+		console.log(gridScales.rows.rangeBand())
 
 		var Outer = React.createFactory(XYChart);
 		var outerProps = {
@@ -240,7 +249,7 @@ var ChartGridBars = React.createClass({
 
 		return (
 			<SvgWrapper
-				outerDimensions={dimensions}
+				outerDimensions={outerDimensions}
 				metadata={props.metadata}
 				displayConfig={displayConfig}
 				styleConfig={props.styleConfig}

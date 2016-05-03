@@ -24,9 +24,7 @@ function chartGridDimensions(width, opts) {
 		height = calculate_cartesian_height(width, grid, opts.displayConfig);
 	}
 
-	if (opts.metadata.title.length > 0 && opts.showMetadata) {
-		height += opts.displayConfig.afterTitle;
-	} else if (!opts.showMetadata) {
+	if (!opts.showMetadata) {
 		height -= opts.displayConfig.padding.bottom;
 	}
 
@@ -37,10 +35,7 @@ function chartGridDimensions(width, opts) {
 }
 
 function calculate_bar_height(numDataPoints, grid, displayConfig) {
-	var perChart = (displayConfig.afterLegend + displayConfig.padding.top + displayConfig.afterXYBottom);
-	var perBar = (displayConfig.paddingPerBar + displayConfig.barHeight);
-	var singleChart = (perChart + (perBar * numDataPoints));
-	return singleChart * grid.rows;
+	return displayConfig.barHeight * numDataPoints * grid.rows;
 }
 
 function calculate_cartesian_height(width, grid, displayConfig, extraHeight) {
