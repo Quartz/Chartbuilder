@@ -10,8 +10,10 @@ var d4              = require("d4");
 
 var bind            = require("lodash/bind");
 var clone           = require("lodash/clone");
+var each            = require("lodash/each");
 var map             = require("lodash/map");
 var max             = require("lodash/max");
+var maxBy           = require("lodash/maxBy");
 var reduce          = require("lodash/reduce");
 
 var SessionStore    = require("../../stores/SessionStore");
@@ -37,6 +39,7 @@ var gridUtils           = require("../../util/grid-utils.js");
 var XYChart             = require("../chart-xy/XYChart.jsx");
 var VerticalAxis        = require("../shared/VerticalAxis.jsx");
 var BarLabels           = require("../shared/BarLabels.jsx");
+var BlockerRects        = require("../shared/BlockerRects.jsx");
 var SeriesLabel         = require("../shared/SeriesLabel.jsx");
 
 /**
@@ -97,6 +100,10 @@ var ChartGridBars = React.createClass({
 				colorIndex={props.chartProps.chartSettings[i].colorIndex}
 			/>,
 			bar,
+			<BlockerRects
+				key="blockers"
+				data={d.values}
+			/>,
 			<BarLabels
 				key="barlabels"
 				data={d.values}
@@ -161,14 +168,18 @@ var ChartGridBars = React.createClass({
 		var _tmpXAxis = scaleUtils.generateScale("linear", primaryScale, chartProps.data, [0, gridScales.cols.rangeBand()]);
 
 		// todo: this is a bit ugly
-		var barLabelsMaxX = reduce(chartProps.data, function(currMax, d, i) {
-			return Math.max(currMax, reduce(d.values, function(prev, v, i) {
-				var renderPrefSuf = (i === 0);
-				var formatted = help.addPrefSuf(v.value, renderPrefSuf, primaryScale.prefix, primaryScale.suffix);
-				return Math.max(prev, help.computeTextWidth(formatted, tickFont) + _tmpXAxis.scale(v.value) + props.displayConfig.blockerRectOffset);
-			}, 0));
-		}, 0);
+		var barLabels = { widths: [], xVals: []};
+		each(chartProps.data, function(series, i) {
+			each(series.values, function(val, ix) {
+				var renderPrefSuf = (ix === 0);
+				var formatted = help.addPrefSuf(val.value, renderPrefSuf, primaryScale.prefix, primaryScale.suffix);
+				var txtWidth = help.computeTextWidth(formatted, tickFont);
+				barLabels.widths.push(txtWidth);
+				barLabels.xVals.push(txtWidth + _tmpXAxis.scale(val.value) + props.displayConfig.blockerRectOffset);
+			});
+		});
 
+		var barLabelsMaxX = max(barLabels.xVals);
 		var barLabelOverlap = Math.max(0, barLabelsMaxX - gridScales.cols.rangeBand());
 
 		// range and axes for each chart in the grid (inner)
@@ -186,7 +197,8 @@ var ChartGridBars = React.createClass({
 			xScale: xAxis.scale,
 			yScale: yAxis.scale,
 			tickTextHeight: tickTextHeight,
-			tickFont: tickFont
+			tickFont: tickFont,
+			labelWidths: barLabels.widths
 		};
 
 		var grid = gridUtils.makeMults(Outer, outerProps, chartProps.data, gridScales, this._barGridBlock);
