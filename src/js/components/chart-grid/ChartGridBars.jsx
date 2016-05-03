@@ -167,9 +167,10 @@ var ChartGridBars = React.createClass({
 			x: xRangeOuter,
 			y: yRangeOuter
 		}, {
-			xInnerPadding: 0.05, // TODO: put these in config
-			xOuterPadding: 0,
-			yInnerPadding: 0.15
+			xInnerPadding: props.displayConfig.gridPadding.xInnerPadding,
+			xOuterPadding: props.displayConfig.gridPadding.xOuterPadding,
+			yInnerPadding: props.displayConfig.gridPadding.yInnerPadding,
+			yOuterPadding: props.displayConfig.gridPadding.yOuterPadding
 		});
 
 		var _tmpXAxis = scaleUtils.generateScale("linear", primaryScale, chartProps.data, [0, gridScales.cols.rangeBand()]);

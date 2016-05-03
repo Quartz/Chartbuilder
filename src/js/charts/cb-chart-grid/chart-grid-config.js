@@ -32,8 +32,14 @@ var display = {
 	afterXYBottom: "2em",
 	afterXYRight: "0.8em",
 	columnExtraPadding: "0.5em",
-	columnInnerPadding: 0.4, // % of col group width to pad btwn each
+	columnInnerPadding: 0.8, // % of col group width to pad btwn each
 	bottomPaddingWithoutFooter: "0.5em",
+	gridPadding: {
+		xInnerPadding: 0.05,
+		xOuterPadding: 0,
+		yInnerPadding: 0.15,
+		yOuterPadding: 0
+	},
 	xy: require("../cb-xy/xy-config").display,
 	margin: {
 		top: "0.8em",
