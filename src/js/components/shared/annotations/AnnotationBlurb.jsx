@@ -149,12 +149,27 @@ var AnnotationBlurb = React.createClass({
 		switch(this.state.target) {
 			case "pos":
 				propPos = this.props.pos
-				this.setState({
+				stateUpdate = {
 					pos: {
 						x: propPos.x + delta.x,
 						y: propPos.y + delta.y
-					}
-				})
+					},
+					arrow: merge({}, this.state.arrow, {
+						end: {
+							point: {
+								x: this.props.arrow.end.point.x - delta.x,
+								y: this.props.arrow.end.point.y - delta.y
+							}
+						},
+						start: {
+							point: {
+								x: this.props.arrow.start.point.x - delta.x,
+								y: this.props.arrow.start.point.y - delta.y
+							}
+						}
+					})
+				}
+				this.setState(stateUpdate)
 				break
 
 			case "arrowEnd":
