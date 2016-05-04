@@ -30,6 +30,7 @@ var AnnotationLayer = React.createClass({
 
 
 	_handleBlurbUpdate: function(i,prop,key) {
+		console.error(i,prop,key)
 		this.props.blurbs[i][key] = prop;
 
 		//CHANGE
@@ -117,7 +118,6 @@ var AnnotationLayer = React.createClass({
 
 	render: function() {
 		//CHANGE
-		console.log(this.props.chartProps)
 		var scales = this._createScales();
 		var that = this;
 		var blurbs = this.props.blurbs.map(function(d,i) {

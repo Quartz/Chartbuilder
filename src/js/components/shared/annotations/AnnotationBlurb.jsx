@@ -37,9 +37,7 @@ var AnnotationBlurb = React.createClass({
 	},
 
 	getInitialState: function() {
-
 		var proPPos = this._toProportionalPosition(this.props.pos)
-
 		var arrow = this.props.arrow;
 		arrow.end.point = this._fromProportionalPosition(this.props.arrow.end.pct,null,proPPos)
 		arrow.start.point = this._fromProportionalPosition(this.props.arrow.start.pct,null,proPPos)
@@ -70,15 +68,17 @@ var AnnotationBlurb = React.createClass({
 			this._addDragEvents();
 		}
 
-		var arrow = this.props.arrow;
-		arrow.end.point = this._fromProportionalPosition(this.props.arrow.end.pct,null,proPPos)
-		arrow.start.point = this._fromProportionalPosition(this.props.arrow.start.pct,null,proPPos)
-		this.props.arrow = arrow
+		this._setArrowPointFromPct();
 
 		this.forceUpdate();
 	},
 
 	componentDidUpdate: function(prevProps, prevState) {
+		this._setArrowPointFromPct()
+	},
+
+	_setArrowPointFromPct: function() {
+		var proPPos = this._toProportionalPosition(this.props.pos)
 		var arrow = this.props.arrow;
 		arrow.end.point = this._fromProportionalPosition(this.props.arrow.end.pct,null,proPPos)
 		arrow.start.point = this._fromProportionalPosition(this.props.arrow.start.pct,null,proPPos)
@@ -155,7 +155,8 @@ var AnnotationBlurb = React.createClass({
 						y: propPos.y + delta.y,
 					}
 				}
-				newPos.pct = this._toProportionalPosition(newPos,null,this.props.pos)
+				newPos.pct = this._toProportionalPosition(newPos.point,null,this.props.pos)
+				
 				this.setState({
 					arrow: merge({}, this.state.arrow, {end: newPos})
 				})
@@ -256,6 +257,8 @@ var AnnotationBlurb = React.createClass({
 					y: endMarkBB.top - nodeBB.top + 3
 				}
 			}
+
+			arrow.start.pct = this._toProportionalPosition(arrow.start.point, null, this.props.pos)
 		// }
 
 		this.setState({
@@ -278,7 +281,6 @@ var AnnotationBlurb = React.createClass({
 		if(!origin) {
 			origin = {x: 0, y: 0}
 		}
-
 		return {
 			x: (pos.x + origin.x) / props.dimensions.width,
 			y: (pos.y + origin.y) / props.dimensions.height,
