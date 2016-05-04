@@ -4,11 +4,14 @@ var AnnotationBlurb = require("./AnnotationBlurb.jsx")
 
 var clone = require("lodash/clone");
 
+var d3 = require("d3")
+
 var AnnotationLayer = React.createClass({
 
 	propTypes: {
 		blurbs: React.PropTypes.array,
-		chartProps: React.PropTypes.object
+		chartProps: React.PropTypes.object,
+		dimensions: React.PropTypes.object
 	},
 
 	getDefaultProps: function() {
@@ -18,8 +21,8 @@ var AnnotationLayer = React.createClass({
 				tout: "New Blurb",
 				copy: "Lorem ipsume dolor sit amet.",
 				pos: {x: 100, y: 100},
-				arrowStart: {x: 100, y: 100},
-				arrowEnd: {x: 100, y: 200},
+				arrowStart: {x:0.5, y:0.5},
+				arrowEnd: {x:0.5, y:0.8},
 				arrowClockwise: true
 			}
 		};
@@ -45,8 +48,77 @@ var AnnotationLayer = React.createClass({
 		this._addBlurb()
 	},
 
+	_createScales: function() {
+
+		var styleConfig = this.props.styleConfig;
+		var displayConfig = this.props.displayConfig;
+		var props = this.props;
+		var dimensions = props.dimensions;
+
+		// props.chartAreaDimensions = {
+		// 	width: (
+		// 		dimensions.width -
+		// 		displayConfig.margin.left - displayConfig.margin.right -
+		// 		displayConfig.padding.left - displayConfig.padding.right -
+		// 		this.state.maxTickWidth.primaryScale - this.state.maxTickWidth.secondaryScale
+		// 	),
+		// 	height: (
+		// 		dimensions.height -
+		// 		displayConfig.margin.top - displayConfig.margin.bottom -
+		// 		displayConfig.padding.top - displayConfig.padding.bottom
+		// 	)
+		// };
+
+		// var padding = computePadding(props);
+
+		// var scales = this.props.chartProps.scale;
+		// yScale_info = scales.primaryScale
+		// xScale_info = xScaleInfo(
+		// 		this.props.dimensions.width,
+		// 		padding,styleConfig,
+		// 		displayConfig,
+		// 		{
+		// 			dateSettings: this.state.dateScaleInfo
+		// 		}
+		// 	);
+
+		// var yRange = [
+		// 	this.props.dimensions.height - padding.bottom - displayConfig.margin.bottom,
+		// 	padding.top + displayConfig.margin.top
+		// ];
+
+		// var xRange = props.chartProps.scale.hasDate ? [
+		// 	padding.left + displayConfig.margin.left + this.props.maxTickWidth.primaryScale,
+		// 	xScale_info.rangeR-padding.right-displayConfig.margin.right-this.props.maxTickWidth.secondaryScale - displayConfig.minPaddingOuter
+		// ] : [];
+
+		// scale = {
+		// 	y: {
+		// 		domain: yScale_info.domain,
+		// 		range: yRange
+		// 	},
+		// 	x: {
+		// 		domain: xScale_info.domain ? xScale_info.domain : [],
+		// 		range: xRange
+		// 	}
+		// };
+
+		var yScale = d3.scale.linear()
+			// .domain(props.scale.y.domain)
+			// .range(props.scale.y.range);
+
+		var xScale = d3.scale.linear()
+			// .domain(props.scale.x.domain)
+			// .range(props.scale.x.range);
+
+
+		return {x: xScale, y: yScale}
+	},
+
 	render: function() {
 		//CHANGE
+		console.log(this.props.chartProps)
+		var scales = this._createScales();
 		var that = this;
 		var blurbs = this.props.blurbs.map(function(d,i) {
 			return (<AnnotationBlurb 
@@ -56,9 +128,14 @@ var AnnotationLayer = React.createClass({
 					copy={d.copy}
 					pos={d.pos}
 					onBlurbUpdate={that._handleBlurbUpdate}
+					x={scales.x}
+					y={scales.y}
+					dimensions={that.props.dimensions}
+					margin={{x: 0, y: 0}}
+					offset={{x: 0, y: 0}}
 					arrow={{
-						start: d.arrowStart,
-						end: d.arrowEnd,
+						start: {pct: d.arrowStart},
+						end: {pct: d.arrowEnd},
 						snapTo: null,
 						clockwise: d.arrowClockwise
 					}}
@@ -90,5 +167,61 @@ var AnnotationLayer = React.createClass({
 	}
 
 });
+
+function xScaleInfo(width, padding, styleConfig, displayConfig, state) {
+	var hasMultipleYAxes = false
+	if(state.secondaryScale) {
+		hasMultipleYAxes = true;
+	}
+	if (state.chartProps && state.chartProps._numSecondaryAxis) {
+		hasMultipleYAxes = true;
+	}
+
+	var domain = null
+	if(state.dateSettings) {
+		domain = state.dateSettings.domain;
+	}
+	else if (state.numericSettings){
+		domain = state.numericSettings.domain;
+	}
+
+	var o = {
+		rangeL: padding.left + styleConfig.xOverTick,
+		rangeR: width - padding.right - (hasMultipleYAxes ? styleConfig.xOverTick : 0),
+		domain: domain
+	}
+
+	if (state.hasColumn) {
+		var numData = state.chartProps.data[0].values.length;
+		var widthPerColumn = width / numData;
+		o.rangeL += (widthPerColumn * displayConfig.columnPaddingCoefficient);
+		o.rangeR -= (widthPerColumn * displayConfig.columnPaddingCoefficient);
+	}
+	return o;
+}
+
+function computePadding(props) {
+	var labels = props.chartProps._annotations.labels;
+	var displayConfig = props.displayConfig;
+	console.log(props)
+	var _top = (props.labelYMax * props.chartAreaDimensions.height) + displayConfig.afterLegend;
+
+	if (props.hasTitle) {
+		_top += displayConfig.afterTitle;
+	}
+
+	// Reduce top padding if all labels or dragged or there is only one series,
+	// meaning no label will be shown
+	if (props.allLabelsDragged || props.chartProps.data.length === 1) {
+		_top -= displayConfig.afterLegend;
+	}
+
+	return {
+		top: _top,
+		right: displayConfig.padding.right,
+		bottom: displayConfig.padding.bottom,
+		left: displayConfig.padding.left
+	};
+}
 
 module.exports = AnnotationLayer;

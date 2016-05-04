@@ -315,6 +315,9 @@ var RendererWrapper = React.createClass({
 				</svg>
 				<AnnotationLayer 
 					chartProps={this.props.model.chartProps}
+					displayConfig={displayConfig}
+					styleConfig={this.state.styleConfig}
+					dimensions={dimensions}
 				/>
 			</div>
 		);
