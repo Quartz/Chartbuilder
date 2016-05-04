@@ -68,21 +68,31 @@ var AnnotationBlurb = React.createClass({
 			this._addDragEvents();
 		}
 
-		this._setArrowPointFromPct();
+		this.props.arrow = this._arrowPointFromPct();
 
 		this.forceUpdate();
 	},
 
 	componentDidUpdate: function(prevProps, prevState) {
-		this._setArrowPointFromPct()
+		this.props.arrow = this._arrowPointFromPct()
 	},
 
-	_setArrowPointFromPct: function() {
-		var proPPos = this._toProportionalPosition(this.props.pos)
-		var arrow = this.props.arrow;
-		arrow.end.point = this._fromProportionalPosition(this.props.arrow.end.pct,null,proPPos)
-		arrow.start.point = this._fromProportionalPosition(this.props.arrow.start.pct,null,proPPos)
-		this.props.arrow = arrow
+	componentWillReceiveProps: function(nextProps) {
+
+		this.setState({
+			arrow: this._arrowPointFromPct(nextProps)
+		})
+	},
+
+	_arrowPointFromPct: function(props) {
+		if(!props) {
+			props = this.props;
+		}
+		var proPPos = this._toProportionalPosition(props.pos)
+		var arrow = props.arrow;
+		arrow.end.point = this._fromProportionalPosition(props.arrow.end.pct,null,proPPos)
+		arrow.start.point = this._fromProportionalPosition(props.arrow.start.pct,null,proPPos)
+		return arrow
 	},
 
 	_getMousePosition: function(e) {
@@ -156,7 +166,7 @@ var AnnotationBlurb = React.createClass({
 					}
 				}
 				newPos.pct = this._toProportionalPosition(newPos.point,null,this.props.pos)
-				
+
 				this.setState({
 					arrow: merge({}, this.state.arrow, {end: newPos})
 				})
@@ -356,7 +366,7 @@ var AnnotationBlurb = React.createClass({
 		  	arrowPos.end = this.state.arrow.end.point
 		  }
 		  else {
-		  	arrowPos.start = this.props.arrow.start.point
+		  	arrowPos.start = this.state.arrow.start.point || 0
 		  	arrowPos.end = this.props.arrow.end.point
 		  }
 
