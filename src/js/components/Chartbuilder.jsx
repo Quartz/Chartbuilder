@@ -25,6 +25,7 @@ var ChartMetadata = require("./ChartMetadata.jsx");
 var ChartTypeSelector = require("./ChartTypeSelector.jsx");
 var RendererWrapper = require("./RendererWrapper.jsx");
 var LocalStorageTimer = require("./LocalStorageTimer.jsx");
+var AnnotationSettings = require("./shared/annotations/AnnotationSettings.jsx");
 
 var AlertGroup = require("chartbuilder-ui").AlertGroup;
 
@@ -233,6 +234,10 @@ var Chartbuilder = React.createClass({
 						stepNumber={String(editorSteps + 2)}
 						additionalComponents={this.props.additionalComponents.metadata}
 					/>
+					<AnnotationSettings
+						stepNumber={String(editorSteps + 3)}
+						chartProps={this.state.chartProps}
+					/>
 					{mobileOverrides}
 					{this._renderErrors()}
 					<ChartExport
@@ -240,7 +245,7 @@ var Chartbuilder = React.createClass({
 						enableJSONExport={this.props.enableJSONExport}
 						svgWrapperClassName={svgWrapperClassName.desktop}
 						metadata={this.state.metadata}
-						stepNumber={String(editorSteps + 3)}
+						stepNumber={String(editorSteps + 4)}
 						additionalComponents={this.props.additionalComponents.misc}
 						model={this.state}
 					/>

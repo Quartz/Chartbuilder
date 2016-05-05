@@ -74,7 +74,7 @@ var AnnotationBlurb = React.createClass({
 	},
 
 	componentDidUpdate: function(prevProps, prevState) {
-		this.props.arrow = this._arrowPointFromPct()
+		this.props.arrow = this._arrowPointFromPct();
 	},
 
 	componentWillReceiveProps: function(nextProps) {
@@ -82,6 +82,8 @@ var AnnotationBlurb = React.createClass({
 		this.setState({
 			arrow: this._arrowPointFromPct(nextProps)
 		})
+
+		this._placeArrow();
 	},
 
 	_arrowPointFromPct: function(props) {
@@ -160,16 +162,11 @@ var AnnotationBlurb = React.createClass({
 								x: this.props.arrow.end.point.x - delta.x,
 								y: this.props.arrow.end.point.y - delta.y
 							}
-						},
-						start: {
-							point: {
-								x: this.props.arrow.start.point.x - delta.x,
-								y: this.props.arrow.start.point.y - delta.y
-							}
 						}
 					})
 				}
 				this.setState(stateUpdate)
+				this._placeArrow()
 				break
 
 			case "arrowEnd":
@@ -233,7 +230,9 @@ var AnnotationBlurb = React.createClass({
 			default:
 		}
 
+		this._placeArrow();
 		this.props.onBlurbUpdate(this.props.index, pos, target);
+
 
 		e.stopPropagation();
 		e.preventDefault();
@@ -293,7 +292,7 @@ var AnnotationBlurb = React.createClass({
 			arrow: arrow
 		})
 
-		this.forceUpdate()
+		// this.forceUpdate()
 	},
 
 	_toProportionalPosition: function(pos,props,origin){
