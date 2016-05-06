@@ -6,6 +6,7 @@ var TextArea = chartbuilderUI.TextArea;
 var TextInput = chartbuilderUI.TextInput;
 
 var ChartViewActions = require("../../../actions/ChartViewActions");
+var annotation_config = require("./annotation-config.js");
 
 var AnnotationSettings = React.createClass({
 	propTypes: {
@@ -19,14 +20,10 @@ var AnnotationSettings = React.createClass({
 		};
 	},
 	_handleAddAnnotation: function(e) {
-		var values = this.state.blurbs.values;
-		values.push({})
-		this.setState({
-			blurbs:{
-				values: values
-			}
-		})
-		this.props.chartProps._annotations.blurbs = this.state.blurbs
+		this.state.blurbs.values.push(annotation_config.defaultBlurb)
+
+		this.props.chartProps._annotations.blurbs = this.state.blurbs;
+
 		ChartViewActions.updateChartProp("_annotations", this.props.chartProps._annotations)
 	},
 
@@ -43,12 +40,28 @@ var AnnotationSettings = React.createClass({
 		ChartViewActions.updateChartProp("_annotations", this.props.chartProps._annotations)
 	},
 
+	_handleAnnotationTextChange: function(i,k,v) {
+		this.state.blurbs.values[i][k] = v;
+
+		this.props.chartProps._annotations.blurbs = this.state.blurbs;
+		ChartViewActions.updateChartProp("_annotations", this.props.chartProps._annotations);
+	},
+
 	_handleAnnotationChange: function(k,i,v) {
 
 		switch(k) {
 			case "annotationDelete":
 				this._handleRemoveAnnotation(i)
 				break
+
+			case "annotationTout":
+				this._handleAnnotationTextChange(i, "tout", )
+				break
+
+			case "annotationCopy":
+				this._handleAnnotationTextChange(i, "copy", )
+				break
+
 			default:
 		}
 

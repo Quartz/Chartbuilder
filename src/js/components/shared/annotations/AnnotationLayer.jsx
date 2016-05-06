@@ -1,6 +1,9 @@
 var React = require('react');
 
-var AnnotationBlurb = require("./AnnotationBlurb.jsx")
+var ChartViewActions = require("../../../actions/ChartViewActions");
+var AnnotationBlurb = require("./AnnotationBlurb.jsx");
+var annotation_config = require("./annotation-config.js");
+
 
 var clone = require("lodash/clone");
 
@@ -17,23 +20,16 @@ var AnnotationLayer = React.createClass({
 	getDefaultProps: function() {
 		return {
 			blurbs: [],
-			defaultBlurb: {
-				tout: "New Blurb",
-				copy: "Lorem ipsume dolor sit amet.",
-				pos: {x: 100, y: 100},
-				arrowStart: {x:0.5, y:0.5},
-				arrowEnd: {x:0.5, y:0.8},
-				arrowClockwise: true
-			}
+			defaultBlurb: annotation_config.defaultBlurb
 		};
 	},
 
 
 	_handleBlurbUpdate: function(i,prop,key) {
+		console.error(i,prop,key)
 		this.props.chartProps._annotations.blurbs.values[i][key] = prop;
 
-		//CHANGE
-		this.forceUpdate();
+		ChartViewActions.updateChartProp("_annotations", this.props.chartProps._annotations)
 	},
 
 	_addBlurb: function() {
@@ -122,7 +118,7 @@ var AnnotationLayer = React.createClass({
 		var blurbs = this.props.chartProps._annotations.blurbs.values.map(function(d,i) {
 			return (<AnnotationBlurb 
 					key={"blurb" + i}
-					index={d.index}
+					index={i}
 					tout={d.tout}
 					copy={d.copy}
 					pos={d.pos}

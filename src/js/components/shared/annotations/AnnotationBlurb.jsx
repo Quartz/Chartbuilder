@@ -8,7 +8,7 @@ var AnnotationBlurb = React.createClass({
 
 	propTypes: {
 		key: React.PropTypes.string,
-		index: React.PropTypes.number,
+		index: React.PropTypes.number.isRequired,
 		tout: React.PropTypes.string,
 		copy: React.PropTypes.string,
 		pos: React.PropTypes.object,
@@ -258,10 +258,7 @@ var AnnotationBlurb = React.createClass({
 	},
 
 	_updateText: function(key, newText) {
-		var stateUpdate = {}
-		stateUpdate[key] = newText;
-		this.setState(stateUpdate);
-		this._placeArrow();
+		this.props.onBlurbUpdate(this.props.index, newText, key);
 	},
 
 	_placeArrow: function(){
