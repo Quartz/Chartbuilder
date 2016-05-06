@@ -41,10 +41,18 @@ var AnnotationBlurb = React.createClass({
 		var arrow = this.props.arrow;
 		arrow.end.point = this._fromProportionalPosition(this.props.arrow.end.pct,null,proPPos)
 		arrow.start.point = this._fromProportionalPosition(this.props.arrow.start.pct,null,proPPos)
+		this.props.arrow = arrow;
+
+		return this.stateFromProps();
+	},
+
+	stateFromProps: function(props) {
+		if(!props) {
+			props = this.props
+		}
 
 		return {
 			dragging: false,
-			mode: "drag",
 			clickOrigin: {x: 0, y: 0},
 			tout: this.props.tout,
 			target: null,
@@ -52,7 +60,7 @@ var AnnotationBlurb = React.createClass({
 			pos: this.props.pos,
 			arrow: this.props.arrow,
 			updatingFromInline: false
-		};
+		}
 	},
 
 	shouldComponentUpdate: function(nextProps, nextState) {
@@ -64,13 +72,8 @@ var AnnotationBlurb = React.createClass({
 
 	componentDidMount: function() {
 		this._placeArrow();
-
-		if(this.state.mode == "drag") {
-			this._addDragEvents();
-		}
-
+		this._addDragEvents();
 		this.props.arrow = this._arrowPointFromPct();
-
 	},
 
 	componentDidUpdate: function(prevProps, prevState) {
@@ -86,7 +89,7 @@ var AnnotationBlurb = React.createClass({
 	},
 
 	componentWillUpdate: function(nextProps, nextState) {
-		if(!this.state.updatingFromInline) {
+		if(!this.state.updatingFromInline && !this.state.dragging) {
 			this.setState({
 				tout: nextProps.tout,
 				copy: nextProps.copy
@@ -121,17 +124,14 @@ var AnnotationBlurb = React.createClass({
 	_handleMouseDownForDraggableElements: function(e, target) {
 		if(e.button !== 0) { return; }
 
-		if(this.state.mode == "drag") {
-			this.setState({
-				dragging: true,
-				target: target,
-				clickOrigin: this._getMousePosition(e)
-			})
+		this.setState({
+			dragging: true,
+			target: target,
+			clickOrigin: this._getMousePosition(e)
+		})
 
-
-			e.stopPropagation();
-			e.preventDefault();
-		}
+		e.stopPropagation();
+		e.preventDefault();
 	},
 
 	_handleInterfaceMouseDown: function(e) {
@@ -173,8 +173,9 @@ var AnnotationBlurb = React.createClass({
 						}
 					})
 				}
+
+
 				this.setState(stateUpdate)
-				this._placeArrow()
 				break
 
 			case "arrowEnd":
@@ -238,7 +239,9 @@ var AnnotationBlurb = React.createClass({
 			default:
 		}
 
-		this._placeArrow();
+		if(target == "pos") {
+			this.props.onBlurbUpdate(this.props.index, this.state.arrow.start.pct, "arrowStart")
+		}
 		this.props.onBlurbUpdate(this.props.index, pos, target);
 
 
@@ -251,12 +254,13 @@ var AnnotationBlurb = React.createClass({
 		document.addEventListener("mouseup", this._handleMouseUp);
 	},
 
-	_handleToutKeyDown: function(e) {
+	_handleToutKeyUp: function(e) {
 		var newText = ReactDom.findDOMNode(e.target).textContent
 		this._updateText("tout", newText)
 	},
 
-	_handleCopyKeyDown: function(e) {
+	_handleCopyKeyUp: function(e) {
+
 		var newText = ReactDom.findDOMNode(e.target).textContent
 		this._updateText("copy", newText)
 	},
@@ -390,12 +394,12 @@ var AnnotationBlurb = React.createClass({
 
 		  var arrowPos = {};
 
-		  if(this.state.dragging) {
+		  if(this.state.dragging) {	
 		  	arrowPos.start = this.state.arrow.start.point
 		  	arrowPos.end = this.state.arrow.end.point
 		  }
 		  else {
-		  	arrowPos.start = this.state.arrow.start.point || 0
+		  	arrowPos.start = this.props.arrow.start.point || 0
 		  	arrowPos.end = this.props.arrow.end.point
 		  }
 
@@ -421,14 +425,14 @@ var AnnotationBlurb = React.createClass({
 				 	<p>
 				 		<span
 				 			{...editableSpanProps}
-				 			onKeyDown={this._handleToutKeyDown}
+				 			onKeyUp={this._handleToutKeyUp}
 				 		>
 				 			{this.state.tout.trim()}
 				 		</span>
 				 		<span> </span>
 				 		<span
 				 			{...editableSpanProps}
-				 			onKeyDown={this._handleCopyKeyDown}
+				 			onKeyUp={this._handleCopyKeyUp}
 				 		>
 				 			{this.state.copy.trim()}
 				 		</span>
