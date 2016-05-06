@@ -39,11 +39,7 @@ function calculate_bar_height(numDataPoints, grid, displayConfig) {
 }
 
 function calculate_cartesian_height(width, grid, displayConfig, extraHeight) {
-	var height =
-		(grid.rows * (((width / grid.cols) * displayConfig.xy.aspectRatio.wide) + displayConfig.afterLegend)) +
-		(grid.rows - 1) * displayConfig.afterXYBottom +
-		extraHeight + displayConfig.xy.padding.bottom;
-
+	var height = (grid.rows * ((width / grid.cols) * displayConfig.xy.aspectRatio.wide));
 	return height;
 }
 

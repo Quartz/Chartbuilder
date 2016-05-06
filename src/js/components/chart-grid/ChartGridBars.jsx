@@ -6,7 +6,6 @@
 var React           = require("react");
 var PropTypes       = React.PropTypes;
 var update          = require("react-addons-update");
-var d4              = require("d4");
 
 var bind            = require("lodash/bind");
 var clone           = require("lodash/clone");
@@ -22,7 +21,6 @@ var d3 = require("d3");
 var formatThousands = d3.format(separators.thousands);
 
 /* Helper functions */
-var cb_bar_grid = require("../../charts/cb-charts").cb_bar_grid;
 var help = require("../../util/helper.js");
 
 /* Renderer mixins */
