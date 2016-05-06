@@ -50,7 +50,8 @@ var AnnotationBlurb = React.createClass({
 			target: null,
 			copy: this.props.copy,
 			pos: this.props.pos,
-			arrow: this.props.arrow
+			arrow: this.props.arrow,
+			updatingFromInline: false
 		};
 	},
 
@@ -58,7 +59,7 @@ var AnnotationBlurb = React.createClass({
 		var newProps = (this.props !== nextProps);
 		var newDrag = (this.state.dragging !== nextState.dragging);
 
-		return (newProps || newDrag || nextState.dragging);
+		return !this.state.updatingFromInline && (newProps || newDrag || nextState.dragging);
 	},
 
 	componentDidMount: function() {
@@ -70,7 +71,6 @@ var AnnotationBlurb = React.createClass({
 
 		this.props.arrow = this._arrowPointFromPct();
 
-		this.forceUpdate();
 	},
 
 	componentDidUpdate: function(prevProps, prevState) {
@@ -78,12 +78,20 @@ var AnnotationBlurb = React.createClass({
 	},
 
 	componentWillReceiveProps: function(nextProps) {
-
 		this.setState({
 			arrow: this._arrowPointFromPct(nextProps)
 		})
 
 		this._placeArrow();
+	},
+
+	componentWillUpdate: function(nextProps, nextState) {
+		if(!this.state.updatingFromInline) {
+			this.setState({
+				tout: nextProps.tout,
+				copy: nextProps.copy
+			})
+		}
 	},
 
 	_arrowPointFromPct: function(props) {
@@ -257,6 +265,18 @@ var AnnotationBlurb = React.createClass({
 		this.props.onBlurbUpdate(this.props.index, !this.state.arrow.clockwise, "arrowClockwise");
 	},
 
+	_handleSpanFocus: function(e) {
+		this.setState({
+			updatingFromInline: true
+		})
+	},
+
+	_handleSpanBlur: function(e) {
+		this.setState({
+			updatingFromInline: false
+		})
+	},
+
 	_updateText: function(key, newText) {
 		this.props.onBlurbUpdate(this.props.index, newText, key);
 	},
@@ -289,7 +309,6 @@ var AnnotationBlurb = React.createClass({
 			arrow: arrow
 		})
 
-		// this.forceUpdate()
 	},
 
 	_toProportionalPosition: function(pos,props,origin){
@@ -357,7 +376,6 @@ var AnnotationBlurb = React.createClass({
 
 	render: function() {
 
-
 		var style = {
 			position: "absolute",
 			left: this.props.x(this.state.dragging ? this.state.pos.x : this.props.pos.x) ,
@@ -381,6 +399,12 @@ var AnnotationBlurb = React.createClass({
 		  	arrowPos.end = this.props.arrow.end.point
 		  }
 
+		  var editableSpanProps = {
+		  	contentEditable: "true",
+		  	onBlur: this._handleSpanBlur,
+		  	onFocus: this._handleSpanFocus
+		  }
+
 		return (
 			<div
 			 className="blurb"
@@ -396,16 +420,17 @@ var AnnotationBlurb = React.createClass({
 				 >
 				 	<p>
 				 		<span
-				 			contentEditable="true"
+				 			{...editableSpanProps}
 				 			onKeyDown={this._handleToutKeyDown}
 				 		>
 				 			{this.state.tout.trim()}
 				 		</span>
+				 		<span> </span>
 				 		<span
-				 			contentEditable="true"
+				 			{...editableSpanProps}
 				 			onKeyDown={this._handleCopyKeyDown}
 				 		>
-				 			{(this.state.tout ? " " : "") + this.state.copy.trim()}
+				 			{this.state.copy.trim()}
 				 		</span>
 				 		<span className="end-mark" />
 				 	</p>
