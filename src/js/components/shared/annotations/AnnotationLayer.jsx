@@ -26,7 +26,6 @@ var AnnotationLayer = React.createClass({
 
 
 	_handleBlurbUpdate: function(i,prop,key) {
-		console.error(i,prop,key)
 		this.props.chartProps._annotations.blurbs.values[i][key] = prop;
 
 		ChartViewActions.updateChartProp("_annotations", this.props.chartProps._annotations)
@@ -198,7 +197,6 @@ function xScaleInfo(width, padding, styleConfig, displayConfig, state) {
 function computePadding(props) {
 	var labels = props.chartProps._annotations.labels;
 	var displayConfig = props.displayConfig;
-	console.log(props)
 	var _top = (props.labelYMax * props.chartAreaDimensions.height) + displayConfig.afterLegend;
 
 	if (props.hasTitle) {

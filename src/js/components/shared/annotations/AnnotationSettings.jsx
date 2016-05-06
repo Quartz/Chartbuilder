@@ -55,20 +55,16 @@ var AnnotationSettings = React.createClass({
 				break
 
 			case "annotationTout":
-				this._handleAnnotationTextChange(i, "tout", )
+				this._handleAnnotationTextChange(i, "tout", v)
 				break
 
 			case "annotationCopy":
-				this._handleAnnotationTextChange(i, "copy", )
+				this._handleAnnotationTextChange(i, "copy", v)
 				break
 
 			default:
 		}
 
-		console.log("k",k)
-		console.log("v",v)
-		console.log("i",i)
-		//update
 	},
 
 	render: function() {
