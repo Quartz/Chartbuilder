@@ -85,10 +85,11 @@ var AnnotationBlurb = React.createClass({
 			arrow: this._arrowPointFromPct(nextProps)
 		})
 
-		this._placeArrow();
+		this._placeArrow(nextProps);
 	},
 
 	componentWillUpdate: function(nextProps, nextState) {
+		this._placeArrow(nextProps);
 		if(!this.state.updatingFromInline && !this.state.dragging) {
 			this.setState({
 				tout: nextProps.tout,
@@ -285,30 +286,49 @@ var AnnotationBlurb = React.createClass({
 		this.props.onBlurbUpdate(this.props.index, newText, key);
 	},
 
-	_placeArrow: function(){
-		var node = ReactDom.findDOMNode(this);
-		var endMark = node.querySelector("span.end-mark")
+	_locationToPoint: function(loc,node) {
+		var point;
 
-		var nodeBB = node.getBoundingClientRect()
-		var endMarkBB = endMark.getBoundingClientRect()
-		var parent = node.parentNode;
+		if(!node) {
+			node = ReactDom.findDOMNode(this);
+		}
+		var nodeBB = node.getBoundingClientRect();
+		
+		var endMark = node.querySelector("span.end-mark");
+		var endMarkBB = endMark.getBoundingClientRect();
+
+
+		
+	
+		if(this.props.arrow.snapTo == "textEnd") {
+			point = {
+				x: endMarkBB.left - this.state.pos.x,
+				y: endMarkBB.top - nodeBB.top + 3
+			}
+		}
+
+		return point
+	},
+
+	_placeArrow: function(props){
+		if(!props) {
+			props = this.props;
+		}
 
 		var arrow = this.state.arrow;
+		var node = ReactDom.findDOMNode(this)
 
-		// if(this.props.arrow.snapTo == "textEnd") {
-			arrow.start = {
-				point: {
-					x: endMarkBB.left - this.state.pos.x,
-					y: endMarkBB.top - nodeBB.top + 3
-				}
-			}
+		
 
-			arrow.start.pct = this._toProportionalPosition(arrow.start.point, null, this.props.pos)
-		// }
+		arrow.start = {
+			point: this._locationToPoint("textEnd", node)
+		}
+
+		arrow.start.pct = this._toProportionalPosition(arrow.start.point, null, props.pos)
 
 		this.setState({
 			node: node,
-			parent: parent,
+			parent: node.parentNode,
 			endMarkBB: endMarkBB,
 			arrow: arrow
 		})
