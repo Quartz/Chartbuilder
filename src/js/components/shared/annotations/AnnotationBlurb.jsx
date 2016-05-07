@@ -78,23 +78,26 @@ var AnnotationBlurb = React.createClass({
 
 	componentDidUpdate: function(prevProps, prevState) {
 		this.props.arrow = this._arrowPointFromPct();
+		
 	},
 
 	componentWillReceiveProps: function(nextProps) {
 		this.setState({
 			arrow: this._arrowPointFromPct(nextProps)
-		})
+		})	
 
-		this._placeArrow(nextProps);
 	},
 
 	componentWillUpdate: function(nextProps, nextState) {
-		this._placeArrow(nextProps);
 		if(!this.state.updatingFromInline && !this.state.dragging) {
 			this.setState({
 				tout: nextProps.tout,
 				copy: nextProps.copy
 			})
+		}
+
+		if(!this.state.dragging) {
+			this._placeArrow();
 		}
 	},
 
@@ -286,49 +289,30 @@ var AnnotationBlurb = React.createClass({
 		this.props.onBlurbUpdate(this.props.index, newText, key);
 	},
 
-	_locationToPoint: function(loc,node) {
-		var point;
+	_placeArrow: function(){
+		var node = ReactDom.findDOMNode(this);
+		var endMark = node.querySelector("span.end-mark")
 
-		if(!node) {
-			node = ReactDom.findDOMNode(this);
-		}
-		var nodeBB = node.getBoundingClientRect();
-		
-		var endMark = node.querySelector("span.end-mark");
-		var endMarkBB = endMark.getBoundingClientRect();
+		var nodeBB = node.getBoundingClientRect()
+		var endMarkBB = endMark.getBoundingClientRect()
+		var parent = node.parentNode;
 
+		var arrow = this.state.arrow;
 
-		
-	
-		if(this.props.arrow.snapTo == "textEnd") {
-			point = {
+		// if(this.props.arrow.snapTo == "textEnd") {
+		arrow.start = {
+			point: {
 				x: endMarkBB.left - this.state.pos.x,
-				y: endMarkBB.top - nodeBB.top + 3
+				y: endMarkBB.top - this.state.pos.y + 3
 			}
 		}
 
-		return point
-	},
-
-	_placeArrow: function(props){
-		if(!props) {
-			props = this.props;
-		}
-
-		var arrow = this.state.arrow;
-		var node = ReactDom.findDOMNode(this)
-
-		
-
-		arrow.start = {
-			point: this._locationToPoint("textEnd", node)
-		}
-
-		arrow.start.pct = this._toProportionalPosition(arrow.start.point, null, props.pos)
-
+		arrow.start.pct = this._toProportionalPosition(arrow.start.point, null, this.state.pos)
+		// }
+		console.log(this.state.pos)
 		this.setState({
 			node: node,
-			parent: node.parentNode,
+			parent: parent,
 			endMarkBB: endMarkBB,
 			arrow: arrow
 		})
