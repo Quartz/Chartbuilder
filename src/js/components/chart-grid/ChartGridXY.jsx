@@ -76,6 +76,8 @@ var ChartGridXY = React.createClass({
 
 	_xyGridBlock: function(d, i) {
 		var props = this.props;
+		var isFirstBlock = Math.floor((i + 1) / props.chartProps._grid.cols) === 0;
+		var x1 = (isFirstBlock) ? NaN : 0;
 
 		var elProps = {
 			key: i,
@@ -93,7 +95,7 @@ var ChartGridXY = React.createClass({
 				text={props.chartProps.chartSettings[i].label}
 				colorIndex={props.chartProps.chartSettings[i].colorIndex}
 			/>,
-			<HorizontalGridLines key="grid" />,
+			<HorizontalGridLines x1={x1} key="grid" />,
 			<HorizontalAxis key="axis" />,
 			el
 		];
@@ -179,6 +181,7 @@ var ChartGridXY = React.createClass({
 					<VerticalAxis
 						tickWidths={tickWidths.widths}
 						tickValues={primaryScale.tickValues}
+						tickFormat={yAxis.tickFormat}
 						dimensions={chartAreaDimensions}
 						styleConfig={props.styleConfig}
 						displayConfig={displayConfig}
@@ -201,13 +204,13 @@ var ChartGridXY = React.createClass({
 				className="grid-wrapper"
 				transform={ "translate(" + [0, displayConfig.padding.top] + ")" }
 			>
-				{verticalAxes}
 				<g
 					className="grid-charts"
 					transform={ "translate(" + [tickWidths.max, 0] + ")" }
 				>
 					{grid}
 				</g>
+				{verticalAxes}
 			</g>
 			</SvgWrapper>
 		);

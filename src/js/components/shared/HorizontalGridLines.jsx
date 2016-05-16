@@ -24,7 +24,7 @@ var VerticalGridLines = React.createClass({
 		var getRange = this._getRangeExtent;
 		return map(props.tickValues, function(tickValue, i) {
 			var scalePos = props.yScale(tickValue);
-			var x1 = props.translate[0] * -1;
+			var x1 = !isNaN(props.x1) ? props.x1 : props.translate[0] * -1;
 			var className = cx("tick", { zero: (tickValue === 0) });
 			return (
 				<line
