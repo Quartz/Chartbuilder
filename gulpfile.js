@@ -4,7 +4,6 @@ var buffer = require("vinyl-buffer");
 var del = require("del");
 var nib = require("nib");
 var reload = browserSync.reload;
-var source = require("vinyl-source-stream");
 
 // browserify
 var browserify = require("browserify");
