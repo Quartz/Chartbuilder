@@ -17,10 +17,11 @@ var changed = require("gulp-changed");
 var gulp = require("gulp");
 var stylus = require("gulp-stylus");
 var uglify = require("gulp-uglify");
+var gutil = require("gulp-util");
 
 // local modules
 var config = require("./gulp/config");
-var gutil = require("gulp-util")
+require("./gulp/publish");
 
 gulp.task("stylus", function () {
 	return gulp.src(config.paths.src.styl + "/main.styl")

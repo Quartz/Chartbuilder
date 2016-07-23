@@ -1,0 +1,11 @@
+{
+	"AWS": {
+		"Credentials": {
+			"AccessKeyId": "ABCXYZ",
+			"SecretAccessKey": "Ab0Xyz123C"
+		},
+		"Region": "us-east-1",
+		"Bucket": "my-bucket",
+		"FolderPath": "Path/to/destination"
+	}
+}
