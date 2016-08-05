@@ -10,6 +10,7 @@ var browserify = require("browserify");
 var envify = require("envify/custom");
 var source = require("vinyl-source-stream");
 var reactify = require("reactify");
+var watchify = require("watchify");
 
 // Gulp plugins
 var base64 = require("gulp-css-base64");
@@ -20,7 +21,7 @@ var uglify = require("gulp-uglify");
 
 // local modules
 var config = require("./gulp/config");
-var gutil = require("gulp-util")
+var gutil = require("gulp-util");
 
 gulp.task("stylus", function () {
 	return gulp.src(config.paths.src.styl + "/main.styl")
@@ -53,15 +54,34 @@ gulp.task("stylus:core", ["clean-dist"], function () {
 });
 
 gulp.task("browserify:dev", function () {
-	var bundler = browserify(config.paths.src.js + "/index.js", {
-		debug: true
-	})
-	.transform(envify({ NODE_ENV: "dev" }));
 
-	return bundler.bundle()
-		.pipe(source("main.js"))
-		.pipe(gulp.dest(config.paths.build.js))
-		.pipe(reload({ stream:true }));
+	var props = {
+		entries: [config.paths.src.js + "/index.js"],
+		debug: true,
+		cache: {},
+		packageCache: {},
+		fullPaths: true
+	};
+
+	var bundler = watchify(browserify(props).transform(envify({ NODE_ENV: "dev" })));
+
+	function rebundle() {
+		var stream = bundler.bundle();
+
+		return stream.on('error', function (err) {
+			console.log(err.toString());
+			this.emit('end');
+			process.exit(0);
+		})
+			.pipe(source("main.js"))
+			.pipe(gulp.dest(config.paths.build.js + "/"))
+			.pipe(browserSync.reload({ stream:true }));
+	}
+	bundler.on('update', function() {
+		rebundle();
+		gutil.log('Rebundle...');
+	});
+	return rebundle();
 });
 
 gulp.task("browserify:test", function () {
@@ -153,7 +173,6 @@ gulp.task("watch", [
 	"copy-fonts",
 	"copy-assets"
 ], function (done) {
-	gulp.watch(config.paths.src.js + "/**", ["browserify:dev"]);
 	gulp.watch(config.paths.src.styl + "/**", ["stylus"]);
 	gulp.watch(config.paths.src.htdocs + "/**", ["copy-htdocs"]);
 	gulp.watch("./node_modules/d4/d4.js", ["browserify:dev"]);
