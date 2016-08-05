@@ -582,7 +582,7 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   height: 15px;
-  width: 100%;
+  width: 95%;
 }
 .cb-text-area textarea {
   color: #333;
@@ -1509,7 +1509,6 @@ select {
   margin-bottom: 1em;
   color: #666;
   border: 1px solid #ccc;
-  -webkit-border-radius: 0;
   border-radius: 0;
   font-family: 'Khula-Regular', Arial, Helvetica, sans-serif;
   background-color: #fff;
@@ -1879,7 +1878,6 @@ svg.renderer-svg tspan {
 }
 .chartbuilder-editor span.step-number {
   background-color: #333;
-  -webkit-border-radius: 100px;
   border-radius: 100px;
   color: #fff;
   width: 1.5em;
@@ -2034,7 +2032,6 @@ svg.renderer-svg tspan {
 .chartbuilder-editor .colorsection .cb-colorpicker-current {
   width: 45px;
   height: 24px;
-  -webkit-border-radius: 16px;
   border-radius: 16px;
 }
 .chartbuilder-editor .axissection {
