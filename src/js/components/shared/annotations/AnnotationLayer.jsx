@@ -114,6 +114,7 @@ var AnnotationLayer = React.createClass({
 		//CHANGE
 		var scales = this._createScales();
 		var that = this;
+		console.trace("rendering annotation layer")
 		var blurbs = this.props.chartProps._annotations.blurbs.values.map(function(d,i) {
 			return (<AnnotationBlurb 
 					key={"blurb" + i}

@@ -29,7 +29,7 @@ var AnnotationBlurb = React.createClass({
 			arrow: {
 				start: {point:{x: 10, y: 50}, val:{}, pct: {x:0, y:0}},
 				end: {point: {x: 20, y: 100}, val:{}}, pct: {x:0, y:0},
-				snapTo: "textEnd",
+				snapTo: null,
 				clockwise: true
 			}
 		};
@@ -71,7 +71,6 @@ var AnnotationBlurb = React.createClass({
 
 	componentDidMount: function() {
 		this._placeArrow();
-		this._addDragEvents();
 		this.props.arrow = this._arrowPointFromPct();
 	},
 
@@ -97,6 +96,15 @@ var AnnotationBlurb = React.createClass({
 
 		if(!this.state.dragging) {
 			this._placeArrow();
+		}
+
+		// if(nextProps.editable === true) {
+		if(true) {
+			if(nextState.dragging && !this.state.dragging) {
+				this._addDragEvents();
+			} else if (!nextState.dragging && this.state.dragging) {
+				this._removeDragEvents();
+			}	
 		}
 	},
 
@@ -168,6 +176,12 @@ var AnnotationBlurb = React.createClass({
 						y: propPos.y + delta.y
 					},
 					arrow: merge({}, this.state.arrow, {
+						start: {
+							point: {
+								x: this.props.arrow.start.point.x,
+								y: this.props.arrow.start.point.y
+							}
+						},
 						end: {
 							point: {
 								x: this.props.arrow.end.point.x - delta.x,
@@ -176,6 +190,7 @@ var AnnotationBlurb = React.createClass({
 						}
 					})
 				}
+
 
 
 				this.setState(stateUpdate)
@@ -243,7 +258,7 @@ var AnnotationBlurb = React.createClass({
 		}
 
 		if(target == "pos") {
-			this.props.onBlurbUpdate(this.props.index, this.state.arrow.start.pct, "arrowStart")
+			this.props.onBlurbUpdate(this.props.index, this.state.arrow.start.pct, "arrowStart");
 		}
 		this.props.onBlurbUpdate(this.props.index, pos, target);
 
@@ -255,6 +270,11 @@ var AnnotationBlurb = React.createClass({
 	_addDragEvents: function() {
 		document.addEventListener("mousemove", this._handleMouseMove);
 		document.addEventListener("mouseup", this._handleMouseUp);
+	},
+
+	_removeDragEvents: function() {
+		document.removeEventListener("mousemove", this._handleMouseMove);
+		document.removeEventListener("mouseup", this._handleMouseUp);
 	},
 
 	_handleToutKeyUp: function(e) {
@@ -301,8 +321,8 @@ var AnnotationBlurb = React.createClass({
 		// if(this.props.arrow.snapTo == "textEnd") {
 		arrow.start = {
 			point: {
-				x: endMarkBB.left - this.state.pos.x,
-				y: endMarkBB.top - this.state.pos.y + 3
+				x: arrow.start.point.x || 100 ,
+				y: arrow.start.point.y || 100
 			}
 		}
 
@@ -412,6 +432,14 @@ var AnnotationBlurb = React.createClass({
 		  	onFocus: this._handleSpanFocus
 		  }
 
+		// this is to prevent crosssite scripting / the insertion of malicous code through annotations
+		clean_copy_lines = this.state.copy.trim().split("\n")
+		var index = this.props.index
+		clean_copy_with_linebreaks = clean_copy_lines.map(function(d,i){
+			var linebreak = i != clean_copy_lines.length - 1 ? (<br/>) : null
+			return (<span className="blurb_line" key={index + "-blurb_line" + i}>{d}{linebreak}</span>)
+		})
+
 		return (
 			<div
 			 className="blurb"
@@ -450,7 +478,7 @@ var AnnotationBlurb = React.createClass({
 				 			{...editableSpanProps}
 				 			onKeyUp={this._handleCopyKeyUp}
 				 		>
-				 			{this.state.copy.trim()}
+				 			{clean_copy_with_linebreaks}
 				 		</span>
 				 		<span className="end-mark" />
 				 	</p>
