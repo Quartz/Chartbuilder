@@ -7,7 +7,6 @@ var merge = require("lodash/merge");
 var AnnotationBlurb = React.createClass({
 
 	propTypes: {
-		key: React.PropTypes.string,
 		index: React.PropTypes.number.isRequired,
 		tout: React.PropTypes.string,
 		copy: React.PropTypes.string,
@@ -309,7 +308,6 @@ var AnnotationBlurb = React.createClass({
 
 		arrow.start.pct = this._toProportionalPosition(arrow.start.point, null, this.state.pos)
 		// }
-		console.log(this.state.pos)
 		this.setState({
 			node: node,
 			parent: parent,

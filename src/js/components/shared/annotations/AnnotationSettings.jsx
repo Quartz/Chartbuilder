@@ -11,7 +11,7 @@ var annotation_config = require("./annotation-config.js");
 var AnnotationSettings = React.createClass({
 	propTypes: {
 		chartProps: React.PropTypes.object,
-		stepNumber: React.PropTypes.number
+		stepNumber: React.PropTypes.string
 	},
 
 	getInitialState: function() {
@@ -74,6 +74,7 @@ var AnnotationSettings = React.createClass({
 				{...d}
 				index={i}
 				onUpdate={that._handleAnnotationChange}
+				key={"annotation-control-" + i}
 				/>	
 				)
 		})
@@ -119,7 +120,7 @@ var AnnotationControl = React.createClass({
 					placeholder="Tout"
 					value={this.props.tout}
 				/>
-				<TextArea 
+				<TextArea
 					value={this.props.copy}
 					onChange={this.props.onUpdate.bind(null, "annotationCopy",this.props.index)}
 				/>
