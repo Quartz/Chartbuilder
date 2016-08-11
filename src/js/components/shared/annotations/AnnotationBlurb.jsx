@@ -423,7 +423,20 @@ var AnnotationBlurb = React.createClass({
 				<div
 					className="interface"
 					onMouseDown={this._handleInterfaceMouseDown}
-				 />
+				 >
+				 	<div className="anchor_points">
+				 		<div className="anchor"></div>
+				 		<div className="anchor"></div>
+				 		<div className="anchor"></div>
+				 		<div className="anchor"></div>
+				 		<div className="anchor"></div>
+				 		<div className="anchor"></div>
+				 		<div className="anchor"></div>
+				 		<div className="anchor"></div>
+				 		<div className="anchor"></div>
+				 	</div>
+				 </div>
+
 				 <div
 				 	className="content"
 				 >

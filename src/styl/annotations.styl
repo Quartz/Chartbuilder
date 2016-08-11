@@ -1,4 +1,12 @@
 
+$anchor-radius = 4px
+
+anchor-placement()
+	for num in (0 .. 9)
+		&:nth-child({num + 1})
+			top "calc(%s + %s)" % (((num % 3) * 50%) $anchor-radius * -1)
+			left "calc(%s + %s)" % ((floor( num / 3) * 50%) $anchor-radius * -1)
+
 .annotation-layer
 	position absolute
 	top 0
@@ -65,9 +73,28 @@
 		left -10px
 		width calc(100%+10px)
 		height calc(100%+10px)
+		cursor move
+		.anchor_points
+			display none
+			position absolute
+			width 100%
+			height 100%
+			.anchor
+				position absolute
+				width $anchor-radius * 2
+				height $anchor-radius * 2
+				border-radius $anchor-radius * 2
+				background-color #999
+				anchor-placement()
+				&:nth-child(5)
+					display none
 		&:hover
 			border 2px dashed #999
-		cursor move
+			.anchor_points
+				display block
+		
+	
+		
 	span
 		font-family $font-sans-bold
 		
