@@ -409,6 +409,7 @@ var AnnotationBlurb = React.createClass({
 
 		  var editableSpanProps = {
 		  	contentEditable: "true",
+		  	suppressContentEditableWarning: "true",
 		  	onBlur: this._handleSpanBlur,
 		  	onFocus: this._handleSpanFocus
 		  }
