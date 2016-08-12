@@ -4,6 +4,7 @@ var Button = chartbuilderUI.Button;
 var ButtonGroup = chartbuilderUI.ButtonGroup;
 var TextArea = chartbuilderUI.TextArea;
 var TextInput = chartbuilderUI.TextInput;
+var clone = require("lodash/clone");
 
 var ChartViewActions = require("../../../actions/ChartViewActions");
 var annotation_config = require("./annotation-config.js");
@@ -20,7 +21,7 @@ var AnnotationSettings = React.createClass({
 		};
 	},
 	_handleAddAnnotation: function(e) {
-		this.state.blurbs.values.push(annotation_config.defaultBlurb)
+		this.state.blurbs.values.push(clone(annotation_config.defaultBlurb))
 
 		this.props.chartProps._annotations.blurbs = this.state.blurbs;
 
