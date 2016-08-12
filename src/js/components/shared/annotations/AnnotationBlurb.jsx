@@ -289,7 +289,7 @@ var AnnotationBlurb = React.createClass({
 
 	_handleCopyKeyUp: function(e) {
 
-		var newText = ReactDom.findDOMNode(e.target).textContent
+		var newText = ReactDom.findDOMNode(e.target).innerText
 		this._updateText("copy", newText)
 	},
 
@@ -439,7 +439,7 @@ var AnnotationBlurb = React.createClass({
 		  }
 
 		// this is to prevent crosssite scripting / the insertion of malicous code through annotations
-		clean_copy_lines = this.state.copy.trim().split("\n")
+		clean_copy_lines = this.props.copy.trim().split("\n")
 		var index = this.props.index
 		clean_copy_with_linebreaks = clean_copy_lines.map(function(d,i){
 			var linebreak = i != clean_copy_lines.length - 1 ? (<br/>) : null
@@ -477,7 +477,7 @@ var AnnotationBlurb = React.createClass({
 				 			{...editableSpanProps}
 				 			onKeyUp={this._handleToutKeyUp}
 				 		>
-				 			{this.state.tout.trim()}
+				 			{this.props.tout.trim()}
 				 		</span>
 				 		<span> </span>
 				 		<span
