@@ -69,7 +69,6 @@ var AnnotationSettings = React.createClass({
 
 	render: function() {
 		var that = this;
-		console.log(this.state.blurbs.values.length ? this.state.blurbs.values[0].copy : this.state.blurbs.values)
 		var annotationControls = this.state.blurbs.values.map(function(d,i) {
 			return (<AnnotationControl
 				{...d}
