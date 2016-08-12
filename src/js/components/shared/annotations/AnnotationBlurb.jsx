@@ -253,7 +253,6 @@ var AnnotationBlurb = React.createClass({
 
 
 		if(target == "pos") {
-			console.log(this.props.index)
 			this.props.onBlurbUpdate([
 					{i: this.props.index, prop: pos, key: target},
 					{
