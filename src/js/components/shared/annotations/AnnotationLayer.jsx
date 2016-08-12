@@ -25,10 +25,21 @@ var AnnotationLayer = React.createClass({
 	},
 
 
-	_handleBlurbUpdate: function(i,prop,key) {
-		this.props.chartProps._annotations.blurbs.values[i][key] = prop;
+	_handleBlurbUpdate: function(index_or_array,prop,key) {
+		var _annotations = this.props.chartProps._annotations
 
-		ChartViewActions.updateChartProp("_annotations", this.props.chartProps._annotations)
+		if(index_or_array.length !== undefined) {
+			var update_list = index_or_array;		
+		}
+		else {
+			var update_list = [{i: index_or_array, prop: prop, key: key}];
+		}
+		
+		update_list.forEach(function(d){
+			_annotations.blurbs.values[d.i][d.key] = d.prop;
+		});
+
+		ChartViewActions.updateChartProp("_annotations", _annotations);
 	},
 
 	_addBlurb: function() {
@@ -114,8 +125,8 @@ var AnnotationLayer = React.createClass({
 		//CHANGE
 		var scales = this._createScales();
 		var that = this;
-		console.trace("rendering annotation layer")
 		var blurbs = this.props.chartProps._annotations.blurbs.values.map(function(d,i) {
+
 			return (<AnnotationBlurb 
 					key={"blurb" + i}
 					index={i}

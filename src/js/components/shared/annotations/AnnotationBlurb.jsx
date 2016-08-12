@@ -1,7 +1,7 @@
 var React = require('react');
 var ReactDom = require("react-dom");
 
-var swoopyArrow = require("../swoopyArrows.js").swoopy;
+var swoopyArrow = require("swoopyarrows").swoopy;
 var merge = require("lodash/merge");
 
 var AnnotationBlurb = React.createClass({
@@ -176,12 +176,6 @@ var AnnotationBlurb = React.createClass({
 						y: propPos.y + delta.y
 					},
 					arrow: merge({}, this.state.arrow, {
-						start: {
-							point: {
-								x: this.props.arrow.start.point.x,
-								y: this.props.arrow.start.point.y
-							}
-						},
 						end: {
 							point: {
 								x: this.props.arrow.end.point.x - delta.x,
@@ -219,8 +213,8 @@ var AnnotationBlurb = React.createClass({
 						y: propPos.y + delta.y,
 					}
 				}
+				newPos.pct = this._toProportionalPosition(newPos.point,null,this.props.pos)
 
-				newPos.pct = this._toProportionalPosition(newPos,null,this.props.pos)
 				this.setState({
 					arrow: merge({}, this.state.arrow, {start: newPos})
 				})
@@ -257,10 +251,21 @@ var AnnotationBlurb = React.createClass({
 			default:
 		}
 
+
 		if(target == "pos") {
-			this.props.onBlurbUpdate(this.props.index, this.state.arrow.start.pct, "arrowStart");
+			this.props.onBlurbUpdate([
+					{i: this.props.index, prop: pos, key: target},
+					{
+						i: this.props.index, 
+						prop: this._toProportionalPosition(this.state.arrow.start.point, null, pos), 
+						key: "arrowStart"
+					}
+				]);
 		}
-		this.props.onBlurbUpdate(this.props.index, pos, target);
+		else {
+			this.props.onBlurbUpdate(this.props.index, pos, target);
+		}
+		
 
 
 		e.stopPropagation();
@@ -321,12 +326,13 @@ var AnnotationBlurb = React.createClass({
 		// if(this.props.arrow.snapTo == "textEnd") {
 		arrow.start = {
 			point: {
-				x: arrow.start.point.x || 100 ,
-				y: arrow.start.point.y || 100
+				x: arrow.start.point.x || 0 ,
+				y: arrow.start.point.y || 0
 			}
 		}
 
-		arrow.start.pct = this._toProportionalPosition(arrow.start.point, null, this.state.pos)
+		arrow.start.pct = this._toProportionalPosition(arrow.start.point, null, this.props.pos)
+
 		// }
 		this.setState({
 			node: node,
@@ -409,8 +415,8 @@ var AnnotationBlurb = React.createClass({
 		};
 		var swoopy = swoopyArrow()
 		  .angle(Math.PI/3)
-		  .clockwise((this.state.arrow.start.x < this.state.arrow.end.x) ? true : false)
-		  // .clockwise(this.state.arrow.clockwise)
+		  // .clockwise((this.state.arrow.start.x < this.state.arrow.end.x) ? true : false)
+		  .clockwise(this.props.arrow.clockwise)
 		  .x(function(d) { return d.x; })
 		  .y(function(d) { return d.y; });
 

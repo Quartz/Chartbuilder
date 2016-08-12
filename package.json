@@ -57,14 +57,15 @@
     "flux": "~2.1.1",
     "lodash": "^4.0.0",
     "markdown-it": "^6.0.0",
-    "react": "^15.0.1",
+    "react": "^15.0.2",
     "react-addons-pure-render-mixin": "^15.0.1",
     "react-addons-shallow-compare": "^15.0.1",
     "react-addons-update": "^15.0.1",
     "react-dom": "^15.0.1",
     "save-svg-as-png": "git://github.com/nsonnad/saveSvgAsPng.git#clean-svg-fonts",
     "sizeof": "^1.0.0",
-    "sugar-date": "^1.5.1"
+    "sugar-date": "^1.5.1",
+    "swoopyarrows": "git://github.com/bizweekgraphics/swoopyarrows.git#npming"
   },
   "devDependencies": {
     "browser-sync": "2.x.x",
