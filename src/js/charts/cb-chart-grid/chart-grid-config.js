@@ -106,6 +106,11 @@ var defaultProps = {
 			rows: 1,
 			type: null
 		},
+		_annotations: {
+			blurbs: {
+				values: []
+			}
+		},
 		mobile: {}
 	},
 	/**
