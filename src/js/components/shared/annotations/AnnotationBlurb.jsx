@@ -26,6 +26,7 @@ var AnnotationBlurb = React.createClass({
 			pos: {x: 0, y: 0, point: {x: 0, y: 0}, val:{}},
 			x: function(d){return d},
 			y: function(d){return d},
+			hasArrow: true,
 			arrow: {
 				start: {point:{x: 10, y: 50}, val:{}, pct: {x:0, y:0}},
 				end: {point: {x: 20, y: 100}, val:{}}, pct: {x:0, y:0},
@@ -294,7 +295,7 @@ var AnnotationBlurb = React.createClass({
 	},
 
 	_handleArrowDoubleClick: function(d) {
-		this.props.onBlurbUpdate(this.props.index, !this.state.arrow.clockwise, "arrowClockwise");
+		this.props.onBlurbUpdate(this.props.index, !this.props.arrow.clockwise, "arrowClockwise");
 	},
 
 	_handleSpanFocus: function(e) {
@@ -446,17 +447,12 @@ var AnnotationBlurb = React.createClass({
 			return (<span className="blurb_line" key={index + "-blurb_line" + i}>{d}{linebreak}</span>)
 		})
 
-		return (
-			<div
-			 className="blurb"
-			 style={style}
-			 data-mode={this.state.mode}
-			>
-				<div
-					className="interface"
-					onMouseDown={this._handleInterfaceMouseDown}
-				 >
-				 	<div className="anchor_points">
+		var anchor_points;
+		var arrow_svg;
+
+		if(this.props.hasArrow) {
+			anchor_points = (
+					<div className="anchor_points">
 				 		<div className="anchor"></div>
 				 		<div className="anchor"></div>
 				 		<div className="anchor"></div>
@@ -467,6 +463,44 @@ var AnnotationBlurb = React.createClass({
 				 		<div className="anchor"></div>
 				 		<div className="anchor"></div>
 				 	</div>
+				 	)
+
+			arrow_svg = (
+					<svg>
+						<circle
+							cx={arrowPos.start.x}
+							cy={arrowPos.start.y}
+							r="10px"
+							onMouseDown={this._handleArrowStartMouseDown}
+							onDoubleClick={this._handleArrowDoubleClick}
+						/>
+
+						<circle
+							cx={arrowPos.end.x}
+							cy={arrowPos.end.y}
+							r="10px"
+							onMouseDown={this._handleArrowEndMouseDown}
+							onDoubleClick={this._handleArrowDoubleClick}
+						/>
+						<path
+							markerEnd="url(#arrowhead)"
+							d={swoopy([arrowPos.start, arrowPos.end])}
+						/>
+					</svg>
+				)
+		}
+
+		return (
+			<div
+			 className="blurb"
+			 style={style}
+			 data-mode={this.state.mode}
+			>
+				<div
+					className="interface"
+					onMouseDown={this._handleInterfaceMouseDown}
+				 >
+				 	{anchor_points}
 				 </div>
 
 				 <div
@@ -490,28 +524,7 @@ var AnnotationBlurb = React.createClass({
 				 	</p>
 
 				 </div>
-				 <svg>
-				 	<circle
-				 		cx={arrowPos.start.x}
-				 		cy={arrowPos.start.y}
-				 		r="10px"
-				 		onMouseDown={this._handleArrowStartMouseDown}
-				 		onDoubleClick={this._handleArrowDoubleClick}
-				 	/>
-
-				 	<circle
-				 		cx={arrowPos.end.x}
-				 		cy={arrowPos.end.y}
-				 		r="10px"
-				 		onMouseDown={this._handleArrowEndMouseDown}
-				 		onDoubleClick={this._handleArrowDoubleClick}
-				 	/>
-				 	<path
-				 		markerEnd="url(#arrowhead)"
-				 		d={swoopy([arrowPos.start, arrowPos.end])}
-				 	/>
-				 </svg>
-
+				 {arrow_svg}
 			</div>
 		);
 	}

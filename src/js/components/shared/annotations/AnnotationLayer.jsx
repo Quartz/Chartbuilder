@@ -139,6 +139,7 @@ var AnnotationLayer = React.createClass({
 					dimensions={that.props.dimensions}
 					margin={{x: 0, y: 0}}
 					offset={{x: 0, y: 0}}
+					hasArrow={d.hasArrow}
 					arrow={{
 						start: {pct: d.arrowStart},
 						end: {pct: d.arrowEnd},
@@ -150,7 +151,7 @@ var AnnotationLayer = React.createClass({
 		return (
 			<div className="annotation-layer">
 				{blurbs}
-				<svg>
+				<svg className="arrowhead-wrap">
 					<defs>
 						<marker
 							id="arrowhead"

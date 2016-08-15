@@ -4,6 +4,9 @@ var Button = chartbuilderUI.Button;
 var ButtonGroup = chartbuilderUI.ButtonGroup;
 var TextArea = chartbuilderUI.TextArea;
 var TextInput = chartbuilderUI.TextInput;
+var AlertGroup = chartbuilderUI.AlertGroup;
+var Toggle = chartbuilderUI.Toggle;
+
 var clone = require("lodash/clone");
 
 var ChartViewActions = require("../../../actions/ChartViewActions");
@@ -63,6 +66,18 @@ var AnnotationSettings = React.createClass({
 				this._handleAnnotationTextChange(i, "copy", v)
 				break
 
+			case "annotationHasArrow":
+				this.state.blurbs.values[i].hasArrow = v ? true : false;
+				this.props.chartProps._annotations.blurbs = this.state.blurbs;
+				ChartViewActions.updateChartProp("_annotations", this.props.chartProps._annotations)
+				break
+
+			case "annotationArrowClockwise":
+				this.state.blurbs.values[i].arrowClockwise = v ? true : false;
+				this.props.chartProps._annotations.blurbs = this.state.blurbs;
+				ChartViewActions.updateChartProp("_annotations", this.props.chartProps._annotations)
+				break
+
 			default:
 		}
 
@@ -102,20 +117,49 @@ var AnnotationSettings = React.createClass({
 var AnnotationControl = React.createClass({
 
 	propTypes: {
-		onUpdate: React.PropTypes.func
+		index: React.PropTypes.number,
+		onUpdate: React.PropTypes.func,
+		tout: React.PropTypes.string,
+		copy: React.PropTypes.string,
+		hasArrow: React.PropTypes.bool,
+		arrowClockwise: React.PropTypes.bool
 	},
 
 	getDefaultProps: function() {
 		return {
 			tout: "tout",
-			copy: "copy"
+			copy: "copy",
+			hasArrow: true,
+			arrowClockwise: true
 		};
 	},
 
 	render: function() {
+		var char_remain = annotation_config.maxCopyLength - this.props.copy.length
+		var errors = [
+			{
+				text: "Characters remaining: " + char_remain,
+				type: char_remain >= 0 ? (char_remain < 20 ? "warning" : "default") : "error"
+			}
+		];
+
+		var clockwiseToggle = this.props.hasArrow ? 
+				(<Toggle
+					label="Clockwise arrow"
+					toggled={this.props.arrowClockwise}
+					onToggle={this.props.onUpdate.bind(null, "annotationArrowClockwise", this.props.index)}
+				/>)
+				: null;
+				
 		return (
 			<div>
 				<h3>{"Annotation " + (this.props.index + 1)}</h3>
+				<Toggle
+					label="Draw arrow"
+					toggled={this.props.hasArrow}
+					onToggle={this.props.onUpdate.bind(null, "annotationHasArrow", this.props.index)}
+				/>
+				{clockwiseToggle}
 				<TextInput
 					onChange={this.props.onUpdate.bind(null, "annotationTout",this.props.index)}
 					placeholder="Tout"
@@ -125,6 +169,9 @@ var AnnotationControl = React.createClass({
 					value={this.props.copy}
 					onChange={this.props.onUpdate.bind(null, "annotationCopy",this.props.index)}
 				/>
+				<div className="error-display">
+					<AlertGroup alerts={errors} />
+				</div>
 				<Button
 					text={"Delete annotation " + (this.props.index + 1)}
 					onClick={this.props.onUpdate.bind(null,"annotationDelete",this.props.index)}

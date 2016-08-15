@@ -13,16 +13,17 @@ anchor-placement()
 	left 0
 	width 100%
 	height 100%
+	.arrowhead-wrap
+		display block
+		position absolute
+		left -500px
+		top -500px
 .blurb
-	width 20em
-	
+	width 10em
 	font-size 1em
 	padding 5px
 	box-sizing border-box
 	z-index 10
-	
-	&[data-mode="edit"]
-		background-color #ccc
 		
 	&*
 		box-sizing border-box
@@ -59,6 +60,10 @@ anchor-placement()
 		width 100%
 		height 100%
 		z-index 1
+		p
+			font-size 0.75em
+			line-height 1.2
+			padding 0
 		span
 			cursor text
 			font-family $font-sans
