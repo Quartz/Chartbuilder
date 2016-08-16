@@ -15,7 +15,8 @@ var AnnotationBlurb = React.createClass({
 		onBlurbUpdate: React.PropTypes.func,
 		dimensions: React.PropTypes.object,
 		margin: React.PropTypes.object,
-		offset: React.PropTypes.object
+		offset: React.PropTypes.object,
+		direct: React.PropTypes.bool
 	},
 
 	getDefaultProps: function() {
@@ -414,6 +415,9 @@ var AnnotationBlurb = React.createClass({
 			left: this.props.x(this.state.dragging ? this.state.pos.x : this.props.pos.x) ,
 			top:  this.props.y(this.state.dragging ? this.state.pos.y : this.props.pos.y) 
 		};
+
+		style = this.props.direct ? null : style;
+
 		var swoopy = swoopyArrow()
 		  .angle(Math.PI/3)
 		  // .clockwise((this.state.arrow.start.x < this.state.arrow.end.x) ? true : false)
@@ -507,6 +511,7 @@ var AnnotationBlurb = React.createClass({
 				 	className="content"
 				 >
 				 	<p>
+				 		<span className="index">{(this.props.index + 1) + ". "}</span>
 				 		<span
 				 			{...editableSpanProps}
 				 			onKeyUp={this._handleToutKeyUp}

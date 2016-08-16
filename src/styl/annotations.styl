@@ -7,100 +7,156 @@ anchor-placement()
 			top "calc(%s + %s)" % (((num % 3) * 50%) $anchor-radius * -1)
 			left "calc(%s + %s)" % ((floor( num / 3) * 50%) $anchor-radius * -1)
 
+// styles that apply to both desktop and mobile charts
 .annotation-layer
-	position absolute
-	top 0
-	left 0
-	width 0
-	height 0
-	overflow visible
 	.arrowhead-wrap
 		display block
 		position absolute
 		left -500px
 		top -500px
-.blurb
-	width 10em
-	font-size 1em
-	padding 5px
-	box-sizing border-box
-	z-index 10
-		
-	&*
+	.blurb
 		box-sizing border-box
-	
-	p
-		z-index 1
-		width 100%
-
-	svg
+		&*
+			box-sizing border-box
+			
+		p
+			z-index 1
+			width 100%
+			
+		.content
+			p
+				font-size 0.75em
+				line-height 1.2
+				padding 0
+			span
+				cursor text
+				font-family $font-sans
+				
+			p > span:first-child, p > span:nth-child(2)
+				font-family $font-sans-bold
+				br
+					display none	
+				
+			.end-mark
+				width 1px
+				height 1px
+				display inline-block
+				
+			
+// styles to only apply to desktop charts
+&:not(.renderer-svg-mobile)
+	.annotation-layer-mobile
+		display none
+		
+	.annotation-layer
 		position absolute
-		overflow visible
 		top 0
 		left 0
-		width 100%
-		path 
-			fill none
-			stroke $color-body-text
-			stroke-width 1px
+		width 0
+		height 0
+		overflow visible
+	
+	.blurb
+		width 10em
+		font-size 1em
+		padding 5px
+		z-index 10
 			
-		circle
-			opacity 0
-			fill black
-			fill-opacity 0
-			stroke #999
-			stroke-width 2px
-			stroke-dasharray 5,5
-			
-			&:hover
-				opacity 1
-				cursor move
-		z-index 0
-		
-	.content
-		width 100%
-		height 100%
-		z-index 1
-		p
-			font-size 0.75em
-			line-height 1.2
-			padding 0
-		span
-			cursor text
-			font-family $font-sans
-			
-		p > span:first-child
-			font-family $font-sans-bold
-			br
-				display none	
-			
-		.end-mark
-			width 1px
-			height 1px
-			display inline-block
-		
-	.interface
-		position absolute
-		top -10px
-		left -10px
-		width calc(100%+10px)
-		height calc(100%+10px)
-		cursor move
-		.anchor_points
-			display none
+		svg
 			position absolute
+			overflow visible
+			top 0
+			left 0
+			width 100%
+			
+			path 
+				fill none
+				stroke $color-body-text
+				stroke-width 1px
+				
+			circle
+				opacity 0
+				fill black
+				fill-opacity 0
+				stroke #999
+				stroke-width 2px
+				stroke-dasharray 5,5
+				
+				&:hover
+					opacity 1
+					cursor move
+			z-index 0
+			
+		.content
 			width 100%
 			height 100%
-			.anchor
-				position absolute
-				width $anchor-radius * 2
-				height $anchor-radius * 2
-				border-radius $anchor-radius * 2
-				background-color #999
-				anchor-placement()
-				&:nth-child(5)
-					display none
-		&:hover
-			border 2px dashed #999
+			z-index 1
+			
+			span.index
+				display none
+			
+			
+		.interface
+			position absolute
+			top -10px
+			left -10px
+			width calc(100%+10px)
+			height calc(100%+10px)
+			cursor move
 			.anchor_points
-				display block
+				display none
+				position absolute
+				width 100%
+				height 100%
+				.anchor
+					position absolute
+					width $anchor-radius * 2
+					height $anchor-radius * 2
+					border-radius $anchor-radius * 2
+					background-color #999
+					anchor-placement()
+					&:nth-child(5)
+						display none
+			&:hover
+				border 2px dashed #999
+				.anchor_points
+					display block
+
+$annotation_marker_size = 1.2em				
+// styles to apply to mobile charts
+&.renderer-svg-mobile
+	.annotation-layer-mobile
+		position absolute
+		top $annotation_marker_size * -0.5
+		left $annotation_marker_size * -0.5
+		width 0
+		height 0
+		overflow visible
+		display block
+		
+		.annotation-marker
+			width $annotation_marker_size
+			height $annotation_marker_size
+			font-size 0.75em
+			border-radius 5em
+			background-color black
+			cursor move
+			p
+				margin 0
+				padding 0 
+				line-height 1
+				padding-top 0.25em
+				text-align center
+				color white
+				font-family $font-sans-bold
+		
+	.annotation-layer
+		position relative
+		.blurb
+			svg
+				display none
+			p
+				br
+					display none
+		.interface
+			display none

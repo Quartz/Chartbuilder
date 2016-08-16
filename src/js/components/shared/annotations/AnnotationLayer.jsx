@@ -2,6 +2,7 @@ var React = require('react');
 
 var ChartViewActions = require("../../../actions/ChartViewActions");
 var AnnotationBlurb = require("./AnnotationBlurb.jsx");
+var AnnotationMarker = require("./AnnotationMarker.jsx")
 var annotation_config = require("./annotation-config.js");
 
 
@@ -14,7 +15,8 @@ var AnnotationLayer = React.createClass({
 	propTypes: {
 		blurbs: React.PropTypes.array,
 		chartProps: React.PropTypes.object,
-		dimensions: React.PropTypes.object
+		dimensions: React.PropTypes.object,
+		isSmall: React.PropTypes.bool
 	},
 
 	getDefaultProps: function() {
@@ -22,6 +24,10 @@ var AnnotationLayer = React.createClass({
 			blurbs: [],
 			defaultBlurb: annotation_config.defaultBlurb
 		};
+	},
+
+	_updateAnnotations: function(newAnnotations) {
+		ChartViewActions.updateChartProp("_annotations", newAnnotations);
 	},
 
 
@@ -39,7 +45,11 @@ var AnnotationLayer = React.createClass({
 			_annotations.blurbs.values[d.i][d.key] = d.prop;
 		});
 
-		ChartViewActions.updateChartProp("_annotations", _annotations);
+		this._updateAnnotations(_annotations);
+	},
+
+	_handleMarkerUpdate: function(index_or_array, prop, key) {
+		this._handleBlurbUpdate(index_or_array, prop, key);
 	},
 
 	_addBlurb: function() {
@@ -122,6 +132,7 @@ var AnnotationLayer = React.createClass({
 	},
 
 	render: function() {
+		console.log(this.props)
 		//CHANGE
 		var scales = this._createScales();
 		var that = this;
@@ -146,29 +157,58 @@ var AnnotationLayer = React.createClass({
 						snapTo: null,
 						clockwise: d.arrowClockwise
 					}}
+					direct={that.props.isSmall}
 				/>)
-		})	
+		})
+
+		var annotation_markers = this.props.chartProps._annotations.blurbs.values.map(function(d,i) {
+
+			return (<AnnotationMarker 
+					key={"marker" + i}
+					index={i}
+					pos={d.pos}
+					onMarkerUpdate={that._handleMarkerUpdate}
+					x={scales.x}
+					y={scales.y}
+					dimensions={that.props.dimensions}
+					margin={{x: 0, y: 0}}
+					offset={{x: 0, y: 0}}
+					arrow={{
+						start: {pct: d.arrowStart},
+						end: {pct: d.arrowEnd},
+						snapTo: null,
+						clockwise: d.arrowClockwise
+					}}
+				/>)
+		});
+
+
 		return (
-			<div className="annotation-layer">
-				{blurbs}
-				<svg className="arrowhead-wrap">
-					<defs>
-						<marker
-							id="arrowhead"
-							viewBox="0 0 5.108 8.18"
-							markerHeight="8.18"
-							markerWidth="5.108"
-							refY="4.09"
-							refX="5"
-							orient="auto"
-						>
-							<polygon
-								points="0.745,8.05 0.07,7.312 3.71,3.986 0.127,0.599 0.815,-0.129 5.179,3.999" 
-								fill="#4C4C4C"
-							/>
-						</marker>
-					</defs>
-				</svg>
+			<div className="annotation-layer-wrap">
+				<div className="annotation-layer">
+					{blurbs}
+					<svg className="arrowhead-wrap">
+						<defs>
+							<marker
+								id="arrowhead"
+								viewBox="0 0 5.108 8.18"
+								markerHeight="8.18"
+								markerWidth="5.108"
+								refY="4.09"
+								refX="5"
+								orient="auto"
+							>
+								<polygon
+									points="0.745,8.05 0.07,7.312 3.71,3.986 0.127,0.599 0.815,-0.129 5.179,3.999" 
+									fill="#4C4C4C"
+								/>
+							</marker>
+						</defs>
+					</svg>
+				</div>
+				<div className="annotation-layer-mobile">
+					{annotation_markers}
+				</div>
 			</div>
 		);
 	}
