@@ -359,8 +359,8 @@ var AnnotationBlurb = React.createClass({
 
 		var style = {
 			position: "absolute",
-			left: this.props.x(this.state.dragging ? this.state.pos.x : this.props.pos.x) ,
-			top:  this.props.y(this.state.dragging ? this.state.pos.y : this.props.pos.y) 
+			left: this.state.dragging ? this.state.pos.x : this.props.pos.x,
+			top:  this.state.dragging ? this.state.pos.y : this.props.pos.y
 		};
 
 		style = this.props.direct ? null : style;

@@ -223,8 +223,8 @@ var AnnotationMarker = React.createClass({
 	render: function() {
 		var style = {
 			position: "absolute",
-			left: this.props.x(this.state.dragging ? this.state.arrow.end.point.x : this.props.arrow.end.point.x),
-			top:  this.props.y(this.state.dragging ? this.state.arrow.end.point.y : this.props.arrow.end.point.y) 
+			left: this.state.dragging ? this.state.arrow.end.point.x : this.props.arrow.end.point.x,
+			top:  this.state.dragging ? this.state.arrow.end.point.y : this.props.arrow.end.point.y 
 		};
 
 		return (

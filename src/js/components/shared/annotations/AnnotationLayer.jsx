@@ -5,6 +5,9 @@ var AnnotationBlurb = require("./AnnotationBlurb.jsx");
 var AnnotationMarker = require("./AnnotationMarker.jsx")
 var annotation_config = require("./annotation-config.js");
 
+var DateScaleMixin = require("../../mixins/DateScaleMixin.js");
+var NumericScaleMixin = require("../../mixins/NumericScaleMixin.js");
+
 
 var clone = require("lodash/clone");
 
@@ -18,6 +21,8 @@ var AnnotationLayer = React.createClass({
 		dimensions: React.PropTypes.object,
 		isSmall: React.PropTypes.bool
 	},
+
+	mixins: [ DateScaleMixin, NumericScaleMixin ],
 
 	getDefaultProps: function() {
 		return {
@@ -61,71 +66,90 @@ var AnnotationLayer = React.createClass({
 	},
 
 	componentWillMount: function() {
-		this._addBlurb()
+		this._addBlurb();
+	},
+
+	getInitialState: function() {
+		return {
+			dateScaleInfo: null
+		};
+	},
+
+	componentWillReceiveProps: function(nextProps) {
+		this.setState({
+			dateScaleInfo: nextProps.chartProps.scale.hasDate ? this.generateDateScale(nextProps) : null 
+		});
 	},
 
 	_createScales: function() {
 
 		var styleConfig = this.props.styleConfig;
 		var displayConfig = this.props.displayConfig;
-		var props = this.props;
+		var props = clone(this.props);
 		var dimensions = props.dimensions;
 
-		// props.chartAreaDimensions = {
-		// 	width: (
-		// 		dimensions.width -
-		// 		displayConfig.margin.left - displayConfig.margin.right -
-		// 		displayConfig.padding.left - displayConfig.padding.right -
-		// 		this.state.maxTickWidth.primaryScale - this.state.maxTickWidth.secondaryScale
-		// 	),
-		// 	height: (
-		// 		dimensions.height -
-		// 		displayConfig.margin.top - displayConfig.margin.bottom -
-		// 		displayConfig.padding.top - displayConfig.padding.bottom
-		// 	)
-		// };
+		//CHANGE
+		maxTickWidth = {
+			primaryScale: 0,
+			secondaryScale: 0
+		}
 
-		// var padding = computePadding(props);
+		props.chartAreaDimensions = {
+			width: (
+				dimensions.width -
+				displayConfig.margin.left - displayConfig.margin.right -
+				displayConfig.padding.left - displayConfig.padding.right -
+				maxTickWidth.primaryScale - maxTickWidth.secondaryScale
+			),
+			height: (
+				dimensions.height -
+				displayConfig.margin.top - displayConfig.margin.bottom -
+				displayConfig.padding.top - displayConfig.padding.bottom
+			)
+		};
 
-		// var scales = this.props.chartProps.scale;
-		// yScale_info = scales.primaryScale
-		// xScale_info = xScaleInfo(
-		// 		this.props.dimensions.width,
-		// 		padding,styleConfig,
-		// 		displayConfig,
-		// 		{
-		// 			dateSettings: this.state.dateScaleInfo
-		// 		}
-		// 	);
+		var padding = computePadding(props);
 
-		// var yRange = [
-		// 	this.props.dimensions.height - padding.bottom - displayConfig.margin.bottom,
-		// 	padding.top + displayConfig.margin.top
-		// ];
 
-		// var xRange = props.chartProps.scale.hasDate ? [
-		// 	padding.left + displayConfig.margin.left + this.props.maxTickWidth.primaryScale,
-		// 	xScale_info.rangeR-padding.right-displayConfig.margin.right-this.props.maxTickWidth.secondaryScale - displayConfig.minPaddingOuter
-		// ] : [];
+		var scales = this.props.chartProps.scale;
+		yScale_info = scales.primaryScale
+		xScale_info = xScaleInfo(
+				this.props.dimensions.width,
+				padding,styleConfig,
+				displayConfig,
+				{
+					dateSettings: this.state.dateScaleInfo
+				}
+			);
 
-		// scale = {
-		// 	y: {
-		// 		domain: yScale_info.domain,
-		// 		range: yRange
-		// 	},
-		// 	x: {
-		// 		domain: xScale_info.domain ? xScale_info.domain : [],
-		// 		range: xRange
-		// 	}
-		// };
+		var yRange = [
+			this.props.dimensions.height - padding.bottom - displayConfig.margin.bottom,
+			padding.top + displayConfig.margin.top
+		];
+
+		var xRange = props.chartProps.scale.hasDate ? [
+			padding.left + displayConfig.margin.left + maxTickWidth.primaryScale,
+			xScale_info.rangeR-padding.right-displayConfig.margin.right-maxTickWidth.secondaryScale - displayConfig.minPaddingOuter
+		] : [];
+
+		scale = {
+			y: {
+				domain: yScale_info.domain,
+				range: yRange
+			},
+			x: {
+				domain: xScale_info.domain ? xScale_info.domain : [],
+				range: xRange
+			}
+		};
 
 		var yScale = d3.scale.linear()
-			// .domain(props.scale.y.domain)
-			// .range(props.scale.y.range);
+			.domain(scale.y.domain)
+			.range(scale.y.range);
 
 		var xScale = d3.scale.linear()
-			// .domain(props.scale.x.domain)
-			// .range(props.scale.x.range);
+			.domain(scale.x.domain)
+			.range(scale.x.range);
 
 
 		return {x: xScale, y: yScale}
@@ -204,8 +228,6 @@ var AnnotationLayer = React.createClass({
 		this.props.chartProps._annotations.blurbs.values.forEach(function(d,i) {
 			var shared = {
 				index: i,
-				x: scales.x,
-				y: scales.y,
 				dimensions: that.props.dimensions,
 				margin: {x: 0, y: 0},
 				offset: {x: 0, y: 0},
@@ -316,6 +338,8 @@ function xScaleInfo(width, padding, styleConfig, displayConfig, state) {
 function computePadding(props) {
 	var labels = props.chartProps._annotations.labels;
 	var displayConfig = props.displayConfig;
+	var dimensions = props.dimensions;
+
 	var _top = (props.labelYMax * props.chartAreaDimensions.height) + displayConfig.afterLegend;
 
 	if (props.hasTitle) {
