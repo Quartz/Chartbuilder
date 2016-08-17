@@ -131,56 +131,117 @@ var AnnotationLayer = React.createClass({
 		return {x: xScale, y: yScale}
 	},
 
+	_toProportionalPosition: function(pos,props,origin){
+		// takes a pixel position and converts it to a proportional one
+
+		if (!props) {
+			props = this.props;
+		}
+
+		if(!origin) {
+			origin = {x: 0, y: 0}
+		}
+		return {
+			x: (pos.x + origin.x) / props.dimensions.width,
+			y: (pos.y + origin.y) / props.dimensions.height,
+		};
+	},
+
+	_fromProportionalPosition: function(pos,props,origin){
+		// takes a proportional position and converts it to a pixel location
+		if (!props) {
+			props = this.props;
+		}
+
+		if(!origin) {
+			origin = {x: 0, y: 0}
+		}
+
+		return {
+			x: (pos.x - origin.x) * props.dimensions.width,
+			y: (pos.y - origin.y) * props.dimensions.height,
+		};
+	},
+
+	_toValuePosition: function(pos, props) {
+		if(!x) {
+			x = props.x;
+		}
+
+		if(!y) {
+			y = props.y;
+		}
+
+
+		return {
+			x: pos.x !== 0 ? x.invert(pos.x+props.offset.x) : null,
+			y: pos.y !== 0 ? y.invert(pos.y+props.offset.y) : null
+		};
+	},
+
+	_fromValuePosition: function(vals, props) {
+		if(!x) {
+			x = props.x;
+		}
+
+		if(!y) {
+			y = props.y;
+		}
+
+		return {
+			x: vals.x ? x(vals.x)-props.offset.x : 0,
+			y: vals.y ? y(vals.y)-props.offset.y : 0
+		};
+	},
+
 	render: function() {
 		//CHANGE
 		var scales = this._createScales();
 		var that = this;
-		var blurbs = this.props.chartProps._annotations.blurbs.values.map(function(d,i) {
 
-			return (<AnnotationBlurb 
+		var blurbs = [];
+		var annotation_markers = [];
+
+		this.props.chartProps._annotations.blurbs.values.forEach(function(d,i) {
+			var shared = {
+				index: i,
+				x: scales.x,
+				y: scales.y,
+				dimensions: that.props.dimensions,
+				margin: {x: 0, y: 0},
+				offset: {x: 0, y: 0},
+				arrow: {
+					start: {pct: d.arrowStart},
+					end: {pct: d.arrowEnd},
+					snapTo: null,
+					clockwise: d.arrowClockwise
+				},
+				editable: true,
+				toRelative: that._toProportionalPosition,
+				fromRelative: that._fromProportionalPosition
+			}
+
+			blurbs.push((
+				<AnnotationBlurb
+					{...shared}
 					key={"blurb" + i}
-					index={i}
 					tout={d.tout}
 					copy={d.copy}
 					pos={d.pos}
 					onBlurbUpdate={that._handleBlurbUpdate}
-					x={scales.x}
-					y={scales.y}
-					dimensions={that.props.dimensions}
-					margin={{x: 0, y: 0}}
-					offset={{x: 0, y: 0}}
 					hasArrow={d.hasArrow}
-					arrow={{
-						start: {pct: d.arrowStart},
-						end: {pct: d.arrowEnd},
-						snapTo: null,
-						clockwise: d.arrowClockwise
-					}}
 					direct={that.props.isSmall}
-					editable={true}
-				/>)
-		})
+				/>
+				))
 
-		var annotation_markers = this.props.chartProps._annotations.blurbs.values.map(function(d,i) {
-
-			return (<AnnotationMarker 
+			annotation_markers.push((
+				<AnnotationMarker
+					{...shared} 
 					key={"marker" + i}
-					index={i}
 					pos={d.pos}
 					onMarkerUpdate={that._handleMarkerUpdate}
-					x={scales.x}
-					y={scales.y}
-					dimensions={that.props.dimensions}
-					margin={{x: 0, y: 0}}
-					offset={{x: 0, y: 0}}
-					arrow={{
-						start: {pct: d.arrowStart},
-						end: {pct: d.arrowEnd},
-						snapTo: null,
-						clockwise: d.arrowClockwise
-					}}
-					editable={true}
-				/>)
+				/>
+				))
 		});
 
 

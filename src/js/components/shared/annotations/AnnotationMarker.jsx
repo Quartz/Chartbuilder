@@ -90,7 +90,7 @@ var AnnotationMarker = React.createClass({
 				y: propPos.y + delta.y,
 			}
 		}
-		newPos.pct = this._toProportionalPosition(newPos.point,null,this.props.pos)
+		newPos.pct = this._toRelative(newPos.point)
 
 		this.setState({
 			arrow: merge({}, this.state.arrow, {end: newPos})
@@ -143,18 +143,18 @@ var AnnotationMarker = React.createClass({
 		if(!props) {
 			props = this.props;
 		}
-		var proPPos = this._toProportionalPosition(props.pos)
+		var proPPos = this._toRelative(props.pos)
 		var arrow = props.arrow;
-		arrow.end.point = this._fromProportionalPosition(props.arrow.end.pct,null,proPPos)
-		arrow.start.point = this._fromProportionalPosition(props.arrow.start.pct,null,proPPos)
+		arrow.end.point = this._fromRelative(props.arrow.end.pct)
+		arrow.start.point = this._fromRelative(props.arrow.start.pct)
 		return arrow
 	},
 
 	getInitialState: function() {
-		var proPPos = this._toProportionalPosition(this.props.pos)
+		var proPPos = this._toRelative(this.props.pos)
 		var arrow = this.props.arrow;
-		arrow.end.point = this._fromProportionalPosition(this.props.arrow.end.pct,null,proPPos)
-		arrow.start.point = this._fromProportionalPosition(this.props.arrow.start.pct,null,proPPos)
+		arrow.end.point = this._fromRelative(this.props.arrow.end.pct)
+		arrow.start.point = this._fromRelative(this.props.arrow.start.pct)
 		this.props.arrow = arrow;
 
 		return this.stateFromProps();
@@ -182,7 +182,7 @@ var AnnotationMarker = React.createClass({
 		var arrow = this.state.arrow;
 
 
-		arrow.start.pct = this._toProportionalPosition(arrow.start.point, null, this.props.pos)
+		arrow.start.pct = this._toRelative(arrow.start.point)
 
 		this.setState({
 			arrow: arrow,
@@ -191,36 +191,33 @@ var AnnotationMarker = React.createClass({
 
 	},
 
-	_toProportionalPosition: function(pos,props,origin){
-		// takes a pixel position and converts it to a proportional one
-
-		if (!props) {
-			props = this.props;
+	_fromRelative: function(pos,props,origin) {
+		if(!props) {
+			props = this.props
 		}
 
 		if(!origin) {
-			origin = {x: 0, y: 0}
+			origin = {
+				x: 0,
+				y: 0
+			}
 		}
-		return {
-			x: (pos.x) / props.dimensions.width,
-			y: (pos.y) / props.dimensions.height,
-		};
+		return this.props.fromRelative(pos, props, origin)
 	},
 
-	_fromProportionalPosition: function(pos,props,origin){
-		// takes a proportional position and converts it to a pixel location
-		if (!props) {
-			props = this.props;
+	_toRelative: function(pos,props,origin) {
+		if(!props) {
+			props = this.props
 		}
 
 		if(!origin) {
-			origin = {x: 0, y: 0}
+			origin = {
+				x: 0,
+				y: 0
+			}
 		}
 
-		return {
-			x: (pos.x) * props.dimensions.width,
-			y: (pos.y) * props.dimensions.height,
-		};
+		return this.props.toRelative(pos, props, origin)
 	},
 
 	render: function() {

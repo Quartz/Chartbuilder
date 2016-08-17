@@ -17,7 +17,9 @@ var AnnotationBlurb = React.createClass({
 		margin: React.PropTypes.object,
 		offset: React.PropTypes.object,
 		direct: React.PropTypes.bool,
-		editable: React.PropTypes.bool
+		editable: React.PropTypes.bool,
+		toRelative: React.PropTypes.func.isRequired,
+		fromRelative: React.PropTypes.func.isRequired,
 	},
 
 	getDefaultProps: function() {
@@ -39,10 +41,10 @@ var AnnotationBlurb = React.createClass({
 	},
 
 	getInitialState: function() {
-		var proPPos = this._toProportionalPosition(this.props.pos)
+		var proPPos = this._toRelative(this.props.pos)
 		var arrow = this.props.arrow;
-		arrow.end.point = this._fromProportionalPosition(this.props.arrow.end.pct,null,proPPos)
-		arrow.start.point = this._fromProportionalPosition(this.props.arrow.start.pct,null,proPPos)
+		arrow.end.point = this._fromRelative(this.props.arrow.end.pct,null,proPPos)
+		arrow.start.point = this._fromRelative(this.props.arrow.start.pct,null,proPPos)
 		this.props.arrow = arrow;
 
 		return this.stateFromProps();
@@ -114,10 +116,10 @@ var AnnotationBlurb = React.createClass({
 		if(!props) {
 			props = this.props;
 		}
-		var proPPos = this._toProportionalPosition(props.pos)
+		var proPPos = this._toRelative(props.pos)
 		var arrow = props.arrow;
-		arrow.end.point = this._fromProportionalPosition(props.arrow.end.pct,null,proPPos)
-		arrow.start.point = this._fromProportionalPosition(props.arrow.start.pct,null,proPPos)
+		arrow.end.point = this._fromRelative(props.arrow.end.pct,null,proPPos)
+		arrow.start.point = this._fromRelative(props.arrow.start.pct,null,proPPos)
 		return arrow
 	},
 
@@ -200,7 +202,7 @@ var AnnotationBlurb = React.createClass({
 						y: propPos.y + delta.y,
 					}
 				}
-				newPos.pct = this._toProportionalPosition(newPos.point,null,this.props.pos)
+				newPos.pct = this._toRelative(newPos.point,null,this.props.pos)
 
 				this.setState({
 					arrow: merge({}, this.state.arrow, {end: newPos})
@@ -215,7 +217,7 @@ var AnnotationBlurb = React.createClass({
 						y: propPos.y + delta.y,
 					}
 				}
-				newPos.pct = this._toProportionalPosition(newPos.point,null,this.props.pos)
+				newPos.pct = this._toRelative(newPos.point,null,this.props.pos)
 
 				this.setState({
 					arrow: merge({}, this.state.arrow, {start: newPos})
@@ -259,7 +261,7 @@ var AnnotationBlurb = React.createClass({
 					{i: this.props.index, prop: pos, key: target},
 					{
 						i: this.props.index, 
-						prop: this._toProportionalPosition(this.state.arrow.start.point, null, pos), 
+						prop: this._toRelative(this.state.arrow.start.point, null, pos), 
 						key: "arrowStart"
 					}
 				]);
@@ -333,7 +335,7 @@ var AnnotationBlurb = React.createClass({
 			}
 		}
 
-		arrow.start.pct = this._toProportionalPosition(arrow.start.point, null, this.props.pos)
+		arrow.start.pct = this._toRelative(arrow.start.point, null, this.props.pos)
 
 		// }
 		this.setState({
@@ -345,67 +347,12 @@ var AnnotationBlurb = React.createClass({
 
 	},
 
-	_toProportionalPosition: function(pos,props,origin){
-		// takes a pixel position and converts it to a proportional one
-
-		if (!props) {
-			props = this.props;
-		}
-
-		if(!origin) {
-			origin = {x: 0, y: 0}
-		}
-		return {
-			x: (pos.x + origin.x) / props.dimensions.width,
-			y: (pos.y + origin.y) / props.dimensions.height,
-		};
+	_fromRelative: function(pos,props,origin) {
+		return this.props.fromRelative(pos, this.props, origin)
 	},
 
-	_fromProportionalPosition: function(pos,props,origin){
-		// takes a proportional position and converts it to a pixel location
-		if (!props) {
-			props = this.props;
-		}
-
-		if(!origin) {
-			origin = {x: 0, y: 0}
-		}
-
-		return {
-			x: (pos.x - origin.x) * props.dimensions.width,
-			y: (pos.y - origin.y) * props.dimensions.height,
-		};
-	},
-
-	_toValuePosition: function(pos, x, y) {
-		if(!x) {
-			x = this.props.x;
-		}
-
-		if(!y) {
-			y = this.props.y;
-		}
-
-
-		return {
-			x: pos.x !== 0 ? x.invert(pos.x+this.props.offset.x) : null,
-			y: pos.y !== 0 ? y.invert(pos.y+this.props.offset.y) : null
-		};
-	},
-
-	_fromValuePosition: function(vals, x, y) {
-		if(!x) {
-			x = this.props.x;
-		}
-
-		if(!y) {
-			y = this.props.y;
-		}
-
-		return {
-			x: vals.x ? x(vals.x)-this.props.offset.x : 0,
-			y: vals.y ? y(vals.y)-this.props.offset.y : 0
-		};
+	_toRelative: function(pos,props,origin) {
+		return this.props.toRelative(pos, this.props, origin)
 	},
 
 	render: function() {
