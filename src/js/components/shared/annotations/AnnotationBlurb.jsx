@@ -16,7 +16,8 @@ var AnnotationBlurb = React.createClass({
 		dimensions: React.PropTypes.object,
 		margin: React.PropTypes.object,
 		offset: React.PropTypes.object,
-		direct: React.PropTypes.bool
+		direct: React.PropTypes.bool,
+		editable: React.PropTypes.bool
 	},
 
 	getDefaultProps: function() {
@@ -78,7 +79,7 @@ var AnnotationBlurb = React.createClass({
 
 	componentDidUpdate: function(prevProps, prevState) {
 		this.props.arrow = this._arrowPointFromPct();
-		
+
 	},
 
 	componentWillReceiveProps: function(nextProps) {
@@ -100,8 +101,7 @@ var AnnotationBlurb = React.createClass({
 			this._placeArrow();
 		}
 
-		// if(nextProps.editable === true) {
-		if(true) {
+		if(nextProps.editable === true) {
 			if(nextState.dragging && !this.state.dragging) {
 				this._addDragEvents();
 			} else if (!nextState.dragging && this.state.dragging) {

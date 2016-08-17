@@ -157,6 +157,7 @@ var AnnotationLayer = React.createClass({
 						clockwise: d.arrowClockwise
 					}}
 					direct={that.props.isSmall}
+					editable={true}
 				/>)
 		})
 
@@ -178,6 +179,7 @@ var AnnotationLayer = React.createClass({
 						snapTo: null,
 						clockwise: d.arrowClockwise
 					}}
+					editable={true}
 				/>)
 		});
 

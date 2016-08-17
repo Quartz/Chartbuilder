@@ -12,7 +12,8 @@ var AnnotationMarker = React.createClass({
 		onMarkerUpdate: React.PropTypes.func,
 		dimensions: React.PropTypes.object,
 		margin: React.PropTypes.object,
-		offset: React.PropTypes.object
+		offset: React.PropTypes.object,
+		editable: React.PropTypes.bool
 	},
 
 	shouldComponentUpdate: function(nextProps, nextState) {
@@ -45,8 +46,7 @@ var AnnotationMarker = React.createClass({
 			this._placeArrow();
 		}
 
-		// if(nextProps.editable === true) {
-		if(true) {
+		if(nextProps.editable === true) {
 			if(nextState.dragging && !this.state.dragging) {
 				this._addDragEvents();
 			} else if (!nextState.dragging && this.state.dragging) {
