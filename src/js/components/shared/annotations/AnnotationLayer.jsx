@@ -188,39 +188,31 @@ var AnnotationLayer = React.createClass({
 	},
 
 	_toValuePosition: function(pos, props) {
-		if(!x) {
-			x = props.x;
+		
+		if (!props) {
+			props = this.props;
 		}
-
-		if(!y) {
-			y = props.y;
-		}
-
+		var scales = this._createScales();
 
 		return {
-			x: pos.x !== 0 ? x.invert(pos.x+props.offset.x) : null,
-			y: pos.y !== 0 ? y.invert(pos.y+props.offset.y) : null
+			x: pos.x !== 0 ? scales.x.invert(pos.x+props.offset.x) : null,
+			y: pos.y !== 0 ? scales.y.invert(pos.y+props.offset.y) : null
 		};
 	},
 
 	_fromValuePosition: function(vals, props) {
-		if(!x) {
-			x = props.x;
-		}
-
-		if(!y) {
-			y = props.y;
-		}
-
+		console.trace(vals)
+		var scales = this._createScales();
 		return {
-			x: vals.x ? x(vals.x)-props.offset.x : 0,
-			y: vals.y ? y(vals.y)-props.offset.y : 0
+			x: vals.x === 0 || vals.x ? scales.x(vals.x)-props.offset.x : 0,
+			y: vals.y === 0 || vals.y ? scales.y(vals.y)-props.offset.y : 0
 		};
 	},
 
 	render: function() {
 		//CHANGE
 		var scales = this._createScales();
+
 		var that = this;
 		var blurbs = [];
 		var annotation_markers = []
@@ -232,8 +224,9 @@ var AnnotationLayer = React.createClass({
 				margin: {x: 0, y: 0},
 				offset: {x: 0, y: 0},
 				editable: true,
-				toRelative: that._toProportionalPosition,
-				fromRelative: that._fromProportionalPosition
+				relPosKey: "val",
+				toRelative: that._toValuePosition,
+				fromRelative: that._fromValuePosition
 			}
 
 			blurbs.push((
@@ -247,8 +240,8 @@ var AnnotationLayer = React.createClass({
 					hasArrow={d.hasArrow}
 					direct={that.props.isSmall}
 					arrow= {{
-						start: {pct: d.arrowStart},
-						end: {pct: d.arrowEnd},
+						start: {pct: d.arrowStart, val: d.arrowStart},
+						end: {pct: d.arrowEnd, val: d.arrowEnd},
 						snapTo: null,
 						clockwise: d.arrowClockwise
 					}}
@@ -262,8 +255,8 @@ var AnnotationLayer = React.createClass({
 					pos={d.pos}
 					onMarkerUpdate={that._handleMarkerUpdate}
 					arrow= {{
-						start: {pct: d.arrowStart},
-						end: {pct: d.arrowEnd},
+						start: {pct: d.arrowStart, val: d.arrowStart},
+						end: {pct: d.arrowEnd, val: d.arrowEnd},
 						snapTo: null,
 						clockwise: d.arrowClockwise
 					}}

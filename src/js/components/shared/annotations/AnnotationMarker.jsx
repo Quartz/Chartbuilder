@@ -13,7 +13,8 @@ var AnnotationMarker = React.createClass({
 		dimensions: React.PropTypes.object,
 		margin: React.PropTypes.object,
 		offset: React.PropTypes.object,
-		editable: React.PropTypes.bool
+		editable: React.PropTypes.bool,
+		relPosKey: React.PropTypes.string
 	},
 
 	shouldComponentUpdate: function(nextProps, nextState) {
@@ -90,7 +91,7 @@ var AnnotationMarker = React.createClass({
 				y: propPos.y + delta.y,
 			}
 		}
-		newPos.pct = this._toRelative(newPos.point)
+		newPos[this.props.relPosKey] = this._toRelative(newPos.point)
 
 		this.setState({
 			arrow: merge({}, this.state.arrow, {end: newPos})
@@ -102,7 +103,7 @@ var AnnotationMarker = React.createClass({
 	},
 
 	_handleMouseUp: function(e) {
-		var pos = this.state.arrow.end.pct;
+		var pos = this.state.arrow.end[this.props.relPosKey];
 		var target = "arrowEnd";
 
 		this.setState({
@@ -145,16 +146,16 @@ var AnnotationMarker = React.createClass({
 		}
 		var proPPos = this._toRelative(props.pos)
 		var arrow = props.arrow;
-		arrow.end.point = this._fromRelative(props.arrow.end.pct)
-		arrow.start.point = this._fromRelative(props.arrow.start.pct)
+		arrow.end.point = this._fromRelative(props.arrow.end[this.props.relPosKey])
+		arrow.start.point = this._fromRelative(props.arrow.start[this.props.relPosKey])
 		return arrow
 	},
 
 	getInitialState: function() {
 		var proPPos = this._toRelative(this.props.pos)
 		var arrow = this.props.arrow;
-		arrow.end.point = this._fromRelative(this.props.arrow.end.pct)
-		arrow.start.point = this._fromRelative(this.props.arrow.start.pct)
+		arrow.end.point = this._fromRelative(this.props.arrow.end[this.props.relPosKey])
+		arrow.start.point = this._fromRelative(this.props.arrow.start[this.props.relPosKey])
 		this.props.arrow = arrow;
 
 		return this.stateFromProps();
@@ -182,7 +183,7 @@ var AnnotationMarker = React.createClass({
 		var arrow = this.state.arrow;
 
 
-		arrow.start.pct = this._toRelative(arrow.start.point)
+		arrow.start[this.props.relPosKey] = this._toRelative(arrow.start.point)
 
 		this.setState({
 			arrow: arrow,

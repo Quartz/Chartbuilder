@@ -20,6 +20,7 @@ var AnnotationBlurb = React.createClass({
 		editable: React.PropTypes.bool,
 		toRelative: React.PropTypes.func.isRequired,
 		fromRelative: React.PropTypes.func.isRequired,
+		relPosKey: React.PropTypes.string
 	},
 
 	getDefaultProps: function() {
@@ -32,8 +33,8 @@ var AnnotationBlurb = React.createClass({
 			y: function(d){return d},
 			hasArrow: true,
 			arrow: {
-				start: {point:{x: 10, y: 50}, val:{}, pct: {x:0, y:0}},
-				end: {point: {x: 20, y: 100}, val:{}}, pct: {x:0, y:0},
+				start: {point:{x: 10, y: 50}, val:{x: 0, y:0}, pct: {x:0, y:0}},
+				end: {point: {x: 20, y: 100}, val:{x: 0, y:0}, pct: {x:0, y:0}},
 				snapTo: null,
 				clockwise: true
 			}
@@ -43,8 +44,8 @@ var AnnotationBlurb = React.createClass({
 	getInitialState: function() {
 		var proPPos = this._toRelative(this.props.pos)
 		var arrow = this.props.arrow;
-		arrow.end.point = this._fromRelative(this.props.arrow.end.pct,null,proPPos)
-		arrow.start.point = this._fromRelative(this.props.arrow.start.pct,null,proPPos)
+		arrow.end.point = this._fromRelative(this.props.arrow.end[this.props.relPosKey],null,proPPos)
+		arrow.start.point = this._fromRelative(this.props.arrow.start[this.props.relPosKey],null,proPPos)
 		this.props.arrow = arrow;
 
 		return this.stateFromProps();
@@ -118,8 +119,8 @@ var AnnotationBlurb = React.createClass({
 		}
 		var proPPos = this._toRelative(props.pos)
 		var arrow = props.arrow;
-		arrow.end.point = this._fromRelative(props.arrow.end.pct,null,proPPos)
-		arrow.start.point = this._fromRelative(props.arrow.start.pct,null,proPPos)
+		arrow.end.point = this._fromRelative(props.arrow.end[this.props.relPosKey],null,proPPos)
+		arrow.start.point = this._fromRelative(props.arrow.start[this.props.relPosKey],null,proPPos)
 		return arrow
 	},
 
@@ -202,7 +203,7 @@ var AnnotationBlurb = React.createClass({
 						y: propPos.y + delta.y,
 					}
 				}
-				newPos.pct = this._toRelative(newPos.point,null,this.props.pos)
+				newPos[this.props.relPosKey] = this._toRelative(newPos.point,null,this.props.pos)
 
 				this.setState({
 					arrow: merge({}, this.state.arrow, {end: newPos})
@@ -217,7 +218,7 @@ var AnnotationBlurb = React.createClass({
 						y: propPos.y + delta.y,
 					}
 				}
-				newPos.pct = this._toRelative(newPos.point,null,this.props.pos)
+				newPos[this.props.relPosKey] = this._toRelative(newPos.point,null,this.props.pos)
 
 				this.setState({
 					arrow: merge({}, this.state.arrow, {start: newPos})
@@ -247,14 +248,13 @@ var AnnotationBlurb = React.createClass({
 				pos = this.state.pos;
 				break
 			case "arrowEnd":
-				pos = this.state.arrow.end.pct
+				pos = this.state.arrow.end[this.props.relPosKey]
 				break
 			case "arrowStart":
-				pos = this.state.arrow.start.pct
+				pos = this.state.arrow.start[this.props.relPosKey]
 				break
 			default:
 		}
-
 
 		if(target == "pos") {
 			this.props.onBlurbUpdate([
@@ -335,7 +335,7 @@ var AnnotationBlurb = React.createClass({
 			}
 		}
 
-		arrow.start.pct = this._toRelative(arrow.start.point, null, this.props.pos)
+		arrow.start[this.props.relPosKey] = this._toRelative(arrow.start.point, null, this.props.pos)
 
 		// }
 		this.setState({
