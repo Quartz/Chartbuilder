@@ -132,7 +132,6 @@ var AnnotationLayer = React.createClass({
 	},
 
 	render: function() {
-		console.log(this.props)
 		//CHANGE
 		var scales = this._createScales();
 		var that = this;
