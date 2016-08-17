@@ -198,9 +198,8 @@ var AnnotationLayer = React.createClass({
 		//CHANGE
 		var scales = this._createScales();
 		var that = this;
-
 		var blurbs = [];
-		var annotation_markers = [];
+		var annotation_markers = []
 
 		this.props.chartProps._annotations.blurbs.values.forEach(function(d,i) {
 			var shared = {
@@ -210,12 +209,6 @@ var AnnotationLayer = React.createClass({
 				dimensions: that.props.dimensions,
 				margin: {x: 0, y: 0},
 				offset: {x: 0, y: 0},
-				arrow: {
-					start: {pct: d.arrowStart},
-					end: {pct: d.arrowEnd},
-					snapTo: null,
-					clockwise: d.arrowClockwise
-				},
 				editable: true,
 				toRelative: that._toProportionalPosition,
 				fromRelative: that._fromProportionalPosition
@@ -231,6 +224,12 @@ var AnnotationLayer = React.createClass({
 					onBlurbUpdate={that._handleBlurbUpdate}
 					hasArrow={d.hasArrow}
 					direct={that.props.isSmall}
+					arrow= {{
+						start: {pct: d.arrowStart},
+						end: {pct: d.arrowEnd},
+						snapTo: null,
+						clockwise: d.arrowClockwise
+					}}
 				/>
 				))
 
@@ -240,10 +239,15 @@ var AnnotationLayer = React.createClass({
 					key={"marker" + i}
 					pos={d.pos}
 					onMarkerUpdate={that._handleMarkerUpdate}
+					arrow= {{
+						start: {pct: d.arrowStart},
+						end: {pct: d.arrowEnd},
+						snapTo: null,
+						clockwise: d.arrowClockwise
+					}}
 				/>
 				))
-		});
-
+		});	
 
 		return (
 			<div className="annotation-layer-wrap">
