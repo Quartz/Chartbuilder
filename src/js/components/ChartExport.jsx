@@ -5,6 +5,8 @@ var update = require("react-addons-update");
 var cx = require("classnames");
 var PropTypes = React.PropTypes;
 var d3 = require("d3");
+var domtoimage = require("dom-to-image");
+
 
 var Button = require("chartbuilder-ui").Button;
 var saveSvgAsPng = require("save-svg-as-png");
