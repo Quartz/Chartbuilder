@@ -74,26 +74,37 @@ var ChartGridXY = React.createClass({
 		}
 	},
 
-	_xyGridBlock: function(d, i) {
+	_xyGridBlock: function(gridType, d, i) {
 		var props = this.props;
 		var isFirstBlock = Math.floor((i + 1) / props.chartProps._grid.cols) === 0;
 		var x1 = (isFirstBlock) ? NaN : 0;
+		var seriesSettings = props.chartProps.chartSettings[i];
+		var elProps;
 
-		var elProps = {
-			key: i,
-			data: d.values,
-			colorIndex: props.chartProps.chartSettings[i].colorIndex
-		};
+		if (gridType === "column") {
+			elProps = {
+				key: i,
+				bars: [{
+					data: d.values,
+					colorIndex: seriesSettings.colorIndex
+				}]
+			};
+		} else {
+			elProps = {
+				key: i,
+				data: d.values,
+				colorIndex: seriesSettings.colorIndex
+			};
+		}
 
-		var el = seriesUtils.createSeries("line", elProps);
+		var el = seriesUtils.createSeries(gridType, elProps);
 
-		// TODO: make this a higher order component called BarChart or similar?
 		return [
 			<SeriesLabel
 				key="label"
 				xVal={0}
-				text={props.chartProps.chartSettings[i].label}
-				colorIndex={props.chartProps.chartSettings[i].colorIndex}
+				text={seriesSettings.label}
+				colorIndex={seriesSettings.colorIndex}
 			/>,
 			<HorizontalGridLines x1={x1} key="grid" />,
 			<HorizontalAxis key="axis" />,
@@ -154,7 +165,7 @@ var ChartGridXY = React.createClass({
 
 		var Outer = React.createFactory(XYChart);
 		var outerProps = {
-			chartType: "xy-gid",
+			chartType: "xy-grid",
 			styleConfig: props.styleConfig,
 			displayConfig: displayConfig,
 			tickValues: primaryScale.tickValues,
@@ -165,7 +176,8 @@ var ChartGridXY = React.createClass({
 			tickFont: tickFont
 		};
 
-		var grid = gridUtils.makeMults(Outer, outerProps, chartProps.data, gridScales, this._xyGridBlock);
+		var renderGridFunc = this._xyGridBlock.bind(null, chartProps._grid.type);
+		var grid = gridUtils.makeMults(Outer, outerProps, chartProps.data, gridScales, renderGridFunc);
 
 		// create vertical axis and grid lines for each row.
 		// this should possibly be part of the grid generation
