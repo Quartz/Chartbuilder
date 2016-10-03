@@ -1,6 +1,9 @@
 To-do list specific to the `react-svg` branch, where we are switching rendering
 from d4 to react.
 
+- [ ] Overall
+	- [ ] Comment new stuff
+	- [ ] General cleanup
 - [x] XY chart
 	- [x] Render types and combinations of types
 	- [x] Number axis
