@@ -140,8 +140,10 @@ var ChartGridXY = React.createClass({
 		var outerDimensions = {
 			width: dimensions.width,
 			height: dimensions.height -
-				(displayConfig.padding.top + displayConfig.padding.bottom) * (chartProps._grid.rows - 1)
+				(displayConfig.padding.top) * (chartProps._grid.rows - 1) +
+				(displayConfig.padding.bottom) * (chartProps._grid.rows)
 		}
+
 
 		// range for all charts in grid (outer)
 		var xRangeOuter = [props.styleConfig.xOverTick, chartAreaDimensions.width];
