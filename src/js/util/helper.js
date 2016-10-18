@@ -273,7 +273,7 @@ function tz_offset_to_minutes(offset) {
 		split_loc = offset.length - 2
 		offset = [offset.substring(0, split_loc), offset.substring(split_loc)]
 	}
-	sign = offset[0].indexOf("-") > -1 ? -1 : 1
+	const sign = offset[0].indexOf("-") > -1 ? -1 : 1
 
 	offset = offset.map(parseFloat)
 

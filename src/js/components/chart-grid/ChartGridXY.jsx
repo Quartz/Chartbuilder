@@ -14,7 +14,7 @@ var filter = require("lodash/filter");
 var map = require("lodash/map");
 
 /* Helper functions */
-var cb_xy = require("../../charts/cb-charts").cb_xy;
+var cb_xy = require("../../charts/charts/cb-charts").cb_xy;
 var help = require("../../util/helper.js");
 
 /* Renderer mixins */

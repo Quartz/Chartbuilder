@@ -96,6 +96,8 @@ function cast_data(input, columnNames, stripCharsRegex, opts) {
 	var dsv = d3.dsv(opts.delimiter, "text/plain");
 	var all_index_types = [];
 	var all_entry_values = [];
+	let hasDate;
+	let isNumeric;
 
 	var tz_pattern = /([+-]\d\d:*\d\d)/gi;
 	var found_timezones = input.match(tz_pattern);

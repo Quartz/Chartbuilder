@@ -3,6 +3,7 @@ var browserSync = require("browser-sync");
 var buffer = require("vinyl-buffer");
 var del = require("del");
 var nib = require("nib");
+var babelify = require('babelify');
 var reload = browserSync.reload;
 
 // browserify
@@ -62,7 +63,8 @@ gulp.task("browserify:dev", function () {
 		debug: true,
 		cache: {},
 		packageCache: {},
-		fullPaths: true
+		fullPaths: true,
+    	transform: [[babelify, {presets: ['es2015', 'react']}]]
 	};
 
 	var bundler = watchify(browserify(props).transform(envify({ NODE_ENV: "dev" })));

@@ -34,7 +34,7 @@ var SvgRectLabel = require("../svg/SvgRectLabel.jsx");
 var HiddenSvg = require("../svg/HiddenSvg.jsx");
 
 // Helpers
-var cb_xy = require("../../charts/cb-charts").cb_xy;
+var cb_xy = require("../../charts/charts/cb-charts").cb_xy;
 var help = require("../../util/helper.js");
 
 var scaleNames = ["primaryScale", "secondaryScale"];
@@ -120,6 +120,7 @@ var XYRenderer = React.createClass({
 		var dimensions = this.props.dimensions;
 		var hasTitle = (this.props.metadata.title.length > 0 && this.props.showMetadata);
 		var yOffset = this._getYOffset(this.props, hasTitle);
+		let scale;
 
 		// Maintain space between legend and chart area unless all legend labels
 		// have been dragged
@@ -541,6 +542,9 @@ var XYLabels = React.createClass({
 		var props = this.props;
 		var dimensions = props.dimensions;
 		var padding = computePadding(props);
+		let yScale_info;
+		let xScale_info;
+		let scale;
 
 		var labelConfig = {
 			xMargin: displayConfig.labelXMargin,

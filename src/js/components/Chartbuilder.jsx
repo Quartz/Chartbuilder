@@ -34,8 +34,8 @@ var svgWrapperClassName = {
 };
 
 // Associates a given chart type with its Editor and Renderer components.
-var chartEditors = require("../charts/editors");
-var numColors = require("../config/chart-style").numColors;
+var chartEditors = require("../charts/charts/editors");
+var numColors = require("../config/chartconfig/chart-style").numColors;
 
 /* API to localStorage that allows saving and retrieving charts */
 var ChartbuilderLocalStorageAPI = require("../util/ChartbuilderLocalStorageAPI");

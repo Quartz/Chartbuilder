@@ -23,7 +23,7 @@ var SvgText = require("./svg/SvgText.jsx");
 var ChartViewActions = require("../actions/ChartViewActions");
 var convertConfig = require("../util/parse-config-values");
 var SessionStore = require("../stores/SessionStore");
-var breakpoints = require("../config/chart-breakpoints");
+var breakpoints = require("../config/chartconfig/chart-breakpoints");
 var ChartFooter = require("./svg/ChartFooter.jsx");
 
 /*
@@ -31,9 +31,13 @@ var ChartFooter = require("./svg/ChartFooter.jsx");
  * also associates a given chart type with its Editor and Renderer components.
  * Used here to identify the Renderer.
 */
-var chartConfigs = require("../charts/chart-config");
-var chartStyle = require("../config/chart-style");
-var chartRenderers = require("../charts/renderers");
+var chartConfigs = require("../charts/charts/chart-config");
+var chartStyle = require("../config/chartconfig/chart-style");
+var chartRenderers = require("../charts/charts/renderers");
+
+var mapConfigs = require("../charts/maps/map-config");
+var mapStyle = require("../config/mapconfig/map-style");
+var mapRenderers = require("../charts/maps/renderers");
 
 /**
  * ### RendererWrapper

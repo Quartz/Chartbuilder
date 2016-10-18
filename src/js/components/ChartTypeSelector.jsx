@@ -15,7 +15,8 @@ var ChartServerActions = require("../actions/ChartServerActions");
 var chartbuilderUI = require("chartbuilder-ui");
 var ButtonGroup = chartbuilderUI.ButtonGroup;
 
-var chartConfig = require("../charts/chart-config");
+var chartConfig = require("../charts/charts/chart-config");
+var mapConfig = require("../charts/maps/map-config");
 
 /**
  * Select a new chart type, copying shared settings over to the new type.
@@ -26,6 +27,8 @@ var ChartTypeSelctor = React.createClass({
 
 	/* Generate values for each chart type that can be used to create buttons */
 	getInitialState: function() {
+		console.log(keys(chartConfig),'hm');
+		//var typesConfig = 
 		var chartTypeButtons = map(keys(chartConfig), function(chartTypeKey) {
 			return {
 				title: chartConfig[chartTypeKey].displayName,

@@ -1,8 +1,8 @@
 // Get data from and save to local storage
 
 var ChartServerActions = require("../actions/ChartServerActions");
-var defaultInput = require("../config/default-input");
-var chartConfig = require("../charts/chart-config");
+var defaultInput = require("../config/chartconfig/default-input");
+var chartConfig = require("../charts/charts/chart-config");
 //var testInput = require("../../../test/util/test-input");
 
 module.exports = {

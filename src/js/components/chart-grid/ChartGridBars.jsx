@@ -18,7 +18,7 @@ var separators = SessionStore.get("separators");
 var formatThousands = require("d3").format(separators.thousands);
 
 /* Helper functions */
-var cb_bar_grid = require("../../charts/cb-charts").cb_bar_grid;
+var cb_bar_grid = require("../../charts/charts/cb-charts").cb_bar_grid;
 var help = require("../../util/helper.js");
 
 /* Renderer mixins */
