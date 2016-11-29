@@ -15,11 +15,12 @@ var reduce = require("lodash/reduce");
 
 var SessionStore = require("../../stores/SessionStore");
 var separators = SessionStore.get("separators");
-var formatThousands = require("d3").format(separators.thousands);
+
 
 /* Helper functions */
 var cb_bar_grid = require("../../charts/cb-charts").cb_bar_grid;
 var help = require("../../util/helper.js");
+
 
 /* Renderer mixins */
 var ChartRendererMixin = require("../mixins/ChartRendererMixin.js");
@@ -141,7 +142,7 @@ var ChartGridBars = React.createClass({
 		*/
 		var barLabels = reduce(chartProps.data, function(arr, d) {
 			return map(d.values, function(val, i) {
-				var formatted = format_bar_labels(val.value);
+				var formatted = format_bar_labels(val.value, scale.precision);
 				if (i === 0) {
 					formatted = scale.prefix + formatted + scale.suffix;
 				}
@@ -286,9 +287,9 @@ function drawBarChartGrid(el, state) {
 			})
 			.format(function(d,i) {
 				if (i !== 0) {
-					return format_bar_labels(d);
+					return format_bar_labels(d, scale.primaryScale.precision);
 				} else {
-					return scale.primaryScale.prefix + format_bar_labels(d) + scale.primaryScale.suffix;
+					return scale.primaryScale.prefix + format_bar_labels(d, scale.primaryScale.precision) + scale.primaryScale.suffix;
 				}
 			})
 			.dy(function(d,i) {
@@ -377,11 +378,11 @@ function bar_tick_size(state) {
 	//}
 }
 
-function format_bar_labels(label) {
+function format_bar_labels(label, precision) {
 	if (label === null) {
 		return "no data";
 	} else {
-		return formatThousands(label);
+		return help.roundToPrecision(label, precision);
 	}
 }
 
