@@ -1,5 +1,5 @@
 // Component that handles global metadata, ie data that is universal regardless
-// of chart type. Eg title, source, credit, size.
+// of chart type. Eg title, sub, source, credit, size.
 
 var React = require("react");
 var PropTypes = React.PropTypes;
@@ -41,6 +41,7 @@ var chart_sizes = [
 
 var text_input_values = [
 	{ name: "title", content: "Title", isRequired: true },
+	{ name: "sub", content: "Subtitle" },
 	{ name: "credit", content: "Credit" },
 	{ name: "source", content: "Source" }
 ];
@@ -63,6 +64,7 @@ var ChartMetadata = React.createClass({
 			size: PropTypes.string.isRequired,
 			source: PropTypes.string,
 			credit: PropTypes.string,
+			sub: PropTypes.string,
 			title: PropTypes.string
 		}),
 		stepNumber: PropTypes.string,
@@ -99,13 +101,16 @@ var ChartMetadata = React.createClass({
 				onChange={this._handleMetadataUpdate}
 				isRequired={textInput.isRequired}
 			/>
-		}, this);
+		}, this)
+			.filter(function(chart_meta_text){
+				return chart_meta_text.key == "sub" ? (metadata.title.length > 0) : true;
+			});
 
 		return (
 			<div className="editor-options">
 				<h2>
 					<span className="step-number">{this.props.stepNumber}</span>
-					<span>Set title, source, credit and size</span>
+					<span>Set title, subtitle, source, credit and size</span>
 				</h2>
 				{textInputs}
 				{this.props.additionalComponents}

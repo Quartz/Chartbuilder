@@ -154,9 +154,11 @@ var XYRenderer = React.createClass({
 
 		// apply `chartSettings` to data
 		var dataWithSettings = this._applySettingsToData(_chartProps);
-		// compute margin based on existence of labels and title, based on default
+		// compute margin based on existence of labels and titles, based on default
 		// margin set in config
 		var labels = _chartProps._annotations.labels;
+		var hasTitle = (this.props.metadata.title.length > 0 && this.props.showMetadata);
+		var hasBoth = hasTitle && this.props.metadata.sub.length > 0;
 
 		// compute the max tick width for each scale
 		each(scaleNames, function(scaleKey) {
@@ -218,6 +220,7 @@ var XYRenderer = React.createClass({
 					chartProps={_chartProps}
 					allLabelsDragged={allLabelsDragged}
 					hasTitle={hasTitle}
+					hasBoth={hasBoth}
 					yOffset={yOffset}
 					displayConfig={this.props.displayConfig}
 					styleConfig={this.props.styleConfig}
@@ -239,6 +242,7 @@ var XYRenderer = React.createClass({
 					chartAreaDimensions={chartAreaDimensions}
 					data={dataWithSettings}
 					hasTitle={hasTitle}
+					hasBoth={hasBoth}
 					yOffset={yOffset}
 					scale={scale}
 					editable={this.props.editable}
@@ -260,6 +264,7 @@ var XYRenderer = React.createClass({
  * propTypes: {
  *   chartProps: PropTypes.object.isRequired,
  *   hasTitle: PropTypes.bool.isRequired,
+ *   hasBoth: PropTypes.bool.isRequired,
  *   displayConfig: PropTypes.object.isRequired,
  *   styleConfig: PropTypes.object.isRequired,
  *   data: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -282,6 +287,7 @@ var XYChart = React.createClass({
 	propTypes: {
 		chartProps: PropTypes.object.isRequired,
 		hasTitle: PropTypes.bool.isRequired,
+		hasBoth: PropTypes.bool.isRequired,
 		yOffset: PropTypes.number.isRequired,
 		displayConfig: PropTypes.object.isRequired,
 		styleConfig: PropTypes.object.isRequired,
@@ -327,6 +333,21 @@ var XYChart = React.createClass({
 		var el = ReactDOM.findDOMNode(this);
 		drawXY(el, this._getChartState(nextProps));
 		return false;
+	},
+
+	componentWillReceiveProps: function(nextProps) {
+		var yOffset;
+		if (nextProps.hasBoth) {
+			yOffset = nextProps.displayConfig.margin.top + nextProps.displayConfig.afterTitle + nextProps.displayConfig.afterSub + nextProps.displayConfig.afterTopMeta;
+		} else if (nextProps.hasTitle) {
+			yOffset = nextProps.displayConfig.margin.top + nextProps.displayConfig.afterTitle + nextProps.displayConfig.afterTopMeta;
+		} else {
+			yOffset = nextProps.displayConfig.margin.top;
+		}
+
+		this.setState({
+			yOffset: yOffset
+		});
 	},
 
 	_getChartState: function(props) {
@@ -380,6 +401,7 @@ var XYChart = React.createClass({
  * propTypes: {
  *   chartProps: PropTypes.object.isRequired,
  *   hasTitle: PropTypes.bool.isRequired,
+ *   hasBoth: PropTypes.bool.isRequired,
  *   displayConfig: PropTypes.object.isRequired,
  *   styleConfig: PropTypes.object.isRequired,
  *   data: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -404,6 +426,7 @@ var XYLabels = React.createClass({
 		chartProps: PropTypes.object.isRequired,
 		editable: PropTypes.bool,
 		hasTitle: PropTypes.bool.isRequired,
+		hasBoth: PropTypes.bool.isRequired,
 		displayConfig: PropTypes.object.isRequired,
 		styleConfig: PropTypes.object.isRequired,
 		data: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -430,6 +453,17 @@ var XYLabels = React.createClass({
 	mixins: [ DateScaleMixin, NumericScaleMixin ],
 
 	componentWillReceiveProps: function(nextProps) {
+		// Determine how far down vertically the labels should be placed, depending
+		// on presence (or not) of a title
+		var yOffset;
+		if (nextProps.hasBoth) {
+			yOffset = nextProps.displayConfig.margin.top + nextProps.displayConfig.afterTitle + nextProps.displayConfig.afterSub + nextProps.displayConfig.afterTopMeta;
+		} else if (nextProps.hasTitle) {
+			yOffset = nextProps.displayConfig.margin.top + nextProps.displayConfig.afterTitle + nextProps.displayConfig.afterTopMeta;
+		} else {
+			yOffset = nextProps.displayConfig.margin.top;
+		}
+
 		/*
 		* We use this XYLabels component's state to save locations of undragged
 		* labels. Dragged labels are saved to the parent store so that they can be
@@ -894,9 +928,11 @@ function computePadding(props) {
 	var displayConfig = props.displayConfig;
 	var _top = (props.labelYMax * props.chartAreaDimensions.height) + displayConfig.afterLegend;
 
-	if (props.hasTitle) {
-		_top += displayConfig.afterTitle;
-	}
+	if (props.hasBoth) {
+		_top += displayConfig.afterTitle + displayConfig.afterSub + displayConfig.afterTopMeta;
+	} else if (props.hasTitle) {
+		_top += displayConfig.afterTitle + displayConfig.afterTopMeta;
+	} 
 
 	// Reduce top padding if all labels or dragged or there is only one series,
 	// meaning no label will be shown
