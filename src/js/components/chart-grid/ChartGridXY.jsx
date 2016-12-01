@@ -276,8 +276,8 @@ function drawXYChartGrid(el, state) {
 					text: numericSettings ? numericSettings.suffix : "",
 					dy: state.grid.rows == 1 ? "1.2em" : 0
 				}]
-			})			
-			
+			})
+
 		})
 		.using("xAxis", function(axis) {
 			if(chartProps.scale.isNumeric) {
@@ -331,8 +331,8 @@ function drawXYChartGrid(el, state) {
 					text: "",
 					dy: 0
 				}]
-			})			
-			
+			})
+
 		})
 		chart.outerWidth(state.dimensions.width);
 		chart.extraPadding(extraPadding);

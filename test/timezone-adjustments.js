@@ -75,7 +75,6 @@ test("timezone: tz adjustments", function(t) {
 	entries = cast(input, ["date-col", "val"], stripCharsRegex, opts).entries;
 	t.deepEqual(entries, expected,"dates that don't have a timezone are adjusted to local when there is no inputTZ");
 
-
 	opts = {
 		type: "date",
 		inputTZ: "-0500",

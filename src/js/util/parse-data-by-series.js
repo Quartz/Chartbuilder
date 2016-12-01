@@ -16,7 +16,8 @@ function dataBySeries(input, opts) {
 
 	var parsedInput = parseDelimInput(input, {
 		checkForDate: opts.checkForDate,
-		type: opts.type
+		type: opts.type,
+		inputTZ: opts.inputTZ
 	});
 
 	var columnNames = parsedInput.columnNames;

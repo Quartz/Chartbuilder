@@ -9,12 +9,15 @@ var help = require("./helper.js");
 var assign = require("lodash/assign");
 var defaults = require("lodash/defaults");
 var unique = require("lodash/uniq");
-var separators;
+var SessionStore = require("../stores/SessionStore");
+
+var curOffset = Date.create().getTimezoneOffset();
+var tz_pattern = /((\+|\-)\d\d\:?\d\d)/gi;
 
 // We need this to get the current locale's thousands separator
 // Check for localStorage in case we are testing from node
 if (typeof(localStorage) !== 'undefined') {
-	separators = require("../stores/SessionStore").get("separators");
+	separators = SessionStore.get("separators");
 } else {
 	separators = {
 		decimal: ".",
@@ -40,7 +43,7 @@ function parseDelimInput(input, opts) {
 	var _defaultOpts = defaults(opts, {
 		delimiter: parseUtils.detectDelimiter(input),
 		type: opts.type,
-		inputTZ: "Z"
+		inputTZ: SessionStore.get("nowOffset")
 	});
 
 	if (opts.checkForDate === false) {
@@ -97,12 +100,10 @@ function cast_data(input, columnNames, stripCharsRegex, opts) {
 	var all_index_types = [];
 	var all_entry_values = [];
 
-	var tz_pattern = /([+-]\d\d:*\d\d)/gi;
-	var found_timezones = input.match(tz_pattern);
+	var found_timezones = tz_pattern.test(input);
+	var offset = opts.inputTZ !== null ? -help.TZOffsetToMinutes(opts.inputTZ) : curOffset;
 
 	var data = dsv.parse(input, function(d,ii) {
-		var curOffset = Date.create().getTimezoneOffset();
-		var offset = opts.inputTZ !== null ? -help.TZOffsetToMinutes(opts.inputTZ) : curOffset;
 		each(columnNames, function(column, i) {
 			if (i === 0) {
 				//first column
