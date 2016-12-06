@@ -33,7 +33,7 @@ function parseChartgrid(config, _chartProps, callback, parseOpts) {
 
 	var gridSettings = {
 		rows: +chartProps._grid.rows || chartgrid_defaults._grid.rows,
-		cols: +chartProps._grid.cols || bySeries.series.length
+		cols: +chartProps._grid.cols || Math.min(bySeries.series.length, 3)
 	};
 
 	var chartSettings = map(bySeries.series, function(dataSeries, i) {

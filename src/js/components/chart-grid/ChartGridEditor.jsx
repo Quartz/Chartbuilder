@@ -324,7 +324,13 @@ var ChartGrid_gridSettings = React.createClass({
 
 	getInitialState: function() {
 		return {
-			rowColOptions: [
+			rowOptions: [
+				{ value: 1 },
+				{ value: 2 },
+				{ value: 3 },
+				{ value: 4 }
+			],
+			colOptions: [
 				{ value: 1 },
 				{ value: 2 },
 				{ value: 3 },
@@ -351,13 +357,15 @@ var ChartGrid_gridSettings = React.createClass({
 
 	componentWillMount: function() {
 		this.setState({
-			rowColOptions: this._buildSeriesValues(this.props.numSeries)
+			rowOptions: this._buildSeriesValues(this.props.numSeries),
+			colOptions: this._buildSeriesValues((Math.min(this.props.numSeries, 4)))
 		});
 	},
 
 	componentWillReceiveProps: function(nextProps) {
 		this.setState({
-			rowColOptions: this._buildSeriesValues(nextProps.numSeries)
+			rowOptions: this._buildSeriesValues(nextProps.numSeries),
+			colOptions: this._buildSeriesValues((Math.min(nextProps.numSeries, 4)))
 		});
 	},
 
@@ -383,7 +391,7 @@ var ChartGrid_gridSettings = React.createClass({
 					<label className="editor-label">Rows</label>
 					<ButtonGroup
 						onClick={this._handleGridUpdate.bind(null, "rows")}
-						buttons={this.state.rowColOptions}
+						buttons={this.state.rowOptions}
 						value={this.props.grid.rows}
 					/>
 				</div>
@@ -392,7 +400,7 @@ var ChartGrid_gridSettings = React.createClass({
 					<ButtonGroup
 						id="cols"
 						onClick={this._handleGridUpdate.bind(null, "cols")}
-						buttons={this.state.rowColOptions}
+						buttons={this.state.colOptions}
 						value={this.props.grid.cols}
 					/>
 				</div>
