@@ -74,6 +74,17 @@ var ChartGridXY = React.createClass({
 		}
 	},
 
+	// get x-axis which can be one of many types
+	_generateXAxis: function(scale, data, range) {
+		if (scale.hasDate) {
+			return scaleUtils.generateScale("time", scale.dateSettings, data, range)
+		} else if (scale.isNumeric) {
+			return scaleUtils.generateScale("linear", scale.numericSettings, null, range)
+		} else {
+			return scaleUtils.generateScale("ordinal", scale, data, range)
+		}
+	},
+
 	_xyGridBlock: function(gridType, xAxis, dimensions, d, i) {
 		var props = this.props;
 		var isFirstBlock = Math.floor((i + 1) / props.chartProps._grid.cols) === 0;
@@ -102,7 +113,7 @@ var ChartGridXY = React.createClass({
 		return [
 			<SeriesLabel
 				key="label"
-				xVal={0}
+				x={0}
 				text={seriesSettings.label}
 				colorIndex={seriesSettings.colorIndex}
 			/>,
@@ -113,7 +124,11 @@ var ChartGridXY = React.createClass({
 				y1={dimensions.height}
 				y2={dimensions.height + props.styleConfig.overtick_bottom}
 			/>,
-			<HorizontalAxis tickValues={xAxis.tickValues} key="axis" />,
+			<HorizontalAxis
+				tickFormat={xAxis.tickFormat}
+				tickValues={xAxis.tickValues}
+				key="x-axis"
+			/>,
 			el
 		];
 	},
@@ -167,7 +182,7 @@ var ChartGridXY = React.createClass({
 
 		var xRangeInner = [0, gridScales.cols.rangeBand()];
 		var yRangeInner = [gridScales.rows.rangeBand(), props.displayConfig.afterLegend ];
-		var xAxis = scaleUtils.generateScale("ordinal", primaryScale, chartProps.data, xRangeInner);
+		var xAxis = this._generateXAxis(chartProps.scale, chartProps.data, xRangeInner);
 		var yAxis = scaleUtils.generateScale("linear", primaryScale, chartProps.data, yRangeInner);
 
 		var Outer = React.createFactory(XYChart);
