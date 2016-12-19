@@ -4,13 +4,13 @@ var buffer = require("vinyl-buffer");
 var del = require("del");
 var nib = require("nib");
 var reload = browserSync.reload;
-var source = require("vinyl-source-stream");
 
 // browserify
 var browserify = require("browserify");
 var envify = require("envify/custom");
 var source = require("vinyl-source-stream");
 var reactify = require("reactify");
+var watchify = require("watchify");
 
 // Gulp plugins
 var base64 = require("gulp-css-base64");
@@ -18,10 +18,12 @@ var changed = require("gulp-changed");
 var gulp = require("gulp");
 var stylus = require("gulp-stylus");
 var uglify = require("gulp-uglify");
+var gutil = require("gulp-util");
 
 // local modules
 var config = require("./gulp/config");
-var gutil = require("gulp-util")
+var gutil = require("gulp-util");
+require("./gulp/publish");
 
 gulp.task("stylus", function () {
 	return gulp.src(config.paths.src.styl + "/main.styl")
@@ -53,21 +55,35 @@ gulp.task("stylus:core", ["clean-dist"], function () {
 		.pipe(gulp.dest(config.paths.dist.css));
 });
 
-gulp.task("browserify:dev", function (done) {
-	var bundler = browserify(config.paths.src.js + "/index.js", {
-		debug: true
-	})
-	.transform(envify({ NODE_ENV: "dev" }));
+gulp.task("browserify:dev", function () {
 
-	return bundler.bundle()
-		.on('error', function(err) {
-			console.error('ERROR IN JS');
-			console.error(err.message);
-			done();
+	var props = {
+		entries: [config.paths.src.js + "/index.js"],
+		debug: true,
+		cache: {},
+		packageCache: {},
+		fullPaths: true
+	};
+
+	var bundler = watchify(browserify(props).transform(envify({ NODE_ENV: "dev" })));
+
+	function rebundle() {
+		var stream = bundler.bundle();
+
+		return stream.on('error', function (err) {
+			console.log(err.toString());
+			this.emit('end');
+			process.exit(0);
 		})
-		.pipe(source("main.js"))
-		.pipe(gulp.dest(config.paths.build.js))
-		.pipe(reload({ stream:true }));
+			.pipe(source("main.js"))
+			.pipe(gulp.dest(config.paths.build.js + "/"))
+			.pipe(browserSync.reload({ stream:true }));
+	}
+	bundler.on('update', function() {
+		rebundle();
+		gutil.log('Rebundle...');
+	});
+	return rebundle();
 });
 
 gulp.task("browserify:test", function () {
@@ -159,7 +175,6 @@ gulp.task("watch", [
 	"copy-fonts",
 	"copy-assets"
 ], function (done) {
-	gulp.watch(config.paths.src.js + "/**", ["browserify:dev"]);
 	gulp.watch(config.paths.src.styl + "/**", ["stylus"]);
 	gulp.watch(config.paths.src.htdocs + "/**", ["copy-htdocs"]);
 	gulp.watch("./node_modules/d4/d4.js", ["browserify:dev"]);

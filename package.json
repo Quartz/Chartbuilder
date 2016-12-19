@@ -1,6 +1,6 @@
 {
   "name": "chartbuilder",
-  "version": "2.6.2",
+  "version": "2.6.7",
   "description": "Easily create beautiful charts",
   "main": "src/js/index.js",
   "scripts": {
@@ -11,6 +11,7 @@
     "test-page": "gulp test-page",
     "dev": "gulp",
     "build": "gulp build",
+    "aws": "gulp publish",
     "gh-pages": "npm run build && npm run docs && mv api-docs build && gulp gh-pages",
     "version": "npm run build && git add -A dist",
     "postversion": "npm run gh-pages"
@@ -74,9 +75,11 @@
     "envify": "^3.2.0",
     "faker": "^2.1.2",
     "gulp": "^3.6.2",
+    "gulp-awspublish": "3.2.0",
     "gulp-changed": "^1.3.0",
     "gulp-css-base64": "^1.3.1",
     "gulp-gh-pages": "^0.5.4",
+    "gulp-rename": "1.2.2",
     "gulp-stylus": "^2.0.1",
     "gulp-uglify": "^1.1.0",
     "gulp-util": "^3.0.7",
@@ -90,6 +93,7 @@
     "tap-spec": "^4.1.1",
     "tape": "^4.0.0",
     "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0"
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "3.7.0"
   }
 }

@@ -32,3 +32,8 @@ using FTP or however else. Or you might create a simple auto-deploy script like 
 		echo "SYNCING BUILD WITH REMOTE FILES..."
 		rsync -rav --progress build/* <MY_SERVER_LOCATION>
 
+#### AWS
+
+Chartbuilder can easily be automatically deployed to Amazon Web Services. Just
+rename the file at `gulp/aws-config.json.example` to `gulp/aws-config.json`, and
+add your credentials. Then you can run the `npm run aws` process to deploy.
