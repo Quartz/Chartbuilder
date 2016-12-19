@@ -15,7 +15,7 @@ from d4 to react.
 - [ ] Chart grid XY
 	- [X] Render lines/dots/cols
 	- [X] Render y axis
-	- [ ] Render x axis
-	- [ ] Handle case of dates in bar chart grid
+	- [X] Render x axis
+	- [X] Handle case of dates in bar chart grid
 	- [ ] Sizing/spacing/style
 
