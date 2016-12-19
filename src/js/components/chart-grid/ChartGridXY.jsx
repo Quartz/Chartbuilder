@@ -74,7 +74,7 @@ var ChartGridXY = React.createClass({
 		}
 	},
 
-	_xyGridBlock: function(gridType, d, i) {
+	_xyGridBlock: function(gridType, xAxis, dimensions, d, i) {
 		var props = this.props;
 		var isFirstBlock = Math.floor((i + 1) / props.chartProps._grid.cols) === 0;
 		var x1 = (isFirstBlock) ? NaN : 0;
@@ -106,8 +106,14 @@ var ChartGridXY = React.createClass({
 				text={seriesSettings.label}
 				colorIndex={seriesSettings.colorIndex}
 			/>,
-			<HorizontalGridLines x1={x1} key="grid" />,
-			<HorizontalAxis key="axis" />,
+			<HorizontalGridLines x1={x1} key="horiz-grid" />,
+			<VerticalGridLines
+				tickValues={xAxis.tickValues}
+				key="vert-grid"
+				y1={dimensions.height}
+				y2={dimensions.height + props.styleConfig.overtick_bottom}
+			/>,
+			<HorizontalAxis tickValues={xAxis.tickValues} key="axis" />,
 			el
 		];
 	},
@@ -177,7 +183,7 @@ var ChartGridXY = React.createClass({
 			tickFont: tickFont
 		};
 
-		var renderGridFunc = this._xyGridBlock.bind(null, chartProps._grid.type);
+		var renderGridFunc = this._xyGridBlock.bind(null, chartProps._grid.type, xAxis, chartAreaDimensions);
 		var grid = gridUtils.makeMults(Outer, outerProps, chartProps.data, gridScales, renderGridFunc);
 
 		// create vertical axis and grid lines for each row.
