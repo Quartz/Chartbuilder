@@ -98,9 +98,13 @@ var HorizontalAxis = React.createClass({
 			}
 
 			return (
-				<text key={i} textAnchor={props.textAnchor}
+				<text
+					key={i}
+					textAnchor={props.textAnchor}
 					className={"tick orient-" + props.orient}
-					x={xVal} y={0} dy={DY}
+					x={xVal}
+					y={0}
+					dy={DY}
 				>
 					{text}
 				</text>
@@ -116,7 +120,10 @@ var HorizontalAxis = React.createClass({
 				<text
 					className={"tick orient-" + props.orient}
 					textAnchor="start"
-					x={suffX} y={suffY} dy={DY} dx={this.state.firstTickWidth * -1}
+					x={suffX}
+					y={suffY}
+					dy={DY}
+					dx={this.state.firstTickWidth * -1}
 				>
 					{props.suffix}
 				</text>
@@ -124,7 +131,6 @@ var HorizontalAxis = React.createClass({
 		} else {
 			return null;
 		}
-
 	},
 
 	_getTransform: function(orient, height) {

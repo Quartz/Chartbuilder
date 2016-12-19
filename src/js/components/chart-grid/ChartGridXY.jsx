@@ -146,23 +146,22 @@ var ChartGridXY = React.createClass({
 		var tickTextHeight = help.computeTextWidth("M", tickFont);
 		var tickWidths = scaleUtils.getTickWidths(primaryScale, tickFont);
 
+		// Dimensions of the chart area
 		var chartAreaDimensions = {
 			width: (
 				dimensions.width - margin.left - margin.right -
-				displayConfig.padding.left - displayConfig.padding.right -
+				displayConfig.xy.padding.left - displayConfig.xy.padding.right -
 				tickWidths.max
 			),
 			height: (
 				dimensions.height - margin.top - margin.bottom -
-				((displayConfig.padding.top + displayConfig.padding.bottom) * chartProps._grid.rows)
+				displayConfig.xy.padding.top
 			)
 		};
 
 		var outerDimensions = {
 			width: dimensions.width,
-			height: dimensions.height -
-				(displayConfig.padding.top) * (chartProps._grid.rows - 1) +
-				(displayConfig.padding.bottom) * (chartProps._grid.rows)
+			height: dimensions.height
 		}
 
 		// range for all charts in grid (outer)
@@ -181,7 +180,7 @@ var ChartGridXY = React.createClass({
 		});
 
 		var xRangeInner = [0, gridScales.cols.rangeBand()];
-		var yRangeInner = [gridScales.rows.rangeBand(), props.displayConfig.afterLegend ];
+		var yRangeInner = [gridScales.rows.rangeBand(), props.displayConfig.afterLegend];
 		var xAxis = this._generateXAxis(chartProps.scale, chartProps.data, xRangeInner);
 		var yAxis = scaleUtils.generateScale("linear", primaryScale, chartProps.data, yRangeInner);
 
@@ -227,6 +226,7 @@ var ChartGridXY = React.createClass({
 				</g>
 			)
 		});
+
 		return (
 			<SvgWrapper
 				outerDimensions={outerDimensions}
