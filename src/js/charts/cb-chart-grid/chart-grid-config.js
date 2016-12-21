@@ -50,7 +50,7 @@ var display = {
 	padding: {
 		top: "0.5em",
 		right: 0,
-		bottom: "1em",
+		bottom: "3em",
 		left: 0
 	}
 };

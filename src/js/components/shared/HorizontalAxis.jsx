@@ -133,11 +133,18 @@ var HorizontalAxis = React.createClass({
 		}
 	},
 
-	_getTransform: function(orient, height) {
+	_getTransform: function(orient, height, yScale) {
+		var yRange;
+		if (yScale.rangeExtent) {
+			yRange = yScale.rangeExtent();
+		} else {
+			yRange = yScale.range();
+		}
+
 		if (orient === "top") {
-			return 0;
+			return yRange[1];
 		} else if (orient === "bottom") {
-			return height;
+			return yRange[0];
 		}
 	},
 
@@ -145,7 +152,7 @@ var HorizontalAxis = React.createClass({
 		var props = this.props;
 		var ticks = this._generateTicks(props);
 		var suffix = this._generateSuffix(props);
-		var transformY = this._getTransform(props.orient, props.dimensions.height);
+		var transformY = this._getTransform(props.orient, props.dimensions.height, props.yScale);
 
 		return (
 			<g

@@ -85,7 +85,7 @@ var ChartGridXY = React.createClass({
 		}
 	},
 
-	_xyGridBlock: function(gridType, xAxis, dimensions, d, i) {
+	_xyGridBlock: function(gridType, xAxis, yAxis, d, i) {
 		var props = this.props;
 		var isFirstBlock = Math.floor((i + 1) / props.chartProps._grid.cols) === 0;
 		var x1 = (isFirstBlock) ? NaN : 0;
@@ -117,18 +117,17 @@ var ChartGridXY = React.createClass({
 				text={seriesSettings.label}
 				colorIndex={seriesSettings.colorIndex}
 			/>,
-			<HorizontalGridLines x1={x1} key="horiz-grid" />,
 			<VerticalGridLines
 				tickValues={xAxis.tickValues}
 				key="vert-grid"
-				y1={dimensions.height}
-				y2={dimensions.height + props.styleConfig.overtick_bottom}
+				y2={yAxis.scale.range()[0] + props.styleConfig.overtick_bottom}
 			/>,
 			<HorizontalAxis
 				tickFormat={xAxis.tickFormat}
 				tickValues={xAxis.tickValues}
 				key="x-axis"
 			/>,
+			<HorizontalGridLines x1={x1} key="horiz-grid" />,
 			el
 		];
 	},
@@ -180,7 +179,7 @@ var ChartGridXY = React.createClass({
 		});
 
 		var xRangeInner = [0, gridScales.cols.rangeBand()];
-		var yRangeInner = [gridScales.rows.rangeBand(), props.displayConfig.afterLegend];
+		var yRangeInner = [gridScales.rows.rangeBand() - props.displayConfig.padding.bottom, props.displayConfig.afterLegend];
 		var xAxis = this._generateXAxis(chartProps.scale, chartProps.data, xRangeInner);
 		var yAxis = scaleUtils.generateScale("linear", primaryScale, chartProps.data, yRangeInner);
 
@@ -197,7 +196,7 @@ var ChartGridXY = React.createClass({
 			tickFont: tickFont
 		};
 
-		var renderGridFunc = this._xyGridBlock.bind(null, chartProps._grid.type, xAxis, chartAreaDimensions);
+		var renderGridFunc = this._xyGridBlock.bind(null, chartProps._grid.type, xAxis, yAxis);
 		var grid = gridUtils.makeMults(Outer, outerProps, chartProps.data, gridScales, renderGridFunc);
 
 		// create vertical axis and grid lines for each row.

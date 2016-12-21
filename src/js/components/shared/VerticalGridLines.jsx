@@ -23,6 +23,7 @@ var VerticalGridLines = React.createClass({
 		}
 	},
 
+	// TODO: dont need to get range extent unless props.y1 and y2 absent
 	_generateTicks: function(props) {
 		var yRange = this._getRangeExtent(props.yScale);
 		return map(props.tickValues, function(tickValue, i) {
