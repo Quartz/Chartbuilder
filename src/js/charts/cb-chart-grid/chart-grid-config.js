@@ -37,7 +37,7 @@ var display = {
 	gridPadding: {
 		xInnerPadding: 0.05,
 		xOuterPadding: 0,
-		yInnerPadding: 0.15,
+		yInnerPadding: 0.1,
 		yOuterPadding: 0
 	},
 	xy: require("../cb-xy/xy-config").display,

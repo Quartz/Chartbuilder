@@ -127,7 +127,10 @@ var ChartGridXY = React.createClass({
 				tickValues={xAxis.tickValues}
 				key="x-axis"
 			/>,
-			<HorizontalGridLines x1={x1} key="horiz-grid" />,
+			<HorizontalGridLines
+				x1={x1}
+				key="horiz-grid"
+			/>,
 			el
 		];
 	},
@@ -154,13 +157,15 @@ var ChartGridXY = React.createClass({
 			),
 			height: (
 				dimensions.height - margin.top - margin.bottom -
-				displayConfig.xy.padding.top
+				displayConfig.xy.padding.top +
+				(displayConfig.padding.bottom * chartProps._grid.rows)
 			)
 		};
 
 		var outerDimensions = {
 			width: dimensions.width,
-			height: dimensions.height
+			height: dimensions.height +
+				(displayConfig.padding.bottom * chartProps._grid.rows)
 		}
 
 		// range for all charts in grid (outer)
