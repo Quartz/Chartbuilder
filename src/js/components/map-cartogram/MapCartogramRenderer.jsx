@@ -46,7 +46,7 @@ const PolygonCollection = React.createClass({
   },
   componentDidMount: function() {
 
-    const stylings = this.props.stylings;
+    const stylings = this.props.chartProps.stylings;
 
     d3Nodes = d3.select(ReactDOM.findDOMNode(this.refs.graph));
 
@@ -81,7 +81,7 @@ const PolygonCollection = React.createClass({
   },
   componentDidUpdate:  function(nextProps, nextState) {
 
-    const stylings = this.props.stylings;
+    const stylings = this.props.chartProps.stylings;
 
     d3Nodes = d3.select(ReactDOM.findDOMNode(this.refs.graph));
 

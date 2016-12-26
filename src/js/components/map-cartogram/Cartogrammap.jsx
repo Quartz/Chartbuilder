@@ -55,23 +55,23 @@ class MapRenderer extends React.Component{
   render () {
 
     const chartProps = this.props.chartProps;
-    const stylings = this.props.stylings;
+    const stylings = chartProps.stylings;
     const schema = chartProps.schema.schema;
     const grid = this.state.grid;
 
     const centroids = this.state.centroids;
-    const columnNames = this.props.chartProps.columns;
+    const columnNames = chartProps.columns;
     const cellSize = stylings.cellSize;
 
     const projection = d3.geo[schema.proj]()
       .translate(schema.translate)
-      .scale(schema.scale);            
+      .scale(schema.scale);
     radius.range([0, stylings.radiusVal]);
 
     const scales = {};
     let fillVal;
 
-    const dataById = d3.map(chartProps.alldata, function(d) { 
+    const dataById = d3.map(chartProps.alldata, function(d) {
       return schema.matchLogic(d[columnNames[0]]); });
     radius.domain([0, d3.max(chartProps.alldata, function(d){ return +d[columnNames[2]]} )]);
 
@@ -82,7 +82,7 @@ class MapRenderer extends React.Component{
 
         if (schema.name === 'states50') {
 
-          if (showDC) return (dataById.has(schema.matchLogic(d.id)) && schema.test(d.id, d.id)); 
+          if (showDC) return (dataById.has(schema.matchLogic(d.id)) && schema.test(d.id, d.id));
           //dc id = 11
           else return (dataById.has(schema.matchLogic(d.id)) && schema.test(d.id, d.id) && d.id != 11);
         }
@@ -96,17 +96,17 @@ class MapRenderer extends React.Component{
         const cell = grid[shpData[columnNames[0]].replace(/\s/g, '')];
         const point = projection(d.geometry.coordinates);
 
-        if (chartProps.chartSettings[shpData.index].scale.domain[0] === 
+        if (chartProps.chartSettings[shpData.index].scale.domain[0] ===
             chartProps.chartSettings[shpData.index].scale.domain[1]) {
           fillVal = colorScales(chartProps.scale[shpData.index].colorIndex)[1];
-        } 
+        }
         else fillVal = chartProps.scale[shpData.index].d3scale(shpData[columnNames[2]]);
-      
+
       return {
         id: +d.id,
         x: 160 + point[0], y: 60 + point[1],
         x0: 160 + point[0], y0: 60 + point[1],
-        xx: 237 + cell[0] * cellSize, yy: cell[1] * cellSize - (cellSize / 2), 
+        xx: 237 + cell[0] * cellSize, yy: cell[1] * cellSize - (cellSize / 2),
         r: radius(shpData[columnNames[2]]),
         r0: radius(shpData[columnNames[2]]),
         value: shpData[columnNames[2]],
@@ -128,8 +128,7 @@ class MapRenderer extends React.Component{
 };
 
 MapRenderer.propTypes = {
-  chartProps: React.PropTypes.object.isRequired,
-  stylings: React.PropTypes.object.isRequired
+  chartProps: React.PropTypes.object.isRequired
 }
 
 module.exports = MapRenderer;

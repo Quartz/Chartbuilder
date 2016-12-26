@@ -31,10 +31,6 @@ const PolygonCollection = React.createClass({
     const adjustLabels = mapSchema.adjustLabels;
     const translation = `translate(0,${this.props.displayConfig.margin.maptop})`;
 
-    console.log(columnNames,'names');
-
-    console.log(currSettings,'data');
-
     if (this.props.onClick) onClick = this.props.onClick;
 
     const polygonCollection = this.props.data.map((polygonData, i) => {
@@ -43,15 +39,11 @@ const PolygonCollection = React.createClass({
 
       let thisvalue;
 
-      console.log(polygonData, 'data')
-
       alldata.forEach(function(d, j) {
         if (thisvalue === undefined || !thisvalue.length) {
           thisvalue = Object.assign(filter(d.values, function(o) { return mapSchema.test(o[columnNames[0]], polygonData.id); }), {index:d.index});
         }
       });
-
-      console.log(JSON.stringify(thisvalue),'value');
 
       const styles = {};
       styles.stroke = chartProps.stylings.stroke;
