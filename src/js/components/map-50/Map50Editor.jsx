@@ -85,7 +85,7 @@ let MapEditor = React.createClass({
 
 					<Map_ScaleSettings
 						scale={mapProps.scale}
-						stylings={this.props.stylings}
+						stylings={mapProps.stylings}
 						className="scale-options"
 						onUpdate={this._handlePropAndReparse.bind(null, "scale")}
 						onReset={this._handlePropAndReparse.bind(null, "scale")}

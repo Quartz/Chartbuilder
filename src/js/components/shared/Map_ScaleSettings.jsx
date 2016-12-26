@@ -56,7 +56,7 @@ let Map_ScaleSettings = React.createClass({
     } else if (k == "max") {
       scale[this.props.index].domain[1] = v;
     }
-    
+
     this.props.onUpdate(scale);
   },
 
@@ -76,7 +76,7 @@ let Map_ScaleSettings = React.createClass({
   },
 
   render: function() {
-    
+
     const currScale = this.props.scale[this.props.index];
     const errors = this._renderErrors();
 
@@ -147,7 +147,7 @@ let Map_ScaleSettings = React.createClass({
           iter: i
         }
 
-        thresholds.push(<LabelledTangle 
+        thresholds.push(<LabelledTangle
               tangleClass="threshold-option tangle-input"
               onChange={this._handleThresholdUpdate.bind(this, thresholdIntent)}
               onInput={this._handleThresholdUpdate.bind(this, thresholdIntent)}
@@ -195,10 +195,10 @@ let Map_ScaleSettings = React.createClass({
 
     return (
       <div className={this.props.className}>
-        
+
         {prefixSuffix}
         <div className="scale-tangle-inputs">
-          
+
            <LabelledTangle
               label="Color breaks"
               labelClass="editor-label"
