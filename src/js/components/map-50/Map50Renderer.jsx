@@ -19,12 +19,9 @@ const PolygonCollection = React.createClass({
   	console.log(this.props,'props');
 
   	const chartProps = this.props.chartProps;
-
     const mapSchema = this.props.schema;
-
     const geoPath = this.props.geoPath;
     const projection = this.props.proj;
-
     const currSettings = chartProps.scale;
 
     const alldata = chartProps.data;
@@ -34,12 +31,19 @@ const PolygonCollection = React.createClass({
     const adjustLabels = mapSchema.adjustLabels;
     const translation = `translate(0,${this.props.displayConfig.margin.maptop})`;
 
+    console.log(columnNames,'names');
+
+    console.log(currSettings,'data');
+
     if (this.props.onClick) onClick = this.props.onClick;
 
     const polygonCollection = this.props.data.map((polygonData, i) => {
 
       const polygonType = (polygonData.type) ? polygonData.type+'_' : '';
+
       let thisvalue;
+
+      console.log(polygonData, 'data')
 
       alldata.forEach(function(d, j) {
         if (thisvalue === undefined || !thisvalue.length) {
@@ -47,7 +51,7 @@ const PolygonCollection = React.createClass({
         }
       });
 
-      console.log(thisvalue,'value');
+      console.log(JSON.stringify(thisvalue),'value');
 
       const styles = {};
       styles.stroke = chartProps.stylings.stroke;

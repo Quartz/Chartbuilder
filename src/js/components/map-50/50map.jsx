@@ -1,16 +1,15 @@
 import React from 'react';
 import update from 'react-addons-update';
-// Map
-
 import d3 from 'd3';
 const topojson = require('topojson');
+
 import PolygonCollection from './Map50Renderer.jsx';
+import ChartRendererMixin from "./../mixins/MapRendererMixin.js";
 
 const projectionFunc = require('react-d3-map-core').projection;
 const geoPath = require('react-d3-map-core').geoPath;
 
-import ChartRendererMixin from "./../mixins/MapRendererMixin.js";
-
+// move into config?
 const polygonClass = 'polygon-test';
 
 const MapRenderer = React.createClass({

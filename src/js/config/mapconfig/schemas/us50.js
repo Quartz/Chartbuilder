@@ -65,6 +65,8 @@ const us = {
       // loop through object .. find the key val of the one you want..
       const column_val_converted = this.matchLogic(column_val); //
 
+      //console.log(column_val_converted,polygon_val, column_val);
+
       return (toNumber(column_val_converted) === toNumber(polygon_val));
     }
   }

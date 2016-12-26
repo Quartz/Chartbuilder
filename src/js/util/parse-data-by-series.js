@@ -5,6 +5,9 @@
 // { entry: <rowName>, value: <callValue> }
 // ```
 
+
+import {clone} from 'lodash';
+
 var datePattern = /date|time|year/i;
 var parseDelimInput = require("./parse-delimited-input").parser;
 
@@ -19,8 +22,9 @@ function dataBySeries(input, opts) {
 		type: opts.type
 	});
 
-	var columnNames = parsedInput.columnNames;
-	var keyColumn = columnNames.shift();
+	const columnNames = parsedInput.columnNames;
+	const allColumns = clone(columnNames);
+	const keyColumn = columnNames.shift();
 
 	if (columnNames.length === 0) {
 		series = [{
@@ -50,6 +54,7 @@ function dataBySeries(input, opts) {
 	return {
 		series: series,
     data: parsedInput,
+    allColumns: allColumns,
 		input: { raw: input, type: opts.type },
 		hasDate: parsedInput.hasDate && (!opts.type || opts.type == "date"),
 		isNumeric: parsedInput.isNumeric && (!opts.type || opts.type == "numeric")

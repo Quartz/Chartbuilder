@@ -17,12 +17,17 @@ const types = {
 var MAX_BYTES = 400000; // Max 400k for chartProps
 
 function validateDataInput(chartProps) {
-	var input = chartProps.input.raw;
-	var series = chartProps.data;
-	var hasDate = chartProps.scale.hasDate;
-	var isNumeric = chartProps.scale.isNumeric;
-	var type = chartProps.input.type;
-	var scale = chartProps.scale;
+	const input = chartProps.input.raw;
+	const series = chartProps.data;
+	const hasDate = chartProps.scale.hasDate;
+	const isNumeric = chartProps.scale.isNumeric;
+	const type = chartProps.input.type;
+	const scale = chartProps.scale;
+
+	/* switch statement for visual type
+			abstract out the control flow
+
+	*/
 
 	var inputErrors = [];
 

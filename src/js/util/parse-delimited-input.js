@@ -33,11 +33,11 @@ var newLineRegex = /\r\n|\r|\n/;
 var parseErrors = [];
 
 function parseDelimInput(input, opts) {
-	var hasDate = null;
-	var isNumeric = null;
+	let hasDate = null;
+	let isNumeric = null;
 
 	opts = opts || {};
-	var _defaultOpts = defaults(opts, {
+	const _defaultOpts = defaults(opts, {
 		delimiter: parseUtils.detectDelimiter(input),
 		type: opts.type,
 		inputTZ: "Z"
@@ -50,23 +50,25 @@ function parseDelimInput(input, opts) {
 	parseErrors = [];
 	// create regex of special characters we want to strip out as well as our
 	// computed locale-specific thousands separator.
-	var _stripCharsStr = stripChars.concat([separators.thousands]).reduce(function(a, b) {
+	const _stripCharsStr = stripChars.concat([separators.thousands]).reduce(function(a, b) {
 		return a.concat(parseUtils.escapeRegExp(b));
 	}, []).join("|");
 	var stripCharsRegex = new RegExp(_stripCharsStr, "g");
 
 	var columnNames = input.split(newLineRegex)[0].split(_defaultOpts.delimiter);
+
 	var dsv = d3.dsv(_defaultOpts.delimiter, "text/plain");
 	var all_index_types = [];
 
-	var casted_data = cast_data(input, columnNames, stripCharsRegex, _defaultOpts);
-	var data = casted_data.data;
+	const casted_data = cast_data(input, columnNames, stripCharsRegex, _defaultOpts);
+	let data = casted_data.data;
 	all_index_types = casted_data.indexes;
-	var all_entry_values = casted_data.entries;
-	var index_types = unique(all_index_types);
+
+	const all_entry_values = casted_data.entries;
+	const index_types = unique(all_index_types);
 
 	if(index_types.length !== 1 && !_defaultOpts.type) {
-		//there is possilby more than one type of data, an error will be thrown in validate-data-input
+		//there is possibly more than one type of data, an error will be thrown in validate-data-input
 	} else {
 		hasDate = _defaultOpts.type ? _defaultOpts.type == "date" : index_types[0] === "date";
 		isNumeric = _defaultOpts.type ? _defaultOpts.type == "numeric" : index_types[0] === "number";
@@ -93,22 +95,25 @@ function parseDelimInput(input, opts) {
 }
 
 function cast_data(input, columnNames, stripCharsRegex, opts) {
+
 	const dsv = d3.dsv(opts.delimiter, "text/plain");
 	const all_index_types = [];
 	const all_entry_values = [];
+
 	let hasDate;
 	let isNumeric;
 
-	var tz_pattern = /([+-]\d\d:*\d\d)/gi;
-	var found_timezones = input.match(tz_pattern);
+	const tz_pattern = /([+-]\d\d:*\d\d)/gi;
+	const found_timezones = input.match(tz_pattern);
 
-	var data = dsv.parse(input, function(d,ii) {
-		var curOffset = Date.create().getTimezoneOffset();
-		var offset = opts.inputTZ !== null ? -help.TZOffsetToMinutes(opts.inputTZ) : curOffset;
+	const data = dsv.parse(input, function(d,ii) {
+
+		const curOffset = Date.create().getTimezoneOffset();
+		const offset = opts.inputTZ !== null ? -help.TZOffsetToMinutes(opts.inputTZ) : curOffset;
+
 		each(columnNames, function(column, i) {
 			if (i === 0) {
 				//first column
-
 				var parsed = parseKeyColumn(d[column], opts.type);
 
 				if(parsed.type == "date") {
@@ -137,8 +142,8 @@ function cast_data(input, columnNames, stripCharsRegex, opts) {
 
 	}
 	else {
-		hasDate = opts.type ? opts.type == "date" : index_types[0] === "date";
-		isNumeric = opts.type ? opts.type == "numeric" : index_types[0] === "number";
+		hasDate = opts.type ? opts.type === "date" : index_types[0] === "date";
+		isNumeric = opts.type ? opts.type === "numeric" : index_types[0] === "number";
 	}
 
 	return {

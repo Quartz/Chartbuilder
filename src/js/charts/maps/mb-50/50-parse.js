@@ -1,7 +1,7 @@
 import {clone, map, assign, each, filter, flatten, isEqual} from 'lodash';
 
 const colorScales = require('./../../../util/colorscales');
-const dataBySeries = require("./../../../util/parse-data-by-series");
+const dataBySeries = require("./../../../util/parse-map-data-by-series");
 const help = require("./../../../util/helper");
 const SessionStore = require("../../../stores/SessionStore");
 
@@ -20,8 +20,6 @@ const parseMapType = require('./../../../util/parse-map-type');
 const parse50 = (config, _chartProps, callback, parseOpts, priorData = [], priorSchema = []) => {
   // Build chart settings from defaults or provided settings
 
-  console.log("o rly?");
-
   parseOpts = parseOpts || {};
   // clone so that we aren't modifying original
   // this can probably be avoided by applying new settings differently
@@ -31,9 +29,9 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = [], prior
     type: chartProps.input.type
   });
 
-  const dataParsed = bySeries.data;
+  console.log(bySeries.series,'ughhed')
 
-  console.log(bySeries,'hahahah');
+  const dataParsed = bySeries.data;
 
   let parsedInputEntries = dataParsed.entries;
   const columnNames = dataParsed.columnNames;
@@ -54,6 +52,8 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = [], prior
       data : []
     };
   });
+
+  console.log(JSON.stringify(bySeries.series),'ugh')
 
   const chartSettings = map(bySeries.series, (dataSeries, i) => {
     let settings;
@@ -79,7 +79,7 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = [], prior
   });
 
   // not needed
-  labels.values = map(bySeries.series, (dataSeries, i) => {
+  /*labels.values = map(bySeries.series, (dataSeries, i) => {
 
     if (labels.values[i]) return assign({}, { name: chartSettings[i].label}, labels.values[i]);
     else {
@@ -87,7 +87,7 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = [], prior
         name: dataSeries.name
       };
     }
-  });
+  });*/
 
   const scale = {};
   const legends = {};
@@ -240,6 +240,9 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = [], prior
     } else {
       chartProps.mobile = {};
     } */
+
+
+  console.log(JSON.stringify(bySeries.series),'ugh2')
 
   let newChartProps = assign(chartProps, {
     chartSettings: chartSettings,
