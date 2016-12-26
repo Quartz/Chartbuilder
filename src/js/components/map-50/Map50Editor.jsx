@@ -17,7 +17,7 @@ const DataInput = require("../shared/DataInput.jsx");
 import {ColorPicker, Dropdown, LabelledTangle, TextInput, Toggle} from 'chartbuilder-ui';
 
 const colorScales = require('./../../util/colorscales');
-const MapEditorMixin = require("../mixins/MapEditorMixin.js");
+const MapEditorMixin = require("./../mixins/MapEditorMixin.js");
 
 /**
  * ### Editor interface for a XY chart
@@ -71,7 +71,7 @@ let MapEditor = React.createClass({
 		mapSettings.push( map(mapProps.chartSettings, bind(function(chartSetting, i) {
 
 			const typeOption = this.getTypeOptions(chartSetting.scale.colors);
-			
+
 			return (
 				<div>
 					<Map50_mapSettings
@@ -176,7 +176,7 @@ let MapEditor = React.createClass({
 					{mapSettings}
 				</div>
 				<div className="editor-options">
-			 
+
 				</div>
 			</div>
 		);
@@ -216,7 +216,7 @@ const Map50_mapSettings = React.createClass({
 	render: function() {
 		const chartSetting = this.props.chartSettings[this.props.index];
 		const numColors = colorScales.scalesNum();
-		
+
 		return (
 			<div className="series-control">
 				<TextInput

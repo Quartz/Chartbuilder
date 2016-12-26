@@ -77,7 +77,7 @@ var ChartGridXY = React.createClass({
 		}});
 
 		var displayConfig = this.props.displayConfig;
-		xyConfig = displayConfig.xy;
+		var xyConfig = displayConfig.xy;
 
 		var hiddenSvg = [];
 
@@ -216,8 +216,7 @@ function drawXYChartGrid(el, state) {
 	var dateSettings = state.dateSettings;
 	var numericSettings = state.numericSettings;
 
-
-	xyConfig = displayConfig.xy;
+	var xyConfig = displayConfig.xy;
 
 	var chart = cb_xy()
 		.outerHeight(state.dimensions.height)
@@ -276,8 +275,8 @@ function drawXYChartGrid(el, state) {
 					text: numericSettings ? numericSettings.suffix : "",
 					dy: state.grid.rows == 1 ? "1.2em" : 0
 				}]
-			})			
-			
+			})
+
 		})
 		.using("xAxis", function(axis) {
 			if(chartProps.scale.isNumeric) {
@@ -331,8 +330,8 @@ function drawXYChartGrid(el, state) {
 					text: "",
 					dy: 0
 				}]
-			})			
-			
+			})
+
 		})
 		chart.outerWidth(state.dimensions.width);
 		chart.extraPadding(extraPadding);

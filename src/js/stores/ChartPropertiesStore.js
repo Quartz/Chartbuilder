@@ -16,6 +16,7 @@ var SessionStore = require("./SessionStore");
  * sending parsed data back to the app, so we require the configs here.
 */
 var chartConfig = require("../charts/charts/chart-config");
+var mapConfig = require("../charts/maps/map-config");
 
 /* Singleton that houses chart props */
 var _chartProps = {};
@@ -87,8 +88,8 @@ function registeredCallback(payload) {
 		case "receive-model":
 			Dispatcher.waitFor([SessionStore.dispatchToken]);
 			chartType = action.model.metadata.chartType;
-			config = chartConfig[chartType];
-			parser = chartConfig[chartType].parser;
+			config = chartConfig[chartType] || mapConfig[chartType];
+			parser = config.parser;
 			_chartProps = parser(config, action.model.chartProps);
 			break;
 
@@ -96,8 +97,8 @@ function registeredCallback(payload) {
 		* Update all `chartProps`, assuming incoming payload is the entire object
 		*/
 		case "update-all-chart-props":
-			parser = chartConfig[chartType].parser;
-			config = chartConfig[chartType];
+			config = chartConfig[chartType] || mapConfig[chartType];
+			parser = config.parser;
 			parser(config, action.chartProps, function(newProps) {
 				_chartProps = newProps;
 				ChartPropertiesStore.emitChange();
@@ -118,8 +119,8 @@ function registeredCallback(payload) {
 		* send back to the UI
 		*/
 		case "update-and-reparse":
-			parser = chartConfig[chartType].parser;
-			config = chartConfig[chartType];
+			config = chartConfig[chartType] || mapConfig[chartType];
+			parser = config.parser;
 			_chartProps[action.key] = action.newProp;
 			parser(config, _chartProps, function(newProps) {
 				_chartProps = newProps;
@@ -128,8 +129,8 @@ function registeredCallback(payload) {
 			break;
 
 		case "update-data-input":
-			parser = chartConfig[chartType].parser;
-			config = chartConfig[chartType];
+			config = chartConfig[chartType] || mapConfig[chartType];
+			parser = config.parser;
 
 			checkColumnChange(action.newProp.raw, function(columnsChanged) {
 				_chartProps[action.key] = action.newProp;

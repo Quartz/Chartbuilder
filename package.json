@@ -65,6 +65,7 @@
     "react-d3-core": "*",
     "react-d3-map-core": "*",
     "save-svg-as-png": "git://github.com/nsonnad/saveSvgAsPng.git#clean-svg-fonts",
+    "simple-statistics": "2.2",
     "sizeof": "^1.0.0",
     "sugar-date": "^1.5.1",
     "topojson": "^1.6.26",

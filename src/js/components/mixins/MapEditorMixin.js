@@ -3,7 +3,7 @@ import React from 'react';
 import update from 'react-addons-update';
 
 // Flux actions
-const MapViewActions = require("../../actions/MapViewActions");
+const MapViewActions = require("../../actions/ChartViewActions");
 
 /**
  * ### Functions common to chart editors

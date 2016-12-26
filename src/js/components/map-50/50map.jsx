@@ -9,7 +9,7 @@ import PolygonCollection from './Map50Renderer.jsx';
 const projectionFunc = require('react-d3-map-core').projection;
 const geoPath = require('react-d3-map-core').geoPath;
 
-import ChartRendererMixin from "../mixins/MapRendererMixin.js";
+import ChartRendererMixin from "./../mixins/MapRendererMixin.js";
 
 const polygonClass = 'polygon-test';
 
@@ -27,7 +27,7 @@ const MapRenderer = React.createClass({
     const schema = chartProps.schema.schema;
     const featname = schema.feature;
     console.log(topojson,'topo')
-    const data = topojson.feature(schema.topojson, 
+    const data = topojson.feature(schema.topojson,
                   schema.topojson.objects[featname]);
 
     const projObj = {

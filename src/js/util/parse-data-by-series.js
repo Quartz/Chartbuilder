@@ -49,6 +49,7 @@ function dataBySeries(input, opts) {
 
 	return {
 		series: series,
+    data: parsedInput,
 		input: { raw: input, type: opts.type },
 		hasDate: parsedInput.hasDate && (!opts.type || opts.type == "date"),
 		isNumeric: parsedInput.isNumeric && (!opts.type || opts.type == "numeric")

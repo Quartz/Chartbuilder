@@ -34,7 +34,8 @@ var svgWrapperClassName = {
 };
 
 // Associates a given chart type with its Editor and Renderer components.
-var chartEditors = require("../charts/charts/editors");
+const chartEditors = require("../charts/charts/editors");
+const mapEditors = require("../charts/maps/editors");
 var numColors = require("../config/chartconfig/chart-style").numColors;
 
 /* API to localStorage that allows saving and retrieving charts */
@@ -157,10 +158,11 @@ var Chartbuilder = React.createClass({
 	*/
 	render: function() {
 		var chartType = this.state.metadata.chartType;
-		var Editor = chartEditors[chartType].Editor;
+		var VisualEditor = chartEditors[chartType] || mapEditors[chartType];
+		var Editor = VisualEditor.Editor;
 
 		// Check for mobile override settings and pass them in
-		var MobileComponent = chartEditors[chartType].MobileOverrides;
+		var MobileComponent = VisualEditor.MobileOverrides;
 		var mobileOverrides;
 		if (MobileComponent && this.props.showMobilePreview) {
 			mobileOverrides = (

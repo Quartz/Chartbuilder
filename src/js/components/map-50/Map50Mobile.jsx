@@ -2,7 +2,7 @@ import React, {PropTypes} from 'react';
 import update from 'react-addons-update';
 import {clone} from 'lodash';
 
-var MapEditorMixin = require("../../mixins/MapEditorMixin");
+var MapEditorMixin = require("./../mixins/MapEditorMixin");
 // Chartbuilder UI components
 import {ButtonGroup, LabelledTangle, TextInput} from 'chartbuilder-ui';
 

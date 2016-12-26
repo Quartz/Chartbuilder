@@ -93,9 +93,9 @@ function parseDelimInput(input, opts) {
 }
 
 function cast_data(input, columnNames, stripCharsRegex, opts) {
-	var dsv = d3.dsv(opts.delimiter, "text/plain");
-	var all_index_types = [];
-	var all_entry_values = [];
+	const dsv = d3.dsv(opts.delimiter, "text/plain");
+	const all_index_types = [];
+	const all_entry_values = [];
 	let hasDate;
 	let isNumeric;
 

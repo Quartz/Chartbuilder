@@ -43,7 +43,6 @@ var ChartTypeSelctor = React.createClass({
 				value: mapTypeKey
 			};
 		});
-		console.log(mapTypeButtons, chartTypeButtons, 'eh');
 		var allTypeButtons = concat(chartTypeButtons,mapTypeButtons);
 		return { chartConfig: allTypeButtons };
 	},
@@ -62,7 +61,8 @@ var ChartTypeSelctor = React.createClass({
 		metadata.chartType = chartType;
 
 		var prevProps = this.props.chartProps;
-		var newDefaultProps = chartConfig[chartType].defaultProps.chartProps;
+		var visualConfig = chartConfig[chartType] || mapConfig[chartType];
+		var newDefaultProps = visualConfig.defaultProps.chartProps;
 		var prevSettings = prevProps.chartSettings;
 		var newDefaultSettings = newDefaultProps.chartSettings[0];
 		var prevKeys = keys(prevSettings[0]);
@@ -88,7 +88,6 @@ var ChartTypeSelctor = React.createClass({
 
 	render: function() {
 
-		console.log(this.props.metadata,'meta')
 		return (
 		<div className="editor-options">
 			<h2>

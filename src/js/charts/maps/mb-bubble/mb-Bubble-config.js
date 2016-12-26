@@ -141,9 +141,9 @@ const defaultProps = Object.freeze({
    */
   metadata: {
     chartType: 'mapbubble',
-    title: "Title",
+    title: "Bubble Map Title",
     subtitle: "Subtitle",
-    source: "TK",
+    source: "Source for map",
     credit: "",
     size: "auto"
   }

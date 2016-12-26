@@ -10,8 +10,8 @@ const parseColumns = require("./../../../util/parse-delimited-input")._parseColu
 const parseMapType = require('./../../../util/parse-map-type');
 
 /**
- * see [ChartConfig#parser](#chartconfig/parser)
- * @see ChartConfig#parser
+ * see [MapConfig#parser](#mapconfig/parser)
+ * @see MapConfig#parser
  * @instance
  * @memberof xy_config
  */
@@ -31,7 +31,9 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = [], prior
 
   const dataParsed = bySeries.data;
 
-  let parsedInputEntries = dataParsed.entries; 
+  console.log(bySeries,'hahahah');
+
+  let parsedInputEntries = dataParsed.entries;
   const columnNames = dataParsed.columnNames;
 
   const scaleNames = [];
@@ -70,7 +72,7 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = [], prior
     });
 
     _computed[i].data = _computed[i].data.concat(values);
-    
+
     return settings;
   });
 
@@ -124,7 +126,7 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = [], prior
         currScale.precision = tickPrecision;
       }
       currScale.tickValues[i] = currScale.precision ? Math.round(v * (10 * currScale.precision)) / (10 * currScale.precision) : v;
-      
+
     });
 
     currScale.d3scale = help.returnD3Scale(currScale.colorIndex, totalcolors, currScale.domain, currScale.type, _computed[j].data, currScale.tickValues);
@@ -142,15 +144,15 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = [], prior
     currLegend.range = help.constructLegendRange(currScale.ticks, currScale.type);
     currLegend.domain = help.constructLegendDomain(currScale.tickValues, currScale.ticks);
     currLegend.tickValues = help.constructLegendTicks(currScale.tickValues, currScale.ticks, currScale.type);
-    
+
     //currLegend.spacings = help.constructLegendSpacings();
     //currLegend.transforms = help.constructLegendTransform(j, legends,currLegend, scaleNames);
-    
+
 
     legends[name] = currLegend;
     chartSettings[j].legends = currLegend;
 
-    /* 
+    /*
 
     this is not right
     */
@@ -169,7 +171,7 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = [], prior
     } else {
       chartProps.mobile = {};
     } */
-    
+
   });
 
   // this should all be included in one big loopa loop
@@ -181,7 +183,7 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = [], prior
         //chartSettings[g].scale = scale[z.label];
         if (bySeries.isNumeric) {
           chartSettings[g].scale.isNumeric = bySeries.isNumeric;
-        
+
           /*chartSettings[g].scale.numericSettings = clone(chartSettings[g].scale) ||
             clone(config.defaultProps.chartProps.chartSettings[0].scale);*/
         }

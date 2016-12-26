@@ -37,7 +37,7 @@ const PolygonCollection = React.createClass({
 
       let polygonType = (polygonData.type) ? polygonData.type+'_' : '';
       let thisvalue;
-      
+
       alldata.forEach(function(d, j) {
         if (thisvalue === undefined || !thisvalue.length) {
           thisvalue = Object.assign(filter(d.values, function(o) { return mapSchema.test(o[columnNames[0]], polygonData.id); }), {index:d.index});
@@ -45,7 +45,7 @@ const PolygonCollection = React.createClass({
       });
 
       const styles = {};
-      styles.stroke = this.props.stylings.stroke; 
+      styles.stroke = this.props.stylings.stroke;
       styles.fill = (thisvalue.length) ? currSettings[thisvalue.index].d3scale(thisvalue[0][columnNames[2]]) : '#777';
 
       if (showLabels) {
@@ -60,8 +60,8 @@ const PolygonCollection = React.createClass({
           attributes = { x:centers[0] + adjustStateLabels[1],
                          y:centers[1] + adjustStateLabels[0] + 6,
                          text:adjustStateLabels[2] }
-        } 
-        
+        }
+
         return (
           <g key= {`polygon_with_${i}`}>
             <path
@@ -70,7 +70,7 @@ const PolygonCollection = React.createClass({
               className={this.props.polygonClass}
               style={styles}
             />
-            <text 
+            <text
               x={attributes.x}
               y={attributes.y}
               className={'state-labels-show'}
