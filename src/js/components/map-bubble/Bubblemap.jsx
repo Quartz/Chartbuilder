@@ -15,13 +15,13 @@ const polygonClass = 'polygon-test';
 let MapRenderer = React.createClass({
 
   propTypes: {
-    chartProps: React.PropTypes.object.isRequired,
-    stylings: React.PropTypes.object.isRequired
+    chartProps: React.PropTypes.object.isRequired
   },
 
   render: function() {
-    let chartProps = this.props.chartProps;
-    let stylings = this.props.stylings;
+    const chartProps = this.props.chartProps;
+    const stylings = chartProps.stylings;
+		const displayConfig = this.props.displayConfig;
 
     const schema = chartProps.schema.schema;
     const data = topojson.feature(schema.topojson, schema.topojson.objects[schema.feature]);
@@ -44,6 +44,7 @@ let MapRenderer = React.createClass({
           <PolygonCollection
             chartProps= {chartProps}
             data= {data.features}
+            displayConfig={displayConfig}
             geoPath= {geo}
             proj={proj}
             schema={schema}

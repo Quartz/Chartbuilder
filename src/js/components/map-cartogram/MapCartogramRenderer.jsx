@@ -130,7 +130,7 @@ const PolygonCollection = React.createClass({
   },
   render: function() {
 
-    const translation = `translate(${this.props.translate.mapleft},${this.props.translate.maptop})`;
+    const translation = `translate(${this.props.displayConfig.margin.mapleft},${this.props.displayConfig.margin.maptop})`;
 
     return (
       <g transform={translation}

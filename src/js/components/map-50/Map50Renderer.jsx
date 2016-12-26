@@ -16,8 +16,6 @@ const PolygonCollection = React.createClass({
   },
   render: function() {
 
-  	console.log(this.props,'props');
-
   	const chartProps = this.props.chartProps;
     const mapSchema = this.props.schema;
     const geoPath = this.props.geoPath;

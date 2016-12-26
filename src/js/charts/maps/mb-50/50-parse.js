@@ -29,8 +29,6 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = [], prior
     type: chartProps.input.type
   });
 
-  console.log(bySeries.series,'ughhed')
-
   const dataParsed = bySeries.data;
 
   let parsedInputEntries = dataParsed.entries;

@@ -41,7 +41,7 @@ let MapEditor = React.createClass({
     }),
     numSteps: PropTypes.number
   },
-  
+
   mixins: [MapEditorMixin],
 
   getDefaultProps: function() {
@@ -55,7 +55,7 @@ let MapEditor = React.createClass({
     const mapSettings = [];
 
     mapSettings.push(map(mapProps.chartSettings, bind(function(chartSetting, i) {
-      
+
       return (
         <div>
           <MapCartogram_mapSettings
@@ -63,13 +63,13 @@ let MapEditor = React.createClass({
             onUpdate={this._handlePropUpdate.bind(null, "chartSettings")}
             onUpdateReparse={this._handlePropAndReparse.bind(null, "chartSettings")}
             numColors={this.props.numColors}
-            stylings={this.props.stylings}
+            stylings={this.props.chartProps.stylings}
             index={i}
             key={i}
           />
-          
+
           <Map_ScaleSettings
-            stylings={this.props.stylings}
+            stylings={this.props.chartProps.stylings}
             scale={mapProps.scale}
             className="scale-options"
             onUpdate={this._handlePropAndReparse.bind(null, "scale")}
@@ -83,7 +83,7 @@ let MapEditor = React.createClass({
         </div>
       );
     }, this)) );
-    
+
     let axisErrors = this.props.errors.messages.filter(function(e) {
       return e.location === "axis";
     });
@@ -152,7 +152,7 @@ const MapCartogram_mapSettings = React.createClass({
 
     const chartSetting = this.props.chartSettings[this.props.index];
     const numColors = colorScales.scalesNum();
-    
+
     return (
       <div className="series-control">
         <TextInput

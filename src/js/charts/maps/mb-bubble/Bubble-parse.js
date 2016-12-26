@@ -1,7 +1,7 @@
 import {clone, map, assign, each, filter, flatten} from 'lodash';
 
 const colorScales = require('./../../../util/colorscales');
-const dataBySeries = require("./../../../util/parse-data-by-series");
+const dataBySeries = require("./../../../util/parse-map-data-by-series");
 const help = require("../../../util/helper");
 //const help_50 = require("./50-parse-helpers");
 const SessionStore = require("../../../stores/SessionStore");
@@ -30,8 +30,8 @@ let parse50 = (config, _chartProps, callback, parseOpts, priorData = [], priorSc
 
   const dataParsed = bySeries.data;
 
-  let parsedInputEntries = dataParsed.entries; 
-  const columnNames = dataParsed.columnNames; 
+  let parsedInputEntries = dataParsed.entries;
+  const columnNames = dataParsed.columnNames;
 
   const scaleNames = [];
   const scaleIndex = [];
@@ -77,7 +77,7 @@ let parse50 = (config, _chartProps, callback, parseOpts, priorData = [], priorSc
     });
 
     _computed[i].data = _computed[i].data.concat(values);
-  
+
     return settings;
   });
 
@@ -120,7 +120,7 @@ let parse50 = (config, _chartProps, callback, parseOpts, priorData = [], priorSc
     currScale.ticks = ticks;
 
     currScale.colorIndex = chartSettings[j].colorIndex;
-    
+
     currScale.tickValues = help.exactTicks(currScale.domain, ticks, _computed[j].data, currScale.type, currScale.tickValues);
 
     currScale.tickValues.forEach((v, i) => {
@@ -129,7 +129,7 @@ let parse50 = (config, _chartProps, callback, parseOpts, priorData = [], priorSc
         currScale.precision = tickPrecision;
       }
       currScale.tickValues[i] = currScale.precision ? Math.round(v * (10 * currScale.precision)) / (10 * currScale.precision) : v;
-      
+
     });
 
     currScale.d3scale = help.returnD3Scale(currScale.colorIndex, totalcolors, currScale.domain, currScale.type, _computed[j].data, currScale.tickValues);
@@ -147,15 +147,15 @@ let parse50 = (config, _chartProps, callback, parseOpts, priorData = [], priorSc
     currLegend.range = help.constructLegendRange(currScale.ticks, currScale.type);
     currLegend.domain = help.constructLegendDomain(currScale.tickValues, currScale.ticks);
     currLegend.tickValues = help.constructLegendTicks(currScale.tickValues, currScale.ticks, currScale.type);
-    
+
     //currLegend.spacings = help.constructLegendSpacings();
     //currLegend.transforms = help.constructLegendTransform(j, legends,currLegend, scaleNames);
-    
+
 
     legends[name] = currLegend;
     chartSettings[j].legends = currLegend;
 
-    /* 
+    /*
 
     this is not right
     */
@@ -174,7 +174,7 @@ let parse50 = (config, _chartProps, callback, parseOpts, priorData = [], priorSc
     } else {
       chartProps.mobile = {};
     } */
-    
+
   });
 
   // this should all be included in one big loopa loop
@@ -186,7 +186,7 @@ let parse50 = (config, _chartProps, callback, parseOpts, priorData = [], priorSc
         //chartSettings[g].scale = scale[z.label];
         if (bySeries.isNumeric) {
           chartSettings[g].scale.isNumeric = bySeries.isNumeric;
-        
+
           /*chartSettings[g].scale.numericSettings = clone(chartSettings[g].scale) ||
             clone(config.defaultProps.chartProps.chartSettings[0].scale);*/
         }
@@ -198,7 +198,7 @@ let parse50 = (config, _chartProps, callback, parseOpts, priorData = [], priorSc
 
   each(bySeries.series, (item, j) => {
 
-    const thisItem = map(item.values, (d) =>  { 
+    const thisItem = map(item.values, (d) =>  {
               d.index = item.index;
             return d; });
 
@@ -259,7 +259,7 @@ let parse50 = (config, _chartProps, callback, parseOpts, priorData = [], priorSc
       chartProps.mobile = {};
     } */
 
-  
+
     //console.log(bySeries.series,'series');
 
   let newChartProps = assign(chartProps, {

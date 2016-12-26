@@ -13,7 +13,7 @@ import {ButtonGroup, TextInput, LabelledTangle, AlertGroup} from 'chartbuilder-u
  * @instance
  * @memberof editors
  */
-let Map_ScaleSettings = React.createClass({
+const Map_ScaleSettings = React.createClass({
 
   propTypes: {
     className: PropTypes.string,
@@ -56,11 +56,13 @@ let Map_ScaleSettings = React.createClass({
   },
 
   render: function() {
-    
+
     const currScale = this.props.scale[this.props.index];
     const errors = this._renderErrors();
 
     let prefixSuffix = false;
+
+    console.log(this.props, 'eh');
 
     if (this.props.stylings.showLegendTicks) {
 

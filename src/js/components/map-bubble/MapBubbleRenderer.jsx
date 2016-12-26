@@ -20,20 +20,21 @@ const PolygonCollection = React.createClass({
   render: function() {
 
     const mapSchema = this.props.schema;
+    const chartProps = this.props.chartProps;
 
     const geoPath = this.props.geoPath;
     const polygonClass = this.props.polygonClass;
 
-    const translation = `translate(0,${this.props.translate.maptop})`;
-    const currSettings = this.props.chartProps.scale;
+    const translation = `translate(0,${this.props.displayConfig.margin.maptop})`;
+    const currSettings = chartProps.scale;
 
-    const alldata = this.props.chartProps.data;
+    const alldata = chartProps.data;
 
     const showLabels = this.props.stylings.showStateLabels;
     const mapStroke = this.props.stylings.stroke;
 
     const adjustLabels = mapSchema.adjustLabels;
-    const columnNames = this.props.chartProps.columns;
+    const columnNames = chartProps.columns;
 
     const circleReturn = [];
 

@@ -79,11 +79,11 @@ var RendererWrapper = React.createClass({
 	},
 
 	componentWillReceiveProps: function(nextProps) {
-		console.log(nextProps,'lol');
+
 		const newType = nextProps.model.metadata.chartType;
 		const prevType = this.props.model.metadata.chartType;
 		if (newType !== prevType) {
-			console.log('update');
+
 			const chartConfig = convertConfig(chartConfigs[newType] || mapConfigs[newType], null, this.state.emSize, this.state.domNodeWidth);
 
 			this.setState({ chartConfig: chartConfig });
@@ -190,7 +190,7 @@ var RendererWrapper = React.createClass({
 	render: function() {
 		const chartType = this.props.model.metadata.chartType;
 		const width = this.props.width || this.state.domNodeWidth;
-		console.log(this.state,'hm');
+
 		let displayConfig = this.state.chartConfig.display;
 		const svgClassName = this.props.svgClassName || '';
 

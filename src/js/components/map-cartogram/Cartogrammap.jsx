@@ -20,36 +20,41 @@ class MapRenderer extends React.Component{
   constructor(props) {
     super(props);
 
-    const grid = {};
+	  const schema = props.chartProps.schema.schema;
+    const cartogramType = schema.name;
 
-    d3.select("#grid." + this.props.chartProps.schema.schema.name)
-    .text().split("\n")
-    .forEach(function(line, i) {
-      let re = /\w+/g, m;
-      while (m = re.exec(line)) {
-        grid[m[0]] = [m.index / 3, i]
-      }
-    });
+    if (cartogramType === 'states50') {
 
-    const centroidsConst = [];
-    const schema = this.props.chartProps.schema.schema;
-    const data = topojson.feature(schema.topojson, schema.topojson.objects[schema.feature]);
+	    const grid = {};
 
-    data.features.map((polygonData, i) => {
+	    d3.select("#grid." + cartogramType)
+	    .text().split("\n")
+	    .forEach(function(line, i) {
+	      let re = /\w+/g, m;
+	      while (m = re.exec(line)) {
+	        grid[m[0]] = [m.index / 3, i]
+	      }
+	    });
 
-      const center = centroid(polygonData);
-      const id = polygonData.id < 10 ? '0' + polygonData.id.toString() : polygonData.id;
+	    const centroidsConst = [];
+	    const data = topojson.feature(schema.topojson, schema.topojson.objects[schema.feature]);
 
-      centroidsConst.push({"type":"Feature","id":id,
-          "geometry":{"type":"Point","coordinates": center.geometry.coordinates},
-          "properties":{"name":id} });
-    });
+	    data.features.map((polygonData, i) => {
 
-    this.state = {
-      grid: grid,
-      nodes: [],
-      centroids: centroidsConst
-    }
+	      const center = centroid(polygonData);
+	      const id = polygonData.id < 10 ? '0' + polygonData.id.toString() : polygonData.id;
+
+	      centroidsConst.push({"type":"Feature","id":id,
+	          "geometry":{"type":"Point","coordinates": center.geometry.coordinates},
+	          "properties":{"name":id} });
+	    });
+
+	    this.state = {
+	      grid: grid,
+	      nodes: [],
+	      centroids: centroidsConst
+	    }
+  	}
   }
 
   render () {
@@ -58,6 +63,8 @@ class MapRenderer extends React.Component{
     const stylings = chartProps.stylings;
     const schema = chartProps.schema.schema;
     const grid = this.state.grid;
+
+		const displayConfig = this.props.displayConfig;
 
     const centroids = this.state.centroids;
     const columnNames = chartProps.columns;
@@ -119,7 +126,7 @@ class MapRenderer extends React.Component{
           <CartogramCollection
             chartProps= {chartProps}
             stylings={stylings}
-            translate={this.props.translate}
+            displayConfig={displayConfig}
             polygonClass={cartogramClass}
             nodes={nodes}
           />
