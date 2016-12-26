@@ -95,7 +95,7 @@ var ChartTypeSelctor = React.createClass({
 		<div className="editor-options">
 			<h2>
 				<span className="step-number">1</span>
-				<span>Select chart type</span>
+				<span>Select visual type</span>
 			</h2>
 			<ButtonGroup
 				buttons={this.state.chartConfig}

@@ -38,7 +38,7 @@ const PolygonCollection = React.createClass({
 
     const polygonCollection = this.props.data.map((polygonData, i) => {
 
-      let polygonType = (polygonData.type) ? polygonData.type+'_' : '';
+      const polygonType = (polygonData.type) ? polygonData.type+'_' : '';
       let thisvalue;
 
       alldata.forEach(function(d, j) {
@@ -46,6 +46,8 @@ const PolygonCollection = React.createClass({
           thisvalue = Object.assign(filter(d.values, function(o) { return mapSchema.test(o[columnNames[0]], polygonData.id); }), {index:d.index});
         }
       });
+
+      console.log(thisvalue,'value');
 
       const styles = {};
       styles.stroke = chartProps.stylings.stroke;

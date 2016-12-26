@@ -42,19 +42,24 @@ var DataInput = React.createClass({
 	},
 
 	_handleReparseUpdate: function(k, v) {
-		if (k == "input") {
+
+		let input;
+
+		if (k === "input") {
 			input = update(this.props.chartProps.input, { $merge: {
 				raw: v,
 				type: undefined
 			}});
 			ChartViewActions.updateInput(k, input);
-		} else if (k == "type") {
+		}
+		else if (k == "type") {
 			input = update(this.props.chartProps.input, { $set: {
 				raw: v.raw,
 				type: v.type
 			}});
 			ChartViewActions.updateAndReparse("input", input);
-		} else {
+		}
+		else {
 			return;
 		}
 	},
