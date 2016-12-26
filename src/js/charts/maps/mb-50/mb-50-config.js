@@ -93,7 +93,7 @@ const defaultProps = Object.freeze({
    * @memberof xy_defaultProps
    */
   chartProps: {
-    
+
     data: [],
     input: {},
     stylings: {
@@ -147,7 +147,7 @@ const defaultProps = Object.freeze({
 });
 
 const map_config = new MapConfig({
-  displayName: "US Choropleth",
+  displayName: "Choropleth",
   parser: require("./50-parse"),
   calculateDimensions: require("./mb-50-dimensions"),
   display: display,

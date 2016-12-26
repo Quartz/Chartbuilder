@@ -93,7 +93,7 @@ const defaultProps = Object.freeze({
    * @memberof xy_defaultProps
    */
   chartProps: {
-    
+
     data: [],
     input: {},
     stylings: {
@@ -155,7 +155,7 @@ const defaultProps = Object.freeze({
 });
 
 const map_config = new MapConfig({
-  displayName: "US Cartogram Map",
+  displayName: "Cartogram",
   parser: require("./Cartogram-parse"),
   calculateDimensions: require("./mb-cartogram-dimensions"),
   display: display,

@@ -7,6 +7,7 @@ var clone = require("lodash/clone");
 var map = require("lodash/map");
 var keys = require("lodash/keys");
 var helper = require("../util/helper");
+var concat = require("lodash/concat");
 
 // Flux actions
 var ChartServerActions = require("../actions/ChartServerActions");
@@ -27,8 +28,7 @@ var ChartTypeSelctor = React.createClass({
 
 	/* Generate values for each chart type that can be used to create buttons */
 	getInitialState: function() {
-		console.log(keys(chartConfig),'hm');
-		//var typesConfig = 
+		//var typesConfig =
 		var chartTypeButtons = map(keys(chartConfig), function(chartTypeKey) {
 			return {
 				title: chartConfig[chartTypeKey].displayName,
@@ -36,7 +36,16 @@ var ChartTypeSelctor = React.createClass({
 				value: chartTypeKey
 			};
 		});
-		return { chartConfig: chartTypeButtons };
+		var mapTypeButtons = map(keys(mapConfig), function(mapTypeKey) {
+			return {
+				title: mapConfig[mapTypeKey].displayName,
+				content: mapConfig[mapTypeKey].displayName,
+				value: mapTypeKey
+			};
+		});
+		console.log(mapTypeButtons, chartTypeButtons, 'eh');
+		var allTypeButtons = concat(chartTypeButtons,mapTypeButtons);
+		return { chartConfig: allTypeButtons };
 	},
 
 	/*
@@ -78,6 +87,8 @@ var ChartTypeSelctor = React.createClass({
 	},
 
 	render: function() {
+
+		console.log(this.props.metadata,'meta')
 		return (
 		<div className="editor-options">
 			<h2>

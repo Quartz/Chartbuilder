@@ -19,9 +19,6 @@ function calculate_map_dimensions(width, opts) {
     width = chartSizes[metadata.size].width;
   }
 
-  
-  console.log(aspectRatio,'ratio');
-
   switch (metadata.size) {
     case "auto":
       height = width * aspectRatio.wide;

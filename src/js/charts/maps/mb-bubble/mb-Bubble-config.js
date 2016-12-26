@@ -93,7 +93,7 @@ const defaultProps = Object.freeze({
    * @memberof xy_defaultProps
    */
   chartProps: {
-    
+
     data: [],
     input: {},
     stylings: {
@@ -150,7 +150,7 @@ const defaultProps = Object.freeze({
 });
 
 const map_config = new MapConfig({
-  displayName: "US Bubble",
+  displayName: "Bubble",
   parser: require("./Bubble-parse"),
   calculateDimensions: require("./mb-bubble-dimensions"),
   display: display,
