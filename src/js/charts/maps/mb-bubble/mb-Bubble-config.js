@@ -96,26 +96,26 @@ const defaultProps = Object.freeze({
 
     data: [],
     input: {},
-    stylings: {
-        stroke:'#fff',
-        radiusVal: 25,
-        legendMove: {
-          top:0,
-          left:0
-        },
-        legendText: 'Write what the legend shapes represent here'
-    },
+	  stylings: {
+      stroke:'#fff',
+      radiusVal: 25,
+      legendMove: {
+        top:0,
+        left:0
+      },
+      legendText: 'Write what the legend shapes represent here'
+	  },
     chartSettings: [
       {
         colorIndex: 0,
         scale: {
-            ticks: 5,
-            colors: 4,
-            precision: 1,
-            prefix: "",
-            suffix: "",
-            type: "quantize"
-          }
+          ticks: 5,
+          colors: 4,
+          precision: 1,
+          prefix: "",
+          suffix: "",
+          type: "quantize"
+      	}
       },
     ],
     extraPadding: {

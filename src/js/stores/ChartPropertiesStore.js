@@ -79,6 +79,7 @@ function registeredCallback(payload) {
 	var action = payload.action;
 	var parser;
 	var config;
+	var thisModel;
 
 	switch(action.eventName) {
 		/*
@@ -87,10 +88,13 @@ function registeredCallback(payload) {
 		*/
 		case "receive-model":
 			Dispatcher.waitFor([SessionStore.dispatchToken]);
-			chartType = action.model.metadata.chartType;
+			thisModel = action.model;
+			chartType = thisModel.metadata.chartType;
 			config = chartConfig[chartType] || mapConfig[chartType];
 			parser = config.parser;
-			_chartProps = parser(config, action.model.chartProps);
+			_chartProps = parser(config, thisModel.chartProps);
+			console.log('receive', thisModel);
+			console.log(_chartProps,'uh');
 			break;
 
 		/*
@@ -103,6 +107,7 @@ function registeredCallback(payload) {
 				_chartProps = newProps;
 				ChartPropertiesStore.emitChange();
 			});
+			console.log('update all');
 			break;
 
 		/*
@@ -112,6 +117,7 @@ function registeredCallback(payload) {
 		case "update-chart-prop":
 			_chartProps[action.key] = action.newProp;
 			ChartPropertiesStore.emitChange();
+			console.log('update one');
 			break;
 
 		/*
@@ -126,6 +132,7 @@ function registeredCallback(payload) {
 				_chartProps = newProps;
 				ChartPropertiesStore.emitChange();
 			});
+			console.log('update and reparse');
 			break;
 
 		case "update-data-input":
@@ -140,6 +147,7 @@ function registeredCallback(payload) {
 					ChartPropertiesStore.emitChange();
 				}, parseOpts);
 			});
+			console.log('update data');
 			break;
 
 		default:

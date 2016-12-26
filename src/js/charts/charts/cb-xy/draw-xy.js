@@ -5,7 +5,6 @@ if (process.env.NODE_ENV !== "test") {
 var filter = require("lodash/filter");
 var each = require("lodash/each");
 
-var chartStyle = require("../../../config/chartconfig/chart-style");
 var cb_mixins = require("../cb-d4-mixins.js");
 var help = require("../../../util/helper.js");
 
@@ -94,7 +93,7 @@ var using = {
 		line.x(function(d) {
 			if (this.x.$scale == "time" || this.x.$scale == "linear") {
 				return this.x(d[this.x.$key]);
-			} 
+			}
 			else {
 				return this.x(d[this.x.$key]) + this.x.rangeBand() / 2;
 			}
@@ -351,12 +350,12 @@ var cb_xy = d4.chart("cb-xy", function() {
 				var coords = help.transformCoords(axisNode.attr("transform"));
 				coords[1] = coords[1] + xy_config.xAxisShift;
 				axisNode.attr("transform","translate(" + coords + ")");
-				
 
 
-				
 
-				
+
+
+
 
 			});
 		})

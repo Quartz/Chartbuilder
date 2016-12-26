@@ -43,7 +43,7 @@ var ChartTypeSelctor = React.createClass({
 				value: mapTypeKey
 			};
 		});
-		var allTypeButtons = concat(chartTypeButtons,mapTypeButtons);
+		var allTypeButtons = concat(chartTypeButtons, mapTypeButtons);
 		return { chartConfig: allTypeButtons };
 	},
 
@@ -63,6 +63,7 @@ var ChartTypeSelctor = React.createClass({
 		var prevProps = this.props.chartProps;
 		var visualConfig = chartConfig[chartType] || mapConfig[chartType];
 		var newDefaultProps = visualConfig.defaultProps.chartProps;
+		const stylings = newDefaultProps.stylings;
 		var prevSettings = prevProps.chartSettings;
 		var newDefaultSettings = newDefaultProps.chartSettings[0];
 		var prevKeys = keys(prevSettings[0]);
@@ -78,6 +79,8 @@ var ChartTypeSelctor = React.createClass({
 		newProps.chartSettings = map(prevProps.data, function(d, i) {
 			return helper.mergeOrApply(newDefaultSettings, prevSettings[i]);
 		});
+
+		newProps.stylings = stylings;
 
 		/* Dispatch the new model to the flux stores */
 		ChartServerActions.receiveModel({

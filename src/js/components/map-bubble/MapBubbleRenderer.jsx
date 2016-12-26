@@ -15,8 +15,7 @@ const PolygonCollection = React.createClass({
     geoPath: React.PropTypes.func,
     polygonClass: React.PropTypes.string,
     onClick: React.PropTypes.func,
-    chartProps: React.PropTypes.object.isRequired,
-    stylings: React.PropTypes.object.isRequired
+    chartProps: React.PropTypes.object.isRequired
   },
   render: function() {
 
@@ -79,7 +78,7 @@ const PolygonCollection = React.createClass({
       if (thisvalue.length) {
         styles2.stroke = currSettings[thisvalue.index].d3scale(thisvalue[0][columnNames[2]]);
         styles2.fill = currSettings[thisvalue.index].d3scale(thisvalue[0][columnNames[2]]);
-      } 
+      }
       else {
         styles2.stroke = '#777';
         styles2.fill = '#777'
@@ -95,7 +94,7 @@ const PolygonCollection = React.createClass({
       }
 
       circleReturn.push(
-          <circle 
+          <circle
             key= {`circle_with_${i}`}
             style={styles2}
             r={renderRadius}
@@ -104,7 +103,7 @@ const PolygonCollection = React.createClass({
             className={'state-labels-show'}
           >
           </circle>)
-      
+
       return (
         <g key= {`polygon_with_${i}`}>
           <path

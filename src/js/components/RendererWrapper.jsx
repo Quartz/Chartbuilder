@@ -79,10 +79,13 @@ var RendererWrapper = React.createClass({
 	},
 
 	componentWillReceiveProps: function(nextProps) {
-		var newType = nextProps.model.metadata.chartType;
-		var prevType = this.props.model.metadata.chartType;
+		console.log(nextProps,'lol');
+		const newType = nextProps.model.metadata.chartType;
+		const prevType = this.props.model.metadata.chartType;
 		if (newType !== prevType) {
-			var chartConfig = convertConfig(chartConfigs[newType], null, this.state.emSize, this.state.domNodeWidth);
+			console.log('update');
+			const chartConfig = convertConfig(chartConfigs[newType] || mapConfigs[newType], null, this.state.emSize, this.state.domNodeWidth);
+
 			this.setState({ chartConfig: chartConfig });
 		}
 	},
@@ -120,7 +123,7 @@ var RendererWrapper = React.createClass({
 			domNodeWidth: domNodeWidth,
 			emSize: bp.em_size,
 			svgSizeClass: bp.class_name,
-			chartConfig: convertConfig(chartConfigs[chartType], null, bp.em_size, domNodeWidth),
+			chartConfig: convertConfig(chartConfigs[chartType] || mapConfigs[newtype], null, bp.em_size, domNodeWidth),
 			styleConfig: convertConfig(chartStyle, null, bp.em_size, domNodeWidth)
 		};
 	},
@@ -185,10 +188,11 @@ var RendererWrapper = React.createClass({
 	},
 
 	render: function() {
-		var chartType = this.props.model.metadata.chartType;
-		var width = this.props.width || this.state.domNodeWidth;
-		var displayConfig = this.state.chartConfig.display;
-		var svgClassName = this.props.svgClassName || '';
+		const chartType = this.props.model.metadata.chartType;
+		const width = this.props.width || this.state.domNodeWidth;
+		console.log(this.state,'hm');
+		let displayConfig = this.state.chartConfig.display;
+		const svgClassName = this.props.svgClassName || '';
 
 		if (!width) {
 			return <div style={{ width: "100%" }}></div>;
@@ -227,7 +231,7 @@ var RendererWrapper = React.createClass({
 			console.error(e.name, e.message);
 		}
 
-		var Renderer = chartRenderers[chartType];
+		var Renderer = chartRenderers[chartType] || mapRenderers[chartType];
 		var chartProps;
 		var metadata;
 

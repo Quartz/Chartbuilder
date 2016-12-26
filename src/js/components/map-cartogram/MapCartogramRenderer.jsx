@@ -42,8 +42,7 @@ const PolygonCollection = React.createClass({
     polygonClass: React.PropTypes.string,
     onClick: React.PropTypes.func,
     nodes: React.PropTypes.array,
-    chartProps: React.PropTypes.object.isRequired,
-    stylings: React.PropTypes.object.isRequired
+    chartProps: React.PropTypes.object.isRequired
   },
   componentDidMount: function() {
 
@@ -62,15 +61,15 @@ const PolygonCollection = React.createClass({
     theseNodes.exit().remove();
 
     const d3Node = d3.select(ReactDOM.findDOMNode(this.refs.graph)).selectAll('.node');
-   
+
 
     if (stylings.type !== 'grid') {
 
-      force.on("tick", (e, i) => { 
+      force.on("tick", (e, i) => {
         if (i > 200) force.stop();
-        return (stylings.type === 'dorling') ? 
+        return (stylings.type === 'dorling') ?
                 helperCarto.updateDorling (e, d3Node, this.props.nodes) :
-                helperCarto.updateDemers (e, d3Node, this.props.nodes); 
+                helperCarto.updateDemers (e, d3Node, this.props.nodes);
       })
       .resume();
 
@@ -78,7 +77,7 @@ const PolygonCollection = React.createClass({
 
       force.nodes(this.props.nodes);
       force.start();
-    } 
+    }
   },
   componentDidUpdate:  function(nextProps, nextState) {
 
@@ -103,30 +102,30 @@ const PolygonCollection = React.createClass({
 
     if (stylings.type !== 'grid') {
 
-      (stylings.type === 'dorling') ? 
+      (stylings.type === 'dorling') ?
                 helperCarto.switchDorling (d3Node, stylings) :
-                helperCarto.switchDemers (d3Node, stylings); 
+                helperCarto.switchDemers (d3Node, stylings);
 
-      if (stylings.type !== nextProps.stylings.type 
+      if (stylings.type !== nextProps.stylings.type
           || stylings.showDC !== nextProps.stylings.showDC) {
 
-        force.on("tick", (e, i) => { 
+        force.on("tick", (e, i) => {
           if (i > 200) force.stop();
-          return (stylings.type === 'dorling') ? 
+          return (stylings.type === 'dorling') ?
                   helperCarto.updateDorling (e, d3Node, this.props.nodes) :
-                  helperCarto.updateDemers (e, d3Node, this.props.nodes); 
+                  helperCarto.updateDemers (e, d3Node, this.props.nodes);
         })
         .resume();
 
         force.nodes(this.props.nodes);
         force.start();
 
-      } 
+      }
       else force.stop();
-    } 
+    }
     else {
       force.stop();
-      helperCarto.switchGrid(d3Node, stylings)      
+      helperCarto.switchGrid(d3Node, stylings)
     }
   },
   render: function() {

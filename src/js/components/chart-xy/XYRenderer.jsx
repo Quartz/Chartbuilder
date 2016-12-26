@@ -112,6 +112,9 @@ var XYRenderer = React.createClass({
 	},
 
 	render: function() {
+
+		console.log(this.props,'props xy');
+
 		var _chartProps = this.props.chartProps;
 		var displayConfig = this.props.displayConfig;
 		var axis = d3.svg.axis();

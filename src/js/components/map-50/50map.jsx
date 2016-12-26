@@ -16,17 +16,35 @@ const polygonClass = 'polygon-test';
 const MapRenderer = React.createClass({
 
   propTypes: {
-    chartProps: React.PropTypes.object.isRequired,
-    stylings: React.PropTypes.object.isRequired
-  },
+		displayConfig: React.PropTypes.shape({
+			margin: React.PropTypes.object.isRequired,
+			padding: React.PropTypes.object.isRequired,
+			labelRectSize: React.PropTypes.number.isRequired,
+			afterLegend: React.PropTypes.number.isRequired
+		}).isRequired,
+		chartProps: React.PropTypes.shape({
+			chartSettings: React.PropTypes.array.isRequired,
+			data: React.PropTypes.array.isRequired,
+			scale: React.PropTypes.object.isRequired,
+			_annotations: React.PropTypes.object,
+			date: React.PropTypes.object,
+			mobile: React.PropTypes.object
+		}).isRequired,
+		metadata: React.PropTypes.object,
+		showMetadata: React.PropTypes.bool,
+		editable: React.PropTypes.bool,
+		useMobileSettings: React.PropTypes.bool
+	},
 
   render: function() {
     const chartProps = this.props.chartProps;
-    const stylings = this.props.stylings;
+    const stylings = chartProps.stylings;
+
+		const displayConfig = this.props.displayConfig;
 
     const schema = chartProps.schema.schema;
     const featname = schema.feature;
-    console.log(topojson,'topo')
+
     const data = topojson.feature(schema.topojson,
                   schema.topojson.objects[featname]);
 
@@ -51,8 +69,7 @@ const MapRenderer = React.createClass({
             geoPath= {geo}
             schema={schema}
             proj={proj}
-            stylings={stylings}
-            translate={this.props.translate}
+            displayConfig={displayConfig}
             polygonClass={polygonClass}
           />
     );

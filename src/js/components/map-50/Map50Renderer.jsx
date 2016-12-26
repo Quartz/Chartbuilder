@@ -12,24 +12,27 @@ const PolygonCollection = React.createClass({
     geoPath: React.PropTypes.func,
     polygonClass: React.PropTypes.string,
     onClick: React.PropTypes.func,
-    chartProps: React.PropTypes.object.isRequired,
-    stylings: React.PropTypes.object.isRequired
+    chartProps: React.PropTypes.object.isRequired
   },
   render: function() {
+
+  	console.log(this.props,'props');
+
+  	const chartProps = this.props.chartProps;
 
     const mapSchema = this.props.schema;
 
     const geoPath = this.props.geoPath;
     const projection = this.props.proj;
 
-    const currSettings = this.props.chartProps.scale;
+    const currSettings = chartProps.scale;
 
-    const alldata = this.props.chartProps.data;
-    const columnNames = this.props.chartProps.columns;
+    const alldata = chartProps.data;
+    const columnNames = chartProps.columns;
 
-    const showLabels = this.props.stylings.showStateLabels;
+    const showLabels = chartProps.stylings.showStateLabels;
     const adjustLabels = mapSchema.adjustLabels;
-    const translation = `translate(0,${this.props.translate.maptop})`;
+    const translation = `translate(0,${this.props.displayConfig.margin.maptop})`;
 
     if (this.props.onClick) onClick = this.props.onClick;
 
@@ -45,7 +48,7 @@ const PolygonCollection = React.createClass({
       });
 
       const styles = {};
-      styles.stroke = this.props.stylings.stroke;
+      styles.stroke = chartProps.stylings.stroke;
       styles.fill = (thisvalue.length) ? currSettings[thisvalue.index].d3scale(thisvalue[0][columnNames[2]]) : '#777';
 
       if (showLabels) {

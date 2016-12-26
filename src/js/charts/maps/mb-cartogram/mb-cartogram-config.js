@@ -96,23 +96,23 @@ const defaultProps = Object.freeze({
 
     data: [],
     input: {},
-    stylings: {
-        corners: '2',
-        legendText: 'Write what the legend shapes represent here',
-        legendMove: {
-          top:0,
-          left:0
-        },
-        stroke:'#aaa',
-        type: "grid",
-        radiusVal: 35,
-        squareWidth: '42',
-        cellSize: 50,
-        showDC: false,
-        showLegendTicks: false,
-        showStateLabels: true,
-        showValuesLabels: false
-    },
+	  stylings: {
+	    corners: '2',
+	    legendText: 'Write what the legend shapes represent here',
+	    legendMove: {
+	      top:0,
+	      left:0
+	    },
+	    stroke:'#aaa',
+	    type: "grid",
+	    radiusVal: 35,
+	    squareWidth: '42',
+	    cellSize: 50,
+	    showDC: false,
+	    showLegendTicks: false,
+	    showStateLabels: true,
+	    showValuesLabels: false
+	  },
     chartSettings: [
       {
         colorIndex: 0,
@@ -120,7 +120,7 @@ const defaultProps = Object.freeze({
             prefix: "",
             suffix: "",
             type: "quantize"
-          }
+        }
       },
     ],
     extraPadding: {

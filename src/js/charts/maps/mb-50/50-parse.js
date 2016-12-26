@@ -20,6 +20,8 @@ const parseMapType = require('./../../../util/parse-map-type');
 const parse50 = (config, _chartProps, callback, parseOpts, priorData = [], priorSchema = []) => {
   // Build chart settings from defaults or provided settings
 
+  console.log("o rly?");
+
   parseOpts = parseOpts || {};
   // clone so that we aren't modifying original
   // this can probably be avoided by applying new settings differently

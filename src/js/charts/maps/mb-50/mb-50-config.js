@@ -96,12 +96,12 @@ const defaultProps = Object.freeze({
 
     data: [],
     input: {},
-    stylings: {
-        stroke:'#666',
-        showLegendTicks: true,
-        showStateLabels: false,
-        legendPrecision: 1
-    },
+	  stylings: {
+      stroke:'#666',
+      showLegendTicks: true,
+      showStateLabels: false,
+      legendPrecision: 1
+	  },
     chartSettings: [
       {
         colorIndex: 0,
@@ -112,7 +112,7 @@ const defaultProps = Object.freeze({
             prefix: "",
             suffix: "",
             type: "quantize"
-          }
+        }
       },
     ],
     extraPadding: {
