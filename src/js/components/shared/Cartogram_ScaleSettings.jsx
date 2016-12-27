@@ -62,21 +62,20 @@ const Map_ScaleSettings = React.createClass({
 
     let prefixSuffix = false;
 
-    console.log(this.props, 'eh');
-
     if (this.props.stylings.showLegendTicks) {
 
       prefixSuffix = [];
       prefixSuffix.push(<TextInput
           className="scale-option"
+          key="scale-prefix"
           onChange={this._handleScaleUpdate.bind(null, "prefix")}
           value={currScale.prefix}
           placeholder="Prefix"
         />);
 
-      prefixSuffix.push(
-        <TextInput
+      prefixSuffix.push(<TextInput
           id="suffix"
+          key="scale-prefix"
           className="scale-option"
           onChange={this._handleScaleUpdate.bind(null, "suffix")}
           value={currScale.suffix}

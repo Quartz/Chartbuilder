@@ -87,7 +87,7 @@ let Map_ScaleSettings = React.createClass({
 
     let prefixSuffix = false;
 
-   // console.log(this.props.stylings,'stylings');
+   	console.log(this.props, 'test typeOptions');
 
     if (this.props.stylings.showLegendTicks) {
 

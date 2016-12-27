@@ -5,28 +5,26 @@
 */
 
 /* Node modules */
-var React = require("react");
-var update = require("react-addons-update");
-var PropTypes = React.PropTypes;
+import React, {Component, PropTypes} from 'react';
 
 /* Flux stores */
-var ChartPropertiesStore = require("../stores/ChartPropertiesStore");
-var ChartMetadataStore = require("../stores/ChartMetadataStore");
-var SessionStore = require("../stores/SessionStore");
-var ErrorStore = require("../stores/ErrorStore");
+const ChartPropertiesStore = require("../stores/ChartPropertiesStore");
+const ChartMetadataStore = require("../stores/ChartMetadataStore");
+const SessionStore = require("../stores/SessionStore");
+const ErrorStore = require("../stores/ErrorStore");
 
 /*
  * Global React components that are used irrespective of chart type
  * More info within each component's definition.
 */
-var Canvas = require("./Canvas.jsx");
-var ChartExport = require("./ChartExport.jsx");
-var ChartMetadata = require("./ChartMetadata.jsx");
-var ChartTypeSelector = require("./ChartTypeSelector.jsx");
-var RendererWrapper = require("./RendererWrapper.jsx");
-var LocalStorageTimer = require("./LocalStorageTimer.jsx");
+import Canvas from './Canvas.jsx';
+import ChartMetadata from './ChartMetadata.jsx';
+import ChartTypeSelector from "./ChartTypeSelector.jsx";
+import RendererWrapper from "./RendererWrapper.jsx";
+import LocalStorageTimer from './LocalStorageTimer.jsx';
+import ChartExport from './ChartExport.jsx';
 
-var AlertGroup = require("chartbuilder-ui").AlertGroup;
+import {AlertGroup} from 'chartbuilder-ui';
 
 var svgWrapperClassName = {
 	desktop: "renderer-svg-desktop",
@@ -36,10 +34,10 @@ var svgWrapperClassName = {
 // Associates a given chart type with its Editor and Renderer components.
 const chartEditors = require("../charts/charts/editors");
 const mapEditors = require("../charts/maps/editors");
-var numColors = require("../config/chartconfig/chart-style").numColors;
+const numColors = require("../config/chartconfig/chart-style").numColors;
 
 /* API to localStorage that allows saving and retrieving charts */
-var ChartbuilderLocalStorageAPI = require("../util/ChartbuilderLocalStorageAPI");
+const ChartbuilderLocalStorageAPI = require("../util/ChartbuilderLocalStorageAPI");
 
 /**
  * Function to query Flux stores for all data. Runs whenever the stores are
@@ -157,6 +155,7 @@ var Chartbuilder = React.createClass({
 	 * is being used as a module or without the editor.
 	*/
 	render: function() {
+
 		const chartType = this.state.metadata.chartType;
 		const VisualEditor = chartEditors[chartType] || mapEditors[chartType];
 		const showLegendBool = chartEditors[chartType] ? false : true;
@@ -231,6 +230,7 @@ var Chartbuilder = React.createClass({
 						errors={this.state.errors}
 						session={this.state.session}
 						chartProps={this.state.chartProps}
+						stepNumber={String(editorSteps)}
 						numColors={numColors}
 					/>
 					<ChartMetadata

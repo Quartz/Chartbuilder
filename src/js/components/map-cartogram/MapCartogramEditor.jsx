@@ -20,6 +20,57 @@ import {ColorPicker, Dropdown, LabelledTangle, TextInput, Toggle} from 'chartbui
 const colorScales = require('./../../util/colorscales');
 const MapEditorMixin = require("../mixins/MapEditorMixin.js");
 
+
+/* this needs to be moved into the config file
+*/
+
+const map_strokes = [
+  {
+    title: "",
+    content: "Darker Grey",
+    value: "#333"
+  },
+  {
+    title: "",
+    content: "Dark Grey",
+    value: "#666"
+  },
+  {
+    title: "",
+    content: "Grey",
+    value: "#aaa"
+  },
+  {
+    title: "",
+    content: "Lightest Grey",
+    value: "#eee"
+  },
+  {
+    title: "",
+    content: "White",
+    value: "#fff"
+  }
+];
+
+const map_type = [
+  {
+    title: "",
+    content: "Grid",
+    value: "grid"
+  },
+  {
+    title: "",
+    content: "Demers",
+    value: "demers"
+  },
+  {
+    title: "",
+    content: "Dorling",
+    value: "dorling"
+  }
+];
+
+
 /**
  * ### Editor interface for a XY chart
  * @property {object} chartProps - Properties used to draw this chart
@@ -50,7 +101,12 @@ let MapEditor = React.createClass({
     };
   },
   render: function() {
-    let mapProps = this.props.chartProps;
+
+    const mapProps = this.props.chartProps;
+    const stylings = mapProps.stylings;
+
+    let valuesOption = false;
+
     /* Create a settings component for each data series (column) */
     const mapSettings = [];
 
@@ -84,11 +140,72 @@ let MapEditor = React.createClass({
       );
     }, this)) );
 
-    let axisErrors = this.props.errors.messages.filter(function(e) {
+    const cartogramOption = [];
+
+    cartogramOption.push(<h3>Cartogram Type</h3>);
+    cartogramOption.push(<ButtonGroup
+        className="button-group-wrapper"
+        buttons={map_type}
+        key="cartogram_type"
+        onClick={this._handleStylingsUpdate.bind(null, "type")}
+        value={stylings.type}
+      />);
+
+    if (stylings.type === 'grid') {
+      valuesOption = (<div className="toggle">
+        <Toggle
+          className="button-group-wrapper"
+          key="show_values"
+          label="Show Values"
+          onToggle={this._handleStylingsUpdate.bind(null, "showValuesLabels")}
+          toggled={stylings.showValuesLabels}
+        /></div>);
+    }
+
+   const dcOption = (<div className="toggle"><Toggle
+          className="button-group-wrapper"
+          label="DC Y/N"
+          onToggle={this._handleStylingsUpdate.bind(null, "showDC")}
+          toggled={stylings.showDC}
+          key="show_hide_dc"
+        /></div>);
+
+   const legendTextOption = (<div className="legend-text"><h3>Extra legend text</h3>
+      <TextArea
+        label="Extra legend text"
+        onChange={this._handleStylingsUpdate.bind(null, "legendText")}
+        value={stylings.legendText}
+        isRequired={true}
+        key="legend_text_extra"
+      /></div>);
+
+   const legendTicks = (<div className="toggle">
+          <Toggle
+            key={"legend_ticks_toggle_" + this.props.metadata.chartType}
+            className="button-group-wrapper"
+            label="Legend ticks"
+            onToggle={this._handleStylingsUpdate.bind(null, "showLegendTicks")}
+            toggled={stylings.showLegendTicks}
+          /></div>);
+
+    const shapeSize = (<div className="toggle">
+              <LabelledTangle
+                tangleClass="tangle-input"
+                onChange={this._handleStylingsUpdate.bind(null, 'radiusVal')}
+                onInput={this._handleStylingsUpdate.bind(null, 'radiusVal')}
+                step={1}
+                label="Max shape"
+                min={1}
+                max={60}
+                key="radius_val"
+                value={this.props.stylings.radiusVal}
+              /></div>);
+
+    const axisErrors = this.props.errors.messages.filter(function(e) {
       return e.location === "axis";
     });
 
-    let inputErrors = this.props.errors.messages.filter(function(e) {
+    const inputErrors = this.props.errors.messages.filter(function(e) {
       return e.location === "input";
     });
 
@@ -107,13 +224,40 @@ let MapEditor = React.createClass({
         </div>
         <div className="editor-options">
           <h2>
-            <span className="step-number">3</span>
+            <span className="step-number">{this.props.stepNumber}</span>
             <span>Set series options</span>
           </h2>
           {mapSettings}
         </div>
         <div className="editor-options">
         </div>
+
+	      <div className="editor-options">
+	        <h2>
+	          <span className="step-number">{this.props.stepNumber + 1}</span>
+	          <span>Make additional stylings</span>
+	        </h2>
+	        	{cartogramOption}
+	        <h3>
+	          Color shape outlines
+	        </h3>
+	        <ButtonGroup
+	          className="button-group-wrapper"
+	          buttons={map_strokes}
+	          onClick={this._handleStylingsUpdate.bind(null, "stroke")}
+	          value={stylings.stroke}
+	          key="choose_strokes"
+	        />
+	        <div className="stylings-toggle-inputs"
+	          key="stylings_inputs">
+	          {stateNames}
+	          {legendTicks}
+	          {valuesOption}
+	          {shapeSize}
+	          {dcOption}
+	        </div>
+	        {legendTextOption}
+	      </div>
       </div>
     );
   }

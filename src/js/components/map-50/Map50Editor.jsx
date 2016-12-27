@@ -19,6 +19,35 @@ import {ColorPicker, Dropdown, LabelledTangle, TextInput, Toggle} from 'chartbui
 const colorScales = require('./../../util/colorscales');
 const MapEditorMixin = require("./../mixins/MapEditorMixin.js");
 
+
+const map_strokes = [
+  {
+    title: "",
+    content: "Darker Grey",
+    value: "#333"
+  },
+  {
+    title: "",
+    content: "Dark Grey",
+    value: "#666"
+  },
+  {
+    title: "",
+    content: "Grey",
+    value: "#aaa"
+  },
+  {
+    title: "",
+    content: "Lightest Grey",
+    value: "#eee"
+  },
+  {
+    title: "",
+    content: "White",
+    value: "#fff"
+  }
+];
+
 /**
  * ### Editor interface for a XY chart
  * @property {object} chartProps - Properties used to draw this chart
@@ -101,10 +130,33 @@ let MapEditor = React.createClass({
 			);
 		}, this)));
 
-		//let chartProps = this.props.chartProps;
-		//let scaleSettings = [];
 
-		let axisErrors = this.props.errors.messages.filter(function(e) {
+		const legendTicks = (<div className="toggle">
+          <Toggle
+            key={"legend_ticks_toggle_" + this.props.metadata.chartType}
+            className="button-group-wrapper"
+            label="Legend ticks"
+            onToggle={this._handleStylingsUpdate.bind(null, "showLegendTicks")}
+            toggled={stylings.showLegendTicks}
+          /></div>);
+
+
+		let stateNames = false;
+
+		if (this.props.metadata.chartType === 'map50') {
+
+      stateNames = (<div className="toggle">
+        <Toggle
+          label="State names"
+          className="button-group-wrapper"
+          onToggle={this._handleStylingsUpdate.bind(null, "showStateLabels")}
+          toggled={stylings.showStateLabels}
+          key="show_state_names"
+        /></div>);
+
+    }
+
+		const axisErrors = this.props.errors.messages.filter(function(e) {
 			return e.location === "axis";
 		});
 
@@ -151,7 +203,7 @@ let MapEditor = React.createClass({
 			);
 		}*/
 
-		let inputErrors = this.props.errors.messages.filter(function(e) {
+		const inputErrors = this.props.errors.messages.filter(function(e) {
 			return e.location === "input";
 		});
 
@@ -170,7 +222,7 @@ let MapEditor = React.createClass({
 				</div>
 				<div className="editor-options">
 					<h2>
-						<span className="step-number">3</span>
+						<span className="step-number">{this.props.stepNumber}</span>
 						<span>Set series options</span>
 					</h2>
 					{mapSettings}
@@ -178,6 +230,27 @@ let MapEditor = React.createClass({
 				<div className="editor-options">
 
 				</div>
+				<div className="editor-options">
+        <h2>
+          <span className="step-number">{this.props.stepNumber + 1}</span>
+          <span>Make additional stylings</span>
+        </h2>
+        <h3>
+          Color shape outlines
+        </h3>
+        <ButtonGroup
+          className="button-group-wrapper"
+          buttons={map_strokes}
+          onClick={this._handleStylingsUpdate.bind(null, "stroke")}
+          value={stylings.stroke}
+          key="choose_strokes"
+        />
+        <div className="stylings-toggle-inputs"
+          key="stylings_inputs">
+          {stateNames}
+          {legendTicks}
+        </div>
+      </div>
 			</div>
 		);
 	}

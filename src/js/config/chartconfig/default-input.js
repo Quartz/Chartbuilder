@@ -182,7 +182,7 @@ const default_input2 = [
 
 
 const default_input = [
-	"states	group	values",
+	"statess	group	values",
 	"AK	Athletes	2",
 	"AL	Athletes	1",
 	"AR	Athletes	6",

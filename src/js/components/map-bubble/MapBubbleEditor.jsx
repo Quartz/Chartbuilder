@@ -17,6 +17,35 @@ const DataInput = require("../shared/DataInput.jsx");
 const colorScales = require('./../../util/colorscales');
 const MapEditorMixin = require("../mixins/MapEditorMixin.js");
 
+
+const map_strokes = [
+  {
+    title: "",
+    content: "Darker Grey",
+    value: "#333"
+  },
+  {
+    title: "",
+    content: "Dark Grey",
+    value: "#666"
+  },
+  {
+    title: "",
+    content: "Grey",
+    value: "#aaa"
+  },
+  {
+    title: "",
+    content: "Lightest Grey",
+    value: "#eee"
+  },
+  {
+    title: "",
+    content: "White",
+    value: "#fff"
+  }
+];
+
 /**
  * ### Editor interface for a XY chart
  * @property {object} chartProps - Properties used to draw this chart
@@ -65,18 +94,8 @@ const MapEditor = React.createClass({
           />*/
 
     mapSettings.push( map(mapProps.chartSettings, bind(function(chartSetting, i) {
-    	console.log(i,'i');
       return (
         <div>
-        	<MapCartogram_mapSettings
-            chartSettings={mapProps.chartSettings}
-            onUpdate={this._handlePropUpdate.bind(null, "chartSettings")}
-            onUpdateReparse={this._handlePropAndReparse.bind(null, "chartSettings")}
-            numColors={this.props.numColors}
-            stylings={mapProps.stylings}
-            index={i}
-            key={i}
-          />
           <Map_ScaleSettings
             stylings={mapProps.stylings}
             scale={mapProps.scale}
@@ -88,6 +107,15 @@ const MapEditor = React.createClass({
             stepNumber="0"
             index={i}
             key={i + '-scale'}
+          />
+        	<MapCartogram_mapSettings
+            chartSettings={mapProps.chartSettings}
+            onUpdate={this._handlePropUpdate.bind(null, "chartSettings")}
+            onUpdateReparse={this._handlePropAndReparse.bind(null, "chartSettings")}
+            numColors={this.props.numColors}
+            stylings={mapProps.stylings}
+            index={i}
+            key={i}
           />
         </div>
       );
@@ -106,6 +134,27 @@ const MapEditor = React.createClass({
       return e.location === "input";
     });
 
+    const legendTextOption = (<div className="legend-text"><h3>Extra legend text</h3>
+      <TextArea
+        key="legend_text_extra"
+        onChange={this._handleStylingsUpdate.bind(null, "legendText")}
+        value={stylings.legendText}
+        isRequired={true}
+      /></div>)
+
+    const shapeSize = (<div className="toggle">
+      <LabelledTangle
+        tangleClass="tangle-input"
+        onChange={this._handleStylingsUpdate.bind(null, 'radiusVal')}
+        onInput={this._handleStylingsUpdate.bind(null, 'radiusVal')}
+        step={1}
+        label="Max shape"
+        key="max_shape"
+        min={1}
+        max={60}
+        value={this.props.stylings.radiusVal}
+      /></div>);
+
     return (
       <div className="xy-editor">
         <div className="editor-options">
@@ -121,14 +170,36 @@ const MapEditor = React.createClass({
         </div>
         <div className="editor-options">
           <h2>
-            <span className="step-number">3</span>
+            <span className="step-number">{this.props.stepNumber}</span>
             <span>Set series options</span>
           </h2>
           {mapSettings}
         </div>
         <div className="editor-options">
-
         </div>
+
+        <div className="editor-options">
+	        <h2>
+	          <span className="step-number">{this.props.stepNumber + 1}</span>
+	          <span>Make additional stylings</span>
+	        </h2>
+	        <h3>
+	          Color shape outlines
+	        </h3>
+	        <ButtonGroup
+	          className="button-group-wrapper"
+	          buttons={map_strokes}
+	          onClick={this._handleStylingsUpdate.bind(null, "stroke")}
+	          value={stylings.stroke}
+	          key="choose_strokes"
+	        />
+	        <div className="stylings-toggle-inputs"
+	          key="stylings_inputs">
+	          {shapeSize}
+	        </div>
+	        {legendTextOption}
+	      </div>
+
       </div>
     );
   }
