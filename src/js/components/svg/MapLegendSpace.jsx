@@ -69,8 +69,6 @@ const LegendSpace = React.createClass({
     const chartProps = this.props.chartProps;
     const metadata = this.props.metadata;
 
-    console.log(translate,'ehh');
-
     const legends = chartProps.legend;
     const legendsArray = Object.keys(legends).map((k) => legends[k]);
 

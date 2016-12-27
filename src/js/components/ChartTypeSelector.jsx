@@ -106,7 +106,7 @@ var ChartTypeSelctor = React.createClass({
 				buttons={this.state.chartConfig}
 				onClick={this._handleChartTypeChange}
 				className="chart-type-select"
-				value={this.props.metadata}
+				value={this.props.metadata.chartType}
 			/>
 		 </div>
 		);

@@ -9,9 +9,9 @@ import {clone, each, keys, map, bind} from 'lodash';
 /* Chartbuilder UI components */
 import {ColorPicker, LabelledTangle, TextInput, Toggle} from 'chartbuilder-ui';
 
-const NumericScaleSettings = require("../shared/NumericScaleSettings.jsx");
-
+//const NumericScaleSettings = require("../shared/NumericScaleSettings.jsx");
 const Map_ScaleSettings = require("../shared/Cartogram_ScaleSettings.jsx");
+
 const cx = require("classnames");
 const DataInput = require("../shared/DataInput.jsx");
 const colorScales = require('./../../util/colorscales');
@@ -24,7 +24,7 @@ const MapEditorMixin = require("../mixins/MapEditorMixin.js");
  * @instance
  * @memberof editors
  */
-let MapEditor = React.createClass({
+const MapEditor = React.createClass({
 
   propTypes: {
     errors: PropTypes.object,
@@ -48,14 +48,12 @@ let MapEditor = React.createClass({
   },
 
   render: function() {
-    let mapProps = this.props.chartProps;
+
+    const mapProps = this.props.chartProps;
     /* Create a settings component for each data series (column) */
     const mapSettings = [];
 
-    mapSettings.push( map(mapProps.chartSettings, bind(function(chartSetting, i) {
-      
-      return (
-        <div>
+    /*
           <MapCartogram_mapSettings
             chartSettings={mapProps.chartSettings}
             onUpdate={this._handlePropUpdate.bind(null, "chartSettings")}
@@ -64,8 +62,21 @@ let MapEditor = React.createClass({
             stylings={mapProps.stylings}
             index={i}
             key={i}
+          />*/
+
+    mapSettings.push( map(mapProps.chartSettings, bind(function(chartSetting, i) {
+    	console.log(i,'i');
+      return (
+        <div>
+        	<MapCartogram_mapSettings
+            chartSettings={mapProps.chartSettings}
+            onUpdate={this._handlePropUpdate.bind(null, "chartSettings")}
+            onUpdateReparse={this._handlePropAndReparse.bind(null, "chartSettings")}
+            numColors={this.props.numColors}
+            stylings={mapProps.stylings}
+            index={i}
+            key={i}
           />
-          
           <Map_ScaleSettings
             stylings={mapProps.stylings}
             scale={mapProps.scale}
@@ -78,19 +89,20 @@ let MapEditor = React.createClass({
             index={i}
             key={i + '-scale'}
           />
-
         </div>
       );
     }, this)) );
 
+    console.log(mapSettings,'eek');
+
     //let chartProps = this.props.chartProps;
     //let scaleSettings = [];
 
-    let axisErrors = this.props.errors.messages.filter(function(e) {
+    const axisErrors = this.props.errors.messages.filter(function(e) {
       return e.location === "axis";
     });
 
-    let inputErrors = this.props.errors.messages.filter(function(e) {
+    const inputErrors = this.props.errors.messages.filter(function(e) {
       return e.location === "input";
     });
 
@@ -115,7 +127,7 @@ let MapEditor = React.createClass({
           {mapSettings}
         </div>
         <div className="editor-options">
-       
+
         </div>
       </div>
     );
@@ -145,7 +157,7 @@ const MapCartogram_mapSettings = React.createClass({
   _handleSettingsUpdate: function(ix, k, v) {
 
     /* Clone the array of objects so that we dont mutate existing state */
-    let chartSettings = map(this.props.chartSettings, clone);
+    const chartSettings = map(this.props.chartSettings, clone);
     /* We need the index (ix) of the settings object to know which to update */
     chartSettings[ix][k] = v;
     /* `axis` and `colorIndex` require reparsing the input and splitting it up */
@@ -156,7 +168,7 @@ const MapCartogram_mapSettings = React.createClass({
 
     const chartSetting = this.props.chartSettings[this.props.index];
     const numColors = colorScales.scalesNum();
-    
+
     return (
       <div className="series-control">
         <TextInput

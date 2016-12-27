@@ -103,6 +103,7 @@ const defaultProps = Object.freeze({
         top:0,
         left:0
       },
+      showLegendTicks: true,
       legendText: 'Write what the legend shapes represent here'
 	  },
     chartSettings: [
