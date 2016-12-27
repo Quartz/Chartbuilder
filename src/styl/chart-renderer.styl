@@ -144,6 +144,10 @@ svg
     fill $color-body-text
     font-family $font-sans
     font-size $em_size
+  &.svg-text-subtitle
+	  fill $color-body-text
+	  font-family $font-sans
+	  font-size $em_size * 1
 
 .svg-source-pipe
 	stroke $color-chart-meta
@@ -184,6 +188,8 @@ svg
       font-size $em_size*0.6
     &.svg-text-title
       font-size $em_size
+    &.svg-text-subtitle
+      font-size $em_size * 1
 
 .small
   .em-size
@@ -208,6 +214,8 @@ svg
         font-size $em_size*0.6
     &.svg-text-title
       font-size $em_size_small
+    &.svg-text-subtitle
+      font-size $em_size_small
 
   .svg-label-text
     font-size $em_size_small
@@ -231,9 +239,73 @@ svg
       font-size $em_size*0.6
     &.svg-text-title
       font-size $em_size
+    &.svg-text-subtitle
+      font-size $em_size * 1
 
   .svg-label-text
     font-size $em_size
 
 .cb-credit-logo
 	fill $color-chart-meta
+
+
+.polygon-test
+  fill #ccc
+  stroke #000
+  stroke-width 0.65px;
+
+.state-labels-show
+  fill #000
+  font-family $font-sans
+  font-size 0.8em
+  text-anchor middle
+
+.state-name
+  fill #000
+  font-family $font-sans
+
+.legend-label
+  fill #000
+  font-family $font-sans
+  font-size 1.2em
+  text-anchor start
+
+.demersdorlingLegend
+  rect
+    fill none
+    stroke #000
+    stroke-width 1px
+  text
+    fill #000
+    font-size 0.8em
+    font-family $font-sans
+    text-anchor middle
+
+.legendsGroup
+    cursor move
+    pointer-events all
+
+.legend-text
+  fill #000
+  font-family $font-sans
+  font-size 0.9em
+  text-anchor middle
+.extra-legend
+  .extra-legend-text
+    fill #000
+    font-family $font-sans
+    font-size 1.1em
+    text-anchor end
+.cartogram-map-render
+  .node
+    text
+      text-anchor middle
+      &.state-name
+        fill #000
+        font-size 1.2em
+      &.state-values
+        font-size 1em
+        fill #000
+    rect
+      &.carto-rects
+        stroke-width 2px

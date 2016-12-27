@@ -57,7 +57,7 @@ let display = Object.freeze({
     maptop: "3.5em",
     mapleft: "",
     subtitle: "2em",
-    legendleft: "2em",
+    legendleft: "0.8em",
     legendsOneRow: "23em",
     legendsTwoRow: "22.5em"
   },
@@ -140,6 +140,7 @@ const defaultProps = Object.freeze({
     chartType: 'map50',
     title: "Title",
     subtitle: "Subtitle",
+		visualType: "map",
     source: "TK",
     credit: "",
     size: "auto"

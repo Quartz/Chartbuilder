@@ -138,7 +138,9 @@ var defaultProps = {
 	metadata: {
 		chartType: 'xy',
 		title: "Chartbuilder Title Default",
+		subtitle: "",
 		source: "",
+		visualType: "chart",
 		credit: "Made with Chartbuilder",
 		size: "auto"
 	}

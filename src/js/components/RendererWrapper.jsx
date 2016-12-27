@@ -244,7 +244,7 @@ const RendererWrapper = React.createClass({
 			chartProps = this.props.model.chartProps;
 		}
 
-		var isSmall = (this.state.svgSizeClass === "small");
+		const isSmall = (this.state.svgSizeClass === "small");
 
 		// override metadats with mobile-specific settings if defined
 		if (this.props.enableResponsive && this.props.model.chartProps.mobile && isSmall) {
@@ -254,9 +254,9 @@ const RendererWrapper = React.createClass({
 		}
 
 		const margin = this.state.chartConfig.display.margin;
+		const stylings = chartProps.stylings;
 		const metadataSvg = [];
 		const legends = [];
-		let title;
 
 		const translate = {
 			top: margin.top,
@@ -267,7 +267,9 @@ const RendererWrapper = React.createClass({
 
 		if (this.props.showLegenddata) {
 
-			console.log('here now..');
+			translate.legendleft = margin.legendleft;
+			translate.legendsOneRow = margin.legendsOneRow;
+			translate.legendsTwoRow = margin.legendsTwoRow;
 
 			legends.push(
 					<LegendSpace
@@ -285,7 +287,7 @@ const RendererWrapper = React.createClass({
 
 		if (this.props.showMetadata) {
 			if (metadata.title && metadata.title !== "") {
-				title = (
+				const title = (
 					<SvgText
 						text={metadata.title}
 						key="title"
@@ -295,6 +297,22 @@ const RendererWrapper = React.createClass({
 					/>
 				);
 				metadataSvg.push(title);
+			}
+
+			if (metadata.visualType === 'map') {
+
+				translate.subtitle = margin.subtitle;
+
+				const subtitle = (
+					<SvgText
+						text={metadata.subtitle}
+						key="subtitle"
+						translate={[translate.left, translate.top + translate.subtitle]}
+						align="top"
+						className="svg-text-subtitle"
+					/>
+				);
+				metadataSvg.push(subtitle);
 			}
 
 			metadataSvg.push(

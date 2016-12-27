@@ -32,7 +32,7 @@ const LegendSpace = React.createClass({
     const drag = d3.behavior.drag()
       .on('drag', function (d) {
 
-          d.x = d.x || 0; 
+          d.x = d.x || 0;
           d.y = d.y || 0;
 
           d.x += d3.event.dx || 0;
@@ -48,7 +48,7 @@ const LegendSpace = React.createClass({
 
       if (!g.datum()) g.data([{x:0,y:0}]).call(drag);
 
-      g.attr('transform', (d) => { 
+      g.attr('transform', (d) => {
         if (d.x === undefined) d.x = 0;
         if (d.y === undefined) d.y = 0;
         return 'translate('+ d.x +','+ d.y +')';
@@ -69,22 +69,24 @@ const LegendSpace = React.createClass({
     const chartProps = this.props.chartProps;
     const metadata = this.props.metadata;
 
+    console.log(translate,'ehh');
+
     const legends = chartProps.legend;
     const legendsArray = Object.keys(legends).map((k) => legends[k]);
 
     const showTicks = stylings.showLegendTicks;
     const legendsXMargin = translate.legendleft;
-    
+
     let translateLegends;
     let legendheightAdjusted;
 
     let testTwoRow = false;
     let yOffset = 0;
-    
+
     if (legendsArray.length < 4) {
       legendheightAdjusted = legendHeight * 1.2;
       translateLegends = translate.legendsOneRow;
-    } 
+    }
     else {
       testTwoRow = true;
       legendheightAdjusted = legendHeight;
@@ -93,7 +95,7 @@ const LegendSpace = React.createClass({
 
     let demersdorlingRender = false;
 
-    if (stylings.type === 'dorling' || stylings.type === 'demers' 
+    if (stylings.type === 'dorling' || stylings.type === 'demers'
         || metadata.chartType === 'mapbubble') {
 
       const radius = d3.scale.sqrt().range([0, stylings.radiusVal]);
@@ -131,9 +133,9 @@ const LegendSpace = React.createClass({
       else middle = after;
 
       const legendText1 = s.substr(0, middle);
-      const legendText2 = s.substr(middle + 1); 
+      const legendText2 = s.substr(middle + 1);
 
-      demersdorlingRender = (<g 
+      demersdorlingRender = (<g
         className="legendsGroup"
         key={"legendsGroup_" + metadata.chartType}
           >
@@ -160,7 +162,7 @@ const LegendSpace = React.createClass({
           />
           <rect
             ry={rxLg}
-            rx={rxLg} 
+            rx={rxLg}
             x='0'
             y='0'
             height={dataCircleLg * 2}
@@ -171,13 +173,13 @@ const LegendSpace = React.createClass({
           transform={demersTransformText1}>
           <text className="extra-legend-text">
             {legendText1}
-          </text> 
+          </text>
         </g>
         <g className="extra-legend"
           transform={demersTransformText2}>
           <text className="extra-legend-text">
             {legendText2}
-          </text> 
+          </text>
         </g>
       </g>);
     }
@@ -200,7 +202,7 @@ const LegendSpace = React.createClass({
         }
         const xOffetBlock = (j === 0) ? 0 : (legendData.shapes * j) + (legendMargin * j);
 
-          return (<rect 
+          return (<rect
                     key= {`legend_block_${j}`}
                     transform={`translate(${xOffetBlock},0)`}
                     style={styles}
@@ -218,22 +220,22 @@ const LegendSpace = React.createClass({
 
         if (legendData.type === 'threshold') {
           xOffetBlock = (j === 0) ? legendData.shapes : (legendData.shapes * (j + 1)) + (legendMargin * (j + 1));
-        } 
+        }
         else xOffetBlock = (j === 0) ? 0 : (legendData.shapes * j) + (legendMargin * j);
 
-        if (legendData.tickValues.length === 2 && (legendData.tickValues[0] 
+        if (legendData.tickValues.length === 2 && (legendData.tickValues[0]
             === legendData.tickValues[1]) && (legendData.type !== 'threshold')) {
           xOffetBlock = xOffetBlock + (legendData.shapes/2);
           if (j) thisTick = false;
         }
 
         if (showTicks) {
-          return (<text 
+          return (<text
                     key= {`legend_text_${j}`}
                     transform={`translate(${xOffetBlock},${yOffetText})`}
                     className='legend-text'
                   >{thisTick}</text>);
-        } 
+        }
         else return false;
 
       });

@@ -57,7 +57,7 @@ let display = Object.freeze({
     maptop: "2.5em",
     mapleft: "",
     subtitle: "2em",
-    legendleft: "2em",
+    legendleft: "0.8em",
     legendsOneRow: "23em",
     legendsTwoRow: "22.5em"
   },
@@ -144,6 +144,7 @@ const defaultProps = Object.freeze({
     title: "Bubble Map Title",
     subtitle: "Subtitle",
     source: "Source for map",
+		visualType: "map",
     credit: "",
     size: "auto"
   }

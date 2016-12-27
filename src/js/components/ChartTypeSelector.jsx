@@ -53,23 +53,28 @@ var ChartTypeSelctor = React.createClass({
 	*/
 	_handleChartTypeChange: function(chartType) {
 		/* Dont rerender if the chart type is the same */
+
 		if (chartType === this.props.metadata.chartType) {
 			return;
 		}
-		var metadata = clone(this.props.metadata);
+
+		const visualConfig = chartConfig[chartType] || mapConfig[chartType];
+
+		const metadata = clone(this.props.metadata);
 		/* Set the new chart type in metadata */
 		metadata.chartType = chartType;
+		/* Set the new visual type in metadata */
+		metadata.visualType = visualConfig.defaultProps.metadata.visualType;
 
-		var prevProps = this.props.chartProps;
-		var visualConfig = chartConfig[chartType] || mapConfig[chartType];
-		var newDefaultProps = visualConfig.defaultProps.chartProps;
+		const prevProps = this.props.chartProps;
+		const newDefaultProps = visualConfig.defaultProps.chartProps;
 		const stylings = newDefaultProps.stylings;
-		var prevSettings = prevProps.chartSettings;
-		var newDefaultSettings = newDefaultProps.chartSettings[0];
-		var prevKeys = keys(prevSettings[0]);
+		const prevSettings = prevProps.chartSettings;
+		const newDefaultSettings = newDefaultProps.chartSettings[0];
+		const prevKeys = keys(prevSettings[0]);
 
 		/* Apply any settings that carry over, otherwise ignore them */
-		var newProps = helper.mergeOrApply(newDefaultProps, prevProps);
+		const newProps = helper.mergeOrApply(newDefaultProps, prevProps);
 
 		/*
 		 * For each data series, check whether a `chartSetting` has already been
@@ -101,7 +106,7 @@ var ChartTypeSelctor = React.createClass({
 				buttons={this.state.chartConfig}
 				onClick={this._handleChartTypeChange}
 				className="chart-type-select"
-				value={this.props.metadata.chartType}
+				value={this.props.metadata}
 			/>
 		 </div>
 		);

@@ -1,22 +1,19 @@
 // Component that handles global metadata, ie data that is universal regardless
 // of chart type. Eg title, source, credit, size.
-
-var React = require("react");
-var PropTypes = React.PropTypes;
-var PureRenderMixin = require("react-addons-pure-render-mixin");
-var clone = require("lodash/clone");
-
-// Flux stores
-var ChartMetadataStore = require("../stores/ChartMetadataStore");
-var ChartViewActions = require("../actions/ChartViewActions");
+import React, {Component, PropTypes} from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 // Chartbuilder UI components
-var chartbuilderUI = require("chartbuilder-ui");
-var ButtonGroup = chartbuilderUI.ButtonGroup;
-var TextInput = chartbuilderUI.TextInput;
+import chartbuilderUI, {ButtonGroup, TextInput} from "chartbuilder-ui";
+
+import {clone} from 'lodash';
+
+// Flux stores
+const ChartMetadataStore = require("../stores/ChartMetadataStore");
+const ChartViewActions = require("../actions/ChartViewActions");
 
 // Give chart sizes friendly names
-var chart_sizes = [
+const chart_sizes = [
 	{
 		title: "Auto",
 		content: "Auto",
@@ -39,9 +36,16 @@ var chart_sizes = [
 	}
 ];
 
-var text_input_values = [
+const text_input_values = [
 	{ name: "title", content: "Title", isRequired: true },
 	{ name: "credit", content: "Credit" },
+	{ name: "source", content: "Source" }
+];
+
+const text_input_values_sub = [
+	{ name: "title", content: "Title", isRequired: true },
+	{ name: "credit", content: "Credit" },
+	{ name: "subtitle", content: "Subtitle" },
 	{ name: "source", content: "Source" }
 ];
 
@@ -81,7 +85,7 @@ var ChartMetadata = React.createClass({
 	},
 
 	render: function() {
-		var metadata = this.props.metadata;
+		const metadata = this.props.metadata;
 
 		if (this.props.additionalComponents.length > 0) {
 			this.props.additionalComponents.forEach(function(c, i) {
@@ -90,7 +94,9 @@ var ChartMetadata = React.createClass({
 			}, this);
 		}
 		// Create text input field for each metadata textInput
-		var textInputs = text_input_values.map(function(textInput) {
+		const _text_input_values = (metadata.visualType === 'map') ? text_input_values_sub : text_input_values;
+
+		const textInputs = _text_input_values.map(function(textInput) {
 			return <ChartMetadataText
 				key={textInput.name}
 				name={textInput.name}
@@ -120,7 +126,7 @@ var ChartMetadata = React.createClass({
 });
 
 // Small wrapper arount TextInput component specific to metadata
-var ChartMetadataText = React.createClass({
+const ChartMetadataText = React.createClass({
 
 	mixins: [ PureRenderMixin ],
 
