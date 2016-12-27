@@ -82,12 +82,12 @@ const mixins = {
 				},
 
 				render: function(scope, data, selection) {
-					var afterBar = 6;
-					var afterLabel = 6;
+					const afterBar = 6;
+					const afterLabel = 6;
 
-					var group = d4.appendOnce(selection, 'g.' + name);
+					const group = d4.appendOnce(selection, 'g.' + name);
 
-					var labelGroups = group.selectAll('g')
+					const labelGroups = group.selectAll('g')
 						.data(data, d4.functor(scope.accessors.key).bind(this));
 
 					labelGroups.enter().append('g')
@@ -97,7 +97,7 @@ const mixins = {
 
 					labelGroups.exit().remove();
 
-					var text_group = labelGroups.selectAll('g.text-group')
+					const text_group = labelGroups.selectAll('g.text-group')
 						.data(function(d) {
 							return d.values;
 						}.bind(this));
@@ -109,14 +109,14 @@ const mixins = {
 					genter.append('rect');
 					genter.append('text');
 
-					var text = text_group.selectAll("text");
-					var rect = text_group.selectAll("rect");
+					const text = text_group.selectAll("text");
+					const rect = text_group.selectAll("rect");
 
-					var x_func = d4.functor(scope.accessors.x).bind(this);
-					var y_func = d4.functor(scope.accessors.y).bind(this);
-					var dy_func = d4.functor(scope.accessors.dy).bind(this);
-					var text_func = d4.functor(scope.accessors.text).bind(this);
-					var format_func = d4.functor(scope.accessors.format).bind(this);
+					const x_func = d4.functor(scope.accessors.x).bind(this);
+					const y_func = d4.functor(scope.accessors.y).bind(this);
+					const dy_func = d4.functor(scope.accessors.dy).bind(this);
+					const text_func = d4.functor(scope.accessors.text).bind(this);
+					const format_func = d4.functor(scope.accessors.format).bind(this);
 
 					text_group
 						.attr('transform', function(d,i){
@@ -132,7 +132,7 @@ const mixins = {
 						.attr('dy', d4.functor(scope.accessors.dy).bind(this));
 
 					text_group.each(function(){
-						var client_rect = this.getElementsByTagName("text")[0].getBoundingClientRect();
+						const client_rect = this.getElementsByTagName("text")[0].getBoundingClientRect();
 						d3.select(this.getElementsByTagName("rect")[0])
 							.attr("width",client_rect.width + afterBar + afterLabel)
 							.attr("height",client_rect.height)

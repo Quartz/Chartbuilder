@@ -157,13 +157,15 @@ var Chartbuilder = React.createClass({
 	 * is being used as a module or without the editor.
 	*/
 	render: function() {
-		var chartType = this.state.metadata.chartType;
-		var VisualEditor = chartEditors[chartType] || mapEditors[chartType];
-		var Editor = VisualEditor.Editor;
+		const chartType = this.state.metadata.chartType;
+		const VisualEditor = chartEditors[chartType] || mapEditors[chartType];
+		const showLegendBool = chartEditors[chartType] ? false : true;
+		const Editor = VisualEditor.Editor;
 
 		// Check for mobile override settings and pass them in
-		var MobileComponent = VisualEditor.MobileOverrides;
-		var mobileOverrides;
+		const MobileComponent = VisualEditor.MobileOverrides;
+		let mobileOverrides;
+
 		if (MobileComponent && this.props.showMobilePreview) {
 			mobileOverrides = (
 				<MobileComponent
@@ -175,8 +177,8 @@ var Chartbuilder = React.createClass({
 			mobileOverrides = null;
 		}
 
-		var editorSteps = Editor.defaultProps.numSteps + (this.state.chartProps.hasDate || this.state.chartProps.isNumeric ? 1 : 0);
-		var mobilePreview;
+		const editorSteps = Editor.defaultProps.numSteps + (this.state.chartProps.hasDate || this.state.chartProps.isNumeric ? 1 : 0);
+		let mobilePreview;
 
 		// Mobile preview of the chart, if told to render
 		if (this.props.showMobilePreview) {
@@ -189,6 +191,7 @@ var Chartbuilder = React.createClass({
 								showMetadata={true}
 								model={this.state}
 								enableResponsive={true}
+								showLegenddata={showLegendBool}
 								className={svgWrapperClassName.mobile}
 								svgClassName={this.props.renderedSVGClassName}
 							/>
@@ -208,6 +211,7 @@ var Chartbuilder = React.createClass({
 							model={this.state}
 							enableResponsive={false}
 							width={640}
+							showLegenddata={showLegendBool}
 							showMetadata={true}
 							className={svgWrapperClassName.desktop}
 							svgClassName={this.props.renderedSVGClassName}

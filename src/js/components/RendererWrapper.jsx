@@ -5,46 +5,46 @@
  * container.
 */
 
-var React = require("react");
-var ReactDOM = require("react-dom");
-var PropTypes = React.PropTypes;
+const React = require("react");
+const ReactDOM = require("react-dom");
+const PropTypes = React.PropTypes;
 
-var assign = require("lodash/assign");
-var clone = require("lodash/clone");
-var isDate = require("lodash/isDate");
-var isEqual = require("lodash/isEqual");
-var throttle = require("lodash/throttle");
-var reduce = require("lodash/reduce");
-var keys = require("lodash/keys");
-var update = require("react-addons-update");
+const assign = require("lodash/assign");
+const clone = require("lodash/clone");
+const isDate = require("lodash/isDate");
+const isEqual = require("lodash/isEqual");
+const throttle = require("lodash/throttle");
+const reduce = require("lodash/reduce");
+const keys = require("lodash/keys");
+const update = require("react-addons-update");
 
-var SvgText = require("./svg/SvgText.jsx");
+const SvgText = require("./svg/SvgText.jsx");
 
-var ChartViewActions = require("../actions/ChartViewActions");
-var convertConfig = require("../util/parse-config-values");
-var SessionStore = require("../stores/SessionStore");
-var breakpoints = require("../config/chartconfig/chart-breakpoints");
-var ChartFooter = require("./svg/ChartFooter.jsx");
-
+const ChartViewActions = require("../actions/ChartViewActions");
+const convertConfig = require("../util/parse-config-values");
+const SessionStore = require("../stores/SessionStore");
+const breakpoints = require("../config/chartconfig/chart-breakpoints");
+const ChartFooter = require("./svg/ChartFooter.jsx");
+const LegendSpace = require("./svg/MapLegendSpace.jsx");
 /*
  * `chartConfig` is an object that sets default properties for chart types, and
  * also associates a given chart type with its Editor and Renderer components.
  * Used here to identify the Renderer.
 */
-var chartConfigs = require("../charts/charts/chart-config");
-var chartStyle = require("../config/chartconfig/chart-style");
-var chartRenderers = require("../charts/charts/renderers");
+const chartConfigs = require("../charts/charts/chart-config");
+const chartStyle = require("../config/chartconfig/chart-style");
+const chartRenderers = require("../charts/charts/renderers");
 
-var mapConfigs = require("../charts/maps/map-config");
-var mapStyle = require("../config/mapconfig/map-style");
-var mapRenderers = require("../charts/maps/renderers");
+const mapConfigs = require("../charts/maps/map-config");
+const mapStyle = require("../config/mapconfig/map-style");
+const mapRenderers = require("../charts/maps/renderers");
 
 /**
  * ### RendererWrapper
  * Wrapper component that determines which type of chart to render, wrapping it
  * in Svg and telling it to draw.
 */
-var RendererWrapper = React.createClass({
+const RendererWrapper = React.createClass({
 
 	propTypes: {
 		model: PropTypes.shape({
@@ -54,6 +54,7 @@ var RendererWrapper = React.createClass({
 		width: PropTypes.number,
 		enableResponsive: PropTypes.bool,
 		showMetadata: PropTypes.bool,
+		showLegenddata: PropTypes.bool,
 		className: PropTypes.string,
 		svgClassName: PropTypes.string
 	},
@@ -218,7 +219,7 @@ var RendererWrapper = React.createClass({
 			}});
 		}
 
-		var dimensions = this._calculateDimensions(width, displayConfig);
+		const dimensions = this._calculateDimensions(width, displayConfig);
 
 		try {
 			if (isNaN(dimensions.width)) {
@@ -231,9 +232,9 @@ var RendererWrapper = React.createClass({
 			console.error(e.name, e.message);
 		}
 
-		var Renderer = chartRenderers[chartType] || mapRenderers[chartType];
-		var chartProps;
-		var metadata;
+		const Renderer = chartRenderers[chartType] || mapRenderers[chartType];
+		let chartProps;
+		let metadata;
 
 		// If rendered chart is not editable and has a date, we presume data is
 		// being passed in and we need to use the data with processed dates
@@ -252,16 +253,35 @@ var RendererWrapper = React.createClass({
 			metadata = this.props.model.metadata;
 		}
 
-		var margin = this.state.chartConfig.display.margin;
-		var metadataSvg = [];
-		var title;
+		const margin = this.state.chartConfig.display.margin;
+		const metadataSvg = [];
+		const legends = [];
+		let title;
 
-		var translate = {
+		const translate = {
 			top: margin.top,
 			right: dimensions.width - margin.right,
 			bottom: dimensions.height - margin.bottom,
 			left: margin.left
 		};
+
+		if (this.props.showLegenddata) {
+
+			console.log('here now..');
+
+			legends.push(
+					<LegendSpace
+						key="legend"
+						translate={translate}
+						className="svg-legend-space"
+						chartProps={chartProps}
+						stylings={stylings}
+						metadata={metadata}
+						chartWidth={dimensions.width - margin.left - margin.right}
+					/>
+				)
+
+		}
 
 		if (this.props.showMetadata) {
 			if (metadata.title && metadata.title !== "") {
@@ -319,6 +339,7 @@ var RendererWrapper = React.createClass({
 						editable={this.props.editable}
 						enableResponsive={this.props.enableResponsive}
 					/>
+					{legends}
 					{metadataSvg}
 				</svg>
 			</div>
