@@ -51,8 +51,6 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = [], prior
     };
   });
 
-  console.log(JSON.stringify(bySeries.series),'ugh')
-
   const chartSettings = map(bySeries.series, (dataSeries, i) => {
     let settings;
 
@@ -238,9 +236,6 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = [], prior
     } else {
       chartProps.mobile = {};
     } */
-
-
-  console.log(JSON.stringify(bySeries.series),'ugh2')
 
   let newChartProps = assign(chartProps, {
     chartSettings: chartSettings,

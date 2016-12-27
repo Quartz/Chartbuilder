@@ -102,7 +102,7 @@ const mixins = {
 							return d.values;
 						}.bind(this));
 
-					genter = text_group.enter().append("g")
+					const genter = text_group.enter().append("g")
 						.attr("class", "text-group concealer-label")
 						.attr("data-index", function(d,i)  {return i; });
 
@@ -125,7 +125,7 @@ const mixins = {
 
 					text
 						.text(function(d,i){
-							index = parseFloat(this.parentNode.getAttribute("data-index"));
+							const index = parseFloat(this.parentNode.getAttribute("data-index"));
 							return format_func(text_func(d,index),index);
 						})
 						.attr('text-anchor', d4.functor(scope.accessors.textAnchor).bind(this))
