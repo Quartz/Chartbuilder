@@ -85,6 +85,7 @@ var defaultProps = {
 	 * @memberof xy_defaultProps
 	 */
 	chartProps: {
+		visualType: "chart",
 		scale: {
 			primaryScale: {
 				ticks: 5,
@@ -140,7 +141,6 @@ var defaultProps = {
 		title: "Chartbuilder Title Default",
 		subtitle: "",
 		source: "",
-		visualType: "chart",
 		credit: "Made with Chartbuilder",
 		size: "auto"
 	}

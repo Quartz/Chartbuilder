@@ -122,6 +122,7 @@ function validateDataInput(chartProps) {
 	}
 
 	// Whether axis ticks divide evenly
+	console.log(scale,'scale',chartProps);
 	if (!catchChartMistakes.axisTicksEven(scale.primaryScale)) {
 		inputErrors.push("UNEVEN_TICKS");
 	}

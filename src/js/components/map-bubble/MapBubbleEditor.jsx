@@ -79,6 +79,8 @@ const MapEditor = React.createClass({
   render: function() {
 
     const mapProps = this.props.chartProps;
+    const stylings = mapProps.stylings;
+
     /* Create a settings component for each data series (column) */
     const mapSettings = [];
 

@@ -14,7 +14,7 @@ const cx = require("classnames");
 const DataInput = require("../shared/DataInput.jsx");
 
 /* Chartbuilder UI components */
-import {ColorPicker, Dropdown, LabelledTangle, TextInput, Toggle} from 'chartbuilder-ui';
+import {ButtonGroup, ColorPicker, Dropdown, LabelledTangle, TextInput, Toggle} from 'chartbuilder-ui';
 
 const colorScales = require('./../../util/colorscales');
 const MapEditorMixin = require("./../mixins/MapEditorMixin.js");
@@ -93,9 +93,12 @@ let MapEditor = React.createClass({
 	},
 
 	render: function() {
-		let mapProps = this.props.chartProps;
+		const mapProps = this.props.chartProps;
+    const stylings = mapProps.stylings;
 		/* Create a settings component for each data series (column) */
 		const mapSettings = [];
+
+		console.log(stylings,'stylings');
 
 		mapSettings.push( map(mapProps.chartSettings, bind(function(chartSetting, i) {
 
@@ -136,7 +139,7 @@ let MapEditor = React.createClass({
             key={"legend_ticks_toggle_" + this.props.metadata.chartType}
             className="button-group-wrapper"
             label="Legend ticks"
-            onToggle={this._handleStylingsUpdate.bind(null, "showLegendTicks")}
+            onToggle={this._handlePropAndReparse.bind(null, "showLegendTicks")}
             toggled={stylings.showLegendTicks}
           /></div>);
 
@@ -149,7 +152,7 @@ let MapEditor = React.createClass({
         <Toggle
           label="State names"
           className="button-group-wrapper"
-          onToggle={this._handleStylingsUpdate.bind(null, "showStateLabels")}
+          onToggle={this._handlePropAndReparse.bind(null, "showStateLabels")}
           toggled={stylings.showStateLabels}
           key="show_state_names"
         /></div>);
@@ -241,7 +244,7 @@ let MapEditor = React.createClass({
         <ButtonGroup
           className="button-group-wrapper"
           buttons={map_strokes}
-          onClick={this._handleStylingsUpdate.bind(null, "stroke")}
+          onClick={this._handlePropAndReparse.bind(null, "stroke")}
           value={stylings.stroke}
           key="choose_strokes"
         />

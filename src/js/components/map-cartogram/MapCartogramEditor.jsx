@@ -15,7 +15,7 @@ import {bind, clone, each, keys, map} from 'lodash';
 const DataInput = require("../shared/DataInput.jsx");
 
 /* Chartbuilder UI components */
-import {ColorPicker, Dropdown, LabelledTangle, TextInput, Toggle} from 'chartbuilder-ui';
+import {ButtonGroup, ColorPicker, Dropdown, LabelledTangle, TextInput, Toggle} from 'chartbuilder-ui';
 
 const colorScales = require('./../../util/colorscales');
 const MapEditorMixin = require("../mixins/MapEditorMixin.js");

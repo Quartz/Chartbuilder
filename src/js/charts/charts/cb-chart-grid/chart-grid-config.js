@@ -69,6 +69,7 @@ var defaultProps = {
 	 * @memberof chart_grid_defaultProps
 	 */
 	chartProps: {
+		visualType: "chart",
 		input: {},
 		extraPadding: {
 			top: 0,
@@ -121,7 +122,6 @@ var defaultProps = {
 		title: "",
 		subtitle: "",
 		source: "",
-		visualType: "chart",
 		credit: "Made with Chartbuilder",
 		size: "auto"
 	}

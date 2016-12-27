@@ -227,9 +227,10 @@ var Chartbuilder = React.createClass({
 						timerOn={this.state.session.timerOn}
 					/>
 					<Editor
-						errors={this.state.errors}
-						session={this.state.session}
 						chartProps={this.state.chartProps}
+						errors={this.state.errors}
+						metadata={this.state.metadata}
+						session={this.state.session}
 						stepNumber={String(editorSteps)}
 						numColors={numColors}
 					/>

@@ -94,6 +94,8 @@ const defaultProps = Object.freeze({
    */
   chartProps: {
 
+		visualType: "map",
+
     data: [],
     input: {},
 	  stylings: {
@@ -149,7 +151,6 @@ const defaultProps = Object.freeze({
     title: "Title",
     subtitle: "Subtitle",
     source: "TK",
-		visualType: "map",
     credit: "",
     size: "auto"
   }

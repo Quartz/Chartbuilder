@@ -94,6 +94,7 @@ const defaultProps = Object.freeze({
    */
   chartProps: {
 
+		visualType: "map",
     data: [],
     input: {},
 	  stylings: {
@@ -145,7 +146,6 @@ const defaultProps = Object.freeze({
     title: "Bubble Map Title",
     subtitle: "Subtitle",
     source: "Source for map",
-		visualType: "map",
     credit: "",
     size: "auto"
   }
