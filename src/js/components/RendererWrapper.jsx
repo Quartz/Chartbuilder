@@ -299,7 +299,7 @@ const RendererWrapper = React.createClass({
 				metadataSvg.push(title);
 			}
 
-			if (metadata.visualType === 'map') {
+			if (chartProps.visualType === 'map') {
 
 				translate.subtitle = margin.subtitle;
 

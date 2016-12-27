@@ -7,7 +7,7 @@ import PureRenderMixin from 'react-addons-pure-render-mixin';
 import {clone, each, keys, map, bind} from 'lodash';
 
 /* Chartbuilder UI components */
-import {ColorPicker, LabelledTangle, TextInput, Toggle} from 'chartbuilder-ui';
+import {ButtonGroup, TextArea, ColorPicker, LabelledTangle, TextInput, Toggle} from 'chartbuilder-ui';
 
 //const NumericScaleSettings = require("../shared/NumericScaleSettings.jsx");
 const Map_ScaleSettings = require("../shared/Cartogram_ScaleSettings.jsx");
@@ -125,9 +125,6 @@ const MapEditor = React.createClass({
 
     console.log(mapSettings,'eek');
 
-    //let chartProps = this.props.chartProps;
-    //let scaleSettings = [];
-
     const axisErrors = this.props.errors.messages.filter(function(e) {
       return e.location === "axis";
     });
@@ -139,7 +136,7 @@ const MapEditor = React.createClass({
     const legendTextOption = (<div className="legend-text"><h3>Extra legend text</h3>
       <TextArea
         key="legend_text_extra"
-        onChange={this._handleStylingsUpdate.bind(null, "legendText")}
+        onChange={this._handlePropAndReparse.bind(null, "legendText")}
         value={stylings.legendText}
         isRequired={true}
       /></div>)
@@ -147,14 +144,14 @@ const MapEditor = React.createClass({
     const shapeSize = (<div className="toggle">
       <LabelledTangle
         tangleClass="tangle-input"
-        onChange={this._handleStylingsUpdate.bind(null, 'radiusVal')}
-        onInput={this._handleStylingsUpdate.bind(null, 'radiusVal')}
+        onChange={this._handlePropAndReparse.bind(null, 'radiusVal')}
+        onInput={this._handlePropAndReparse.bind(null, 'radiusVal')}
         step={1}
         label="Max shape"
         key="max_shape"
         min={1}
         max={60}
-        value={this.props.stylings.radiusVal}
+        value={stylings.radiusVal}
       /></div>);
 
     return (
@@ -182,7 +179,7 @@ const MapEditor = React.createClass({
 
         <div className="editor-options">
 	        <h2>
-	          <span className="step-number">{this.props.stepNumber + 1}</span>
+	          <span className="step-number">{String(this.props.stepNumber + 1)}</span>
 	          <span>Make additional stylings</span>
 	        </h2>
 	        <h3>
@@ -191,7 +188,7 @@ const MapEditor = React.createClass({
 	        <ButtonGroup
 	          className="button-group-wrapper"
 	          buttons={map_strokes}
-	          onClick={this._handleStylingsUpdate.bind(null, "stroke")}
+	          onClick={this._handlePropAndReparse.bind(null, "stroke")}
 	          value={stylings.stroke}
 	          key="choose_strokes"
 	        />

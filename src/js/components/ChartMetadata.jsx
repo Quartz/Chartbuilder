@@ -94,7 +94,7 @@ var ChartMetadata = React.createClass({
 			}, this);
 		}
 		// Create text input field for each metadata textInput
-		const _text_input_values = (metadata.visualType === 'map') ? text_input_values_sub : text_input_values;
+		const _text_input_values = (this.props.chartProps.visualType === 'map') ? text_input_values_sub : text_input_values;
 
 		const textInputs = _text_input_values.map(function(textInput) {
 			return <ChartMetadataText

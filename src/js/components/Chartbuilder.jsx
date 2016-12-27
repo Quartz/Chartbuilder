@@ -235,6 +235,7 @@ var Chartbuilder = React.createClass({
 						numColors={numColors}
 					/>
 					<ChartMetadata
+						chartProps={this.state.chartProps}
 						metadata={this.state.metadata}
 						data={this.state.chartProps.data}
 						stepNumber={String(editorSteps + 2)}

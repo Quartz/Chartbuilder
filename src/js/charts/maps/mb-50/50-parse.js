@@ -237,7 +237,9 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = [], prior
       chartProps.mobile = {};
     } */
 
-  let newChartProps = assign(chartProps, {
+   //console.log(config.defaultProps.chartProps,visualType, 'hm updated');
+
+  const newChartProps = assign(chartProps, {
     chartSettings: chartSettings,
     data: bySeries.series,
     entries: parsedInputEntries,
@@ -245,7 +247,8 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = [], prior
     columns: columnNames,
     scale: scale,
     legend: legends,
-    schema: schema
+    schema: schema,
+    visualType: config.defaultProps.chartProps.visualType
   });
 
   if (callback) {

@@ -235,7 +235,7 @@ let MapEditor = React.createClass({
 				</div>
 				<div className="editor-options">
         <h2>
-          <span className="step-number">{this.props.stepNumber + 1}</span>
+          <span className="step-number">{String(this.props.stepNumber + 1)}</span>
           <span>Make additional stylings</span>
         </h2>
         <h3>

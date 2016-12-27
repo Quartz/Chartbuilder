@@ -267,7 +267,8 @@ let parse50 = (config, _chartProps, callback, parseOpts, priorData = [], priorSc
     alldata: allData,
     scale: scale,
     schema: schema,
-    legend: legends
+    legend: legends,
+    visualType: config.defaultProps.chartProps.visualType
   });
 
   if (callback) {

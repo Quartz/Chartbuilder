@@ -158,6 +158,7 @@ function parseChartgrid(config, _chartProps, callback, parseOpts) {
 		scale: chartProps.scale,
 		input: bySeries.input,
 		_grid: gridSettings,
+    visualType: config.defaultProps.chartProps.visualType,
 		data: bySeries.series
 	});
 

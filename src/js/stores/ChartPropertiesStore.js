@@ -90,7 +90,10 @@ function registeredCallback(payload) {
 			Dispatcher.waitFor([SessionStore.dispatchToken]);
 			thisModel = action.model;
 			chartType = thisModel.metadata.chartType;
+			console.log(chartType,'eh');
 			config = chartConfig[chartType] || mapConfig[chartType];
+
+			console.log('config',config)
 			parser = config.parser;
 			_chartProps = parser(config, thisModel.chartProps);
 			console.log('receive', thisModel);

@@ -248,6 +248,7 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 		scale: scale,
 		input: bySeries.input,
 		data: bySeries.series,
+    visualType: config.defaultProps.chartProps.visualType,
 		_numSecondaryAxis: _scaleComputed.secondaryScale.count
 	});
 

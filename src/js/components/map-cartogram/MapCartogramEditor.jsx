@@ -15,7 +15,7 @@ import {bind, clone, each, keys, map} from 'lodash';
 const DataInput = require("../shared/DataInput.jsx");
 
 /* Chartbuilder UI components */
-import {ButtonGroup, ColorPicker, Dropdown, LabelledTangle, TextInput, Toggle} from 'chartbuilder-ui';
+import {ButtonGroup, ColorPicker, TextArea, Dropdown, LabelledTangle, TextInput, Toggle} from 'chartbuilder-ui';
 
 const colorScales = require('./../../util/colorscales');
 const MapEditorMixin = require("../mixins/MapEditorMixin.js");
@@ -147,7 +147,7 @@ let MapEditor = React.createClass({
         className="button-group-wrapper"
         buttons={map_type}
         key="cartogram_type"
-        onClick={this._handleStylingsUpdate.bind(null, "type")}
+        onClick={this._handlePropAndReparse.bind(null, "type")}
         value={stylings.type}
       />);
 
@@ -157,7 +157,7 @@ let MapEditor = React.createClass({
           className="button-group-wrapper"
           key="show_values"
           label="Show Values"
-          onToggle={this._handleStylingsUpdate.bind(null, "showValuesLabels")}
+          onToggle={this._handlePropAndReparse.bind(null, "showValuesLabels")}
           toggled={stylings.showValuesLabels}
         /></div>);
     }
@@ -165,7 +165,7 @@ let MapEditor = React.createClass({
    const dcOption = (<div className="toggle"><Toggle
           className="button-group-wrapper"
           label="DC Y/N"
-          onToggle={this._handleStylingsUpdate.bind(null, "showDC")}
+          onToggle={this._handlePropAndReparse.bind(null, "showDC")}
           toggled={stylings.showDC}
           key="show_hide_dc"
         /></div>);
@@ -173,7 +173,7 @@ let MapEditor = React.createClass({
    const legendTextOption = (<div className="legend-text"><h3>Extra legend text</h3>
       <TextArea
         label="Extra legend text"
-        onChange={this._handleStylingsUpdate.bind(null, "legendText")}
+        onChange={this._handlePropAndReparse.bind(null, "legendText")}
         value={stylings.legendText}
         isRequired={true}
         key="legend_text_extra"
@@ -184,21 +184,21 @@ let MapEditor = React.createClass({
             key={"legend_ticks_toggle_" + this.props.metadata.chartType}
             className="button-group-wrapper"
             label="Legend ticks"
-            onToggle={this._handleStylingsUpdate.bind(null, "showLegendTicks")}
+            onToggle={this._handlePropAndReparse.bind(null, "showLegendTicks")}
             toggled={stylings.showLegendTicks}
           /></div>);
 
     const shapeSize = (<div className="toggle">
               <LabelledTangle
                 tangleClass="tangle-input"
-                onChange={this._handleStylingsUpdate.bind(null, 'radiusVal')}
-                onInput={this._handleStylingsUpdate.bind(null, 'radiusVal')}
+                onChange={this._handlePropAndReparse.bind(null, 'radiusVal')}
+                onInput={this._handlePropAndReparse.bind(null, 'radiusVal')}
                 step={1}
                 label="Max shape"
                 min={1}
                 max={60}
                 key="radius_val"
-                value={this.props.stylings.radiusVal}
+                value={stylings.radiusVal}
               /></div>);
 
     const axisErrors = this.props.errors.messages.filter(function(e) {
@@ -234,7 +234,7 @@ let MapEditor = React.createClass({
 
 	      <div className="editor-options">
 	        <h2>
-	          <span className="step-number">{this.props.stepNumber + 1}</span>
+	          <span className="step-number">{String(this.props.stepNumber + 1)}</span>
 	          <span>Make additional stylings</span>
 	        </h2>
 	        	{cartogramOption}
@@ -244,13 +244,12 @@ let MapEditor = React.createClass({
 	        <ButtonGroup
 	          className="button-group-wrapper"
 	          buttons={map_strokes}
-	          onClick={this._handleStylingsUpdate.bind(null, "stroke")}
+	          onClick={this._handlePropAndReparse.bind(null, "stroke")}
 	          value={stylings.stroke}
 	          key="choose_strokes"
 	        />
 	        <div className="stylings-toggle-inputs"
 	          key="stylings_inputs">
-	          {stateNames}
 	          {legendTicks}
 	          {valuesOption}
 	          {shapeSize}
