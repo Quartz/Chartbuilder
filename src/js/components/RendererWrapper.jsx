@@ -233,6 +233,8 @@ const RendererWrapper = React.createClass({
 		}
 
 		const Renderer = chartRenderers[chartType] || mapRenderers[chartType];
+		//const Config = chartConfigs[chartType] || mapConfigs[chartType];
+
 		let chartProps;
 		let metadata;
 
@@ -279,6 +281,8 @@ const RendererWrapper = React.createClass({
 						chartProps={chartProps}
 						stylings={stylings}
 						metadata={metadata}
+						dimensions={dimensions}
+						displayConfig={displayConfig}
 						chartWidth={dimensions.width - margin.left - margin.right}
 					/>
 				)

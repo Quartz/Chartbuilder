@@ -6,7 +6,7 @@ const chartSizes = require("../../../config/mapconfig/map-sizes");
  * see [ChartConfig#calculateDimensions](#chartconfig/calculatedimensions)
  * @see ChartConfig#calculateDimensions
  * @instance
- * @memberof xy_config
+ * @memberof
  */
 function calculate_map_dimensions(width, opts) {
   let height;

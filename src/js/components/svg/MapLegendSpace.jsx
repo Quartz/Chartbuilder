@@ -7,13 +7,18 @@ import ReactDom from 'react-dom';
 const legendsPerRow = 4;
 //this should match the stroke-width of .legend-ticks in chart-renderer.styl
 const legendMargin = 1.5;
-const groupMargin = 40;
-const legendRect = 30;
 const legendHeight = 8;
-const legendtotal = 130;
 const legendyAdjustment = 15;
-const legendSecondRowwOffset = 56;
 const yOffsetText = legendHeight + legendyAdjustment;
+const legendSecondRowwOffset = 56;
+
+/*const groupMargin = 40;
+const legendtotal = 130;*/
+
+const legendTotalOnePct = 60;
+const legendTotalTwoPct = 45;
+const legendTotalThreePct = 30;
+const legendTotalFourPct = 20;
 
 /**
  *
@@ -66,6 +71,14 @@ const LegendSpace = React.createClass({
 	componentDidMount: function() {
 		this.mountDraggyLegend();
 	},
+	_translatePositions: function(chartWidth, n) {
+
+		return;
+	},
+	_offsetPositions: function(chartWidth, n) {
+
+		return;
+	},
 	_offsetAdjustments: function(legendsArray, i) {
 
 			const offsets = {};
@@ -73,15 +86,20 @@ const LegendSpace = React.createClass({
 			// two rows
 			if (legendsArray.length > legendsPerRow && (i > legendsPerRow - 1)) {
 				offsets.yOffsetAdjusted = legendSecondRowwOffset;
+
 				// we add the + 1 to move the second row over one position, so as not to occlude
 				// logos etc..
-				offsets.xOffset = ((i - legendsPerRow + 1) * legendtotal) + (groupMargin * (i - legendsPerRow + 1));
+
+
+				//offsets.xOffset = ((i - legendsPerRow + 1) * legendtotal) + (groupMargin * (i - legendsPerRow + 1));
 			}
 			// one row
 			else {
 				// by default do not offset the y
 				offsets.yOffsetAdjusted = 0;
-				offsets.xOffset = (i * legendtotal) + (groupMargin * i);
+
+
+				//offsets.xOffset = (i * legendtotal) + (groupMargin * i);
 			}
 
 			return offsets;
@@ -96,7 +114,7 @@ const LegendSpace = React.createClass({
 		let legendheightAdjusted = legendHeight;
 		//
 		// for one row
-		if (legendsArray.length < (legendsPerRow + 1)) {
+		if (legendsArray.length === 1) {
 			//make the legends slightly larger if only one row
 			//legendheightAdjusted = legendHeight * 1.2;
 			//move the legends lower if only one legend row
@@ -138,11 +156,14 @@ const LegendSpace = React.createClass({
 	render: function() {
 
 		console.log('render legend');
+		console.log(this.props,'props');
 
 		const chartProps = this.props.chartProps;
 		const stylings = chartProps.stylings;
 		const metadata = this.props.metadata;
 		const translate = this.props.translate;
+		const dimensions = this.props.dimensions;
+		const chartWidth = this.props.chartWidth;
 
 		const legendsArray = Object.keys(chartProps.legend).map((k) => chartProps.legend[k]);
 
@@ -156,7 +177,7 @@ const LegendSpace = React.createClass({
 			/* Offsets
 
 			*/
-			const offsets = this._offsetAdjustments(legendsArray, i);
+			const offsets = this._offsetAdjustments(legendsArray, i, chartWidth);
 
 			/* get individual blocks for each legend group
 
