@@ -346,28 +346,7 @@ const MapCartogram_mapStyles = React.createClass({
 
 		const stylings = this.props.chartStyles
 		const steps = String(parseInt(this.props.stepNumber) + 1);
-		let stateNames = false;
 
-		const legendTicks = (<div className="toggle">
-          <Toggle
-            key={"legend_ticks_toggle_" + this.props.metadata.chartType}
-            className="button-group-wrapper"
-            label="Legend ticks"
-            onToggle={this._handleStylesUpdate.bind(null, "showLegendTicks")}
-            toggled={stylings.showLegendTicks}
-          /></div>);
-
-		if (this.props.metadata.chartType === 'map50') {
-
-      stateNames = (<div className="toggle">
-        <Toggle
-          label="State names"
-          className="button-group-wrapper"
-          onToggle={this._handleStylesUpdate.bind(null, "showStateLabels")}
-          toggled={stylings.showStateLabels}
-          key="show_state_names"
-        /></div>);
-    }
 
 		return (<div className="editor-options">
 	        <h2>
@@ -386,8 +365,6 @@ const MapCartogram_mapStyles = React.createClass({
 	        />
 	        <div className="stylings-toggle-inputs"
 	          key="stylings_inputs">
-	          {stateNames}
-	          {legendTicks}
 	        </div>
       	</div>
 		);

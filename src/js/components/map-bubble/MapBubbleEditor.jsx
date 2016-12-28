@@ -110,7 +110,7 @@ const MapEditor = React.createClass({
             index={i}
             key={i + '-scale'}
           />
-        	<MapCartogram_mapSettings
+        	<MapBubble_mapSettings
             chartSettings={mapProps.chartSettings}
             onUpdate={this._handlePropUpdate.bind(null, "chartSettings")}
             onUpdateReparse={this._handlePropAndReparse.bind(null, "chartSettings")}
@@ -123,7 +123,14 @@ const MapEditor = React.createClass({
       );
     }, this)) );
 
-    console.log(mapSettings,'eek');
+    const mapStyles = (<MapBubble_mapStyles
+						chartStyles={stylings}
+						stepNumber={this.props.stepNumber}
+						metadata={this.props.metadata}
+						onUpdate={this._handlePropUpdate.bind(null, "stylings")}
+						onUpdateReparse={this._handlePropAndReparse.bind(null, "stylings")}
+						key='stylings'
+					/>);
 
     const axisErrors = this.props.errors.messages.filter(function(e) {
       return e.location === "axis";
@@ -132,27 +139,6 @@ const MapEditor = React.createClass({
     const inputErrors = this.props.errors.messages.filter(function(e) {
       return e.location === "input";
     });
-
-    const legendTextOption = (<div className="legend-text"><h3>Extra legend text</h3>
-      <TextArea
-        key="legend_text_extra"
-        onChange={this._handlePropAndReparse.bind(null, "legendText")}
-        value={stylings.legendText}
-        isRequired={true}
-      /></div>)
-
-    const shapeSize = (<div className="toggle">
-      <LabelledTangle
-        tangleClass="tangle-input"
-        onChange={this._handlePropAndReparse.bind(null, 'radiusVal')}
-        onInput={this._handlePropAndReparse.bind(null, 'radiusVal')}
-        step={1}
-        label="Max shape"
-        key="max_shape"
-        min={1}
-        max={60}
-        value={stylings.radiusVal}
-      /></div>);
 
     return (
       <div className="xy-editor">
@@ -176,29 +162,7 @@ const MapEditor = React.createClass({
         </div>
         <div className="editor-options">
         </div>
-
-        <div className="editor-options">
-	        <h2>
-	          <span className="step-number">{String(this.props.stepNumber + 1)}</span>
-	          <span>Make additional stylings</span>
-	        </h2>
-	        <h3>
-	          Color shape outlines
-	        </h3>
-	        <ButtonGroup
-	          className="button-group-wrapper"
-	          buttons={map_strokes}
-	          onClick={this._handlePropAndReparse.bind(null, "stroke")}
-	          value={stylings.stroke}
-	          key="choose_strokes"
-	        />
-	        <div className="stylings-toggle-inputs"
-	          key="stylings_inputs">
-	          {shapeSize}
-	        </div>
-	        {legendTextOption}
-	      </div>
-
+        {mapStyles}
       </div>
     );
   }
@@ -217,7 +181,7 @@ const MapEditor = React.createClass({
  * @instance
  * @memberof XYEditor
  */
-const MapCartogram_mapSettings = React.createClass({
+const MapBubble_mapSettings = React.createClass({
 
   propTypes: {
     chartSettings: PropTypes.array,
@@ -288,32 +252,32 @@ const MapBubble_mapStyles = React.createClass({
 
 		const stylings = this.props.chartStyles
 		const steps = String(parseInt(this.props.stepNumber) + 1);
-		let stateNames = false;
 
-		const legendTicks = (<div className="toggle">
-          <Toggle
-            key={"legend_ticks_toggle_" + this.props.metadata.chartType}
-            className="button-group-wrapper"
-            label="Legend ticks"
-            onToggle={this._handleStylesUpdate.bind(null, "showLegendTicks")}
-            toggled={stylings.showLegendTicks}
-          /></div>);
+    const legendTextOption = (<div className="legend-text"><h3>Extra legend text</h3>
+      <TextArea
+        key="legend_text_extra"
+        onChange={this._handleStylesUpdate.bind(null, "legendText")}
+        value={stylings.legendText}
+        isRequired={true}
+      /></div>)
 
-		if (this.props.metadata.chartType === 'map50') {
+    const shapeSize = (<div className="toggle">
+      <LabelledTangle
+        tangleClass="tangle-input"
+        onChange={this._handleStylesUpdate.bind(null, 'radiusVal')}
+        onInput={this._handleStylesUpdate.bind(null, 'radiusVal')}
+        step={1}
+        label="Max shape"
+        key="max_shape"
+        min={1}
+        max={60}
+        value={stylings.radiusVal}
+      /></div>);
 
-      stateNames = (<div className="toggle">
-        <Toggle
-          label="State names"
-          className="button-group-wrapper"
-          onToggle={this._handleStylesUpdate.bind(null, "showStateLabels")}
-          toggled={stylings.showStateLabels}
-          key="show_state_names"
-        /></div>);
-    }
-
-		return (<div className="editor-options">
+		return (
+        <div className="editor-options">
 	        <h2>
-	          <span className="step-number">{steps}</span>
+	          <span className="step-number">{String(parseInt(this.props.stepNumber) + 1)}</span>
 	          <span>Make additional stylings</span>
 	        </h2>
 	        <h3>
@@ -328,10 +292,10 @@ const MapBubble_mapStyles = React.createClass({
 	        />
 	        <div className="stylings-toggle-inputs"
 	          key="stylings_inputs">
-	          {stateNames}
-	          {legendTicks}
+	          {shapeSize}
 	        </div>
-      	</div>
+	        {legendTextOption}
+	      </div>
 		);
 	}
 });

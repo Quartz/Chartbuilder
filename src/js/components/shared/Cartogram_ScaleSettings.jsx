@@ -75,7 +75,7 @@ const Map_ScaleSettings = React.createClass({
 
       prefixSuffix.push(<TextInput
           id="suffix"
-          key="scale-prefix"
+          key="scale-suffix"
           className="scale-option"
           onChange={this._handleScaleUpdate.bind(null, "suffix")}
           value={currScale.suffix}
