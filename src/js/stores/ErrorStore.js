@@ -1,26 +1,24 @@
-var assign = require("lodash/assign");
-var clone = require("lodash/clone");
-var some = require("lodash/some");
-var filter = require("lodash/filter");
-var EventEmitter = require("events").EventEmitter;
+import {assign, clone, some, filter} from 'lodash';
+
+const EventEmitter = require("events").EventEmitter;
 
 /* Flux dispatcher */
-var Dispatcher = require("../dispatcher/dispatcher");
+const Dispatcher = require("../dispatcher/dispatcher");
 
-var errorNames = require("../util/error-names");
-var validateDataInput = require("../util/validate-data-input");
-var ChartPropertiesStore = require("./ChartPropertiesStore");
+const errorNames = require("../util/error-names");
+const validateDataInput = require("../util/validate-data-input");
+const ChartPropertiesStore = require("./ChartPropertiesStore");
 
 /* Singleton that houses errors */
-var _errors = { valid: true, messages: [] };
-var CHANGE_EVENT = "change";
+let _errors = { valid: true, messages: [] };
+const CHANGE_EVENT = "change";
 
 /**
  * ### ErrorStore.js
  * Store for errors/warnings to users about the bad/dumb things they are
  * probably doing
 */
-var ErrorStore = assign({}, EventEmitter.prototype, {
+const ErrorStore = assign({}, EventEmitter.prototype, {
 
 	emitChange: function() {
 		this.emit(CHANGE_EVENT);
@@ -69,10 +67,10 @@ var ErrorStore = assign({}, EventEmitter.prototype, {
 
 /* Respond to actions coming from the dispatcher */
 function registeredCallback(payload) {
-	var action = payload.action;
-	var chartProps;
-	var error_messages;
-	var input_errors;
+	let action = payload.action;
+	let chartProps;
+	let error_messages;
+	let input_errors = [];
 
 	switch(action.eventName) {
 		/* *
@@ -85,14 +83,17 @@ function registeredCallback(payload) {
 			chartProps = ChartPropertiesStore.getAll();
 
 			error_messages = [];
-			input_errors = validateDataInput(chartProps);
+			if (chartProps.visualType === 'chart') {
+				input_errors = validateDataInput(chartProps);
+				console.log(input_errors,'hm errors');
+			}
 			error_messages = error_messages.concat(input_errors);
 
 			_errors.messages = error_messages.map(function(err_name) {
 				return errorNames[err_name];
 			});
 
-			var isInvalid = some(_errors.messages, { type: "error" } );
+			const isInvalid = some(_errors.messages, { type: "error" } );
 			_errors.valid = !isInvalid;
 
 			ErrorStore.emitChange();

@@ -91,14 +91,11 @@ let MapEditor = React.createClass({
 			numSteps: 4
 		};
 	},
-
 	render: function() {
 		const mapProps = this.props.chartProps;
     const stylings = mapProps.stylings;
 		/* Create a settings component for each data series (column) */
 		const mapSettings = [];
-
-		console.log(stylings,'stylings');
 
 		mapSettings.push( map(mapProps.chartSettings, bind(function(chartSetting, i) {
 
@@ -133,78 +130,18 @@ let MapEditor = React.createClass({
 			);
 		}, this)));
 
-
-		const legendTicks = (<div className="toggle">
-          <Toggle
-            key={"legend_ticks_toggle_" + this.props.metadata.chartType}
-            className="button-group-wrapper"
-            label="Legend ticks"
-            onToggle={this._handlePropAndReparse.bind(null, "showLegendTicks")}
-            toggled={stylings.showLegendTicks}
-          /></div>);
-
-
-		let stateNames = false;
-
-		if (this.props.metadata.chartType === 'map50') {
-
-      stateNames = (<div className="toggle">
-        <Toggle
-          label="State names"
-          className="button-group-wrapper"
-          onToggle={this._handlePropAndReparse.bind(null, "showStateLabels")}
-          toggled={stylings.showStateLabels}
-          key="show_state_names"
-        /></div>);
-
-    }
+		const mapStyles = (<MapChoro_mapStyles
+						chartStyles={stylings}
+						stepNumber={this.props.stepNumber}
+						metadata={this.props.metadata}
+						onUpdate={this._handlePropUpdate.bind(null, "stylings")}
+						onUpdateReparse={this._handlePropAndReparse.bind(null, "stylings")}
+						key='stylings'
+					/>);
 
 		const axisErrors = this.props.errors.messages.filter(function(e) {
 			return e.location === "axis";
 		});
-
-		/* Y scale settings */
-		/*mapProps.chartSettings.forEach(function(chartSetting,i) {
-			mapSettings.push(
-				<div>
-				<Map50_mapSettings
-					chartSettings={chartSetting}
-					onUpdate={that._handlePropUpdate.bind(null, "chartSettings")}
-					onUpdateReparse={that._handlePropAndReparse.bind(null, "chartSettings")}
-					numColors={that.props.numColors}
-					index={i}
-					key={i}
-				/>
-
-				<Map_ScaleSettings
-					scale={chartSetting.scale}
-					errors={axisErrors}
-					className="scale-options"
-					onUpdate={that._handlePropAndReparse.bind(null, "scale")}
-					onReset={that._handlePropAndReparse.bind(null, "scale")}
-					id="primaryScale"
-					name="Primary"
-					stepNumber="0"
-					key={i}
-				/>
-				</div>
-			);
-		});*/
-
-		/*if (chartProps.scale.isNumeric) {
-			scaleSettings.push(
-				<NumericScaleSettings
-					scale={chartProps.scale}
-					key="xScale"
-					onUpdate={this._handlePropAndReparse.bind(null, "scale")}
-					onReset={this._handlePropAndReparse.bind(null, "scale")}
-					className="scale-options"
-					id="numericSettings"
-					name="Bottom"
-					stepNumber="5"
-				/>
-			);
-		}*/
 
 		const inputErrors = this.props.errors.messages.filter(function(e) {
 			return e.location === "input";
@@ -231,29 +168,8 @@ let MapEditor = React.createClass({
 					{mapSettings}
 				</div>
 				<div className="editor-options">
-
 				</div>
-				<div className="editor-options">
-        <h2>
-          <span className="step-number">{String(this.props.stepNumber + 1)}</span>
-          <span>Make additional stylings</span>
-        </h2>
-        <h3>
-          Color shape outlines
-        </h3>
-        <ButtonGroup
-          className="button-group-wrapper"
-          buttons={map_strokes}
-          onClick={this._handlePropAndReparse.bind(null, "stroke")}
-          value={stylings.stroke}
-          key="choose_strokes"
-        />
-        <div className="stylings-toggle-inputs"
-          key="stylings_inputs">
-          {stateNames}
-          {legendTicks}
-        </div>
-      </div>
+					{mapStyles}
 			</div>
 		);
 	}
@@ -262,15 +178,7 @@ let MapEditor = React.createClass({
 
 
 /**
- * Series-specific settings for each column in data
- * @property {boolean} allowSecondaryAxis - Should a secondary axis be allowed
- * @property {object[]} chartSettings - Current settings for data series
- * @property {function} onUpdate - Callback that handles new series settings
- * @property {function} onUpdateReparse - Callback that handles new series settings,
- * but which need to be sent back to `parse-xy`
- * @property {number} numColors - Total number of possible colors
- * @instance
- * @memberof XYEditor
+
  */
 const Map50_mapSettings = React.createClass({
 
@@ -319,6 +227,74 @@ const Map50_mapSettings = React.createClass({
 
 				<div className="clearfix"></div>
 			</div>
+		);
+	}
+});
+
+const MapChoro_mapStyles = React.createClass({
+
+	propTypes: {
+
+	},
+
+	_handleStylesUpdate: function(ix, v) {
+
+		/* Clone the object so that we dont mutate existing state */
+		const chartStyles = clone(this.props.chartStyles);
+		/* We need the style (ix) to know which to update (v) */
+		chartStyles[ix] = v;
+		/* */
+		this.props.onUpdateReparse(chartStyles);
+	},
+
+	render: function() {
+
+		const stylings = this.props.chartStyles
+		const steps = String(parseInt(this.props.stepNumber) + 1);
+		let stateNames = false;
+
+		const legendTicks = (<div className="toggle">
+          <Toggle
+            key={"legend_ticks_toggle_" + this.props.metadata.chartType}
+            className="button-group-wrapper"
+            label="Legend ticks"
+            onToggle={this._handleStylesUpdate.bind(null, "showLegendTicks")}
+            toggled={stylings.showLegendTicks}
+          /></div>);
+
+		if (this.props.metadata.chartType === 'map50') {
+
+      stateNames = (<div className="toggle">
+        <Toggle
+          label="State names"
+          className="button-group-wrapper"
+          onToggle={this._handleStylesUpdate.bind(null, "showStateLabels")}
+          toggled={stylings.showStateLabels}
+          key="show_state_names"
+        /></div>);
+    }
+
+		return (<div className="editor-options">
+	        <h2>
+	          <span className="step-number">{steps}</span>
+	          <span>Make additional stylings</span>
+	        </h2>
+	        <h3>
+	          Color shape outlines
+	        </h3>
+	        <ButtonGroup
+	          className="button-group-wrapper"
+	          buttons={map_strokes}
+	          onClick={this._handleStylesUpdate.bind(null, "stroke")}
+	          value={stylings.stroke}
+	          key="choose_strokes"
+	        />
+	        <div className="stylings-toggle-inputs"
+	          key="stylings_inputs">
+	          {stateNames}
+	          {legendTicks}
+	        </div>
+      	</div>
 		);
 	}
 });

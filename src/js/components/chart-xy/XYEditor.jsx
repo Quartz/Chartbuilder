@@ -35,14 +35,14 @@ var Toggle = chartbuilderUI.Toggle;
 var ChartEditorMixin = require("../mixins/ChartEditorMixin.js");
 
 /* Available XY chart type options */
-var typeOptions = [
+const typeOptions = [
 	{ title: "Line", content: "Line", value: "line" },
 	{ title: "Columns", content: "Columns", value: "column" },
 	{ title: "Dots", content: "Dots", value: "scatterPlot" }
 ];
 
 /* Available XY axis options */
-var axisOptions = [
+const axisOptions = [
 	{ title: "Left axis", content: "Left axis", value: "left" },
 	{ title: "Right axis", content: "Right axis", value: "right" }
 ];
@@ -77,17 +77,17 @@ var XYEditor = React.createClass({
 	},
 
 	render: function() {
-		var chartProps = this.props.chartProps;
-		var scaleSettings = [];
+		const chartProps = this.props.chartProps;
+		const scaleSettings = [];
 
 		/*
 		 * If all but one series is set to secondary axis, don't allow secondary
 		 * axis option
 		*/
-		var allowSecondaryAxis = (chartProps._numSecondaryAxis < (chartProps.data.length - 1));
+		const allowSecondaryAxis = (chartProps._numSecondaryAxis < (chartProps.data.length - 1));
 
 		/* Create a settings component for each data series (column) */
-		var chartSettings = map(chartProps.chartSettings, bind(function(chartSetting, i) {
+		const chartSettings = map(chartProps.chartSettings, bind(function(chartSetting, i) {
 			return (
 				<XY_chartSettings
 					chartSettings={chartProps.chartSettings}
@@ -101,11 +101,11 @@ var XYEditor = React.createClass({
 			);
 		}, this));
 
-		var inputErrors = this.props.errors.messages.filter(function(e) {
+		const inputErrors = this.props.errors.messages.filter(function(e) {
 			return e.location === "input";
 		});
 
-		var axisErrors = this.props.errors.messages.filter(function(e) {
+		const axisErrors = this.props.errors.messages.filter(function(e) {
 			return e.location === "axis";
 		});
 
@@ -265,7 +265,7 @@ var XY_resetLabels = React.createClass({
  * @instance
  * @memberof XYEditor
  */
-var XY_chartSettings = React.createClass({
+const XY_chartSettings = React.createClass({
 
 	propTypes: {
 		chartSettings: PropTypes.arrayOf(PropTypes.object),
@@ -277,15 +277,16 @@ var XY_chartSettings = React.createClass({
 
 	_handleSettingsUpdate: function(ix, k, v) {
 		/* Clone the array of objects so that we dont mutate existing state */
-		var chartSettings = map(this.props.chartSettings, clone);
+		const chartSettings = map(this.props.chartSettings, clone);
 		/* We need the index (ix) of the settings object to know which to update */
 		chartSettings[ix][k] = v;
 		/* `axis` and `colorIndex` require reparsing the input and splitting it up */
+		console.log(chartSettings,'settings');
 		this.props.onUpdateReparse(chartSettings);
 	},
 
 	render: function() {
-		var chartSetting = this.props.chartSettings[this.props.index];
+		const chartSetting = this.props.chartSettings[this.props.index];
 
 		return (
 			<div className="series-control">

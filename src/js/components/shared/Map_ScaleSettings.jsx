@@ -14,7 +14,7 @@ import {ButtonGroup, TextInput, LabelledTangle, AlertGroup} from 'chartbuilder-u
  * @instance
  * @memberof editors
  */
-let Map_ScaleSettings = React.createClass({
+const Map_ScaleSettings = React.createClass({
 
   propTypes: {
     className: PropTypes.string,
@@ -81,13 +81,13 @@ let Map_ScaleSettings = React.createClass({
     const errors = this._renderErrors();
 
     const thresholds = [];
-    let thresholdsLabel = [];
+    let thresholdsLabel;
+
+    thresholdsLabel = [];
 
     let tangleStep;
 
     let prefixSuffix = false;
-
-   	console.log(this.props, 'test typeOptions');
 
     if (this.props.stylings.showLegendTicks) {
 
@@ -198,30 +198,28 @@ let Map_ScaleSettings = React.createClass({
 
         {prefixSuffix}
         <div className="scale-tangle-inputs">
-
-           <LabelledTangle
-              label="Color breaks"
-              labelClass="editor-label"
-              tangleClass="scale-option tangle-input"
-              onChange={this._handleScaleUpdate.bind(null, "colors")}
-              onInput={this._handleScaleUpdate.bind(null, "colors")}
-              step={tangleStep}
-              min={1}
-              max={6}
-              key={'tangle-scale'}
-              value={currScale.colors}
+          <LabelledTangle
+            label="Color breaks"
+            labelClass="editor-label"
+            tangleClass="scale-option tangle-input"
+            onChange={this._handleScaleUpdate.bind(null, "colors")}
+            onInput={this._handleScaleUpdate.bind(null, "colors")}
+            step={tangleStep}
+            min={1}
+            max={6}
+            key={'tangle-scale'}
+            value={currScale.colors}
+          />
+          <div className="section typesection">
+            <ButtonGroup
+              className="button-group-wrapper"
+              onClick={this._handleScaleUpdate.bind(null, "type")}
+              buttons={this.props.typeOptions}
+              key={'type-options'}
+              type={currScale.type}
+              value={currScale.type}
             />
-
-            <div className="section typesection">
-              <ButtonGroup
-                className="button-group-wrapper"
-                onClick={this._handleScaleUpdate.bind(null, "type")}
-                buttons={this.props.typeOptions}
-                key={'type-options'}
-                type={currScale.type}
-                value={currScale.type}
-              />
-            </div>
+          </div>
         </div>
         {thresholdsLabel}
         {thresholds}

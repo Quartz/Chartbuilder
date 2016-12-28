@@ -268,4 +268,72 @@ const MapCartogram_mapSettings = React.createClass({
   }
 });
 
+const MapBubble_mapStyles = React.createClass({
+
+	propTypes: {
+
+	},
+
+	_handleStylesUpdate: function(ix, v) {
+
+		/* Clone the object so that we dont mutate existing state */
+		const chartStyles = clone(this.props.chartStyles);
+		/* We need the style (ix) to know which to update (v) */
+		chartStyles[ix] = v;
+		/* */
+		this.props.onUpdateReparse(chartStyles);
+	},
+
+	render: function() {
+
+		const stylings = this.props.chartStyles
+		const steps = String(parseInt(this.props.stepNumber) + 1);
+		let stateNames = false;
+
+		const legendTicks = (<div className="toggle">
+          <Toggle
+            key={"legend_ticks_toggle_" + this.props.metadata.chartType}
+            className="button-group-wrapper"
+            label="Legend ticks"
+            onToggle={this._handleStylesUpdate.bind(null, "showLegendTicks")}
+            toggled={stylings.showLegendTicks}
+          /></div>);
+
+		if (this.props.metadata.chartType === 'map50') {
+
+      stateNames = (<div className="toggle">
+        <Toggle
+          label="State names"
+          className="button-group-wrapper"
+          onToggle={this._handleStylesUpdate.bind(null, "showStateLabels")}
+          toggled={stylings.showStateLabels}
+          key="show_state_names"
+        /></div>);
+    }
+
+		return (<div className="editor-options">
+	        <h2>
+	          <span className="step-number">{steps}</span>
+	          <span>Make additional stylings</span>
+	        </h2>
+	        <h3>
+	          Color shape outlines
+	        </h3>
+	        <ButtonGroup
+	          className="button-group-wrapper"
+	          buttons={map_strokes}
+	          onClick={this._handleStylesUpdate.bind(null, "stroke")}
+	          value={stylings.stroke}
+	          key="choose_strokes"
+	        />
+	        <div className="stylings-toggle-inputs"
+	          key="stylings_inputs">
+	          {stateNames}
+	          {legendTicks}
+	        </div>
+      	</div>
+		);
+	}
+});
+
 module.exports = MapEditor;
