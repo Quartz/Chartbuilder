@@ -82,20 +82,8 @@ const MapEditor = React.createClass({
     const stylings = mapProps.stylings;
 
     /* Create a settings component for each data series (column) */
-    const mapSettings = [];
 
-    /*
-          <MapCartogram_mapSettings
-            chartSettings={mapProps.chartSettings}
-            onUpdate={this._handlePropUpdate.bind(null, "chartSettings")}
-            onUpdateReparse={this._handlePropAndReparse.bind(null, "chartSettings")}
-            numColors={this.props.numColors}
-            stylings={mapProps.stylings}
-            index={i}
-            key={i}
-          />*/
-
-    mapSettings.push( map(mapProps.chartSettings, bind(function(chartSetting, i) {
+    const mapSettings = map(mapProps.chartSettings, bind(function(chartSetting, i) {
       return (
         <div>
           <Map_ScaleSettings
@@ -121,7 +109,7 @@ const MapEditor = React.createClass({
           />
         </div>
       );
-    }, this)) );
+    }, this));
 
     const mapStyles = (<MapBubble_mapStyles
 						chartStyles={stylings}
@@ -277,7 +265,7 @@ const MapBubble_mapStyles = React.createClass({
 		return (
         <div className="editor-options">
 	        <h2>
-	          <span className="step-number">{String(parseInt(this.props.stepNumber) + 1)}</span>
+	          <span className="step-number">{steps}</span>
 	          <span>Make additional stylings</span>
 	        </h2>
 	        <h3>

@@ -105,12 +105,8 @@ let MapEditor = React.createClass({
     const mapProps = this.props.chartProps;
     const stylings = mapProps.stylings;
 
-    let valuesOption = false;
-
     /* Create a settings component for each data series (column) */
-    const mapSettings = [];
-
-    mapSettings.push(map(mapProps.chartSettings, bind(function(chartSetting, i) {
+    const mapSettings = map(mapProps.chartSettings, bind(function(chartSetting, i) {
 
       return (
         <div>
@@ -138,68 +134,16 @@ let MapEditor = React.createClass({
           />
         </div>
       );
-    }, this)) );
+    }, this));
 
-    const cartogramOption = [];
-
-    cartogramOption.push(<h3>Cartogram Type</h3>);
-    cartogramOption.push(<ButtonGroup
-        className="button-group-wrapper"
-        buttons={map_type}
-        key="cartogram_type"
-        onClick={this._handlePropAndReparse.bind(null, "type")}
-        value={stylings.type}
-      />);
-
-    if (stylings.type === 'grid') {
-      valuesOption = (<div className="toggle">
-        <Toggle
-          className="button-group-wrapper"
-          key="show_values"
-          label="Show Values"
-          onToggle={this._handlePropAndReparse.bind(null, "showValuesLabels")}
-          toggled={stylings.showValuesLabels}
-        /></div>);
-    }
-
-   const dcOption = (<div className="toggle"><Toggle
-          className="button-group-wrapper"
-          label="DC Y/N"
-          onToggle={this._handlePropAndReparse.bind(null, "showDC")}
-          toggled={stylings.showDC}
-          key="show_hide_dc"
-        /></div>);
-
-   const legendTextOption = (<div className="legend-text"><h3>Extra legend text</h3>
-      <TextArea
-        label="Extra legend text"
-        onChange={this._handlePropAndReparse.bind(null, "legendText")}
-        value={stylings.legendText}
-        isRequired={true}
-        key="legend_text_extra"
-      /></div>);
-
-   const legendTicks = (<div className="toggle">
-          <Toggle
-            key={"legend_ticks_toggle_" + this.props.metadata.chartType}
-            className="button-group-wrapper"
-            label="Legend ticks"
-            onToggle={this._handlePropAndReparse.bind(null, "showLegendTicks")}
-            toggled={stylings.showLegendTicks}
-          /></div>);
-
-    const shapeSize = (<div className="toggle">
-              <LabelledTangle
-                tangleClass="tangle-input"
-                onChange={this._handlePropAndReparse.bind(null, 'radiusVal')}
-                onInput={this._handlePropAndReparse.bind(null, 'radiusVal')}
-                step={1}
-                label="Max shape"
-                min={1}
-                max={60}
-                key="radius_val"
-                value={stylings.radiusVal}
-              /></div>);
+    const mapStyles = (<MapCartogram_mapStyles
+						chartStyles={stylings}
+						stepNumber={this.props.stepNumber}
+						metadata={this.props.metadata}
+						onUpdate={this._handlePropUpdate.bind(null, "stylings")}
+						onUpdateReparse={this._handlePropAndReparse.bind(null, "stylings")}
+						key='stylings'
+					/>);
 
     const axisErrors = this.props.errors.messages.filter(function(e) {
       return e.location === "axis";
@@ -231,32 +175,7 @@ let MapEditor = React.createClass({
         </div>
         <div className="editor-options">
         </div>
-
-	      <div className="editor-options">
-	        <h2>
-	          <span className="step-number">{String(this.props.stepNumber + 1)}</span>
-	          <span>Make additional stylings</span>
-	        </h2>
-	        	{cartogramOption}
-	        <h3>
-	          Color shape outlines
-	        </h3>
-	        <ButtonGroup
-	          className="button-group-wrapper"
-	          buttons={map_strokes}
-	          onClick={this._handlePropAndReparse.bind(null, "stroke")}
-	          value={stylings.stroke}
-	          key="choose_strokes"
-	        />
-	        <div className="stylings-toggle-inputs"
-	          key="stylings_inputs">
-	          {legendTicks}
-	          {valuesOption}
-	          {shapeSize}
-	          {dcOption}
-	        </div>
-	        {legendTextOption}
-	      </div>
+        {mapStyles}
       </div>
     );
   }
@@ -331,7 +250,6 @@ const MapCartogram_mapStyles = React.createClass({
 	propTypes: {
 
 	},
-
 	_handleStylesUpdate: function(ix, v) {
 
 		/* Clone the object so that we dont mutate existing state */
@@ -341,18 +259,80 @@ const MapCartogram_mapStyles = React.createClass({
 		/* */
 		this.props.onUpdateReparse(chartStyles);
 	},
-
 	render: function() {
 
 		const stylings = this.props.chartStyles
 		const steps = String(parseInt(this.props.stepNumber) + 1);
 
+		const cartogramOption = [];
+    let valuesOption = false;
 
-		return (<div className="editor-options">
+    cartogramOption.push(<h3>Cartogram Type</h3>);
+    cartogramOption.push(<ButtonGroup
+        className="button-group-wrapper"
+        buttons={map_type}
+        key="cartogram_type"
+        onClick={this._handleStylesUpdate.bind(null, "type")}
+        value={stylings.type}
+      />);
+
+    if (stylings.type === 'grid') {
+      valuesOption = (<div className="toggle">
+        <Toggle
+          className="button-group-wrapper"
+          key="show_values"
+          label="Show Values"
+          onToggle={this._handleStylesUpdate.bind(null, "showValuesLabels")}
+          toggled={stylings.showValuesLabels}
+        /></div>);
+    }
+
+   const dcOption = (<div className="toggle"><Toggle
+          className="button-group-wrapper"
+          label="DC Y/N"
+          onToggle={this._handleStylesUpdate.bind(null, "showDC")}
+          toggled={stylings.showDC}
+          key="show_hide_dc"
+        /></div>);
+
+   const legendTextOption = (<div className="legend-text"><h3>Extra legend text</h3>
+      <TextArea
+        label="Extra legend text"
+        onChange={this._handleStylesUpdate.bind(null, "legendText")}
+        value={stylings.legendText}
+        isRequired={true}
+        key="legend_text_extra"
+      /></div>);
+
+   const legendTicks = (<div className="toggle">
+          <Toggle
+            key={"legend_ticks_toggle_" + this.props.metadata.chartType}
+            className="button-group-wrapper"
+            label="Legend ticks"
+            onToggle={this._handleStylesUpdate.bind(null, "showLegendTicks")}
+            toggled={stylings.showLegendTicks}
+          /></div>);
+
+    const shapeSize = (<div className="toggle">
+              <LabelledTangle
+                tangleClass="tangle-input"
+                onChange={this._handleStylesUpdate.bind(null, 'radiusVal')}
+                onInput={this._handleStylesUpdate.bind(null, 'radiusVal')}
+                step={1}
+                label="Max shape"
+                min={1}
+                max={60}
+                key="radius_val"
+                value={stylings.radiusVal}
+              /></div>);
+
+		return (
+	      <div className="editor-options">
 	        <h2>
 	          <span className="step-number">{steps}</span>
 	          <span>Make additional stylings</span>
 	        </h2>
+	        	{cartogramOption}
 	        <h3>
 	          Color shape outlines
 	        </h3>
@@ -365,8 +345,13 @@ const MapCartogram_mapStyles = React.createClass({
 	        />
 	        <div className="stylings-toggle-inputs"
 	          key="stylings_inputs">
+	          {legendTicks}
+	          {valuesOption}
+	          {shapeSize}
+	          {dcOption}
 	        </div>
-      	</div>
+	        {legendTextOption}
+	      </div>
 		);
 	}
 });

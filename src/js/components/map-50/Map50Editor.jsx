@@ -94,10 +94,9 @@ let MapEditor = React.createClass({
 	render: function() {
 		const mapProps = this.props.chartProps;
     const stylings = mapProps.stylings;
-		/* Create a settings component for each data series (column) */
-		const mapSettings = [];
 
-		mapSettings.push( map(mapProps.chartSettings, bind(function(chartSetting, i) {
+		/* Create a settings component for each data series (column) */
+		const mapSettings = map(mapProps.chartSettings, bind(function(chartSetting, i) {
 
 			const typeOption = this.getTypeOptions(chartSetting.scale.colors);
 
@@ -128,7 +127,7 @@ let MapEditor = React.createClass({
 
 				</div>
 			);
-		}, this)));
+		}, this));
 
 		const mapStyles = (<MapChoro_mapStyles
 						chartStyles={stylings}
