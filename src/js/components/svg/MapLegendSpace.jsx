@@ -3,14 +3,16 @@ import d3 from 'd3';
 import React, {PropTypes} from 'react';
 import ReactDom from 'react-dom';
 
+// set number of legends to position on a row, max
 const legendsPerRow = 4;
-const legendMargin = 5;
+//this should match the stroke-width of .legend-ticks in chart-renderer.styl
+const legendMargin = 1.5;
 const groupMargin = 40;
 const legendRect = 30;
-const legendHeight = 12;
+const legendHeight = 8;
 const legendtotal = 130;
 const legendyAdjustment = 15;
-const legendSecondRowwOffset = 70;
+const legendSecondRowwOffset = 56;
 const yOffsetText = legendHeight + legendyAdjustment;
 
 /**
@@ -71,7 +73,9 @@ const LegendSpace = React.createClass({
 			// two rows
 			if (legendsArray.length > legendsPerRow && (i > legendsPerRow - 1)) {
 				offsets.yOffsetAdjusted = legendSecondRowwOffset;
-				offsets.xOffset = ((i - legendsPerRow) * legendtotal) + (groupMargin * (i - legendsPerRow));
+				// we add the + 1 to move the second row over one position, so as not to occlude
+				// logos etc..
+				offsets.xOffset = ((i - legendsPerRow + 1) * legendtotal) + (groupMargin * (i - legendsPerRow + 1));
 			}
 			// one row
 			else {
@@ -94,7 +98,7 @@ const LegendSpace = React.createClass({
 		// for one row
 		if (legendsArray.length < (legendsPerRow + 1)) {
 			//make the legends slightly larger if only one row
-			legendheightAdjusted = legendHeight * 1.2;
+			//legendheightAdjusted = legendHeight * 1.2;
 			//move the legends lower if only one legend row
 			translateLegendsAdjusted = translate.legendsOneRow;
 		}
@@ -163,7 +167,9 @@ const LegendSpace = React.createClass({
 				const legendRectWidth = legendData.shapes;
 				const xOffsetEachBlock = (j === 0) ? 0 : (legendRectWidth * j) + (legendMargin * j);
 
-					return (<rect
+					// return blocks and the tick difference markers
+					return (
+									<rect
 										key= {`legend_block_${j}`}
 										transform={`translate(${xOffsetEachBlock},0)`}
 										style={{fill: thisColor || '#999'}}
@@ -171,9 +177,34 @@ const LegendSpace = React.createClass({
 										width={legendRectWidth + 'px'}
 									/>);
 			});
-			/*
-			Legend text
 
+			/*
+				Legend ticks
+			*/
+			const legendTicks = legendData.tickValues.map((thisTick, j) => {
+
+				// only perform if not last and not first
+				if (j !== 0 && j !== (legendData.tickValues.length - 1)) {
+					//
+					const tickOffsets = this._tickOffsets(j, thisTick, legendData);
+
+					return (
+										<line
+											key= {`legend_tick_${j}`}
+											y1={0}
+											y2={legendAdjustments.legendHeightAdjusted + 4}
+											x1={tickOffsets.x - 1}
+											x2={tickOffsets.x - 1}
+											className='legend-ticks'
+										/>);
+				}
+				else return;
+			});
+
+			legendBlocks.push(legendTicks)
+
+			/*
+				Legend text
 			*/
 			if (stylings.showLegendTicks) {
 				const legendText = legendData.tickValues.map((thisTick, j) => {

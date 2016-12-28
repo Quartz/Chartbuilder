@@ -59,7 +59,7 @@ let display = Object.freeze({
     subtitle: "2em",
     legendleft: "0.8em",
     legendsOneRow: "23em",
-    legendsTwoRow: "22.5em"
+    legendsTwoRow: "23em"
   },
   padding: {
     top: 0,
