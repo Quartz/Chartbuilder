@@ -160,14 +160,8 @@ const MapEditor = React.createClass({
 
 /**
  * Series-specific settings for each column in data
- * @property {boolean} allowSecondaryAxis - Should a secondary axis be allowed
- * @property {object[]} chartSettings - Current settings for data series
- * @property {function} onUpdate - Callback that handles new series settings
- * @property {function} onUpdateReparse - Callback that handles new series settings,
- * but which need to be sent back to `parse-xy`
- * @property {number} numColors - Total number of possible colors
- * @instance
- * @memberof XYEditor
+
+ * @memberof
  */
 const MapBubble_mapSettings = React.createClass({
 
@@ -219,6 +213,11 @@ const MapBubble_mapSettings = React.createClass({
     );
   }
 });
+
+/*
+
+
+*/
 
 const MapBubble_mapStyles = React.createClass({
 
