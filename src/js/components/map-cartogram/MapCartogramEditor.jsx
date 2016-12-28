@@ -138,6 +138,7 @@ let MapEditor = React.createClass({
 
     const mapStyles = (<MapCartogram_mapStyles
 						chartStyles={stylings}
+						key="cartogram_styles"
 						stepNumber={this.props.stepNumber}
 						metadata={this.props.metadata}
 						onUpdate={this._handlePropUpdate.bind(null, "stylings")}
@@ -341,10 +342,10 @@ const MapCartogram_mapStyles = React.createClass({
 	          buttons={map_strokes}
 	          onClick={this._handleStylesUpdate.bind(null, "stroke")}
 	          value={stylings.stroke}
-	          key="choose_strokes"
+	          key="cartogram_strokes"
 	        />
 	        <div className="stylings-toggle-inputs"
-	          key="stylings_inputs">
+	          key="cartogram_stylings_inputs">
 	          {legendTicks}
 	          {valuesOption}
 	          {shapeSize}

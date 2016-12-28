@@ -2,22 +2,20 @@
 // Delete chartProps that are "private" to certain chart types (namespaced with `_`)
 // and apply setting that carry over to the new type
 
-var React = require("react");
-var clone = require("lodash/clone");
-var map = require("lodash/map");
-var keys = require("lodash/keys");
-var helper = require("../util/helper");
-var concat = require("lodash/concat");
+import React, {Component, PropTypes} from 'react';
+import {clone, map, keys, concat} from 'lodash';
+
+// helpers
+const helper = require("../util/helper");
 
 // Flux actions
-var ChartServerActions = require("../actions/ChartServerActions");
+const ChartServerActions = require("../actions/ChartServerActions");
 
 // Chartbuilder UI components
-var chartbuilderUI = require("chartbuilder-ui");
-var ButtonGroup = chartbuilderUI.ButtonGroup;
+import {ButtonGroup} from 'chartbuilder-ui';
 
-var chartConfig = require("../charts/charts/chart-config");
-var mapConfig = require("../charts/maps/map-config");
+const chartConfig = require("../charts/charts/chart-config");
+const mapConfig = require("../charts/maps/map-config");
 
 /**
  * Select a new chart type, copying shared settings over to the new type.
@@ -68,10 +66,8 @@ var ChartTypeSelctor = React.createClass({
 
 		const prevProps = this.props.chartProps;
 		const newDefaultProps = visualConfig.defaultProps.chartProps;
-		console.log('new default props', newDefaultProps)
 		const stylings = newDefaultProps.stylings;
 		const prevSettings = prevProps.chartSettings;
-		console.log(prevSettings,'revious');
 		const newDefaultSettings = newDefaultProps.chartSettings[0];
 		const prevKeys = keys(prevSettings[0]);
 

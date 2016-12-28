@@ -4,7 +4,6 @@ import {centroid} from 'turf';
 
 import d3 from 'd3';
 // Map
-
 const topojson = require('topojson');
 import update from 'react-addons-update';
 
@@ -73,16 +72,15 @@ class MapRenderer extends React.Component{
     const projection = d3.geo[schema.proj]()
       .translate(schema.translate)
       .scale(schema.scale);
-    radius.range([0, stylings.radiusVal]);
 
     const scales = {};
-    let fillVal;
+    const dataById = d3.map(chartProps.alldata, function(d) { return schema.matchLogic(d[columnNames[0]]); });
 
-    const dataById = d3.map(chartProps.alldata, function(d) {
-      return schema.matchLogic(d[columnNames[0]]); });
-    radius.domain([0, d3.max(chartProps.alldata, function(d){ return +d[columnNames[2]]} )]);
+    radius
+    	.range([0, stylings.radiusVal])
+    	.domain([0, d3.max(chartProps.alldata, function(d){ return +d[columnNames[2]]} )]);
 
-    let showDC = (!stylings.showDC) ? false : true;
+    const showDC = (!stylings.showDC) ? false : true;
 
     const nodes = centroids
       .filter(function(d) {
@@ -103,6 +101,7 @@ class MapRenderer extends React.Component{
         const cell = grid[shpData[columnNames[0]].replace(/\s/g, '')];
         const point = projection(d.geometry.coordinates);
 
+        let fillVal;
         if (chartProps.chartSettings[shpData.index].scale.domain[0] ===
             chartProps.chartSettings[shpData.index].scale.domain[1]) {
           fillVal = colorScales(chartProps.scale[shpData.index].colorIndex)[1];
@@ -117,7 +116,7 @@ class MapRenderer extends React.Component{
         r: radius(shpData[columnNames[2]]),
         r0: radius(shpData[columnNames[2]]),
         value: shpData[columnNames[2]],
-        shp: shpData.states,
+        shp: shpData[columnNames[0]],
         color: fillVal
       };
     });

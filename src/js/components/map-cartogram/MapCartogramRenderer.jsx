@@ -50,18 +50,14 @@ const PolygonCollection = React.createClass({
 
     d3Nodes = d3.select(ReactDOM.findDOMNode(this.refs.graph));
 
-    let theseNodes = d3Nodes.selectAll('.node')
+    const theseNodes = d3Nodes.selectAll()
       .data(this.props.nodes, function (node) { return node.shp; })
 
-    theseNodes.enter().append('g')
-      .attr('class','node');
-
-      enterNode(theseNodes, stylings, this.props.nodes);
-
+    theseNodes.enter().append('g').attr('class','node');
+    	enterNode(theseNodes, stylings, this.props.nodes);
     theseNodes.exit().remove();
 
     const d3Node = d3.select(ReactDOM.findDOMNode(this.refs.graph)).selectAll('.node');
-
 
     if (stylings.type !== 'grid') {
 
@@ -81,6 +77,7 @@ const PolygonCollection = React.createClass({
   },
   componentDidUpdate:  function(nextProps, nextState) {
 
+  	console.log('did update');
     const stylings = this.props.chartProps.stylings;
 
     d3Nodes = d3.select(ReactDOM.findDOMNode(this.refs.graph));
