@@ -3,18 +3,18 @@
 // line when the text gets too long, and it must wrap the text when it then
 // exceeds the width of the chart area.
 
-var React = require("react");
-var ReactDom = require("react-dom")
-var PropTypes = React.PropTypes;
-var SvgText = require("./SvgText.jsx");
-var update = require("react-addons-update");
+import React, {PropTypes} from 'react';
+import ReactDom from 'react-dom';
+import update from 'react-addons-update';
+
+const SvgText = require("./SvgText.jsx");
 
 /**
  * Render a footer with the chart credit and source
  * @instance
  * @memberof RendererWrapper
  */
-var ChartFooter = React.createClass({
+const ChartFooter = React.createClass({
 
 	propTypes: {
 		metadata: PropTypes.object,

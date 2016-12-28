@@ -8,7 +8,6 @@ import ReactDom from 'react-dom';
 import update from 'react-addons-update';
 
 import SvgText from "./SvgText.jsx";
-import Logo from "./../shared/Logo.jsx";
 /**
  * Render a footer with the chart credit and source
  * @instance
@@ -95,7 +94,7 @@ class MapFooter extends React.Component {
 					onUpdate={this._handleStateUpdate.bind(this, "pixelsPerCharacter")}
 				/>
 				{chartSource}
-				<Logo 
+				<Logo
 					transform={this.props.translate}
 				/>
 			</g>
@@ -140,7 +139,7 @@ class ChartSourceText extends React.Component{
 		this.state = {
 			ownLine: false
 		};
-		
+
 		this._handleHeightUpdate = this._handleHeightUpdate.bind(this);
   }
 

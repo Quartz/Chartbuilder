@@ -192,7 +192,7 @@ const default_input = [
 	"CT	tested	8",
 	"DC	Athletes	3",
 	"DE	Athletes	2",
-	"FL	Athletes	39",
+	"FL	Tests	39",
 	"GA	Athletes	14",
 	"HI	Athletes	4",
 	"ID	Athletes	2",
