@@ -199,8 +199,6 @@ const RendererWrapper = React.createClass({
 			return <div style={{ width: "100%" }}></div>;
 		}
 
-		console.log(this.props, 'props');
-
 		// Reduce padding and margin if metadata is not shown
 		if (this.props.showMetadata === false) {
 			var _padding = {
@@ -220,7 +218,7 @@ const RendererWrapper = React.createClass({
 				margin: _margin
 			}});
 		}
-		console.log(this.props,'props');
+
 		let extraHeight = this.state.extraHeight;
 		// reduce margin if only one legend
 		if (this.props.model.chartProps.legend) {
@@ -240,7 +238,6 @@ const RendererWrapper = React.createClass({
 					left: 3,
 					maptop: displayConfig.margin.maptop
 				};
-				console.log(_margin, _padding, 'fuck');
 				displayConfig = update(displayConfig, { $merge: {
 					padding: _padding,
 					margin: _margin
@@ -360,7 +357,6 @@ const RendererWrapper = React.createClass({
 				/>
 			);
 		}
-		console.log(dimensions,'dimensions');
 		return (
 			<div className={["renderer-wrapper", this.state.svgSizeClass, this.props.className].join(" ")}>
 				<svg

@@ -90,9 +90,7 @@ const LegendSpace = React.createClass({
 		const numLegends = legendsArray.length;
 
 		positions.legendTotalSize = chartWidth * ((legendTotalPercents[numLegends]) / 100);
-		positions.groupMargin = 100 - (legendTotalPercents[numLegends] * numLegends);
-
-		console.log(positions, 'positions');
+		positions.groupMargin = legendTotalPercents[numLegends];
 
 		return positions;
 	},
@@ -123,7 +121,7 @@ const LegendSpace = React.createClass({
 
 			return offsets;
 
-	},
+	},/*
 	_construct_legend_domain: function (values, colors) {
 
 	  //if (colors === values.length) return values;
@@ -158,12 +156,12 @@ const LegendSpace = React.createClass({
 
 	    for (let i = 0; i < colors; i++) {
 	      value.push((i * space) + (thisrect / 2));
-	    }*/
+	    }*//*
 
 	    return value;
 	  }
 	  else return [0,0];
-	},
+	},*/
 	_tierAdjustments: function(translate, legendsArray) {
 
 		// defaults legend positions
@@ -236,12 +234,13 @@ const LegendSpace = React.createClass({
 		*/
 
 		const legendRender = legendsArray.map((legendData, i) => {
+		/* Offsets
 
-			/* Offsets
 
-
-			*/
-		const legendTotalRectWidth = this._offsetPositions(chartWidth, legendsArray).legendTotalSize;
+		*/
+		const positions = this._offsetPositions(chartWidth, legendsArray);
+		const groupTotal = positions.groupMargin;
+		const legendTotalRectWidth = positions.legendTotalSize;
 
 		const offsets = this._offsetAdjustments(legendsArray, i, chartWidth);
 
@@ -326,7 +325,9 @@ const LegendSpace = React.createClass({
 													{`${legendData.label}`}
 												</text>);
 
-		const legendOffset = (chartWidth - legendTotalRectWidth) / 2;
+		const legendOffset = (chartWidth - (groupTotal * (legendsArray.length - 1)) - (legendTotalRectWidth * legendsArray.length)) / 2;
+
+		console.log(legendOffset, 'hrm')
 
 
 		return (

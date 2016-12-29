@@ -36,9 +36,9 @@ const MapRenderer = React.createClass({
 	},
 
   render: function() {
+
     const chartProps = this.props.chartProps;
     const stylings = chartProps.stylings;
-
 		const displayConfig = this.props.displayConfig;
 
     const schema = chartProps.schema.schema;
