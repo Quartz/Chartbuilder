@@ -177,13 +177,13 @@ const RendererWrapper = React.createClass({
 		this.setState(update(this.state, { $merge: newSetting }));
 	},
 
-	_calculateDimensions: function(width, displayConfig) {
+	_calculateDimensions: function(width, displayConfig, extraHeight) {
 		var calculator = this.state.chartConfig.calculateDimensions;
 		return calculator(width, {
 			model: this.props.model,
 			displayConfig: displayConfig,
 			enableResponsive: this.props.enableResponsive,
-			extraHeight: this.state.extraHeight,
+			extraHeight: extraHeight,
 			showMetadata: this.props.showMetadata
 		});
 	},
@@ -198,6 +198,8 @@ const RendererWrapper = React.createClass({
 		if (!width) {
 			return <div style={{ width: "100%" }}></div>;
 		}
+
+		console.log(this.props, 'props');
 
 		// Reduce padding and margin if metadata is not shown
 		if (this.props.showMetadata === false) {
@@ -218,8 +220,35 @@ const RendererWrapper = React.createClass({
 				margin: _margin
 			}});
 		}
+		console.log(this.props,'props');
+		let extraHeight = this.state.extraHeight;
+		// reduce margin if only one legend
+		if (this.props.model.chartProps.legend) {
+			if (Object.keys(this.props.model.chartProps.legend).length === 1) {
+				extraHeight = -20;
+				const _padding = {
+					top: displayConfig.padding.top,
+					right: displayConfig.padding.right,
+					bottom: displayConfig.bottomPaddingWithoutFooter,
+					left: displayConfig.padding.left,
+					maptop: displayConfig.margin.maptop
+				};
+				const _margin = {
+					top: displayConfig.margin.top,
+					right: 3,
+					bottom: 0,
+					left: 3,
+					maptop: displayConfig.margin.maptop
+				};
+				console.log(_margin, _padding, 'fuck');
+				displayConfig = update(displayConfig, { $merge: {
+					padding: _padding,
+					margin: _margin
+				}});
+			}
+		}
 
-		const dimensions = this._calculateDimensions(width, displayConfig);
+		const dimensions = this._calculateDimensions(width, displayConfig, extraHeight);
 
 		try {
 			if (isNaN(dimensions.width)) {
@@ -331,6 +360,7 @@ const RendererWrapper = React.createClass({
 				/>
 			);
 		}
+		console.log(dimensions,'dimensions');
 		return (
 			<div className={["renderer-wrapper", this.state.svgSizeClass, this.props.className].join(" ")}>
 				<svg

@@ -27,7 +27,11 @@ const PolygonCollection = React.createClass({
 
     const showLabels = chartProps.stylings.showStateLabels;
     const adjustLabels = mapSchema.adjustLabels;
-    const translation = `translate(0,${this.props.displayConfig.margin.maptop})`;
+
+    // lower the map for the single legend;
+    const topTranslation = (Object.keys(chartProps.legend).length === 1) ? this.props.displayConfig.margin.maptop + 35 : this.props.displayConfig.margin.maptop;
+
+    const translation = `translate(0,${topTranslation})`;
 
     if (this.props.onClick) onClick = this.props.onClick;
 

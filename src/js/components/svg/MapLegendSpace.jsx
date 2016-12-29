@@ -214,8 +214,8 @@ const LegendSpace = React.createClass({
 	},
 	render: function() {
 
-		console.log('render legend');
-		console.log(this.props,'props');
+		//console.log('render legend');
+		//console.log(this.props,'props');
 
 		const chartProps = this.props.chartProps;
 		const stylings = chartProps.stylings;
