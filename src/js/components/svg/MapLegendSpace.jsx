@@ -3,6 +3,15 @@ import d3 from 'd3';
 import React, {PropTypes} from 'react';
 import ReactDom from 'react-dom';
 
+
+/*
+
+
+should probably move this to a common file
+also present in helper.js
+*/
+
+
 // set number of legends to position on a row, max
 const legendsPerRow = 4;
 //this should match the stroke-width of .legend-ticks in chart-renderer.styl
@@ -12,13 +21,12 @@ const legendyAdjustment = 15;
 const yOffsetText = legendHeight + legendyAdjustment;
 const legendSecondRowwOffset = 56;
 
-/*const groupMargin = 40;
-const legendtotal = 130;*/
-
-const legendTotalOnePct = 60;
-const legendTotalTwoPct = 45;
-const legendTotalThreePct = 30;
-const legendTotalFourPct = 20;
+const legendTotalPercents = {
+	1: 60,
+	2: 45,
+	3: 30,
+	4: 20
+}
 
 /**
  *
@@ -75,11 +83,20 @@ const LegendSpace = React.createClass({
 
 		return;
 	},
-	_offsetPositions: function(chartWidth, n) {
+	_offsetPositions: function(chartWidth, legendsArray) {
 
-		return;
+		const positions = {};
+
+		const numLegends = legendsArray.length;
+
+		positions.legendTotalSize = chartWidth * ((legendTotalPercents[numLegends]) / 100);
+		positions.groupMargin = 100 - (legendTotalPercents[numLegends] * numLegends);
+
+		console.log(positions, 'positions');
+
+		return positions;
 	},
-	_offsetAdjustments: function(legendsArray, i) {
+	_offsetAdjustments: function(legendsArray, i, chartWidth) {
 
 			const offsets = {};
 
@@ -89,21 +106,63 @@ const LegendSpace = React.createClass({
 
 				// we add the + 1 to move the second row over one position, so as not to occlude
 				// logos etc..
+				const offsetPositions = this._offsetPositions(chartWidth, legendsArray);
 
-
-				//offsets.xOffset = ((i - legendsPerRow + 1) * legendtotal) + (groupMargin * (i - legendsPerRow + 1));
+				offsets.xOffset = ((i - legendsPerRow + 1) * offsetPositions.legendTotalSize) + (offsetPositions.groupMargin * (i - legendsPerRow + 1));
 			}
 			// one row
 			else {
+
+				const offsetPositions = this._offsetPositions(chartWidth, legendsArray);
+
+				offsets.xOffset = (i * offsetPositions.legendTotalSize) + (offsetPositions.groupMargin * i);
+
 				// by default do not offset the y
 				offsets.yOffsetAdjusted = 0;
-
-
-				//offsets.xOffset = (i * legendtotal) + (groupMargin * i);
 			}
 
 			return offsets;
 
+	},
+	_construct_legend_domain: function (values, colors) {
+
+	  //if (colors === values.length) return values;
+
+	  return values;
+	},
+	_construct_legend_range: function (colors, scaletype) {
+
+	  let thislegendw;
+
+	  (colors < 2) ? thislegendw = (legendtotal / 3)
+	            : thislegendw = (legendtotal + (colors * legendmargin));
+
+	  const value = [];
+
+	  if (scaletype === 'quantize') return [0,thislegendw];
+	  else if (scaletype === 'cluster') {
+
+	    const thisrect = (colors < 2) ? legendrect * 2 : legendtotal / colors;
+	    const space = thislegendw / colors;
+
+	    for (let i = 0; i < colors; i++) {
+	      value.push((i * (space)) + (thisrect / 2));
+	    }
+
+	    return value;
+	  }
+	  else if (scaletype === 'threshold') {
+
+	    /*let thisrect = (colornumber < 2) ? legendrect * 2 : legendtotal / colors;
+	    let space = width / (colors);
+
+	    for (let i = 0; i < colors; i++) {
+	      value.push((i * space) + (thisrect / 2));
+	    }*/
+
+	    return value;
+	  }
+	  else return [0,0];
 	},
 	_tierAdjustments: function(translate, legendsArray) {
 
@@ -126,7 +185,7 @@ const LegendSpace = React.createClass({
 			legendTranslateAdjusted: translateLegendsAdjusted
 		}
 	},
-	_tickOffsets: function (j, thisTick, legendData) {
+	_tickOffsets: function (j, thisTick, legendData, legendRectWidth) {
 
 		const tickOffsets = {};
 
@@ -137,17 +196,17 @@ const LegendSpace = React.createClass({
 		//Add suffix to last tick
 		if ((j + 1) === legendData.tickValues.length) tickOffsets.thisTick = thisTick.toString() + legendData.suffix;
 
-		tickOffsets.x = (j === 0) ? 0 : (legendData.shapes * j) + (legendMargin * j);
+		tickOffsets.x = (j === 0) ? 0 : (legendRectWidth * j) + (legendMargin * j);
 
 		// Position the legend differently for threshold
 		if (legendData.type === 'threshold') {
-			tickOffsets.x = (j === 0) ? legendData.shapes : (legendData.shapes * (j + 1)) + (legendMargin * (j + 1));
+			tickOffsets.x = (j === 0) ? legendRectWidth : (legendRectWidth * (j + 1)) + (legendMargin * (j + 1));
 		}
 
 		// For non-thresholds, make a solid block rather than splitting for two rect legends
 		if (legendData.tickValues.length === 2 && (legendData.tickValues[0] === legendData.tickValues[1])
 			&& (legendData.type !== 'threshold')) {
-			tickOffsets.x = tickOffsets.x + (legendData.shapes/2);
+			tickOffsets.x = tickOffsets.x + (legendRectWidth/2);
 			if (j) tickOffsets.thisTick = false;
 		}
 
@@ -169,6 +228,9 @@ const LegendSpace = React.createClass({
 
 		const legendAdjustments = this._tierAdjustments(translate, legendsArray);
 
+		//currLegend.range = help.constructLegendRange(currScale.ticks, currScale.type);
+    //currLegend.domain = help.constructLegendDomain(currScale.tickValues, currScale.ticks);
+
 		/*
 
 		*/
@@ -177,7 +239,11 @@ const LegendSpace = React.createClass({
 			/* Offsets
 
 			*/
-			const offsets = this._offsetAdjustments(legendsArray, i, chartWidth);
+		const offsets = this._offsetAdjustments(legendsArray, i, chartWidth);
+
+			const legendTotalRectWidth = this._offsetPositions(chartWidth, legendsArray).legendTotalSize;
+
+			console.log(legendTotalRectWidth, 'total');
 
 			/* get individual blocks for each legend group
 
@@ -185,7 +251,9 @@ const LegendSpace = React.createClass({
 			const legendBlocks = legendData.colorValues.map((thisColor, j) => {
 				// shapes = size of each shape in the legend
 				// legendMargin = margin between shapes
-				const legendRectWidth = legendData.shapes;
+
+				const legendRectWidth = legendTotalRectWidth / legendData.colorValues.length;
+
 				const xOffsetEachBlock = (j === 0) ? 0 : (legendRectWidth * j) + (legendMargin * j);
 
 					// return blocks and the tick difference markers
@@ -207,15 +275,18 @@ const LegendSpace = React.createClass({
 				// only perform if not last and not first
 				if (j !== 0 && j !== (legendData.tickValues.length - 1)) {
 					//
-					const tickOffsets = this._tickOffsets(j, thisTick, legendData);
+					const legendRectWidth = legendTotalRectWidth / (legendData.tickValues.length - 1);
+
+					const tickOffsets = this._tickOffsets(j, thisTick, legendData, legendRectWidth);
+					const adjustmentTick = 1;
 
 					return (
 										<line
 											key= {`legend_tick_${j}`}
 											y1={0}
 											y2={legendAdjustments.legendHeightAdjusted + 4}
-											x1={tickOffsets.x - 1}
-											x2={tickOffsets.x - 1}
+											x1={tickOffsets.x - adjustmentTick}
+											x2={tickOffsets.x - adjustmentTick}
 											className='legend-ticks'
 										/>);
 				}
@@ -230,7 +301,9 @@ const LegendSpace = React.createClass({
 			if (stylings.showLegendTicks) {
 				const legendText = legendData.tickValues.map((thisTick, j) => {
 
-					const tickOffsets = this._tickOffsets(j, thisTick, legendData);
+					const legendRectWidth = legendTotalRectWidth / (legendData.tickValues.length - 1);
+
+					const tickOffsets = this._tickOffsets(j, thisTick, legendData, legendRectWidth);
 
 					return (<text
 											key= {`legend_text_${j}`}

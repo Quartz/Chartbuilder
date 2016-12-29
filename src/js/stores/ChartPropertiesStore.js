@@ -92,6 +92,7 @@ function registeredCallback(payload) {
 			chartType = thisModel.metadata.chartType;
 			config = chartConfig[chartType] || mapConfig[chartType];
 			parser = config.parser;
+			console.trace(thisModel,'this');
 			_chartProps = parser(config, thisModel.chartProps);
 			console.log('receive', thisModel);
 			console.log(_chartProps,'uh');

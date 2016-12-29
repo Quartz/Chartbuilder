@@ -52,6 +52,8 @@ var ChartTypeSelctor = React.createClass({
 	_handleChartTypeChange: function(chartType) {
 		/* Dont rerender if the chart type is the same */
 
+		console.log(this.props,'props first to go..')
+
 		if (chartType === this.props.metadata.chartType) {
 			return;
 		}

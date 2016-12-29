@@ -5,12 +5,21 @@ import ss from 'simple-statistics';
 const colorScales = require('./colorscales');
 const processDates = require("./process-dates");
 
-// legend
+/* legend
+*/
+const legendmargin = 1.5;
+
+/*
 const legendtotal = 140;
-const legendmargin = 5;
 const groupmargin = 60;
-const legendrect = 30;
-const legendheight = 20;
+const legendrect = 30;*/
+
+const legendTotalPercents = {
+	1: 60,
+	2: 45,
+	3: 30,
+	4: 20
+}
 
 let socialbinary = false;
 /**
@@ -291,48 +300,6 @@ function tz_offset_to_minutes(offset) {
 
 /* Map helpers */
 
-const construct_legend_domain = (values, colors) => {
-
-  if (colors === values.length) return values;
-
-  return values;
-}
-
-
-const construct_legend_range = (colors, scaletype) => {
-
-  let thislegendw;
-
-  (colors < 2) ? thislegendw = (legendtotal / 3)
-            : thislegendw = (legendtotal + (colors * legendmargin));
-
-  const value = [];
-
-  if (scaletype === 'quantize') return [0,thislegendw];
-  else if (scaletype === 'cluster') {
-
-    const thisrect = (colors < 2) ? legendrect * 2 : legendtotal / colors;
-    const space = thislegendw / colors;
-
-    for (let i = 0; i < colors; i++) {
-      value.push((i * (space)) + (thisrect / 2));
-    }
-
-    return value;
-  }
-  else if (scaletype === 'threshold') {
-
-    /*let thisrect = (colornumber < 2) ? legendrect * 2 : legendtotal / colors;
-    let space = width / (colors);
-
-    for (let i = 0; i < colors; i++) {
-      value.push((i * space) + (thisrect / 2));
-    }*/
-
-    return value;
-  }
-  else return [0,0];
-}
 
 
 const construct_legend_ticks = (tickValues, colors, thescale) => {
@@ -358,7 +325,6 @@ const construct_legend_ticks = (tickValues, colors, thescale) => {
   }
 }
 
-
 const construct_legend_transform = (i, legendspacings, thislegend) => {
 
   let skipx = 0;
@@ -379,12 +345,7 @@ const construct_legend_transform = (i, legendspacings, thislegend) => {
 }
 
 
-const construct_legend_shapes = (colors) => {
-
-  return (colors > 1) ? legendtotal / colors : legendtotal * 0.75;
-}
-
-
+/*
 const construct_legend_spacings = () => {
   const maxl = 0;
 
@@ -429,7 +390,7 @@ const construct_legend_spacings = () => {
 
     i++;
   }
-}
+}*/
 
 
 const return_D3_scale = (colorIndex, number_colors, domain, type, allvalues, tickValues) => {
@@ -487,12 +448,8 @@ var helper = {
 	roundToPrecision: round_to_precision,
 	combineMarginPadding: combine_margin_pading,
 	computeScaleDomain: compute_scale_domain,
-	constructLegendDomain: construct_legend_domain,
-  constructLegendRange: construct_legend_range,
   constructLegendTicks: construct_legend_ticks,
   constructLegendTransform: construct_legend_transform,
-  constructLegendShapes: construct_legend_shapes,
-  constructLegendSpacings: construct_legend_spacings,
 	precision: precision,
 	transformCoords: transform_coords,
 	mergeOrApply: merge_or_apply,

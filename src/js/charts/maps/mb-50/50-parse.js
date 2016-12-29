@@ -74,22 +74,17 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = [], prior
     return settings;
   });
 
-  // not needed
-  /*labels.values = map(bySeries.series, (dataSeries, i) => {
-
-    if (labels.values[i]) return assign({}, { name: chartSettings[i].label}, labels.values[i]);
-    else {
-      return {
-        name: dataSeries.name
-      };
-    }
-  });*/
-
   const scale = {};
   const legends = {};
   const mobileScale = {};
   const maxPrecision = 1;
   const factor = Math.pow(10, maxPrecision);
+
+  /*
+
+  good god review this
+
+  */
 
   // Calculate domain and tick values for any scales that exist
   each(scaleNames, (name,j) => {
@@ -138,10 +133,12 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = [], prior
     currLegend.label = chartSettings[j].label;
     currLegend.prefix = currScale.prefix;
     currLegend.suffix = currScale.suffix;
-    currLegend.shapes = help.constructLegendShapes(currScale.colors);
-    currLegend.range = help.constructLegendRange(currScale.ticks, currScale.type);
-    currLegend.domain = help.constructLegendDomain(currScale.tickValues, currScale.ticks);
     currLegend.tickValues = help.constructLegendTicks(currScale.tickValues, currScale.ticks, currScale.type);
+
+
+    //currLegend.shapes = help.constructLegendShapes(currScale.colors, );
+    //currLegend.range = help.constructLegendRange(currScale.ticks, currScale.type);
+    //currLegend.domain = help.constructLegendDomain(currScale.tickValues, currScale.ticks);
 
     //currLegend.spacings = help.constructLegendSpacings();
     //currLegend.transforms = help.constructLegendTransform(j, legends,currLegend, scaleNames);
@@ -237,7 +234,6 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = [], prior
       chartProps.mobile = {};
     } */
 
-   //console.log(config.defaultProps.chartProps,visualType, 'hm updated');
 
   const newChartProps = assign(chartProps, {
     chartSettings: chartSettings,
