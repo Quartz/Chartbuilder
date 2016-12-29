@@ -234,14 +234,17 @@ const LegendSpace = React.createClass({
 		/*
 
 		*/
+
 		const legendRender = legendsArray.map((legendData, i) => {
 
 			/* Offsets
 
+
 			*/
+		const legendTotalRectWidth = this._offsetPositions(chartWidth, legendsArray).legendTotalSize;
+
 		const offsets = this._offsetAdjustments(legendsArray, i, chartWidth);
 
-			const legendTotalRectWidth = this._offsetPositions(chartWidth, legendsArray).legendTotalSize;
 
 			console.log(legendTotalRectWidth, 'total');
 
@@ -323,10 +326,13 @@ const LegendSpace = React.createClass({
 													{`${legendData.label}`}
 												</text>);
 
+		const legendOffset = (chartWidth - legendTotalRectWidth) / 2;
+
+
 		return (
 
 				<g key={`legend_${i}`}
-					transform={`translate(${offsets.xOffset},${offsets.yOffsetAdjusted})`}>
+					transform={`translate(${offsets.xOffset + legendOffset},${offsets.yOffsetAdjusted})`}>
 					{legendLabels}
 					{legendBlocks}
 				</g>
