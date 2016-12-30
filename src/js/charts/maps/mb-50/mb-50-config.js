@@ -54,12 +54,12 @@ let display = Object.freeze({
     right: "0.8em",
     bottom: "1.2em",
     left: "0.8em",
-    maptop: "3.5em",
+    maptop: "2.7em",
     mapleft: "",
     subtitle: "2em",
     legendleft: "0.8em",
-    legendsOneRow: "3.75em",
-    legendsTwoRow: "23em"
+    legendsOneRow: "3.85em",
+    legendsTwoRow: "22.5em"
   },
   padding: {
     top: 0,

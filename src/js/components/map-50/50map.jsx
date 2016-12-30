@@ -43,6 +43,7 @@ const MapRenderer = React.createClass({
 
     const schema = chartProps.schema.schema;
     const featname = schema.feature;
+    const metadata = this.props.metadata;
 
     const data = topojson.feature(schema.topojson,
                   schema.topojson.objects[featname]);
@@ -66,6 +67,7 @@ const MapRenderer = React.createClass({
             chartProps= {chartProps}
             data= {data.features}
             geoPath= {geo}
+            metadata ={metadata}
             schema={schema}
             proj={proj}
             displayConfig={displayConfig}

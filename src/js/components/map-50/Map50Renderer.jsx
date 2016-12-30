@@ -29,8 +29,15 @@ const PolygonCollection = React.createClass({
     const adjustLabels = mapSchema.adjustLabels;
 
     // lower the map for the single legend;
-    const topTranslation = (Object.keys(chartProps.legend).length === 1) ? this.props.displayConfig.margin.maptop + 35 : this.props.displayConfig.margin.maptop;
+    let topTranslation = (Object.keys(chartProps.legend).length === 1) ? this.props.displayConfig.margin.maptop + 50 : this.props.displayConfig.margin.maptop;
 
+    console.log(this.props, 'props');
+
+    if (this.props.metadata.subtitle) {
+    	if (this.props.metadata.subtitle.length > 0) {
+    		topTranslation += 20;
+    	}
+    }
     const translation = `translate(0,${topTranslation})`;
 
     if (this.props.onClick) onClick = this.props.onClick;

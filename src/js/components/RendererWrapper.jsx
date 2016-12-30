@@ -219,11 +219,40 @@ const RendererWrapper = React.createClass({
 			}});
 		}
 
+		console.log(this.props.model.metadata.subtitle.length,'eh');
+
 		let extraHeight = this.state.extraHeight;
 		// reduce margin if only one legend
-		if (this.props.model.chartProps.legend) {
+		if (this.props.model.chartProps.legend || this.props.model.metadata.subtitle) {
 			if (Object.keys(this.props.model.chartProps.legend).length === 1) {
-				extraHeight = -20;
+
+				if (this.props.model.metadata.subtitle.length > 0) {
+					extraHeight = -5;
+				}
+				else {
+					extraHeight = -20;
+				}
+				const _padding = {
+					top: displayConfig.padding.top,
+					right: displayConfig.padding.right,
+					bottom: displayConfig.bottomPaddingWithoutFooter,
+					left: displayConfig.padding.left,
+					maptop: displayConfig.margin.maptop
+				};
+				const _margin = {
+					top: displayConfig.margin.top,
+					right: 3,
+					bottom: 0,
+					left: 3,
+					maptop: displayConfig.margin.maptop
+				};
+				displayConfig = update(displayConfig, { $merge: {
+					padding: _padding,
+					margin: _margin
+				}});
+			}
+			else if (this.props.model.metadata.subtitle.length > 0) {
+				extraHeight = 15;
 				const _padding = {
 					top: displayConfig.padding.top,
 					right: displayConfig.padding.right,
@@ -296,8 +325,19 @@ const RendererWrapper = React.createClass({
 		if (this.props.showLegenddata) {
 
 			translate.legendleft = margin.legendleft;
-			translate.legendsOneRow = margin.legendsOneRow;
-			translate.legendsTwoRow = margin.legendsTwoRow;
+
+			if (this.props.model.metadata.subtitle) {
+
+				if (this.props.model.metadata.subtitle.length > 0) {
+
+					translate.legendsOneRow = margin.legendsOneRow + 35;
+					translate.legendsTwoRow = margin.legendsTwoRow + 35;
+				}
+			}
+			else {
+				translate.legendsOneRow = margin.legendsOneRow;
+				translate.legendsTwoRow = margin.legendsTwoRow;
+			}
 
 			legends.push(
 					<LegendSpace
@@ -312,7 +352,6 @@ const RendererWrapper = React.createClass({
 						chartWidth={dimensions.width - margin.left - margin.right}
 					/>
 				)
-
 		}
 
 		if (this.props.showMetadata) {
