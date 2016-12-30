@@ -44,8 +44,6 @@ const LegendSpace = React.createClass({
 	},
 	mountDraggyLegend: function() {
 
-		console.log('mount plz');
-
 		const stylings = this.props.chartProps.stylings;
 
 		if (stylings.type === 'dorling' || stylings.type === 'demers'
@@ -86,10 +84,14 @@ const LegendSpace = React.createClass({
 	_offsetPositions: function(chartWidth, legendsArray) {
 
 		const positions = {};
-
 		const numLegends = legendsArray.length;
 
 		positions.legendTotalSize = chartWidth * ((legendTotalPercents[numLegends]) / 100);
+
+		// Don't make the legend too big for single or double color values
+		if (numLegends === 1 && legendsArray[0].colorValues.length < 3) {
+			positions.legendTotalSize = (chartWidth / 3.5) * legendsArray[0].colorValues.length;
+		}
 		positions.groupMargin = legendTotalPercents[numLegends];
 
 		return positions;
@@ -326,9 +328,6 @@ const LegendSpace = React.createClass({
 												</text>);
 
 		const legendOffset = (chartWidth - (groupTotal * (legendsArray.length - 1)) - (legendTotalRectWidth * legendsArray.length)) / 2;
-
-		console.log(legendOffset, 'hrm')
-
 
 		return (
 

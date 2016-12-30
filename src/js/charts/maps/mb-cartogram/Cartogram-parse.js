@@ -144,8 +144,8 @@ let parse50 = (config, _chartProps, callback, parseOpts, priorData = [], priorSc
     currLegend.prefix = currScale.prefix;
     currLegend.suffix = currScale.suffix;
     //currLegend.shapes = help.constructLegendShapes(currScale.colors);
-    currLegend.range = help.constructLegendRange(currScale.ticks, currScale.type);
-    currLegend.domain = help.constructLegendDomain(currScale.tickValues, currScale.ticks);
+    //currLegend.range = help.constructLegendRange(currScale.ticks, currScale.type);
+    //currLegend.domain = help.constructLegendDomain(currScale.tickValues, currScale.ticks);
     currLegend.tickValues = help.constructLegendTicks(currScale.tickValues, currScale.ticks, currScale.type);
 
     //currLegend.spacings = help.constructLegendSpacings();
