@@ -271,17 +271,20 @@ const LegendSpace = React.createClass({
 									/>);
 			});
 
+			console.log(legendData.colorValues,'values');
+
 			/*
 				Legend ticks
 			*/
-			const legendTicks = legendData.tickValues.map((thisTick, j) => {
+			const legendTicks = legendData.colorValues.map((thisColor, j) => {
 
 				// only perform if not last and not first
-				if (j !== 0 && j !== (legendData.tickValues.length - 1)) {
+				if (j !== 0) {
 					//
-					const legendRectWidth = legendTotalRectWidth / (legendData.tickValues.length - 1);
+				const legendRectWidth = legendTotalRectWidth / legendData.colorValues.length;
 
-					const tickOffsets = this._tickOffsets(j, thisTick, legendData, legendRectWidth);
+				const xOffsetEachBlock = (j === 0) ? 0 : (legendRectWidth * j) + (legendMargin * j)
+
 					const adjustmentTick = 1;
 
 					return (
@@ -289,8 +292,8 @@ const LegendSpace = React.createClass({
 											key= {`legend_tick_${j}`}
 											y1={0}
 											y2={legendAdjustments.legendHeightAdjusted + 4}
-											x1={tickOffsets.x - adjustmentTick}
-											x2={tickOffsets.x - adjustmentTick}
+											x1={xOffsetEachBlock - adjustmentTick}
+											x2={xOffsetEachBlock - adjustmentTick}
 											className='legend-ticks'
 										/>);
 				}
