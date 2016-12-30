@@ -31,31 +31,106 @@ let socialbinary = false;
  * @static
  * @memberof helper
  */
-function exact_ticks(domain, numticks) {
-	numticks -= 1;
-	var ticks = [];
-	var delta = domain[1] - domain[0];
-	var i;
-	for (i = 0; i < numticks; i++) {
-		ticks.push(domain[0] + (delta / numticks) * i);
-	}
-	ticks.push(domain[1]);
 
-	if (domain[1] * domain[0] < 0) {
-		//if the domain crosses zero, make sure there is a zero line
-		var hasZero = false;
-		for (i = ticks.length - 1; i >= 0; i--) {
-			//check if there is already a zero line
-			if (ticks[i] === 0) {
-				hasZero = true;
-			}
-		}
-		if (!hasZero) {
-			ticks.push(0);
-		}
-	}
+const exact_ticks = (domain, numticks, scalevals, type, tickVals, precision) => {
 
-	return ticks;
+  const ticks = [];
+  let i;
+  let delta;
+
+  if (type === 'threshold') {
+    numticks -= 3;
+
+    console.log('arg');
+
+    if ((tickVals.length - 1) !== numticks) {
+
+      const max = d3.max(tickVals);
+      const min = d3.min(tickVals);
+
+      delta = max - min;
+
+      for (i = 0; i < numticks; i++) {
+        ticks.push(min + (delta / numticks) * i);
+      }
+      ticks.push(max);
+    }
+    else {
+     return tickVals;
+    }
+
+    return ticks
+
+  } else {
+
+    numticks -= 1;
+
+    delta = domain[1] - domain[0];
+
+    for (i = 0; i < numticks; i++) {
+      ticks.push(domain[0] + (delta / numticks) * i);
+    }
+    ticks.push(domain[1]);
+
+  }
+
+  //console.log(numticks, type, domain, tickVals);
+
+  if (domain[1] * domain[0] < 0) {
+    //if the domain crosses zero, make sure there is a zero line
+    let hasZero = false;
+    for (i = ticks.length - 1; i >= 0; i--) {
+      //check if there is already a zero line
+      if (ticks[i] === 0) {
+        hasZero = true;
+      }
+    }
+    if (!hasZero) {
+      ticks.push(0);
+    }
+  }
+  //console.log(ticks,'ultimate ticks');
+
+  return ticks;
+
+
+}
+
+const find_median = (data) => {
+
+  const m = data.map(v => v ).sort((a, b) => a - b );
+
+  const middle = Math.floor((m.length - 1) / 2); // NB: operator precedence
+
+  if (m.length % 2) return m[middle];
+  else return (m[middle] + m[middle + 1]) / 2.0;
+
+}
+
+
+const _compute_domain = (type, ticks, allvalues) => {
+
+  const scaleconstruct = [];
+  switch(type) {
+    case('cluster'):
+      if (ticks === allvalues.length) {
+        return allvalues.map(d => parseInt(d));
+      }
+      else {
+        for (const z of ss.ckmeans(allvalues,ticks)) {
+          scaleconstruct.push(find_median(z));
+        };
+      }
+      return scaleconstruct;
+      break;
+    case('threshold'):
+
+      ss.ckmeans(allvalues,ticks).forEach(function(z) {
+        scaleconstruct.push(find_median(z));
+      });
+      return scaleconstruct;
+      break;
+  }
 }
 
 /**

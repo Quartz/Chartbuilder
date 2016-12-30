@@ -23,9 +23,12 @@ const legendSecondRowwOffset = 56;
 
 const legendTotalPercents = {
 	1: 60,
-	2: 45,
-	3: 30,
-	4: 20
+	2: 35,
+	3: 25,
+	4: 20,
+	5: 20,
+	6: 20,
+	7: 20
 }
 
 /**
@@ -200,7 +203,7 @@ const LegendSpace = React.createClass({
 
 		// Position the legend differently for threshold
 		if (legendData.type === 'threshold') {
-			tickOffsets.x = (j === 0) ? legendRectWidth : (legendRectWidth * (j + 1)) + (legendMargin * (j + 1));
+			tickOffsets.x = (j === 0) ? 0 : (legendRectWidth * (j)) + (legendMargin * (j));
 		}
 
 		// For non-thresholds, make a solid block rather than splitting for two rect legends
@@ -245,9 +248,6 @@ const LegendSpace = React.createClass({
 		const legendTotalRectWidth = positions.legendTotalSize;
 
 		const offsets = this._offsetAdjustments(legendsArray, i, chartWidth);
-
-
-			console.log(legendTotalRectWidth, 'total');
 
 			/* get individual blocks for each legend group
 
@@ -327,7 +327,8 @@ const LegendSpace = React.createClass({
 													{`${legendData.label}`}
 												</text>);
 
-		const legendOffset = (chartWidth - (groupTotal * (legendsArray.length - 1)) - (legendTotalRectWidth * legendsArray.length)) / 2;
+		const numPerRow = (legendsArray.length > 4) ? 4 : legendsArray.length;
+		const legendOffset = (chartWidth - (groupTotal * (numPerRow - 1)) - (legendTotalRectWidth * numPerRow)) / 2;
 
 		return (
 

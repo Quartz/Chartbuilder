@@ -31,7 +31,7 @@ const Map_ScaleSettings = React.createClass({
 
   _handleScaleUpdate: function(k, v) {
 
-    let scale = cloneDeep(this.props.scale, true);
+    const scale = cloneDeep(this.props.scale, true);
 
     if(k != "precision") {
       scale[this.props.index].precision = 0;
@@ -42,14 +42,14 @@ const Map_ScaleSettings = React.createClass({
   },
   _handleThresholdUpdate: function(k, v) {
 
-    let scale = cloneDeep(this.props.scale, true);
+    const scale = cloneDeep(this.props.scale, true);
 
     scale[this.props.index][k.key][k.iter] = v;
     this.props.onUpdate(scale);
   },
 
   _handleDomainUpdate: function(k, v) {
-    let scale = cloneDeep(this.props.scale,true);
+    const scale = cloneDeep(this.props.scale,true);
 
     if (k == "min") {
       scale[this.props.index].domain[0] = v;
@@ -120,6 +120,8 @@ const Map_ScaleSettings = React.createClass({
     }
 
     if (currScale.type === 'threshold') {
+
+    	console.log('her..');
 
       thresholdsLabel.push(<div className="inline-label">Define thresholds</div>);
 
