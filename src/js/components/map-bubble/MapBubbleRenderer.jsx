@@ -25,7 +25,15 @@ const PolygonCollection = React.createClass({
     const geoPath = this.props.geoPath;
     const polygonClass = this.props.polygonClass;
 
-    const translation = `translate(0,${this.props.displayConfig.margin.maptop})`;
+    let topTranslation = this.props.displayConfig.margin.maptop;
+
+    if (this.props.metadata.subtitle) {
+    	if (this.props.metadata.subtitle.length > 0) {
+    		topTranslation += 20;
+    	}
+    }
+
+    const translation = `translate(0,${topTranslation})`;
     const currSettings = chartProps.scale;
 
     const alldata = chartProps.data;

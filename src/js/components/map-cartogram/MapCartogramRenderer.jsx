@@ -50,7 +50,7 @@ const PolygonCollection = React.createClass({
 
     d3Nodes = d3.select(ReactDOM.findDOMNode(this.refs.graph));
 
-    const theseNodes = d3Nodes.selectAll()
+    const theseNodes = d3Nodes.selectAll('.node')
       .data(this.props.nodes, function (node) { return node.shp; })
 
     theseNodes.enter().append('g').attr('class','node');
@@ -127,7 +127,17 @@ const PolygonCollection = React.createClass({
   },
   render: function() {
 
-    const translation = `translate(${this.props.displayConfig.margin.mapleft},${this.props.displayConfig.margin.maptop})`;
+  	console.log(this.props,'props..');
+
+  	let topTranslation = this.props.displayConfig.margin.maptop;
+
+    if (this.props.metadata.subtitle) {
+    	if (this.props.metadata.subtitle.length > 0) {
+    		topTranslation += 20;
+    	}
+    }
+
+    const translation = `translate(${this.props.displayConfig.margin.left},${topTranslation})`;
 
     return (
       <g transform={translation}

@@ -54,7 +54,7 @@ let display = Object.freeze({
     right: "0.8em",
     bottom: "1.2em",
     left: "0.8em",
-    maptop: "0.5em",
+    maptop: "1.5em",
     mapleft: "-9.5em",
     subtitle: "2em",
     legendleft: "0.8em",

@@ -62,6 +62,7 @@ class MapRenderer extends React.Component{
     const stylings = chartProps.stylings;
     const schema = chartProps.schema.schema;
     const grid = this.state.grid;
+    const metadata = this.props.metadata;
 
 		const displayConfig = this.props.displayConfig;
 
@@ -108,11 +109,13 @@ class MapRenderer extends React.Component{
         }
         else fillVal = chartProps.scale[shpData.index].d3scale(shpData[columnNames[2]]);
 
+        console.log(this.props.displayConfig)
+
       return {
         id: +d.id,
-        x: 160 + point[0], y: 60 + point[1],
-        x0: 160 + point[0], y0: 60 + point[1],
-        xx: 237 + cell[0] * cellSize, yy: cell[1] * cellSize - (cellSize / 2),
+        x: 160 + point[0], y: point[1],
+        x0: 160 + point[0], y0: point[1],
+        xx: 27.5 + cell[0] * cellSize, yy: cell[1] * cellSize - (cellSize / 2),
         r: radius(shpData[columnNames[2]]),
         r0: radius(shpData[columnNames[2]]),
         value: shpData[columnNames[2]],
@@ -128,6 +131,7 @@ class MapRenderer extends React.Component{
             displayConfig={displayConfig}
             polygonClass={cartogramClass}
             nodes={nodes}
+            metadata={metadata}
           />
     );
   }
