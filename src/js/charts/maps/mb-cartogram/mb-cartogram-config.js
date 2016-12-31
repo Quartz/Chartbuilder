@@ -50,12 +50,11 @@ let display = Object.freeze({
     smallSpot: (3 / 4)
   },
   margin: {
-    top: "1.2em",
+    top: "1.4em",
     right: "0.8em",
     bottom: "1.2em",
     left: "0.8em",
-    maptop: "1.5em",
-    mapleft: "-9.5em",
+    maptop: "2.2em",
     subtitle: "2em",
     legendleft: "0.8em",
     legendsOneRow: "22.5em",
@@ -100,16 +99,17 @@ const defaultProps = Object.freeze({
     input: {},
 	  stylings: {
 	    corners: '2',
-	    legendText: 'Write what the legend shapes represent here',
+	    legendText: 'Write the legend text here',
 	    legendMove: {
 	      top:0,
 	      left:0
 	    },
 	    stroke:'#aaa',
 	    type: "grid",
-	    radiusVal: 35,
-	    squareWidth: '42',
-	    cellSize: 50,
+	    dorlingradiusVal: 32,
+	    demerssquareWidth: 30,
+	    gridsquareWidth: '43',
+	    gridcellSize: 52,
 	    showDC: false,
 	    showLegendTicks: false,
 	    showStateLabels: true,

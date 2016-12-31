@@ -106,8 +106,8 @@ const enter_grid = (selection, stylings, force, data) => {
 	});
 
 	selection.append('rect')
-		.attr("width", stylings.squareWidth)
-		.attr("height", stylings.squareWidth)
+		.attr("width", stylings.gridsquareWidth)
+		.attr("height", stylings.gridsquareWidth)
 		.attr('rx',stylings.corners)
 		.attr('ry',stylings.corners)
 		.style('fill',function(d) { return d.color; })
@@ -120,16 +120,16 @@ const enter_grid = (selection, stylings, force, data) => {
 			adjustment = -2;
 
 		selection.append('text')
-			.attr("x", (stylings.squareWidth / 2))
-			.attr("y", 12 + (stylings.squareWidth / 2))
+			.attr("x", (stylings.gridsquareWidth / 2))
+			.attr("y", 12 + (stylings.gridsquareWidth / 2))
 			.attr('dy','0.3em')
 			.attr('class','state-values carto-shapes')
 			.text((d) => d.value);
 	}
 
 	selection.append('text')
-		.attr("x", (stylings.squareWidth / 2))
-		.attr("y", adjustment + (stylings.squareWidth / 2))
+		.attr("x", (stylings.gridsquareWidth / 2))
+		.attr("y", adjustment + (stylings.gridsquareWidth / 2))
 		.attr('dy','0.3em')
 		.attr('class','state-name carto-shapes')
 		.text((d) => d.shp);
@@ -195,8 +195,8 @@ const switch_grid = (selection, stylings) => {
 		});
 
 	selection.selectAll('rect')
-		.attr("width", stylings.squareWidth)
-		.attr("height", stylings.squareWidth)
+		.attr("width", stylings.gridsquareWidth)
+		.attr("height", stylings.gridsquareWidth)
 		.style('fill', function(d) { return d.color; })
 		.style('stroke',stylings.stroke)
 		.attr('rx',stylings.corners)
@@ -210,8 +210,8 @@ const switch_grid = (selection, stylings) => {
 
 	selection.selectAll('text.state-name')
 		.style('font-size','1.2em')
-		.attr("x", (stylings.squareWidth / 2))
-		.attr("y", adjustment + (stylings.squareWidth / 2))
+		.attr("x", (stylings.gridsquareWidth / 2))
+		.attr("y", adjustment + (stylings.gridsquareWidth / 2))
 		.text((d) => d.shp);
 }
 

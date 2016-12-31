@@ -55,7 +55,6 @@ let display = Object.freeze({
     bottom: "1.2em",
     left: "0.8em",
     maptop: "2.5em",
-    mapleft: "1em",
     subtitle: "2em",
     legendleft: "0.8em",
     legendsOneRow: "22.5em",
@@ -105,7 +104,7 @@ const defaultProps = Object.freeze({
         left:0
       },
       showLegendTicks: true,
-      legendText: 'Write what the legend shapes represent here'
+      legendText: 'Write the legend text here'
 	  },
     chartSettings: [
       {

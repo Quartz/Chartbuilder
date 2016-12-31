@@ -68,17 +68,22 @@ class MapRenderer extends React.Component{
 
     const centroids = this.state.centroids;
     const columnNames = chartProps.columns;
-    const cellSize = stylings.cellSize;
+    const cellSize = stylings.gridcellSize;
+
+    console.log(this.props,'props');
 
     const projection = d3.geo[schema.proj]()
-      .translate(schema.translate)
+      .translate(stylings.type === 'grid' ? schema.translate : schema.translateCartogram)
       .scale(schema.scale);
 
     const scales = {};
     const dataById = d3.map(chartProps.alldata, function(d) { return schema.matchLogic(d[columnNames[0]]); });
 
+    console.log(stylings.type, 'eh');
+
+    // for dorling
     radius
-    	.range([0, stylings.radiusVal])
+    	.range([0, stylings.type === 'dorling' ? +stylings.dorlingradiusVal : +stylings.demerssquareWidth])
     	.domain([0, d3.max(chartProps.alldata, function(d){ return +d[columnNames[2]]} )]);
 
     const showDC = (!stylings.showDC) ? false : true;
@@ -109,13 +114,11 @@ class MapRenderer extends React.Component{
         }
         else fillVal = chartProps.scale[shpData.index].d3scale(shpData[columnNames[2]]);
 
-        console.log(this.props.displayConfig)
-
       return {
         id: +d.id,
-        x: 160 + point[0], y: point[1],
-        x0: 160 + point[0], y0: point[1],
-        xx: 27.5 + cell[0] * cellSize, yy: cell[1] * cellSize - (cellSize / 2),
+        x: point[0], y: point[1],
+        x0: point[0], y0: point[1],
+        xx: cell[0] * cellSize , yy: cell[1] * cellSize - (cellSize / 2),
         r: radius(shpData[columnNames[2]]),
         r0: radius(shpData[columnNames[2]]),
         value: shpData[columnNames[2]],

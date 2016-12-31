@@ -243,7 +243,7 @@ const RendererWrapper = React.createClass({
 					top: displayConfig.margin.top,
 					right: 3,
 					bottom: 0,
-					left: 3,
+					left: displayConfig.margin.left,
 					maptop: displayConfig.margin.maptop
 				};
 				displayConfig = update(displayConfig, { $merge: {
@@ -264,7 +264,7 @@ const RendererWrapper = React.createClass({
 					top: displayConfig.margin.top,
 					right: 3,
 					bottom: 0,
-					left: 3,
+					left: displayConfig.margin.left,
 					maptop: displayConfig.margin.maptop
 				};
 				displayConfig = update(displayConfig, { $merge: {

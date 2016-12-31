@@ -127,8 +127,6 @@ const PolygonCollection = React.createClass({
   },
   render: function() {
 
-  	console.log(this.props,'props..');
-
   	let topTranslation = this.props.displayConfig.margin.maptop;
 
     if (this.props.metadata.subtitle) {

@@ -317,14 +317,14 @@ const MapCartogram_mapStyles = React.createClass({
     const shapeSize = (<div className="toggle">
               <LabelledTangle
                 tangleClass="tangle-input"
-                onChange={this._handleStylesUpdate.bind(null, 'radiusVal')}
-                onInput={this._handleStylesUpdate.bind(null, 'radiusVal')}
+                onChange={this._handleStylesUpdate.bind(null, 'dorlingradiusVal')}
+                onInput={this._handleStylesUpdate.bind(null, 'dorlingradiusVal')}
                 step={1}
                 label="Max shape"
                 min={1}
                 max={60}
                 key="radius_val"
-                value={stylings.radiusVal}
+                value={stylings.dorlingradiusVal}
               /></div>);
 
 		return (
