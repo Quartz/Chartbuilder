@@ -5,6 +5,8 @@ const convertPostaltoFull = require('us-abbreviations')('postal','full');
 const convertPostaltoFullFips = require('us-abbreviations')('full','fips');
 const convertPostaltoFipsFull = require('us-abbreviations')('fips','full');
 
+const toTitleCase = require('./../../../util/helper.js').toTitleCase;
+
 const us = {
     name: 'states50',
     proj: 'albersUsa',
@@ -66,7 +68,7 @@ const us = {
     },
     test: function(column_val, polygon_val) {
       // loop through object .. find the key val of the one you want..
-      column_val = column_val.trim();
+      column_val = toTitleCase(column_val.trim());
       if (column_val.length === 2) column_val = column_val.toUpperCase();
       const column_val_converted = this.matchLogic(column_val); //
 

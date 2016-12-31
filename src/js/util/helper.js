@@ -467,6 +467,11 @@ const construct_legend_spacings = () => {
   }
 }*/
 
+const convert_title_case = (str) => {
+
+    return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+}
+
 
 const return_D3_scale = (colorIndex, number_colors, domain, type, allvalues, tickValues) => {
 
@@ -527,6 +532,7 @@ var helper = {
   constructLegendTransform: construct_legend_transform,
 	precision: precision,
 	transformCoords: transform_coords,
+	toTitleCase: convert_title_case,
 	mergeOrApply: merge_or_apply,
 	suggestTickNum: suggest_tick_num,
   returnD3Scale: return_D3_scale,
