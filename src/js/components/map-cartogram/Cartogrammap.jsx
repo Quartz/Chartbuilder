@@ -54,6 +54,13 @@ class MapRenderer extends React.Component{
 	      centroids: centroidsConst
 	    }
   	}
+  	else {
+  		this.state = {
+	      grid: undefined,
+	      nodes: [],
+	      centroids: undefined
+	    }
+  	}
   }
 
   render () {

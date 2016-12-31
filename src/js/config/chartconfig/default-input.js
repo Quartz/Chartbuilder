@@ -172,7 +172,7 @@ var numeric = [
  * @static
  */
 
-const default_input2 = [
+const default_input = [
 	"states	group	values",
 	"Brooklyn	Athletes	2",
 	"Manhattan	Athletes	1",
@@ -181,7 +181,7 @@ const default_input2 = [
 	"Bronx	Athletes	20" ].join("\n");
 
 
-const default_input = [
+const default_input2 = [
 	"statess	group	values",
 	"AK	Athletes	2",
 	"AL	Athletes	1",
