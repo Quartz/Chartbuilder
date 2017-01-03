@@ -17,13 +17,15 @@ function dataBySeries(input, chartProps, opts) {
 				type: opts.type
 		});
 
-		const columnNames = parsedInput.columnNames;
+	const columnNames = parsedInput.columnNames;
 	const columnNamesSaved = clone(columnNames);
-		const keyColumn = columnNames.shift();
+	const keyColumn = columnNames.shift();
+
+	console.log(columnNames,'names');
 
 	let uniques = [];
 	map(parsedInput.data, function (z) {
-		if (uniques.indexOf(z.group) < 0) uniques.push(z.group);
+		if (uniques.indexOf(z[columnNames[0]]) < 0) uniques.push(z[columnNames[0]]);
 	});
 
 	const priorUniques = [];
@@ -70,7 +72,7 @@ function dataBySeries(input, chartProps, opts) {
 								name: q,
 								index: i,
 								values: parsedInput.data.filter(function(d) {
-										if (q === d.group) {
+										if (q === d[columnNames[0]]) {
 												return {
 														name: q,
 														entry: d[keyColumn],

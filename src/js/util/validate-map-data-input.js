@@ -9,30 +9,18 @@ const convertFulltoPostal = require('us-abbreviations')('full','postal');
 const convertFipstoPostal = require('us-abbreviations')('fips','postal');
 const convertPosttoPostal = require('us-abbreviations')('post','postal');*/
 
-const types = {
-	"number": "numeric",
-	"object": "state",
-	"string": "ordinal"
-};
-
 const MAX_BYTES = 400000; // Max 400k for chartProps
 
 function validateDataInput(chartProps) {
-	console.trace('validate map input');
+	console.trace('validate map input', chartProps, 'eek');
 
 	const input = chartProps.input.raw;
 	const series = chartProps.data;
-	const hasDate = chartProps.scale.hasDate;
-	const isNumeric = chartProps.scale.isNumeric;
 	const type = chartProps.input.type;
 	const scale = chartProps.scale;
+	const columns = chartProps.columns;
 
-	/* switch statement for visual type
-			abstract out the control flow
-
-	*/
-
-	var inputErrors = [];
+	const inputErrors = [];
 
 	// Check whether we have input
 	if (input.length === 0) {
@@ -40,7 +28,7 @@ function validateDataInput(chartProps) {
 		return inputErrors;
 	}
 
-	if (series.length && !series[0].values[0].entry) {
+	if (series.length && !series[0].name) {
 		// Check that we have at least 1 value col (i.e. minimum header + 1 data col)
 		inputErrors.push("TOO_FEW_SERIES");
 	} else if (series.length > 12) {
@@ -48,10 +36,10 @@ function validateDataInput(chartProps) {
 		inputErrors.push("TOO_MANY_SERIES");
 	}
 
-	// Whether a column has a different number of values
-	var unevenSeries = dataPointTest(
+	// Whether any group is missing a value
+	const unevenSeries = dataPointTest(
 			series,
-			function(val) { return val.value !== null ? (val.value === undefined || val.value.length === 0) : false;},
+			function(val) { return val[columns[2]] !== null ? (val[columns[2]] === undefined || val[columns[2]].length === 0) : false;},
 			function(empty,vals) { return empty.length !== vals[0].length;}
 		);
 
@@ -59,11 +47,11 @@ function validateDataInput(chartProps) {
 		inputErrors.push("UNEVEN_SERIES");
 	}
 
-	// Whether a column has something that is NaN but is not nothing (blank) or `null`
-	var nanSeries = somePointTest(
+	// Whether any group has something that is NaN but is not nothing (blank) or `null`
+	const nanSeries = somePointTest(
 			series,
 			function(val) {
-				return (isNaN(val.value) && val.value !== undefined && val.value !== "");
+				return (isNaN(val[columns[2]]) && val[columns[2]] !== undefined && val[columns[2]] !== "");
 			}
 		);
 
@@ -72,20 +60,18 @@ function validateDataInput(chartProps) {
 	}
 
 	//Whether an entry column that is supposed to be a Number is not in fact a number
-	console.log(isNumeric,chartProps.input.type, 'isNumeric tests');
-	if(isNumeric || chartProps.input.type == "numeric") {
-		var badNumSeries = somePointTest(
-				series,
-				function(val) { return isNaN(val.entry); }
-			);
+	const badNumSeries = somePointTest(
+		series,
+		function(val) { return isNaN(val[columns[2]]); }
+	);
 
-		if (badNumSeries) {
-			inputErrors.push("NAN_VALUES");
-		}
+	if (badNumSeries) {
+		inputErrors.push("NAN_VALUES");
 	}
 
+
 	// Whether a column has numbers that should be divided
-	var largeNumbers = somePointTest(
+	const largeNumbers = somePointTest(
 			series,
 			function(val) { return Math.floor(val.value).toString().length > 4; },
 			function(largeNums, vals) { return largeNums.length > 0;}
@@ -96,13 +82,13 @@ function validateDataInput(chartProps) {
 	}
 
 	// Whether the number of bytes in chartProps exceeds our defined maximum
-	if (catchChartMistakes.tooMuchData(chartProps)) {
+	/*if (catchMapMistakes.tooMuchData(chartProps)) {
 		inputErrors.push("TOO_MUCH_DATA");
-	}
+	}*/
 
 	// Whether axis ticks divide evenly
-	console.log(scale,'scale',JSON.stringify(chartProps.visualType));
-	if (!catchChartMistakes.axisTicksEven(scale.primaryScale)) {
+	console.log(scale,'scale');
+	if (!catchMapMistakes.axisTicksEven(scale)) {
 		inputErrors.push("UNEVEN_TICKS");
 	}
 

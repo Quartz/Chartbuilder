@@ -3,11 +3,6 @@
 import {max, map, filter, some, includes, uniq} from 'lodash';
 
 const catchChartMistakes = require("./catch-chart-mistakes");
-/*const allstates = require("./../config/states-list");
-
-const convertFulltoPostal = require('us-abbreviations')('full','postal');
-const convertFipstoPostal = require('us-abbreviations')('fips','postal');
-const convertPosttoPostal = require('us-abbreviations')('post','postal');*/
 
 const types = {
 	"number": "numeric",
@@ -27,12 +22,7 @@ function validateDataInput(chartProps) {
 	const type = chartProps.input.type;
 	const scale = chartProps.scale;
 
-	/* switch statement for visual type
-			abstract out the control flow
-
-	*/
-
-	var inputErrors = [];
+	const inputErrors = [];
 
 	// Check whether we have input
 	if (input.length === 0) {
@@ -49,7 +39,7 @@ function validateDataInput(chartProps) {
 	}
 
 	// Whether a column has a different number of values
-	var unevenSeries = dataPointTest(
+	const unevenSeries = dataPointTest(
 			series,
 			function(val) { return val.value !== null ? (val.value === undefined || val.value.length === 0) : false;},
 			function(empty,vals) { return empty.length !== vals[0].length;}
@@ -60,7 +50,7 @@ function validateDataInput(chartProps) {
 	}
 
 	// Whether a column has something that is NaN but is not nothing (blank) or `null`
-	var nanSeries = somePointTest(
+	const nanSeries = somePointTest(
 			series,
 			function(val) {
 				return (isNaN(val.value) && val.value !== undefined && val.value !== "");
@@ -72,14 +62,14 @@ function validateDataInput(chartProps) {
 	}
 
 	// Are there multiple types of axis entries
-	var entryTypes = uniq(series[0].values.map(function(d){return typeof d.entry;}));
+	const entryTypes = uniq(series[0].values.map(function(d){return typeof d.entry;}));
 	if(entryTypes.length > 1 && !chartProps.input.type) {
 		inputErrors.push("CANT_AUTO_TYPE");
 	}
 
 	//Whether an entry column that is supposed to be a Number is not in fact a number
 	if(isNumeric || chartProps.input.type == "numeric") {
-		var badNumSeries = somePointTest(
+		const badNumSeries = somePointTest(
 				series,
 				function(val) { return isNaN(val.entry); }
 			);
@@ -91,7 +81,7 @@ function validateDataInput(chartProps) {
 
 	// Whether an entry column that is supposed to be a date is not in fact a date
 	if(hasDate || chartProps.input.type == "date") {
-		var badDateSeries = somePointTest(
+		const badDateSeries = somePointTest(
 				series,
 				function(val) { return !val.entry.getTime || isNaN(val.entry.getTime()); },
 				function(bd,vals) { return bd.length > 0;}
@@ -101,15 +91,15 @@ function validateDataInput(chartProps) {
 			inputErrors.push("NOT_DATES");
 		}
 
-		var tz_pattern = /([+-]\d\d:*\d\d)/gi;
-		var found_timezones = input.match(tz_pattern);
+		const tz_pattern = /([+-]\d\d:*\d\d)/gi;
+		const found_timezones = input.match(tz_pattern);
 		if(found_timezones && found_timezones.length != series[0].values.length) {
 			inputErrors.push("UNEVEN_TZ");
 		}
 	}
 
 	// Whether a column has numbers that should be divided
-	var largeNumbers = somePointTest(
+	const largeNumbers = somePointTest(
 			series,
 			function(val) { return Math.floor(val.value).toString().length > 4; },
 			function(largeNums, vals) { return largeNums.length > 0;}

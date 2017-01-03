@@ -3,15 +3,13 @@ const some = require("lodash/some");
 const reduce = require("lodash/reduce");
 const sizeof = require("sizeof");
 
-const MAX_BYTES = 240000; // warning for too much data at 240k for chartProps
 const INTERVAL_BASE_VALS = [1, 2, 2.5, 5, 10, 25]; // used to determine "good" tick intervals
 const MAX_TICKS = 8;
 
-function too_much_data(chartProps) {
-	return (sizeof.sizeof(chartProps) > MAX_BYTES);
-}
 
 function axis_ticks_even(scale) {
+	return;
+	scale
 	const range = (scale.domain[1] - scale.domain[0]);
 	const minimum = range / MAX_TICKS;
 	const digits = Math.floor(range).toString().length;
@@ -61,6 +59,5 @@ function all_modulo(tickValues, interval) {
 
 module.exports = {
 	axisTicksEven: axis_ticks_even,
-	tooMuchData: too_much_data,
 	noPrefixSuffix: no_prefix_suffix
 };
