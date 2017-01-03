@@ -106,7 +106,6 @@ var DataInput = React.createClass({
 	// Render the data input text area and indicator
 	_renderDataInput: function() {
 
-		console.log('dataInput.jsx')
 		const errors = this._renderErrors();
 		const isValid = this.props.errors.length === 0;
 

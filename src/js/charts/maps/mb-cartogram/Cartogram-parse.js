@@ -31,8 +31,11 @@ let parse50 = (config, _chartProps, callback, parseOpts, priorData = [], priorSc
 
   const dataParsed = bySeries.data;
 
-  let parsedInputEntries = dataParsed.entries;
   const columnNames = dataParsed.columnNames;
+	const valueColumn = columnNames.length === 2 ? columnNames[1] : valueColumn;
+
+
+  let parsedInputEntries = dataParsed.entries;
 
   const scaleNames = [];
   const scaleIndex = [];
@@ -72,7 +75,7 @@ let parse50 = (config, _chartProps, callback, parseOpts, priorData = [], priorSc
     }
 
     const values = map(dataSeries.values, (d) => {
-      return +d[columnNames[2]];
+      return +d[valueColumn];
     });
 
     _computed[i].data = _computed[i].data.concat(values);

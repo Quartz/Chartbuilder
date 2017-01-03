@@ -39,10 +39,10 @@ const MapRenderer = React.createClass({
 
     const chartProps = this.props.chartProps;
     const stylings = chartProps.stylings;
-		const displayConfig = this.props.displayConfig;
-
     const schema = chartProps.schema.schema;
     const featname = schema.feature;
+
+		const displayConfig = this.props.displayConfig;
     const metadata = this.props.metadata;
 
     const data = topojson.feature(schema.topojson,

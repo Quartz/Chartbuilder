@@ -19,6 +19,7 @@ function validateDataInput(chartProps) {
 	const type = chartProps.input.type;
 	const scale = chartProps.scale;
 	const columns = chartProps.columns;
+	const valueColumn = columns.length === 1 ? columns[0] : columns[1];
 
 	const inputErrors = [];
 
@@ -39,7 +40,7 @@ function validateDataInput(chartProps) {
 	// Whether any group is missing a value
 	const unevenSeries = dataPointTest(
 			series,
-			function(val) { return val[columns[2]] !== null ? (val[columns[2]] === undefined || val[columns[2]].length === 0) : false;},
+			function(val) { return val[valueColumn] !== null ? (val[valueColumn] === undefined || val[valueColumn].length === 0) : false;},
 			function(empty,vals) { return empty.length !== vals[0].length;}
 		);
 
@@ -51,7 +52,7 @@ function validateDataInput(chartProps) {
 	const nanSeries = somePointTest(
 			series,
 			function(val) {
-				return (isNaN(val[columns[2]]) && val[columns[2]] !== undefined && val[columns[2]] !== "");
+				return (isNaN(val[valueColumn]) && val[valueColumn] !== undefined && val[valueColumn] !== "");
 			}
 		);
 
@@ -62,7 +63,7 @@ function validateDataInput(chartProps) {
 	//Whether an entry column that is supposed to be a Number is not in fact a number
 	const badNumSeries = somePointTest(
 		series,
-		function(val) { return isNaN(val[columns[2]]); }
+		function(val) { return isNaN(val[valueColumn]); }
 	);
 
 	if (badNumSeries) {

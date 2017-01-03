@@ -24,14 +24,14 @@ const PolygonCollection = React.createClass({
 
     const alldata = chartProps.data;
     const columnNames = chartProps.columns;
+    const keyColumn = columnNames[0];
+    const valueColumn = columnNames.length === 1 ? columnNames[0] : columnNames[1];
 
     const showLabels = chartProps.stylings.showStateLabels;
     const adjustLabels = mapSchema.adjustLabels;
 
     // lower the map for the single legend;
     let topTranslation = (Object.keys(chartProps.legend).length === 1) ? this.props.displayConfig.margin.maptop + 50 : this.props.displayConfig.margin.maptop;
-
-    console.log(this.props, 'props');
 
     if (this.props.metadata.subtitle) {
     	if (this.props.metadata.subtitle.length > 0) {
@@ -50,13 +50,13 @@ const PolygonCollection = React.createClass({
 
       alldata.forEach(function(d, j) {
         if (thisvalue === undefined || !thisvalue.length) {
-          thisvalue = Object.assign(filter(d.values, function(o) { return mapSchema.test(o[columnNames[0]], polygonData.id); }), {index:d.index});
+          thisvalue = Object.assign(filter(d.values, function(o) { return mapSchema.test(o[keyColumn], polygonData.id); }), {index:d.index});
         }
       });
 
       const styles = {};
       styles.stroke = chartProps.stylings.stroke;
-      styles.fill = (thisvalue.length) ? currSettings[thisvalue.index].d3scale(thisvalue[0][columnNames[2]]) : '#777';
+      styles.fill = (thisvalue.length) ? currSettings[thisvalue.index].d3scale(thisvalue[0][valueColumn]) : '#aaa';
 
       if (showLabels) {
 
@@ -65,7 +65,7 @@ const PolygonCollection = React.createClass({
 
         if (centers) {
 
-          const adjustStateLabels = adjustLabels(null,null,thisvalue[0][columnNames[0]]);
+          const adjustStateLabels = adjustLabels(null,null,thisvalue[0][keyColumn]);
 
           attributes = { x:centers[0] + adjustStateLabels[1],
                          y:centers[1] + adjustStateLabels[0] + 6,

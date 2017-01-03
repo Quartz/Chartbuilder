@@ -42,7 +42,11 @@ const PolygonCollection = React.createClass({
     const mapStroke = this.props.stylings.stroke;
 
     const adjustLabels = mapSchema.adjustLabels;
+
     const columnNames = chartProps.columns;
+    console.log(columnNames, 'names');
+    const keyColumn = columnNames[0];
+    const valueColumn = columnNames.length === 1 ? columnNames[0] : columnNames[1];
 
     const circleReturn = [];
 
@@ -58,7 +62,7 @@ const PolygonCollection = React.createClass({
 
       alldata.forEach(function(d, j) {
         if (thisvalue === undefined || !thisvalue.length) {
-          thisvalue = Object.assign(filter(d.values, function(o) { return mapSchema.test(o[columnNames[0]], polygonData.id); }), {index:d.index});
+          thisvalue = Object.assign(filter(d.values, function(o) { return mapSchema.test(o[keyColumn], polygonData.id); }), {index:d.index});
         }
       });
 
@@ -85,21 +89,21 @@ const PolygonCollection = React.createClass({
       const styles2 = {};
 
       if (thisvalue.length) {
-        styles2.stroke = currSettings[thisvalue.index].d3scale(thisvalue[0][columnNames[2]]);
-        styles2.fill = currSettings[thisvalue.index].d3scale(thisvalue[0][columnNames[2]]);
+        styles2.stroke = currSettings[thisvalue.index].d3scale(thisvalue[0][valueColumn]);
+        styles2.fill = currSettings[thisvalue.index].d3scale(thisvalue[0][valueColumn]);
       }
       else {
-        styles2.stroke = '#777';
-        styles2.fill = '#777'
+        styles2.stroke = '#999';
+        styles2.fill = '#aaa'
       }
 
       assign(styles2, {fillOpacity:0.2},{strokeWidth: '1.25px'});
 
       if (!thisvalue.length) return (false);
       else {
-        const dataMax = d3.max(this.props.chartProps.alldata, function(d){ return +d[columnNames[2]]; } );
+        const dataMax = d3.max(this.props.chartProps.alldata, function(d){ return +d[valueColumn]; } );
         radius.domain([0, dataMax]);
-        renderRadius = radius(thisvalue[0][columnNames[2]]);
+        renderRadius = radius(thisvalue[0][valueColumn]);
       }
 
       circleReturn.push(

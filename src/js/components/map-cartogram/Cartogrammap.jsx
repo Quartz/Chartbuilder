@@ -74,7 +74,10 @@ class MapRenderer extends React.Component{
 		const displayConfig = this.props.displayConfig;
 
     const centroids = this.state.centroids;
+
     const columnNames = chartProps.columns;
+    const keyColumn = columnNames[0];
+    const valueColumn = columnNames.length === 1 ? keyColumn : columnNames[1];
     const cellSize = stylings.gridcellSize;
 
     console.log(this.props,'props');
@@ -84,14 +87,14 @@ class MapRenderer extends React.Component{
       .scale(schema.scale);
 
     const scales = {};
-    const dataById = d3.map(chartProps.alldata, function(d) { return schema.matchLogic(d[columnNames[0]]); });
+    const dataById = d3.map(chartProps.alldata, function(d) { return schema.matchLogic(d[keyColumn]); });
 
     console.log(stylings.type, 'eh');
 
     // for dorling
     radius
     	.range([0, stylings.type === 'dorling' ? +stylings.dorlingradiusVal : +stylings.demerssquareWidth])
-    	.domain([0, d3.max(chartProps.alldata, function(d){ return +d[columnNames[2]]} )]);
+    	.domain([0, d3.max(chartProps.alldata, function(d){ return +d[valueColumn]} )]);
 
     const showDC = (!stylings.showDC) ? false : true;
 
@@ -111,7 +114,7 @@ class MapRenderer extends React.Component{
         const shp = d.id;
 
         const shpData = dataById.get(schema.matchLogic(shp));
-        const cell = grid[shpData[columnNames[0]].replace(/\s/g, '')];
+        const cell = grid[shpData[keyColumn].replace(/\s/g, '')];
         const point = projection(d.geometry.coordinates);
 
         let fillVal;
@@ -119,17 +122,17 @@ class MapRenderer extends React.Component{
             chartProps.chartSettings[shpData.index].scale.domain[1]) {
           fillVal = colorScales(chartProps.scale[shpData.index].colorIndex)[1];
         }
-        else fillVal = chartProps.scale[shpData.index].d3scale(shpData[columnNames[2]]);
+        else fillVal = chartProps.scale[shpData.index].d3scale(shpData[valueColumn]);
 
       return {
         id: +d.id,
         x: point[0], y: point[1],
         x0: point[0], y0: point[1],
         xx: cell[0] * cellSize , yy: cell[1] * cellSize - (cellSize / 2),
-        r: radius(shpData[columnNames[2]]),
-        r0: radius(shpData[columnNames[2]]),
-        value: shpData[columnNames[2]],
-        shp: shpData[columnNames[0]],
+        r: radius(shpData[valueColumn]),
+        r0: radius(shpData[valueColumn]),
+        value: shpData[valueColumn],
+        shp: shpData[keyColumn],
         color: fillVal
       };
     });
