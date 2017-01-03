@@ -12,14 +12,12 @@ const convertPosttoPostal = require('us-abbreviations')('post','postal');*/
 const MAX_BYTES = 400000; // Max 400k for chartProps
 
 function validateDataInput(chartProps) {
-	console.trace('validate map input', chartProps, 'eek');
 
 	const input = chartProps.input.raw;
 	const series = chartProps.data;
 	const type = chartProps.input.type;
 	const scale = chartProps.scale;
 	const columns = chartProps.columns;
-	const valueColumn = columns.length === 1 ? columns[0] : columns[1];
 
 	const inputErrors = [];
 
@@ -36,6 +34,8 @@ function validateDataInput(chartProps) {
 		// Check whether there are too many series
 		inputErrors.push("TOO_MANY_SERIES");
 	}
+
+	const valueColumn = columns.length === 1 ? columns[0] : columns[1];
 
 	// Whether any group is missing a value
 	const unevenSeries = dataPointTest(
@@ -88,7 +88,7 @@ function validateDataInput(chartProps) {
 	}*/
 
 	// Whether axis ticks divide evenly
-	console.log(scale,'scale');
+	//console.log(scale,'scale');
 	if (!catchMapMistakes.axisTicksEven(scale)) {
 		inputErrors.push("UNEVEN_TICKS");
 	}

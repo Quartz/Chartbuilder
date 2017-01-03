@@ -14,12 +14,10 @@ const parseDelimInput = require("./parse-delimited-input").parser;
 // checkForDate: bool | tell parser to return dates if key column is date/time/year
 function dataBySeries(input, opts) {
 
-	console.log('parse by series');
-
-	var series;
+	let series;
 	opts = opts || {};
 
-	var parsedInput = parseDelimInput(input, {
+	const parsedInput = parseDelimInput(input, {
 		checkForDate: opts.checkForDate,
 		type: opts.type
 	});

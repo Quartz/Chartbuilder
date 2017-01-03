@@ -13,7 +13,6 @@ const types = {
 const MAX_BYTES = 400000; // Max 400k for chartProps
 
 function validateDataInput(chartProps) {
-	console.trace('validate input');
 
 	const input = chartProps.input.raw;
 	const series = chartProps.data;
@@ -115,7 +114,6 @@ function validateDataInput(chartProps) {
 	}
 
 	// Whether axis ticks divide evenly
-	console.log(scale,'scale',JSON.stringify(chartProps.visualType));
 	if (!catchChartMistakes.axisTicksEven(scale.primaryScale)) {
 		inputErrors.push("UNEVEN_TICKS");
 	}

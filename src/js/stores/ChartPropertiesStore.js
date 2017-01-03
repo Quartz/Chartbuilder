@@ -26,7 +26,7 @@ const newLineRegex = /\r\n|\r|\n/;
  * ### ChartProptiesStore.js
  * Flux store for chart properties such as data, settings, scale
 */
-var ChartPropertiesStore = assign({}, EventEmitter.prototype, {
+const ChartPropertiesStore = assign({}, EventEmitter.prototype, {
 
 	emitChange: function() {
 		this.emit(CHANGE_EVENT);
@@ -74,12 +74,10 @@ var ChartPropertiesStore = assign({}, EventEmitter.prototype, {
 });
 
 function registeredCallback(payload) {
-	var action = payload.action;
-	var parser;
-	var config;
-	var thisModel;
-
-	console.log(action, 'store call back');
+	const action = payload.action;
+	let parser;
+	let config;
+	let thisModel;
 
 	switch(action.eventName) {
 		/*
@@ -92,9 +90,7 @@ function registeredCallback(payload) {
 			chartType = thisModel.metadata.chartType;
 			config = chartConfig[chartType] || mapConfig[chartType];
 			parser = config.parser;
-			console.trace(thisModel,'receive-model');
 			_chartProps = parser(config, thisModel.chartProps);
-			console.trace(_chartProps, 'receive-model post parser');
 			break;
 
 		/*
@@ -107,7 +103,6 @@ function registeredCallback(payload) {
 				_chartProps = newProps;
 				ChartPropertiesStore.emitChange();
 			});
-			console.log('update all');
 			break;
 
 		/*
@@ -117,7 +112,6 @@ function registeredCallback(payload) {
 		case "update-chart-prop":
 			_chartProps[action.key] = action.newProp;
 			ChartPropertiesStore.emitChange();
-			console.log('update one');
 			break;
 
 		/*
@@ -128,13 +122,10 @@ function registeredCallback(payload) {
 			config = chartConfig[chartType] || mapConfig[chartType];
 			parser = config.parser;
 			_chartProps[action.key] = action.newProp;
-			console.log('action', action);
 			parser(config, _chartProps, function(newProps) {
-				console.log(newProps, 'new props')
 				_chartProps = newProps;
 				ChartPropertiesStore.emitChange();
 			});
-			console.log('update and reparse');
 			break;
 
 		case "update-data-input":
@@ -149,7 +140,6 @@ function registeredCallback(payload) {
 					ChartPropertiesStore.emitChange();
 				}, parseOpts);
 			});
-			console.log('update data');
 			break;
 
 		default:
@@ -159,8 +149,8 @@ function registeredCallback(payload) {
 }
 
 function checkColumnChange(newInput, callback) {
-	var newCols = newInput.split(newLineRegex)[0];
-	var oldCols = _chartProps.input.raw.split(newLineRegex)[0];
+	const newCols = newInput.split(newLineRegex)[0];
+	const oldCols = _chartProps.input.raw.split(newLineRegex)[0];
 	callback((newCols !== oldCols));
 }
 

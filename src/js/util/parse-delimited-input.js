@@ -34,8 +34,6 @@ const newLineRegex = /\r\n|\r|\n/;
 
 function parseDelimInput(input, opts) {
 
-	console.log('parse input');
-
 	let hasDate = null;
 	let isNumeric = null;
 
@@ -98,8 +96,6 @@ function parseDelimInput(input, opts) {
 }
 
 function cast_data(input, columnNames, stripCharsRegex, opts) {
-
-	console.trace(cast_data, 'cast_data parse_deliminput');
 
 	const dsv = d3.dsv(opts.delimiter, "text/plain");
 	const all_index_types = [];

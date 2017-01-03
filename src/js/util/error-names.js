@@ -36,7 +36,7 @@ const error_names = {
 	},
 	"TOO_FEW_SERIES": {
 		location: "input",
-		text: "You have fewer than 2 columns, which is fewer than Chartbuilder supports.",
+		text: "You have fewer than 2 columns. Use the first column to lay out your map subunits.",
 		type: "error"
 	},
 	"NAN_VALUES": {

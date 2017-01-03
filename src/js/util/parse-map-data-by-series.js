@@ -58,8 +58,10 @@ function dataBySeries(input, chartProps, opts) {
 	// parse when there is not
 	else {
 
+		const singleColumnGroup = (columnNames.length) > 0 ? 'Legend group' : undefined;
+
 		series.push({
-			name: 'Legend group',
+			name: singleColumnGroup,
 			index: 0,
 			values: parsedInput.data.filter(function(d) {
 									return {

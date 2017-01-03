@@ -69,8 +69,6 @@ const ErrorStore = assign({}, EventEmitter.prototype, {
 /* Respond to actions coming from the dispatcher */
 function registeredCallback(payload) {
 
-	console.trace('error store callback', payload);
-
 	const action = payload.action;
 	let error_messages;
 	let isInvalid;
@@ -81,8 +79,8 @@ function registeredCallback(payload) {
 		/* *
 		* Data input updated or reparse called
 		* */
-		case "update-data-input":
-			console.log('update data input');
+		/*case "update-data-input":
+			console.log('update data input');*/
 		case "update-and-reparse":
 
 			Dispatcher.waitFor([ChartPropertiesStore.dispatchToken]);
@@ -91,11 +89,9 @@ function registeredCallback(payload) {
 			error_messages = [];
 			if (chartProps.visualType === 'chart') {
 				input_errors = validateDataInput(chartProps);
-				console.log(input_errors,'hm errors?');
 			}
 			else if (chartProps.visualType === 'map') {
 				input_errors = validateMapDataInput(chartProps);
-				console.log(input_errors,'hm map errors?');
 			}
 			error_messages = error_messages.concat(input_errors);
 
@@ -116,11 +112,9 @@ function registeredCallback(payload) {
 			error_messages = [];
 			if (chartProps.visualType === 'chart') {
 				input_errors = validateDataInput(chartProps);
-				console.log(input_errors,'hm errors?');
 			}
 			else if (chartProps.visualType === 'map') {
 				input_errors = validateMapDataInput(chartProps);
-				console.log(input_errors,'hm map errors?');
 			}
 			error_messages = error_messages.concat(input_errors);
 
