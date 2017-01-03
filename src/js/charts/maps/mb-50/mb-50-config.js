@@ -1,5 +1,4 @@
 const MapConfig = require("../MapConfig");
-let now = new Date();
 
 /**
  * ### Configuration of an XY chart
@@ -33,7 +32,7 @@ let now = new Date();
 
 
 
-let display = Object.freeze({
+const display = Object.freeze({
   labelRectSize: "0.6em",
   labelXMargin: "0.6em",
   labelTextMargin: "0.3em",

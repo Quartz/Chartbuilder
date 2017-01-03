@@ -14,7 +14,7 @@ var each = require("lodash/each");
 var keys = require("lodash/keys");
 var map = require("lodash/map");
 
-var dateParsers = require("../../util/process-dates").dateParsers;
+const dateParsers = require("../../util/process-dates").dateParsers;
 
 /* Shared Chartbuilder components */
 var DataInput = require("../shared/DataInput.jsx");
@@ -54,7 +54,7 @@ const axisOptions = [
  * @instance
  * @memberof editors
  */
-var XYEditor = React.createClass({
+const XYEditor = React.createClass({
 
 	propTypes: {
 		errors: PropTypes.object,

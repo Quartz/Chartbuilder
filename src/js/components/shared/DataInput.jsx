@@ -1,18 +1,15 @@
-var React = require("react");
-var PropTypes = React.PropTypes;
-var update = require("react-addons-update");
+
+import React, {PropTypes} from 'react';
+import update from 'react-addons-update';
+
+import {TextArea, AlertGroup} from 'chartbuilder-ui';
 
 // Flux actions
-var ChartViewActions = require("../../actions/ChartViewActions");
-var ChartServerActions = require("../../actions/ChartServerActions");
+const ChartViewActions = require("../../actions/ChartViewActions");
+const ChartServerActions = require("../../actions/ChartServerActions");
+const validateChartModel = require("../../util/validate-chart-model");
+const DataSeriesTypeSettings = require("../shared/DataSeriesTypeSettings.jsx");
 
-var errorNames = require("../../util/error-names");
-var validateChartModel = require("../../util/validate-chart-model");
-
-var chartbuilderUI = require("chartbuilder-ui");
-var TextArea = chartbuilderUI.TextArea;
-var AlertGroup = chartbuilderUI.AlertGroup;
-var DataSeriesTypeSettings = require("../shared/DataSeriesTypeSettings.jsx");
 
 /**
  * ### Text area component and error messaging for data input
@@ -109,8 +106,9 @@ var DataInput = React.createClass({
 	// Render the data input text area and indicator
 	_renderDataInput: function() {
 
-		var errors = this._renderErrors();
-		var isValid = this.props.errors.length === 0;
+		console.log('dataInput.jsx')
+		const errors = this._renderErrors();
+		const isValid = this.props.errors.length === 0;
 
 		return (
 			<div className={this.props.className}

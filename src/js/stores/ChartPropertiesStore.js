@@ -2,28 +2,26 @@
  * Store the Chart's properties. These are properties relevant to the
  * rendering of the chart.
 */
-
-var assign = require("lodash/assign");
-var EventEmitter = require("events").EventEmitter;
+import {assign, clone} from 'lodash';
+const EventEmitter = require("events").EventEmitter;
 
 /* Flux dispatcher */
-var Dispatcher = require("../dispatcher/dispatcher");
-var SessionStore = require("./SessionStore");
+const Dispatcher = require("../dispatcher/dispatcher");
+const SessionStore = require("./SessionStore");
 
 /*
  * Each chart type has an associated parser, defined in its chartConfig
  * settings. The `ChartProptiesStore` is resposible for parsing the input before
  * sending parsed data back to the app, so we require the configs here.
 */
-var chartConfig = require("../charts/charts/chart-config");
-var mapConfig = require("../charts/maps/map-config");
+const mapConfig = require("../charts/maps/map-config");
+const chartConfig = require("../charts/charts/chart-config");
 
 /* Singleton that houses chart props */
-var _chartProps = {};
-var CHANGE_EVENT = "change";
-var chartType;
-var newLineRegex = /\r\n|\r|\n/;
-
+let _chartProps = {};
+const CHANGE_EVENT = "change";
+let chartType;
+const newLineRegex = /\r\n|\r|\n/;
 /**
  * ### ChartProptiesStore.js
  * Flux store for chart properties such as data, settings, scale
@@ -81,6 +79,8 @@ function registeredCallback(payload) {
 	var config;
 	var thisModel;
 
+	console.log(action, 'store call back');
+
 	switch(action.eventName) {
 		/*
 		* Receive a new model, which includes metadata. Respond by parsing input and
@@ -92,10 +92,9 @@ function registeredCallback(payload) {
 			chartType = thisModel.metadata.chartType;
 			config = chartConfig[chartType] || mapConfig[chartType];
 			parser = config.parser;
-			console.trace(thisModel,'this');
+			console.trace(thisModel,'receive-model');
 			_chartProps = parser(config, thisModel.chartProps);
-			console.log('receive', thisModel);
-			console.log(_chartProps,'uh');
+			console.trace(_chartProps, 'receive-model post parser');
 			break;
 
 		/*

@@ -3,7 +3,7 @@
 * Types: 1 = success, 2 = warning, 3 = error
 */
 
-var error_names = {
+const error_names = {
 	"EMPTY": {
 		location: "input",
 		text: "Enter some data above.",
@@ -19,9 +19,19 @@ var error_names = {
 		text: "You have a column chart that doesn't have a zero axis. Double check that this is ok.",
 		type: "warning"
 	},
+	"GROUP_ZERO": {
+		location: "input",
+		text: "You have a map that doesn't have any groups. Double check that this is ok.",
+		type: "warning"
+	},
 	"TOO_MANY_SERIES": {
 		location: "input",
 		text: "You have more than 12 columns, which is more than Chartbuilder supports.",
+		type: "error"
+	},
+	"TOO_MANY_GROUPS": {
+		location: "input",
+		text: "You have more than 5 groups, which is more than Chartbuilder supports.",
 		type: "error"
 	},
 	"TOO_FEW_SERIES": {

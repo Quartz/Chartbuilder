@@ -8,7 +8,6 @@ const INTERVAL_BASE_VALS = [1, 2, 2.5, 5, 10, 25]; // used to determine "good" t
 const MAX_TICKS = 8;
 
 function too_much_data(chartProps) {
-	console.log('too much data');
 	return (sizeof.sizeof(chartProps) > MAX_BYTES);
 }
 

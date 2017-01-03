@@ -5,15 +5,17 @@
 // { entry: <rowName>, value: <callValue> }
 // ```
 
-
 import {clone} from 'lodash';
 
-var datePattern = /date|time|year/i;
-var parseDelimInput = require("./parse-delimited-input").parser;
+const datePattern = /date|time|year/i;
+const parseDelimInput = require("./parse-delimited-input").parser;
 
 // Parse data by series. Options:
 // checkForDate: bool | tell parser to return dates if key column is date/time/year
 function dataBySeries(input, opts) {
+
+	console.log('parse by series');
+
 	var series;
 	opts = opts || {};
 

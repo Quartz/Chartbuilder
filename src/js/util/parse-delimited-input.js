@@ -1,15 +1,16 @@
 // Parse a string of TSV or CSV. Returns a flat array of objects of the form { column: value }
 // as well as the column names using `d3.dsv`
 
-var d3 = require("d3");
-var each = require("lodash/each");
+// Parse a string of TSV or CSV. Returns a flat array of objects of the form { column: value }
+// as well as the column names using `d3.dsv`
+import d3 from 'd3';
+import {each, assign, defaults, uniq} from 'lodash';
+
+const parseUtils = require("./parse-utils");
+const help = require("./helper");
 require("sugar-date");
-var parseUtils = require("./parse-utils");
-var help = require("./helper.js");
-var assign = require("lodash/assign");
-var defaults = require("lodash/defaults");
-var unique = require("lodash/uniq");
-var separators;
+
+let separators;
 
 // We need this to get the current locale's thousands separator
 // Check for localStorage in case we are testing from node
@@ -22,17 +23,19 @@ if (typeof(localStorage) !== 'undefined') {
 	};
 }
 
-var stripChars = [
+const stripChars = [
 	"$",
 	"£",
 	"€",
 	"%"
 ];
 
-var newLineRegex = /\r\n|\r|\n/;
-var parseErrors = [];
+const newLineRegex = /\r\n|\r|\n/;
 
 function parseDelimInput(input, opts) {
+
+	console.log('parse input');
+
 	let hasDate = null;
 	let isNumeric = null;
 
@@ -47,7 +50,7 @@ function parseDelimInput(input, opts) {
 		_defaultOpts.type = "ordinal";
 	}
 
-	parseErrors = [];
+	const parseErrors = [];
 	// create regex of special characters we want to strip out as well as our
 	// computed locale-specific thousands separator.
 	const _stripCharsStr = stripChars.concat([separators.thousands]).reduce(function(a, b) {
@@ -65,7 +68,7 @@ function parseDelimInput(input, opts) {
 	all_index_types = casted_data.indexes;
 
 	const all_entry_values = casted_data.entries;
-	const index_types = unique(all_index_types);
+	const index_types = uniq(all_index_types);
 
 	if(index_types.length !== 1 && !_defaultOpts.type) {
 		//there is possibly more than one type of data, an error will be thrown in validate-data-input
@@ -95,6 +98,8 @@ function parseDelimInput(input, opts) {
 }
 
 function cast_data(input, columnNames, stripCharsRegex, opts) {
+
+	console.trace(cast_data, 'cast_data parse_deliminput');
 
 	const dsv = d3.dsv(opts.delimiter, "text/plain");
 	const all_index_types = [];
@@ -136,7 +141,7 @@ function cast_data(input, columnNames, stripCharsRegex, opts) {
 		return d;
 	});
 
-	var index_types = unique(all_index_types);
+	var index_types = uniq(all_index_types);
 
 	if(index_types.length !== 1 && !opts.type) {
 
@@ -187,8 +192,13 @@ function parseKeyColumn(entry, type) {
 	}
 }
 
+function parseDelimInputMaps(input, opts) {
+
+}
+
 module.exports = {
 	parser: parseDelimInput,
+	mapParser: parseDelimInputMaps,
 	_cast_data: cast_data,
 	_parseKeyColumn: parseKeyColumn,
 	_parseValue: parseValue

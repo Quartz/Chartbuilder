@@ -2,7 +2,7 @@
 // to prevent drawing and give error messages.
 import {max, map, filter, some, includes, uniq} from 'lodash';
 
-const catchChartMistakes = require("./catch-chart-mistakes");
+const catchMapMistakes = require("./catch-map-mistakes");
 /*const allstates = require("./../config/states-list");
 
 const convertFulltoPostal = require('us-abbreviations')('full','postal');
@@ -18,7 +18,7 @@ const types = {
 const MAX_BYTES = 400000; // Max 400k for chartProps
 
 function validateDataInput(chartProps) {
-	console.trace('validate input');
+	console.trace('validate map input');
 
 	const input = chartProps.input.raw;
 	const series = chartProps.data;
@@ -71,13 +71,8 @@ function validateDataInput(chartProps) {
 		inputErrors.push("NAN_VALUES");
 	}
 
-	// Are there multiple types of axis entries
-	var entryTypes = uniq(series[0].values.map(function(d){return typeof d.entry;}));
-	if(entryTypes.length > 1 && !chartProps.input.type) {
-		inputErrors.push("CANT_AUTO_TYPE");
-	}
-
 	//Whether an entry column that is supposed to be a Number is not in fact a number
+	console.log(isNumeric,chartProps.input.type, 'isNumeric tests');
 	if(isNumeric || chartProps.input.type == "numeric") {
 		var badNumSeries = somePointTest(
 				series,
@@ -86,25 +81,6 @@ function validateDataInput(chartProps) {
 
 		if (badNumSeries) {
 			inputErrors.push("NAN_VALUES");
-		}
-	}
-
-	// Whether an entry column that is supposed to be a date is not in fact a date
-	if(hasDate || chartProps.input.type == "date") {
-		var badDateSeries = somePointTest(
-				series,
-				function(val) { return !val.entry.getTime || isNaN(val.entry.getTime()); },
-				function(bd,vals) { return bd.length > 0;}
-			);
-
-		if (badDateSeries) {
-			inputErrors.push("NOT_DATES");
-		}
-
-		var tz_pattern = /([+-]\d\d:*\d\d)/gi;
-		var found_timezones = input.match(tz_pattern);
-		if(found_timezones && found_timezones.length != series[0].values.length) {
-			inputErrors.push("UNEVEN_TZ");
 		}
 	}
 
@@ -128,11 +104,6 @@ function validateDataInput(chartProps) {
 	console.log(scale,'scale',JSON.stringify(chartProps.visualType));
 	if (!catchChartMistakes.axisTicksEven(scale.primaryScale)) {
 		inputErrors.push("UNEVEN_TICKS");
-	}
-
-	// Whether axis is missing pref and suf
-	if (catchChartMistakes.noPrefixSuffix(scale.primaryScale)) {
-		inputErrors.push("NO_PREFIX_SUFFIX");
 	}
 
 	return inputErrors;
