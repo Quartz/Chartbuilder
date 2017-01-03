@@ -25,7 +25,7 @@ const PolygonCollection = React.createClass({
     const alldata = chartProps.data;
     const columnNames = chartProps.columns;
     const keyColumn = columnNames[0];
-    const valueColumn = columnNames.length === 1 ? columnNames[0] : columnNames[1];
+    const valueColumn = columnNames.length === 2 ? columnNames[1] : columnNames[2];
 
     const showLabels = chartProps.stylings.showStateLabels;
     const adjustLabels = mapSchema.adjustLabels;

@@ -31,7 +31,7 @@ let parse50 = (config, _chartProps, callback, parseOpts, priorData = [], priorSc
   const dataParsed = bySeries.data;
 
   const columnNames = dataParsed.columnNames;
-	const valueColumn = columnNames.length === 2 ? columnNames[1] : valueColumn;
+	const valueColumn = columnNames.length === 2 ? columnNames[1] : columnNames[2];
 
   let parsedInputEntries = dataParsed.entries;
 

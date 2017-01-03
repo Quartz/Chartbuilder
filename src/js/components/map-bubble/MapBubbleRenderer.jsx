@@ -46,7 +46,7 @@ const PolygonCollection = React.createClass({
     const columnNames = chartProps.columns;
     console.log(columnNames, 'names');
     const keyColumn = columnNames[0];
-    const valueColumn = columnNames.length === 1 ? columnNames[0] : columnNames[1];
+    const valueColumn = columnNames.length === 2 ? columnNames[1] : columnNames[2];
 
     const circleReturn = [];
 
@@ -87,6 +87,8 @@ const PolygonCollection = React.createClass({
       let renderRadius = false;
 
       const styles2 = {};
+
+      console.log(thisvalue, 'this value');
 
       if (thisvalue.length) {
         styles2.stroke = currSettings[thisvalue.index].d3scale(thisvalue[0][valueColumn]);

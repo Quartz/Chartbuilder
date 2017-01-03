@@ -35,7 +35,7 @@ function validateDataInput(chartProps) {
 		inputErrors.push("TOO_MANY_SERIES");
 	}
 
-	const valueColumn = columns.length === 1 ? columns[0] : columns[1];
+	const valueColumn = (columns.length === 2) ? columns[1] : columns[2];
 
 	// Whether any group is missing a value
 	const unevenSeries = dataPointTest(
@@ -52,6 +52,7 @@ function validateDataInput(chartProps) {
 	const nanSeries = somePointTest(
 			series,
 			function(val) {
+				if ((isNaN(val[valueColumn]) && val[valueColumn] !== undefined && val[valueColumn] !== "")) console.log(val);
 				return (isNaN(val[valueColumn]) && val[valueColumn] !== undefined && val[valueColumn] !== "");
 			}
 		);

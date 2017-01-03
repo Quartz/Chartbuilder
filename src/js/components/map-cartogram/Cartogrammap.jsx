@@ -77,10 +77,12 @@ class MapRenderer extends React.Component{
 
     const columnNames = chartProps.columns;
     const keyColumn = columnNames[0];
-    const valueColumn = columnNames.length === 1 ? keyColumn : columnNames[1];
+    const valueColumn = columnNames.length === 2 ? columnNames[1] : columnNames[2];
     const cellSize = stylings.gridcellSize;
 
-    console.log(this.props,'props');
+    console.log(valueColumn, 'column');
+
+    console.log(columnNames, 'names');
 
     const projection = d3.geo[schema.proj]()
       .translate(stylings.type === 'grid' ? schema.translate : schema.translateCartogram)
@@ -117,9 +119,12 @@ class MapRenderer extends React.Component{
         const cell = grid[shpData[keyColumn].replace(/\s/g, '')];
         const point = projection(d.geometry.coordinates);
 
+        console.log(shpData, 'shp');
+
         let fillVal;
         if (chartProps.chartSettings[shpData.index].scale.domain[0] ===
             chartProps.chartSettings[shpData.index].scale.domain[1]) {
+        	conole.log('heck is this?');
           fillVal = colorScales(chartProps.scale[shpData.index].colorIndex)[1];
         }
         else fillVal = chartProps.scale[shpData.index].d3scale(shpData[valueColumn]);
