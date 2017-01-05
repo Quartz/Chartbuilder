@@ -51,6 +51,7 @@ var BarGroup = React.createClass({
 		var barProps = { key: i, colorIndex: bar.colorIndex };
 		barProps[mapping.ordinalVal] = ordinalScale(bar.entry) + offset;
 		barProps[mapping.ordinalSize] = size;
+
 		// linearVal needs to be negative if number is neg else 0
 		// see https://bl.ocks.org/mbostock/2368837
 		barProps[mapping.linearVal] = linearScale(mapping.linearCalculation(bar.value));
@@ -68,15 +69,17 @@ var BarGroup = React.createClass({
 		var groupInnerPadding = Math.max(0.1, (props.displayConfig.columnInnerPadding / numDataPoints));
 
 		var innerScale = ordinal().domain(Object.keys(props.bars))
-			.rangeRoundBands([0, innerSize], 0, groupInnerPadding);
+			.rangeRoundBands([0, innerSize], 0, 0.2);
 
 		var rectSize = innerScale.rangeBand();
+		console.log('innersize', innerSize)
+		console.log('rectsize', rectSize)
 
 		var groups = map(props.bars, function(bar, ix) {
 			var rects = map(bar.data, function(d, i) {
 				var ordinalScale = bar[mapping.ordinalScale] || props[mapping.ordinalScale];
 				var linearScale = bar[mapping.linearScale] || props[mapping.linearScale];
-				var ordinalOffset = innerScale(ix) - innerSize / 2;
+				var ordinalOffset = innerScale(ix);
 				var barProps = makeBarProps(d, i, mapping, linearScale, ordinalScale, rectSize, ordinalOffset);
 				barProps.className = "color-index-" + bar.colorIndex;
 

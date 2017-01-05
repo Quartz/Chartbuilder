@@ -91,12 +91,6 @@ var ChartGridBars = React.createClass({
 
 		// TODO: make this a higher order component called BarChart or similar?
 		return [
-			<SeriesLabel
-				key="label"
-				xVal={0}
-				text={props.chartProps.chartSettings[i].label}
-				colorIndex={props.chartProps.chartSettings[i].colorIndex}
-			/>,
 			bar,
 			<BlockerRects
 				key="blockers"
@@ -145,15 +139,15 @@ var ChartGridBars = React.createClass({
 				maxTickWidth
 			),
 			height: (
-				dimensions.height - margin.top - margin.bottom -
-				((displayConfig.padding.top + displayConfig.padding.bottom) * chartProps._grid.rows)
+				dimensions.height
 			)
 		};
 
+		console.log('heightperpt', dimensions.height / chartProps.data[0].values.length)
+
 		var outerDimensions = {
 			width: dimensions.width,
-			height: dimensions.height -
-				(displayConfig.padding.top + displayConfig.padding.bottom) * (chartProps._grid.rows - 1)
+			height: dimensions.height + (displayConfig.margin.top + displayConfig.margin.bottom)
 		}
 
 		// range for all charts in grid (outer)
@@ -191,7 +185,7 @@ var ChartGridBars = React.createClass({
 
 		// range and axes for each chart in the grid (inner)
 		var xRangeInner = [0, gridScales.cols.rangeBand() - barLabelOverlap];
-		var yRangeInner = [props.displayConfig.afterLegend, gridScales.rows.rangeBand()];
+		var yRangeInner = [0, gridScales.rows.rangeBand()];
 		var xAxis = scaleUtils.generateScale("linear", primaryScale, chartProps.data, xRangeInner);
 		var yAxis = scaleUtils.generateScale("ordinal", primaryScale, chartProps.data, yRangeInner);
 
