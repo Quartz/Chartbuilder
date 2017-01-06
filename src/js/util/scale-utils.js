@@ -1,5 +1,5 @@
 var d3 = require("d3");
-var scale = require("d3-scale");
+var d3scale = require("d3-scale");
 var clone = require("lodash/clone");
 var reduce = require("lodash/reduce");
 var map = require("lodash/map");
@@ -77,15 +77,19 @@ function _linearScale(scaleOptions, data, range) {
 }
 
 //TODO: make this keyed funcs that accept a `type` param
-//(like "ordinal", "time", "linear")
-//so that we dont have to check every time
+//(like "ordinal", "time", "linear") so that we dont have to check every time
 function _ordinalScale(scaleOptions, data, range) {
 	var entries = map(data[0].values, function(value) {
 		return value.entry;
 	});
 
+	var scale = d3scale.scaleBand()
+		.domain(entries)
+		.range(range).round(true)
+		.paddingInner(0.2); //TODO: hardcode
+
 	return {
-		scale: scale.scaleBand().domain(entries).range(range, 0, 0), // TODO: hardcode
+		scale: scale,
 		tickValues: entries,
 	};
 }
