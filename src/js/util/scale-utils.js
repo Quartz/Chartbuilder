@@ -76,6 +76,9 @@ function _linearScale(scaleOptions, data, range) {
 	};
 }
 
+//TODO: make this keyed funcs that accept a `type` param
+//(like "ordinal", "time", "linear")
+//so that we dont have to check every time
 function _ordinalScale(scaleOptions, data, range) {
 	var entries = map(data[0].values, function(value) {
 		return value.entry;
@@ -85,6 +88,15 @@ function _ordinalScale(scaleOptions, data, range) {
 		scale: scale.scaleBand().domain(entries).range(range, 0, 0), // TODO: hardcode
 		tickValues: entries,
 	};
+}
+
+function _ordinalAdjust(scale, value) {
+	var isOrdinal = scale.hasOwnProperty("bandwidth");
+	if (isOrdinal) {
+		return scale(value) + scale.bandwidth() / 2;
+	} else {
+		return scale(value);
+	}
 }
 
 /**
@@ -122,5 +134,6 @@ function get_tick_widths(scaleOptions, font) {
 
 module.exports = {
 	generateScale: generate_scale,
-	getTickWidths: get_tick_widths
+	getTickWidths: get_tick_widths,
+	ordinalAdjust: _ordinalAdjust
 };

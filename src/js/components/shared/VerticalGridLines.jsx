@@ -1,6 +1,7 @@
 var React = require("react");
 var PropTypes = React.PropTypes;
 var map = require("lodash/map");
+var ordinalAdjust = require("../../util/scale-utils").ordinalAdjust;
 
 var VerticalGridLines = React.createClass({
 
@@ -34,10 +35,9 @@ var VerticalGridLines = React.createClass({
 	// TODO: dont need to get range extent unless props.y1 and y2 absent
 	_generateTicks: function(props) {
 		var yRange = this._getRangeExtent(props.yScale);
-		var transformX = this._getTransformX;
 
 		return map(props.tickValues, function(tickValue, i) {
-			var scalePos = transformX(props.xScale, tickValue);
+			var scalePos = ordinalAdjust(props.xScale, tickValue);
 
 			return (
 				<line

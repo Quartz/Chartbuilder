@@ -2,6 +2,7 @@
 var React = require("react");
 var PropTypes = React.PropTypes;
 var map = require("lodash/map");
+var ordinalAdjust = require("../../util/scale-utils").ordinalAdjust;
 
 var MarkSeries = React.createClass({
 
@@ -20,7 +21,7 @@ var MarkSeries = React.createClass({
 				<circle
 					key={i}
 					r={radius}
-					cx={props.xScale(d.entry)}
+					cx={ordinalAdjust(props.xScale, d.entry)}
 					cy={props.yScale(d.value)}
 					className={"color-index-" + props.colorIndex}
 				/>

@@ -3,6 +3,7 @@ var React = require("react");
 var PropTypes = React.PropTypes;
 var map = require("lodash/map");
 var help = require("../../util/helper.js");
+var ordinalAdjust = require("../../util/scale-utils").ordinalAdjust;
 
 var DY = "0.32em";
 
@@ -34,22 +35,13 @@ var BlockerRect = React.createClass({
 		}
 	},
 
-	_getTransformY: function(yScale, tickValue) {
-		if (yScale.bandwidth) {
-			return yScale(tickValue) + yScale.bandwidth() / 2;
-		} else {
-			return yScale(tickValue);
-		}
-	},
-
 	_generateRects: function(props) {
 		var concealerHeight = props.tickTextHeight + props.displayConfig.blockerRectOffset;
-		var transformY = this._getTransformY;
 
 		return map(props.data, function(label, i) {
 			var rectX = (props.orient === "left") ? 0 : props.labelWidths[i] * -1;
 			var xPos = props.xScale(Math.max(0, label.value));
-			var yPos = transformY(props.yScale, label.entry) - (concealerHeight / 2);
+			var yPos = ordinalAdjust(props.yScale, label.entry) - (concealerHeight / 2);
 
 			var labelWidths = props.labelWidths[props.seriesNumber];
 			return (

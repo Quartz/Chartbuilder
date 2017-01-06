@@ -2,6 +2,7 @@
 var React = require("react");
 var PropTypes = React.PropTypes;
 var line = require("d3").svg.line();
+var ordinalAdjust = require("../../util/scale-utils").ordinalAdjust;
 
 var LineSeries = React.createClass({
 
@@ -15,7 +16,7 @@ var LineSeries = React.createClass({
 		var props = this.props;
 
 		var lineFunc = line
-			.x(function(d) { return props.xScale(d.entry); })
+			.x(function(d) { return ordinalAdjust(props.xScale, d.entry); })
 			.y(function(d) { return props.yScale(d.value); });
 
 		return (

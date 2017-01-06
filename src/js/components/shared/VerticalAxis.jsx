@@ -3,6 +3,7 @@ var React = require("react");
 var PropTypes = React.PropTypes;
 var map = require("lodash/map");
 var help = require("../../util/helper.js");
+var ordinalAdjust = require("../../util/scale-utils").ordinalAdjust;
 
 var DY = "0.32em";
 
@@ -38,17 +39,8 @@ var VerticalAxis = React.createClass({
 		}
 	},
 
-	_getTransformY: function(yScale, tickValue) {
-		if (yScale.bandwidth) {
-			return yScale(tickValue) + yScale.bandwidth() / 2;
-		} else {
-			return yScale(tickValue);
-		}
-	},
-
 	_generateText: function(props) {
 		var numTicks = props.tickValues.length;
-		var getTransformY = this._getTransformY;
 		var concealerHeight = props.tickTextHeight + props.displayConfig.blockerRectOffset;
 
 		return map(props.tickValues, function(tickValue, i) {
@@ -62,7 +54,7 @@ var VerticalAxis = React.createClass({
 				text = formatted;
 			}
 
-			var transformY = getTransformY(props.yScale, tickValue);
+			var transformY = ordinalAdjust(props.yScale, tickValue);
 
 			return (
 				<g key={i} className="concealer-label"

@@ -3,6 +3,7 @@ var React = require("react");
 var PropTypes = React.PropTypes;
 var map = require("lodash/map");
 var help = require("../../util/helper.js");
+var ordinalAdjust = require("../../util/scale-utils").ordinalAdjust;
 
 var DY = "0.32em"
 
@@ -93,22 +94,13 @@ var HorizontalAxis = React.createClass({
 		}
 	},
 
-	_getTransformX: function(scale, tickValue) {
-		if (scale.bandwidth) {
-			return scale(tickValue) + scale.bandwidth() / 2;
-		} else {
-			return scale(tickValue);
-		}
-	},
-
 	_generateTicks: function(props) {
 		var lastTickWidth = this.state.lastTickWidth;
-		var transformX = this._getTransformX;
 
 		return map(props.tickValues, function(tickValue, i) {
 			var text;
 			var formatted = props.tickFormat(tickValue)
-			var xVal = transformX(props.xScale, tickValue);
+			var xVal = ordinalAdjust(props.xScale, tickValue);
 
 			// offset a tick label that is over the edge
 			if (xVal + lastTickWidth > props.dimensions.width) {
