@@ -50,7 +50,7 @@ var BarGroup = React.createClass({
 		}
 	},
 
-	_makeBarProps: function(bar, i, mapping, linearScale, ordinalScale, size) {
+	_makeBarProps: function(bar, i, mapping, linearScale, ordinalScale, size, offset) {
 		var props = this.props;
 		var barProps = { key: i, colorIndex: bar.colorIndex };
 		barProps[mapping.ordinalVal] = ordinalScale(bar.entry);
@@ -68,24 +68,33 @@ var BarGroup = React.createClass({
 		var mapping = orientation_map[props.orientation];
 		var numDataPoints = props.bars[0].data.length;
 		var makeBarProps = this._makeBarProps;
-		var groupInnerPadding = Math.max(0.1, (props.displayConfig.columnInnerPadding / numDataPoints));
-
+		var groupInnerPadding = Math.max(0.2, (props.displayConfig.columnInnerPadding / numDataPoints));
 		var outerScale = props[mapping.ordinalScale];
-		var innerSize = outerScale.bandwidth();
+		var isOrdinal = outerScale.hasOwnProperty("bandwidth");
+		var offset = 0;
+		var innserSize;
+
+		if (isOrdinal) {
+			var innerSize = outerScale.bandwidth();
+		} else {
+			var innerSize = props.dimensions[mapping.ordinalSize] / numDataPoints;
+		}
 
 		var innerScale = d3scale.scaleBand().domain(range(props.bars.length))
-			.rangeRound([0, innerSize], 0.1, groupInnerPadding);
+			.rangeRound([0, innerSize], 0.2, groupInnerPadding);
 
 		var rectSize = innerScale.bandwidth();
 
+		if (!isOrdinal) { offset = innerSize / -2; }
+
 		var groups = map(props.bars, function(bar, ix) {
 			var groupProps = { "key": ix, className: "bar-series" };
-			groupProps["transform"] = mapping.groupTransform(innerScale(ix));
+			groupProps["transform"] = mapping.groupTransform(innerScale(ix) + offset);
 
 			var rects = map(bar.data, function(d, i) {
 				var linearScale = bar[mapping.linearScale] || props[mapping.linearScale];
 				var ordinalOffset = innerScale(ix);
-				var barProps = makeBarProps(d, i, mapping, linearScale, outerScale, rectSize);
+				var barProps = makeBarProps(d, i, mapping, linearScale, outerScale, rectSize, offset);
 				barProps.className = "color-index-" + bar.colorIndex;
 
 				return Rect(barProps);
