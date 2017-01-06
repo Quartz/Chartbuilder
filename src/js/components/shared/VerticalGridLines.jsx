@@ -23,11 +23,22 @@ var VerticalGridLines = React.createClass({
 		}
 	},
 
+	_getTransformX: function(scale, tickValue) {
+		if (scale.bandwidth) {
+			return scale(tickValue) + scale.bandwidth() / 2;
+		} else {
+			return scale(tickValue);
+		}
+	},
+
 	// TODO: dont need to get range extent unless props.y1 and y2 absent
 	_generateTicks: function(props) {
 		var yRange = this._getRangeExtent(props.yScale);
+		var transformX = this._getTransformX;
+
 		return map(props.tickValues, function(tickValue, i) {
-			var scalePos = props.xScale(tickValue);
+			var scalePos = transformX(props.xScale, tickValue);
+
 			return (
 				<line
 					key={i}

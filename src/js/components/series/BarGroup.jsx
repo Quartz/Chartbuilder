@@ -1,12 +1,14 @@
 var React = require("react");
 var PropTypes = React.PropTypes;
+var d3scale = require("d3-scale");
 var assign = require("lodash/assign");
 var map = require("lodash/map");
 var keys = require("lodash/keys");
 var reduce = require("lodash/reduce");
+var range = require("lodash/range");
 var isArray = require("lodash/isArray");
-var ordinal = require("d3").scale.ordinal;
-var rect = React.createFactory('rect');
+var Rect = React.createFactory('rect');
+var G = React.createFactory('g');
 
 // parse props differently if bar is horizontal/vertical
 var orientation_map = {
@@ -17,7 +19,8 @@ var orientation_map = {
 		"linearScale": "yScale",
 		"linearVal": "y",
 		"linearSize": "height",
-		"linearCalculation": Math.max.bind(null, 0)
+		"linearCalculation": Math.max.bind(null, 0),
+		"groupTransform": function(x) { return "translate(" + x + ",0)"; }
 	},
 	horizontal: {
 		"ordinalScale": "yScale",
@@ -26,7 +29,8 @@ var orientation_map = {
 		"linearScale": "xScale",
 		"linearVal": "x",
 		"linearSize": "width",
-		"linearCalculation": Math.min.bind(null, 0)
+		"linearCalculation": Math.min.bind(null, 0),
+		"groupTransform": function(y) { return "translate(0," + y + ")"; }
 	},
 };
 
@@ -46,10 +50,10 @@ var BarGroup = React.createClass({
 		}
 	},
 
-	_makeBarProps: function(bar, i, mapping, linearScale, ordinalScale, size, offset) {
+	_makeBarProps: function(bar, i, mapping, linearScale, ordinalScale, size) {
 		var props = this.props;
 		var barProps = { key: i, colorIndex: bar.colorIndex };
-		barProps[mapping.ordinalVal] = ordinalScale(bar.entry) + offset;
+		barProps[mapping.ordinalVal] = ordinalScale(bar.entry);
 		barProps[mapping.ordinalSize] = size;
 
 		// linearVal needs to be negative if number is neg else 0
@@ -64,27 +68,30 @@ var BarGroup = React.createClass({
 		var mapping = orientation_map[props.orientation];
 		var numDataPoints = props.bars[0].data.length;
 		var makeBarProps = this._makeBarProps;
-
-		var innerSize = props.dimensions[mapping.ordinalSize] / numDataPoints;
 		var groupInnerPadding = Math.max(0.1, (props.displayConfig.columnInnerPadding / numDataPoints));
 
-		var innerScale = ordinal().domain(Object.keys(props.bars))
-			.rangeRoundBands([0, innerSize], 0, 0.2);
+		var outerScale = props[mapping.ordinalScale];
+		var innerSize = outerScale.bandwidth();
 
-		var rectSize = innerScale.rangeBand();
+		var innerScale = d3scale.scaleBand().domain(range(props.bars.length))
+			.rangeRound([0, innerSize], 0.1, groupInnerPadding);
+
+		var rectSize = innerScale.bandwidth();
 
 		var groups = map(props.bars, function(bar, ix) {
+			var groupProps = { "key": ix, className: "bar-series" };
+			groupProps["transform"] = mapping.groupTransform(innerScale(ix));
+
 			var rects = map(bar.data, function(d, i) {
-				var ordinalScale = bar[mapping.ordinalScale] || props[mapping.ordinalScale];
 				var linearScale = bar[mapping.linearScale] || props[mapping.linearScale];
 				var ordinalOffset = innerScale(ix);
-				var barProps = makeBarProps(d, i, mapping, linearScale, ordinalScale, rectSize, ordinalOffset);
+				var barProps = makeBarProps(d, i, mapping, linearScale, outerScale, rectSize);
 				barProps.className = "color-index-" + bar.colorIndex;
 
-				return rect(barProps);
+				return Rect(barProps);
 			});
 
-			return <g key={ix} className="bar-series">{rects}</g>;
+			return G(groupProps, rects);
 		});
 
 		return <g className="bar-series-group">{groups}</g>;

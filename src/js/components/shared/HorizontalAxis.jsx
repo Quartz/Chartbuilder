@@ -78,13 +78,37 @@ var HorizontalAxis = React.createClass({
 		};
 	},
 
+	_getTransformY: function(orient, height, yScale) {
+		var yRange;
+		if (yScale.rangeExtent) {
+			yRange = yScale.rangeExtent();
+		} else {
+			yRange = yScale.range();
+		}
+
+		if (orient === "top") {
+			return yRange[1];
+		} else if (orient === "bottom") {
+			return yRange[0];
+		}
+	},
+
+	_getTransformX: function(scale, tickValue) {
+		if (scale.bandwidth) {
+			return scale(tickValue) + scale.bandwidth() / 2;
+		} else {
+			return scale(tickValue);
+		}
+	},
+
 	_generateTicks: function(props) {
 		var lastTickWidth = this.state.lastTickWidth;
+		var transformX = this._getTransformX;
 
 		return map(props.tickValues, function(tickValue, i) {
 			var text;
 			var formatted = props.tickFormat(tickValue)
-			var xVal = props.xScale(tickValue);
+			var xVal = transformX(props.xScale, tickValue);
 
 			// offset a tick label that is over the edge
 			if (xVal + lastTickWidth > props.dimensions.width) {
@@ -133,26 +157,11 @@ var HorizontalAxis = React.createClass({
 		}
 	},
 
-	_getTransform: function(orient, height, yScale) {
-		var yRange;
-		if (yScale.rangeExtent) {
-			yRange = yScale.rangeExtent();
-		} else {
-			yRange = yScale.range();
-		}
-
-		if (orient === "top") {
-			return yRange[1];
-		} else if (orient === "bottom") {
-			return yRange[0];
-		}
-	},
-
 	render: function() {
 		var props = this.props;
 		var ticks = this._generateTicks(props);
 		var suffix = this._generateSuffix(props);
-		var transformY = this._getTransform(props.orient, props.dimensions.height, props.yScale);
+		var transformY = this._getTransformY(props.orient, props.dimensions.height, props.yScale);
 
 		return (
 			<g
