@@ -32,20 +32,31 @@ var BarLabels = React.createClass({
 		}
 	},
 
+	_getTransformY: function(yScale, tickValue) {
+		if (yScale.bandwidth) {
+			return yScale(tickValue) + yScale.bandwidth() / 2;
+		} else {
+			return yScale(tickValue);
+		}
+	},
+
 	render: function() {
 		var props = this.props;
 		var addPrefSuf = this._addPrefSuf;
 		var numTicks = props.data.length;
+		var getTransformY = this._getTransformY;
+
 		var labels = map(props.data, function(d, i) {
 			var formatted = props.formatLabel(d.value)
 			var text = addPrefSuf(formatted, i, numTicks, props.prefix, props.suffix)
+			var yPos = getTransformY(props.yScale, d.entry);
 			return (
 				<text
 					key={i}
 					className="bar-label"
 					transform={"translate(" + props.translate + ")"}
 					x={props.displayConfig.blockerRectOffset + props.xScale(Math.max(0, d.value))}
-					y={props.yScale(d.entry)}
+					y={yPos}
 					dy={props.dy}
 				>
 					{text}

@@ -1,4 +1,5 @@
 var d3 = require("d3");
+var scale = require("d3-scale");
 var clone = require("lodash/clone");
 var reduce = require("lodash/reduce");
 var map = require("lodash/map");
@@ -81,7 +82,7 @@ function _ordinalScale(scaleOptions, data, range) {
 	});
 
 	return {
-		scale: d3.scale.ordinal().domain(entries).rangeBands(range, 0, 0), // TODO: hardcode
+		scale: scale.scaleBand().domain(entries).range(range, 0, 0), // TODO: hardcode
 		tickValues: entries,
 	};
 }

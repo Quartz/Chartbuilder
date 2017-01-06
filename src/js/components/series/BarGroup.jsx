@@ -72,8 +72,6 @@ var BarGroup = React.createClass({
 			.rangeRoundBands([0, innerSize], 0, 0.2);
 
 		var rectSize = innerScale.rangeBand();
-		console.log('innersize', innerSize)
-		console.log('rectsize', rectSize)
 
 		var groups = map(props.bars, function(bar, ix) {
 			var rects = map(bar.data, function(d, i) {

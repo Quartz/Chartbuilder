@@ -30,8 +30,25 @@ var VerticalAxis = React.createClass({
 		}
 	},
 
+	_getTransformX: function(orient, width) {
+		if (orient == "left") {
+			return 0;
+		} else if (orient == "right") {
+			return width;
+		}
+	},
+
+	_getTransformY: function(yScale, tickValue) {
+		if (yScale.bandwidth) {
+			return yScale(tickValue) + yScale.bandwidth() / 2;
+		} else {
+			return yScale(tickValue);
+		}
+	},
+
 	_generateText: function(props) {
 		var numTicks = props.tickValues.length;
+		var getTransformY = this._getTransformY;
 		var concealerHeight = props.tickTextHeight + props.displayConfig.blockerRectOffset;
 
 		return map(props.tickValues, function(tickValue, i) {
@@ -45,9 +62,11 @@ var VerticalAxis = React.createClass({
 				text = formatted;
 			}
 
+			var transformY = getTransformY(props.yScale, tickValue);
+
 			return (
 				<g key={i} className="concealer-label"
-					 transform={"translate(" + [0, props.yScale(tickValue)] + ")"}
+					 transform={"translate(" + [0, transformY] + ")"}
 				>
 					<rect
 						className="tick-blocker-rect"
@@ -63,14 +82,6 @@ var VerticalAxis = React.createClass({
 			)
 
 		});
-	},
-
-	_getTransformX: function(orient, width) {
-		if (orient == "left") {
-			return 0;
-		} else if (orient == "right") {
-			return width;
-		}
 	},
 
 	render: function() {

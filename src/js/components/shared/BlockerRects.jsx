@@ -26,11 +26,31 @@ var BlockerRect = React.createClass({
 		}
 	},
 
+	_getTransformX: function(orient, width) {
+		if (orient == "left") {
+			return 0;
+		} else if (orient == "right") {
+			return width;
+		}
+	},
+
+	_getTransformY: function(yScale, tickValue) {
+		if (yScale.bandwidth) {
+			return yScale(tickValue) + yScale.bandwidth() / 2;
+		} else {
+			return yScale(tickValue);
+		}
+	},
+
 	_generateRects: function(props) {
 		var concealerHeight = props.tickTextHeight + props.displayConfig.blockerRectOffset;
+		var transformY = this._getTransformY;
 
 		return map(props.data, function(label, i) {
 			var rectX = (props.orient === "left") ? 0 : props.labelWidths[i] * -1;
+			var xPos = props.xScale(Math.max(0, label.value));
+			var yPos = transformY(props.yScale, label.entry) - (concealerHeight / 2);
+
 			var labelWidths = props.labelWidths[props.seriesNumber];
 			return (
 				<rect
@@ -38,19 +58,11 @@ var BlockerRect = React.createClass({
 					key={i}
 					width={labelWidths[i] + props.displayConfig.blockerRectOffset * 2}
 					height={concealerHeight}
-					x={props.xScale(Math.max(0, label.value))}
-					y={props.yScale(label.entry) - (concealerHeight / 2)}
+					x={xPos}
+					y={yPos}
 				/>
 			);
 		});
-	},
-
-	_getTransformX: function(orient, width) {
-		if (orient == "left") {
-			return 0;
-		} else if (orient == "right") {
-			return width;
-		}
 	},
 
 	render: function() {
