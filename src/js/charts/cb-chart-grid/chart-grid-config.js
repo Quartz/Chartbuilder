@@ -42,7 +42,7 @@ var display = {
 	},
 	xy: require("../cb-xy/xy-config").display,
 	margin: {
-		top: "0.8em",
+		top: "1em",
 		right: "0.25em",
 		bottom: "0.15em",
 		left: "0.25em"

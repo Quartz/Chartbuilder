@@ -10,7 +10,20 @@ var VerticalGridLines = React.createClass({
 		tickValues: PropTypes.array,
 		orient: PropTypes.string,
 		dimensions: PropTypes.object,
-		yScale: PropTypes.func
+		yScale: PropTypes.func,
+		offset: PropTypes.shape({
+			x: PropTypes.number,
+			y: PropTypes.number
+		}),
+	},
+
+	getDefaultProps: function() {
+		return {
+			offset: {
+				x: 0,
+				y: 0
+			}
+		}
 	},
 
 	_getRangeExtent: function(scale) {
@@ -25,7 +38,7 @@ var VerticalGridLines = React.createClass({
 		var getRange = this._getRangeExtent;
 
 		return map(props.tickValues, function(tickValue, i) {
-			var scalePos = ordinalAdjust(props.yScale, tickValue);
+			var scalePos = ordinalAdjust(props.yScale, tickValue) + props.offset.y;
 			var x1 = !isNaN(props.x1) ? props.x1 : props.translate[0] * -1;
 			var className = cx("tick", { zero: (tickValue === 0) });
 			return (

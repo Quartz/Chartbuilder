@@ -44,11 +44,12 @@ var BlockerRect = React.createClass({
 			var yPos = ordinalAdjust(props.yScale, label.entry) - (concealerHeight / 2);
 
 			var labelWidths = props.labelWidths[props.seriesNumber];
+			var width = labelWidths[i] + props.displayConfig.blockerRectOffset * 2;
 			return (
 				<rect
 					className="blocker-rect"
 					key={i}
-					width={labelWidths[i] + props.displayConfig.blockerRectOffset * 2}
+					width={width}
 					height={concealerHeight}
 					x={xPos}
 					y={yPos}

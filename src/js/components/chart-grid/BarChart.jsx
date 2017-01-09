@@ -4,7 +4,7 @@ var map = require("lodash/map");
 var assign = require("lodash/assign");
 var seriesUtils         = require("../../util/series-utils.js");
 
-var VerticalAxis        = require("../shared/VerticalAxis.jsx");
+var VerticalGridLines   = require("../shared/VerticalGridLines.jsx");
 var BarLabels           = require("../shared/BarLabels.jsx");
 var BlockerRects        = require("../shared/BlockerRects.jsx");
 var SeriesLabel         = require("../shared/SeriesLabel.jsx");
@@ -35,8 +35,9 @@ var BarChart = React.createClass({
 			//return React.cloneElement(child, childProps);
 		//});
 
+	 console.log(props)
 		var barProps = {
-			data: props.data,
+			data: props.data.values,
 			colorIndex: props.colorIndex
 		};
 
@@ -50,7 +51,6 @@ var BarChart = React.createClass({
 
 		return (
 			<g
-				className={"chart chart-" + props.chartType}
 				transform={"translate(" + props.translate + ")"}
 			>
 				<SeriesLabel
@@ -64,7 +64,26 @@ var BarChart = React.createClass({
 					className="bar-area"
 					transform={"translate(0," + props.labelOffset + ")"}
 				>
+					<BlockerRects
+						{...this.props}
+						key="blockers"
+						seriesNumber={props.seriesNumber}
+						data={props.data.values}
+					/>
+					<BarLabels
+						{...this.props}
+						key="barlabels"
+						data={props.data.values}
+						prefix={props.primaryScale.prefix}
+						suffix={props.primaryScale.suffix}
+					/>
 					{bars}
+					<VerticalGridLines
+						{...this.props}
+						key="vert"
+						tickValues={[0]}
+						className="zero"
+					/>
 				</g>
 			</g>
 		);

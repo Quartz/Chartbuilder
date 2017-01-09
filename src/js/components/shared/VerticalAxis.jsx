@@ -13,7 +13,10 @@ var VerticalAxis = React.createClass({
 		orient: PropTypes.string,
 		width: PropTypes.number,
 		yScale: PropTypes.func,
-		offset: PropTypes.number,
+		offset: PropTypes.shape({
+			x: PropTypes.number,
+			y: PropTypes.number
+		}),
 		tickValues: PropTypes.array,
 		tickFormat: PropTypes.func,
 		prefix: PropTypes.string,
@@ -26,7 +29,10 @@ var VerticalAxis = React.createClass({
 	getDefaultProps: function() {
 		return {
 			orient: "left",
-			offset: 0,
+			offset: {
+				x: 0,
+				y: 0
+			},
 			tickFormat: function(d) { return d; }
 		}
 	},
@@ -85,7 +91,7 @@ var VerticalAxis = React.createClass({
 			<g
 				className={"axis vertical-axis color-index-" + props.colorIndex}
 				style={{ font: props.tickFont }}
-				transform={"translate(" + [transformX + props.offset, 0] + ")"}
+				transform={"translate(" + [transformX + props.offset.x, props.offset.y] + ")"}
 			>
 				{text}
 			</g>
