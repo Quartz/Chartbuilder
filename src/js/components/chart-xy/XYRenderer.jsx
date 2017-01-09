@@ -265,7 +265,7 @@ var XYRenderer = React.createClass({
 			var axis = yAxes[key];
 			var orient = displayConfig.yAxisOrient[key];
 			var maxTickWidth = tickWidths[key].max;
-			var offset = (orient === "left") ? maxTickWidth * -1 : maxTickWidth;
+			var offsetX = (orient === "left") ? maxTickWidth * -1 : maxTickWidth;
 			return (
 				<VerticalAxis
 					key={i}
@@ -275,7 +275,7 @@ var XYRenderer = React.createClass({
 					tickValues={axis.tickValues}
 					tickWidths={tickWidths[key].widths}
 					orient={orient}
-					offset={offset}
+					offset={{ x: offsetX, y: 0 }}
 					width={chartAreaDimensions.width}
 					yScale={axis.scale}
 					colorIndex={scaleOptions.colorIndex}
