@@ -3,10 +3,10 @@ $em_size_small = 14px
 $em_size_large = 36px
 
 div.renderer-wrapper
-  font-smoothing antialiased
-  width 100%
-  margin 0
-  padding 0
+	font-smoothing antialiased
+	width 100%
+	margin 0
+	padding 0
 	.em-size-wrapper
 		width 100%
 	.em-size
@@ -20,112 +20,112 @@ div.renderer-wrapper
 		height 1em
 
 svg
-  &.renderer-svg
-    fill $color-bg
-    text-rendering optimizeLegibility
-    box-sizing border-box
-    tspan
-      height 1em
-      line-height 1em
+	&.renderer-svg
+		fill $color-bg
+		text-rendering optimizeLegibility
+		box-sizing border-box
+		tspan
+			height 1em
+			line-height 1em
 	.svg-background
 		fill $color-bg
 
 .d4
-  font-size $em_size
-  .leftAxis path.domain
-    display none
-  .xAxis path.domain
-    display none
-  .axis
-    .tick
-      &[data-anchor="middle"]
-        text
-          text-anchor middle
-      text
-        fill $color-chart-axis-text
-        shape-rendering crispEdges
-        text-anchor middle
-      &:first-child
-        text
-          text-anchor middle
-      line
-        fill none
-        stroke $color-chart-gridline
-        stroke-width 1px
-        shape-rendering crispEdges
-      &.zero
-        line
-          stroke $color-chart-zeroline
-      rect
-        fill $color-bg
-        shape-rendering crispEdges
+	font-size $em_size
+	.leftAxis path.domain
+		display none
+	.xAxis path.domain
+		display none
+	.axis
+		.tick
+			&[data-anchor="middle"]
+				text
+					text-anchor middle
+			text
+				fill $color-chart-axis-text
+				shape-rendering crispEdges
+				text-anchor middle
+			&:first-child
+				text
+					text-anchor middle
+			line
+				fill none
+				stroke $color-chart-gridline
+				stroke-width 1px
+				shape-rendering crispEdges
+			&.zero
+				line
+					stroke $color-chart-zeroline
+			rect
+				fill $color-bg
+				shape-rendering crispEdges
 
-    &.leftAxis
-      text
-        text-anchor start
+		&.leftAxis
+			text
+				text-anchor start
 
-    &.rightAxis
-      text
-        text-anchor end
-    &[data-scale="time"]
-      .tick:not([data-anchor="middle"])
-        text
-          text-anchor start
-      .tick:first-child
-        text
-          text-anchor start
-  .xAxislabel
-    fill $color-chart-axis-text
+		&.rightAxis
+			text
+				text-anchor end
+		&[data-scale="time"]
+			.tick:not([data-anchor="middle"])
+				text
+					text-anchor start
+			.tick:first-child
+				text
+					text-anchor start
+	.xAxislabel
+		fill $color-chart-axis-text
 
-  .connectors line
-    fill none
-    stroke-width 1px
+	.connectors line
+		fill none
+		stroke-width 1px
 
 
-  .margins
-    .line, .other-line
-      path
-        fill none
-        stroke-width 3px
-        stroke-linecap round
-        stroke-linejoin round
+	.margins
+		.line, .other-line
+			path
+				fill none
+				stroke-width 3px
+				stroke-linecap round
+				stroke-linejoin round
 
-  .column-label
-    fill $color-chart-axis-text
+	.column-label
+		fill $color-chart-axis-text
 
-  line.no-label-tick
-    fill none
-    stroke $color-chart-gridline
-    stroke-width 1px
-    shape-rendering crispEdges
+	line.no-label-tick
+		fill none
+		stroke $color-chart-gridline
+		stroke-width 1px
+		shape-rendering crispEdges
 
 .svg-text
-  font-size $em_size
+	font-size $em_size
 
-  tspan
-    &.em
-      font-style italic
+	tspan
+		&.em
+			font-style italic
 
-    &.strong
-      font-family $font-sans-bold
+		&.strong
+			font-family $font-sans-bold
 
-    &.strong .em, &.em .strong
-      font-family $font-sans-bold
-      font-style italic
+		&.strong .em, &.em .strong
+			font-family $font-sans-bold
+			font-style italic
 
-  &.svg-text-credit
-    fill $color-chart-meta
-    text-anchor start
-  &.svg-text-source
-    fill $color-chart-meta
-    //text
-      //dominant-baseline central
-    &.left
-      text-anchor start
-    &.right
-      text-anchor end
-  &.svg-text-title
-    fill $color-body-text
+	&.svg-text-credit
+		fill $color-chart-meta
+		text-anchor start
+	&.svg-text-source
+		fill $color-chart-meta
+		//text
+			//dominant-baseline central
+		&.left
+			text-anchor start
+		&.right
+			text-anchor end
+	&.svg-text-title
+		fill $color-body-text
 
 .svg-source-pipe
 	stroke $color-chart-meta
@@ -133,80 +133,80 @@ svg
 	stroke-width 0.8px
 
 .svg-label-text
-  &.draggable
-    cursor move
+	&.draggable
+		cursor move
 
 .crosshair
-  line
-    stroke-width 1
-    shape-rendering crispEdges
-    stroke black
+	line
+		stroke-width 1
+		shape-rendering crispEdges
+		stroke black
 
 .hidden-svg
-  visibility hidden
+	visibility hidden
 
 .medium
 
-    .margins
-      .line, .other-line
-        path
-          stroke-width 3px
+		.margins
+			.line, .other-line
+				path
+					stroke-width 3px
 
-  .svg-text
-    font-size $em_size
-    &.svg-text-credit
-      font-size $em_size*0.6
-    &.svg-text-source
-      font-size $em_size*0.6
-    &.svg-text-title
-      font-size $em_size
+	.svg-text
+		font-size $em_size
+		&.svg-text-credit
+			font-size $em_size*0.6
+		&.svg-text-source
+			font-size $em_size*0.6
+		&.svg-text-title
+			font-size $em_size
 
 .small
-  .em-size
-    font-size $em_size_small
-  .d4
-    font-size $em_size_small
+	.em-size
+		font-size $em_size_small
+	.d4
+		font-size $em_size_small
 
-    .margins
-      .line, .other-line
-        path
-          stroke-width 2px
+		.margins
+			.line, .other-line
+				path
+					stroke-width 2px
 
-  .svg-text
-    font-size $em_size_small
-    &.svg-text-credit
-      font-size $em_size*0.5
-    &.svg-text-source
-      font-size $em_size*0.5
-    &.svg-text-pipe
-      text
-        dominant-baseline central
-        font-size $em_size*0.6
-    &.svg-text-title
-      font-size $em_size_small
+	.svg-text
+		font-size $em_size_small
+		&.svg-text-credit
+			font-size $em_size*0.5
+		&.svg-text-source
+			font-size $em_size*0.5
+		&.svg-text-pipe
+			text
+				dominant-baseline central
+				font-size $em_size*0.6
+		&.svg-text-title
+			font-size $em_size_small
 
-  .svg-label-text
-    font-size $em_size_small
+	.svg-label-text
+		font-size $em_size_small
 
 
 .large
-  .em-size
-    font-size $em_size
-  .d4
-    font-size $em_size
-    .margins
-      .line, .other-line
-        path
-          stroke-width 4px
+	.em-size
+		font-size $em_size
+	.d4
+		font-size $em_size
+		.margins
+			.line, .other-line
+				path
+					stroke-width 4px
 
-  .svg-text
-    font-size $em_size
-    &.svg-text-credit
-      font-size $em_size*0.6
-    &.svg-text-source
-      font-size $em_size*0.6
-    &.svg-text-title
-      font-size $em_size
+	.svg-text
+		font-size $em_size
+		&.svg-text-credit
+			font-size $em_size*0.6
+		&.svg-text-source
+			font-size $em_size*0.6
+		&.svg-text-title
+			font-size $em_size
 
 .cb-credit-logo
 	fill $color-chart-meta
