@@ -238,8 +238,6 @@ var XYRenderer = React.createClass({
 		if (needsLabelOffset) {
 			chartAreaTranslateY += displayConfig.afterLegend;
 			chartAreaDimensions.height -= displayConfig.afterLegend;
-		} else {
-			outerDimensions.height -= displayConfig.afterLegend;
 		}
 
 		// y axis and scales
