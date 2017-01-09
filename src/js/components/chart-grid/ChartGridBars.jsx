@@ -34,7 +34,6 @@ var SvgWrapper          = require("../svg/SvgWrapper.jsx");
 var scaleUtils          = require("../../util/scale-utils.js");
 var seriesUtils         = require("../../util/series-utils.js");
 var gridUtils           = require("../../util/grid-utils.js");
-var BarChart            = require("../chart-grid/BarChart.jsx");
 var XYChart             = require("../chart-xy/XYChart.jsx");
 var VerticalAxis        = require("../shared/VerticalAxis.jsx");
 var BarLabels           = require("../shared/BarLabels.jsx");
@@ -77,18 +76,6 @@ var ChartGridBars = React.createClass({
 	// render a single bar grid
 	_barGridBlock: function(d, i) {
 		var props = this.props;
-
-		//return (
-			//<BarChart
-				//data={d}
-				//seriesNumber={i}
-				//colorIndex={props.chartProps.chartSettings[i].colorIndex}
-				//label={props.chartProps.chartSettings[i].label}
-				//labelOffset={props.displayConfig.afterLegend}
-				//primaryScale={props.chartProps.scale.primaryScale}
-			///>
-		//);
-		// TODO: make this a higher order component called BarChart or similar?
 
 		var barProps = {
 			key: "bar",
