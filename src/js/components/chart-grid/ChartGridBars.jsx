@@ -143,11 +143,11 @@ var ChartGridBars = React.createClass({
 			)
 		};
 
-		console.log('heightperpt', dimensions.height / chartProps.data[0].values.length)
-
 		var outerDimensions = {
 			width: dimensions.width,
-			height: dimensions.height + (displayConfig.margin.top + displayConfig.margin.bottom)
+			height: dimensions.height +
+			(displayConfig.margin.top + displayConfig.margin.bottom) +
+			displayConfig.padding.bottom
 		}
 
 		// range for all charts in grid (outer)

@@ -84,6 +84,7 @@ var BarGroup = React.createClass({
 			.rangeRound([0, innerSize], 0.2, groupInnerPadding);
 
 		var rectSize = innerScale.bandwidth();
+		console.log(rectSize)
 
 		if (!isOrdinal) { offset = innerSize / -2; }
 

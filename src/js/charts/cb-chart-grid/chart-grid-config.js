@@ -24,7 +24,7 @@ var ChartConfig = require("../ChartConfig");
 * @property {object} padding - Distances btwn inner chart elements and container
 */
 var display = {
-	afterTitle: "1.5em", // distance between top of title and top of legend or chart
+	afterTitle: "1em", // distance between top of title and top of legend or chart
 	afterLegend: "0.5em", // distance between top of legend and top of chart
 	blockerRectOffset: 6, // distance between text and background blocker rect
 	paddingPerBar: "0.7em", // extra space around bars
@@ -37,7 +37,7 @@ var display = {
 	gridPadding: {
 		xInnerPadding: 0.05,
 		xOuterPadding: 0,
-		yInnerPadding: 0.1,
+		yInnerPadding: 0.05,
 		yOuterPadding: 0
 	},
 	xy: require("../cb-xy/xy-config").display,
@@ -48,7 +48,7 @@ var display = {
 		left: "0.25em"
 	},
 	padding: {
-		top: "0.5em",
+		top: 0,
 		right: 0,
 		bottom: "1em",
 		left: 0
