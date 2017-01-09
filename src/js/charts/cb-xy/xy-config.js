@@ -62,7 +62,7 @@ var display = {
 	padding: {
 		top: 0,
 		right: 0,
-		bottom: "4em",
+		bottom: "3em",
 		left: 0
 	}
 };

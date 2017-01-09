@@ -156,16 +156,13 @@ var ChartGridXY = React.createClass({
 				tickWidths.max
 			),
 			height: (
-				dimensions.height - margin.top - margin.bottom -
-				displayConfig.xy.padding.top +
-				(displayConfig.padding.bottom * chartProps._grid.rows)
+				dimensions.height - margin.top - margin.bottom - displayConfig.xy.padding.bottom
 			)
 		};
 
 		var outerDimensions = {
 			width: dimensions.width,
-			height: dimensions.height +
-				(displayConfig.padding.bottom * chartProps._grid.rows)
+			height: dimensions.height
 		}
 
 		// range for all charts in grid (outer)
@@ -184,7 +181,7 @@ var ChartGridXY = React.createClass({
 		});
 
 		var xRangeInner = [0, gridScales.cols.rangeBand()];
-		var yRangeInner = [gridScales.rows.rangeBand() - props.displayConfig.padding.bottom, props.displayConfig.afterLegend];
+		var yRangeInner = [gridScales.rows.rangeBand(), 0];
 		var xAxis = this._generateXAxis(chartProps.scale, chartProps.data, xRangeInner);
 		var yAxis = scaleUtils.generateScale("linear", primaryScale, chartProps.data, yRangeInner);
 
