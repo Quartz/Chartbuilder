@@ -35,7 +35,6 @@ var BarChart = React.createClass({
 			//return React.cloneElement(child, childProps);
 		//});
 
-	 console.log(props)
 		var barProps = {
 			data: props.data.values,
 			colorIndex: props.colorIndex
@@ -62,7 +61,7 @@ var BarChart = React.createClass({
 				/>
 				<g
 					className="bar-area"
-					transform={"translate(0," + props.labelOffset + ")"}
+					transform={"translate(0," + 0 + ")"}
 				>
 					<BlockerRects
 						{...this.props}

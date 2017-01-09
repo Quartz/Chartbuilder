@@ -48,7 +48,7 @@ var display = {
 		left: "0.25em"
 	},
 	padding: {
-		top: 0,
+		top: "0.2em",
 		right: 0,
 		bottom: "1em",
 		left: 0

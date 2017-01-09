@@ -78,36 +78,54 @@ var ChartGridBars = React.createClass({
 	_barGridBlock: function(d, i) {
 		var props = this.props;
 
-		return (
-			<BarChart
-				data={d}
-				seriesNumber={i}
-				colorIndex={props.chartProps.chartSettings[i].colorIndex}
-				label={props.chartProps.chartSettings[i].label}
-				labelOffset={props.displayConfig.afterLegend}
-				primaryScale={props.chartProps.scale.primaryScale}
-			/>
-		);
-		// TODO: make this a higher order component called BarChart or similar?
-		//return [
-			//bar,
-			//<BlockerRects
-				//key="blockers"
+		//return (
+			//<BarChart
+				//data={d}
 				//seriesNumber={i}
-				//data={d.values}
-			///>,
-			//<BarLabels
-				//key="barlabels"
-				//data={d.values}
-				//prefix={props.chartProps.scale.primaryScale.prefix}
-				//suffix={props.chartProps.scale.primaryScale.suffix}
-			///>,
-			//<VerticalGridLines
-				//key="vert"
-				//tickValues={[0]}
-				//className="zero"
+				//colorIndex={props.chartProps.chartSettings[i].colorIndex}
+				//label={props.chartProps.chartSettings[i].label}
+				//labelOffset={props.displayConfig.afterLegend}
+				//primaryScale={props.chartProps.scale.primaryScale}
 			///>
-		//];
+		//);
+		// TODO: make this a higher order component called BarChart or similar?
+
+		var barProps = {
+			key: "bar",
+			bars: [{
+				data: d.values,
+				colorIndex: props.chartProps.chartSettings[i].colorIndex
+			}],
+			orientation: "horizontal"
+		};
+
+		var bar = seriesUtils.createSeries("column", barProps);
+
+		return [
+			<SeriesLabel
+				key="label"
+				xVal={0}
+				colorIndex={props.chartProps.chartSettings[i].colorIndex}
+				text={props.chartProps.chartSettings[i].label}
+			/>,
+			bar,
+			<BlockerRects
+				key="blockers"
+				seriesNumber={i}
+				data={d.values}
+			/>,
+			<BarLabels
+				key="barlabels"
+				data={d.values}
+				prefix={props.chartProps.scale.primaryScale.prefix}
+				suffix={props.chartProps.scale.primaryScale.suffix}
+			/>,
+			<VerticalGridLines
+				key="vert"
+				tickValues={[0]}
+				className="zero"
+			/>
+		];
 	},
 
 	render: function() {
@@ -138,7 +156,8 @@ var ChartGridBars = React.createClass({
 				maxTickWidth
 			),
 			height: (
-				dimensions.height
+				dimensions.height +
+			(displayConfig.afterLegend * chartProps._grid.rows)
 			)
 		};
 
@@ -185,7 +204,7 @@ var ChartGridBars = React.createClass({
 
 		// range and axes for each chart in the grid (inner)
 		var xRangeInner = [0, gridScales.cols.rangeBand() - barLabelOverlap];
-		var yRangeInner = [0, gridScales.rows.rangeBand()];
+		var yRangeInner = [displayConfig.afterLegend, gridScales.rows.rangeBand() - displayConfig.afterLegend];
 		var xAxis = scaleUtils.generateScale("linear", primaryScale, chartProps.data, xRangeInner);
 		var yAxis = scaleUtils.generateScale("ordinal", primaryScale, chartProps.data, yRangeInner);
 
@@ -223,12 +242,10 @@ var ChartGridBars = React.createClass({
 						styleConfig={props.styleConfig}
 						displayConfig={displayConfig}
 						translate={[0, 0]}
-						offset={{x: 0, y: displayConfig.afterLegend}}
 						tickValues={tickLabels}
 					/>
 					<VerticalAxis
 						tickValues={tickLabels}
-						offset={{x: 0, y: displayConfig.afterLegend}}
 						tickWidths={tickWidths}
 						dimensions={chartAreaDimensions}
 						styleConfig={props.styleConfig}
