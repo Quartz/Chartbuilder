@@ -4,18 +4,20 @@ from d4 to react.
 - [ ] Overall
 	- [ ] Comment new stuff
 	- [ ] General cleanup
+	- [ ] export working?
+	- [ ] is RendererWrapper still needed?
 - [x] XY chart
 	- [x] Render types and combinations of types
 	- [x] Number axis
 	- [x] Axes with formatting and prefix/suffix
-- [ ] Chart grid bars
+- [X] Chart grid bars
 	- [X] Render bars
 	- [X] Render y axis
 	- [X] Spacing
-- [ ] Chart grid XY
+- [X] Chart grid XY
 	- [X] Render lines/dots/cols
 	- [X] Render y axis
 	- [X] Render x axis
 	- [X] Handle case of dates in bar chart grid
-	- [ ] Sizing/spacing/style
+	- [X] Sizing/spacing/style
 
