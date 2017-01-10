@@ -7,9 +7,9 @@ var testInput = require("../../../test/util/test-input");
 
 module.exports = {
 	defaultChart: function() {
-		var default_model = chartConfig.xy.defaultProps;
+		var default_model = chartConfig.chartgrid.defaultProps;
 		default_model.chartProps.input = {
-			raw: testInput.init_data_time
+			raw: testInput.init_data_ordinal
 			//raw: defaultInput
 		};
 
