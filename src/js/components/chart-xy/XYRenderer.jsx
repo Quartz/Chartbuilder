@@ -275,6 +275,7 @@ var XYRenderer = React.createClass({
 					tickValues={axis.tickValues}
 					tickWidths={tickWidths[key].widths}
 					orient={orient}
+					textAlign="outside"
 					offset={{ x: offsetX, y: 0 }}
 					width={chartAreaDimensions.width}
 					yScale={axis.scale}

@@ -2,6 +2,7 @@
 var React = require("react");
 var PropTypes = React.PropTypes;
 var map = require("lodash/map");
+var max = require("lodash/max");
 var help = require("../../util/helper.js");
 var ordinalAdjust = require("../../util/scale-utils").ordinalAdjust;
 
@@ -33,25 +34,69 @@ var VerticalAxis = React.createClass({
 				x: 0,
 				y: 0
 			},
-			tickFormat: function(d) { return d; }
+			tickFormat: function(d) { return d; },
+			textAlign: "outside"
 		}
 	},
 
-	_getTransformX: function(orient, width) {
-		if (orient == "left") {
-			return 0;
-		} else if (orient == "right") {
-			return width;
+	_orientation: {
+		"left": {
+			transformTextX: function(width, textAlign, tickWidth, maxTickWidth) {
+				if (textAlign === "inside") {
+					return tickWidth * -1 + maxTickWidth;
+				} else {
+					return 0;
+				}
+			},
+			textAnchor: {
+				"inside": "end",
+				"outside": "start",
+			},
+			transformRectX: function(textAlign, tickWidth, maxTickWidth) {
+				return 0;
+			}
+		},
+		"right": {
+			transformTextX: function(width, textAlign, tickWidth, maxTickWidth) {
+				if (textAlign === "inside") {
+					return maxTickWidth * -1;
+				} else {
+					return tickWidth * -1;
+				}
+			},
+			textAnchor: {
+				"inside": "start",
+				"outside": "end"
+			},
+			transformRectX: function(textAlign, tickWidth, maxTickWidth) {
+				if (textAlign === "inside") {
+					return maxTickWidth * -1;
+				} else {
+					return tickWidth * -1;
+				}
+			}
 		}
 	},
 
 	_generateText: function(props) {
 		var numTicks = props.tickValues.length;
 		var concealerHeight = props.tickTextHeight + props.displayConfig.blockerRectOffset;
+		var orientation = this._orientation[props.orient]
+		var textAnchor = orientation.textAnchor[props.textAlign];
+		var maxTickWidth = max(props.tickWidths);
 
 		return map(props.tickValues, function(tickValue, i) {
-			var formatted = props.tickFormat(tickValue)
-			var rectX = (props.orient === "left") ? 0 : props.tickWidths[i] * -1;
+			var formatted = props.tickFormat(tickValue);
+			var currTickWidth = props.tickWidths[i];
+
+			var rectWidth;
+			if (props.textAlign === "inside") {
+				rectWidth = maxTickWidth + props.displayConfig.blockerRectOffset;
+			} else {
+				rectWidth = currTickWidth + props.displayConfig.blockerRectOffset
+			}
+
+			var textX = orientation.transformTextX(props.width, props.textAlign, currTickWidth, maxTickWidth);
 
 			var text;
 			if (i === (numTicks - 1)) {
@@ -63,17 +108,22 @@ var VerticalAxis = React.createClass({
 			var transformY = ordinalAdjust(props.yScale, tickValue);
 
 			return (
-				<g key={i} className="concealer-label"
-					 transform={"translate(" + [0, transformY] + ")"}
+				<g
+					key={i}
+					className="concealer-label"
+					transform={"translate(" + [0, transformY] + ")"}
 				>
 					<rect
 						className="tick-blocker-rect"
-						width={props.tickWidths[i] + props.displayConfig.blockerRectOffset}
+						width={rectWidth}
 						height={concealerHeight}
-						x={rectX}
+						x={orientation.transformRectX(props.textAlign, currTickWidth, maxTickWidth)}
 						y={concealerHeight / -2}
 					/>
-					<text className={"tick orient-" + props.orient} x={0} y={0} dy={DY} >
+					<text
+						className="tick"
+						x={textX} y={0} dy={DY}
+					>
 						{text}
 					</text>
 				</g>
@@ -85,13 +135,13 @@ var VerticalAxis = React.createClass({
 	render: function() {
 		var props = this.props;
 		var text = this._generateText(props);
-		var transformX = this._getTransformX(props.orient, props.width);
+		var transformGroup = (props.orient === "left") ? 0 : props.width;
 
 		return (
 			<g
 				className={"axis vertical-axis color-index-" + props.colorIndex}
 				style={{ font: props.tickFont }}
-				transform={"translate(" + [transformX + props.offset.x, props.offset.y] + ")"}
+				transform={"translate(" + [transformGroup + props.offset.x, props.offset.y] + ")"}
 			>
 				{text}
 			</g>

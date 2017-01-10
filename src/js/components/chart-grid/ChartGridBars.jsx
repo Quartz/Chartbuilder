@@ -244,6 +244,7 @@ var ChartGridBars = React.createClass({
 						yScale={yAxis.scale}
 						tickTextHeight={tickTextHeight}
 						tickFont={tickFont}
+						textAlign="inside"
 					/>
 				</g>
 			)
