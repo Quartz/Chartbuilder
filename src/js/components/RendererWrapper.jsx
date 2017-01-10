@@ -55,6 +55,7 @@ var RendererWrapper = React.createClass({
 		svgClassName: PropTypes.string
 	},
 
+	// don't render incoming chart if there are errors in parsing
 	shouldComponentUpdate: function(nextProps, nextState) {
 		if (!nextProps.model.errors) {
 			return true;
@@ -75,6 +76,7 @@ var RendererWrapper = React.createClass({
 		};
 	},
 
+	// process the size-relative chart config of a chart type when type is changed
 	componentWillReceiveProps: function(nextProps) {
 		var newType = nextProps.model.metadata.chartType;
 		var prevType = this.props.model.metadata.chartType;
@@ -87,12 +89,15 @@ var RendererWrapper = React.createClass({
 	componentWillMount: function() {
 		var chartType = this.props.model.metadata.chartType;
 		var size_calcs = {};
+		// set chart breakpoints
 		if (this.props.width) {
 			var bp = breakpoints.getBreakpointObj(this.props.enableResponsive, this.props.width);
 			size_calcs = this._resizeUpdate(this.props, bp, this.props.width);
 		}
 
 		var chartProps = null;
+		// process date strings as dates
+		// TODO: why do we need this again?
 		if (this.props.model.chartProps.scale.hasDate && !this.props.editable) {
 			var _chartProps = clone(this.props.model.chartProps, true);
 			var newData = _chartProps.data.map(function(d) {
@@ -111,6 +116,7 @@ var RendererWrapper = React.createClass({
 		this.setState(state);
 	},
 
+	// method for updating configs and breakpoints when width changes
 	_resizeUpdate: function(props, bp, domNodeWidth) {
 		var chartType = props.model.metadata.chartType;
 		return {
@@ -122,11 +128,8 @@ var RendererWrapper = React.createClass({
 		};
 	},
 
-	componentVisibilityChanged: function() {
-		this._updateWidth();
-	},
-
-	_updateWidth: function(force) {
+	// check for a new width and update everything if it has changed
+	_updateWidth: function() {
 		var domNodeWidth = ReactDOM.findDOMNode(this).offsetWidth;
 		var bp = breakpoints.getBreakpointObj(this.props.enableResponsive, domNodeWidth);
 		if (domNodeWidth !== this.state.domNodeWidth) {
@@ -137,6 +140,7 @@ var RendererWrapper = React.createClass({
 		}
 	},
 
+	// add resize listener if chart is responsive
 	componentDidMount: function() {
 		if (this.props.enableResponsive) {
 			this._updateWidth(true);
@@ -145,12 +149,14 @@ var RendererWrapper = React.createClass({
 		}
 	},
 
+	// remove resize listener on unmount
 	componentWillUnmount: function() {
 		if (this.props.enableResponsive) {
 			window.removeEventListener("resize", this._updateWidth);
 		}
 	},
 
+	// TODO: remove this feature? seems never used
 	_getMobileMetadata: function(metadata, mobileSettings) {
 		var setMobile = reduce(keys(metadata), function(obj, key) {
 			if (mobileSettings[key] && mobileSettings[key] !== "") {
@@ -164,11 +170,11 @@ var RendererWrapper = React.createClass({
 		return setMobile;
 	},
 
-	_handleSvgUpdate: function(k, v) {
-		var newSetting = {};
-		newSetting[k] = v;
-		this.setState(update(this.state, { $merge: newSetting }));
-	},
+	//_handleSvgUpdate: function(k, v) {
+		//var newSetting = {};
+		//newSetting[k] = v;
+		//this.setState(update(this.state, { $merge: newSetting }));
+	//},
 
 	render: function() {
 		var chartType = this.props.model.metadata.chartType;
@@ -181,6 +187,8 @@ var RendererWrapper = React.createClass({
 		}
 
 		// Reduce padding and margin if metadata is not shown
+		// this is used for the embed. should be removable if/once we render
+		// metadata with HTML
 		if (this.props.showMetadata === false) {
 			var _padding = {
 				top: displayConfig.padding.top,
@@ -214,13 +222,15 @@ var RendererWrapper = React.createClass({
 
 		var isSmall = (this.state.svgSizeClass === "small");
 
-		// override metadats with mobile-specific settings if defined
+		// override metadata with mobile-specific settings if defined
+		// TODO: remove this feature? seems never used
 		if (this.props.enableResponsive && this.props.model.chartProps.mobile && isSmall) {
 			metadata = this._getMobileMetadata(this.props.model.metadata, this.props.model.chartProps.mobile);
 		} else {
 			metadata = this.props.model.metadata;
 		}
 
+		// pass these props to the selected Renderer
 		return (
 			<div className={["renderer-wrapper", this.state.svgSizeClass, this.props.className].join(" ")}>
 				<Renderer
