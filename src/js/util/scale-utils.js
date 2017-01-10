@@ -85,7 +85,7 @@ function _ordinalScale(scaleOptions, data, range) {
 
 	var scale = d3scale.scaleBand()
 		.domain(entries)
-		.range(range).round(true)
+		.range(range)
 		.paddingInner(0.2)
 		.paddingOuter(0.1); //TODO: hardcode
 
