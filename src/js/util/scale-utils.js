@@ -1,6 +1,7 @@
 var d3 = require("d3");
 var d3scale = require("d3-scale");
 var clone = require("lodash/clone");
+var assign = require("lodash/assign");
 var reduce = require("lodash/reduce");
 var map = require("lodash/map");
 var processDates = require("./process-dates");
@@ -12,6 +13,11 @@ var scale_types = {
 	"time": _timeScale
 };
 
+var defaultPadding = {
+	inner: 0.2,
+	outer: 0.1
+};
+
 /**
  * generateScale
  *
@@ -21,9 +27,9 @@ var scale_types = {
  * @param range
  * @returns {scale: d3 scale, tickValues: array, tickFormat: format func}
  */
-function generate_scale(type, scaleOptions, data, range) {
+function generate_scale(type, scaleOptions, data, range, additionalOpts) {
 	if (!scaleOptions) return {};
-	return scale_types[type](scaleOptions, data, range);
+	return scale_types[type](scaleOptions, data, range, additionalOpts);
 }
 
 function _timeScale(scaleOptions, data, range) {
@@ -76,9 +82,9 @@ function _linearScale(scaleOptions, data, range) {
 	};
 }
 
-//TODO: make this keyed funcs that accept a `type` param
-//(like "ordinal", "time", "linear") so that we dont have to check every time
-function _ordinalScale(scaleOptions, data, range) {
+function _ordinalScale(scaleOptions, data, range, _padding) {
+	var padding = assign({}, defaultPadding, _padding);
+
 	var entries = map(data[0].values, function(value) {
 		return value.entry;
 	});
@@ -86,8 +92,8 @@ function _ordinalScale(scaleOptions, data, range) {
 	var scale = d3scale.scaleBand()
 		.domain(entries)
 		.range(range)
-		.paddingInner(0.2)
-		.paddingOuter(0.1); //TODO: hardcode
+		.paddingInner(padding.inner)
+		.paddingOuter(padding.outer);
 
 	return {
 		scale: scale,
@@ -95,6 +101,8 @@ function _ordinalScale(scaleOptions, data, range) {
 	};
 }
 
+//TODO: make this keyed funcs that accept a `type` param
+//(like "ordinal", "time", "linear") so that we dont have to check every time
 function _ordinalAdjust(scale, value) {
 	var isOrdinal = scale.hasOwnProperty("bandwidth");
 	if (isOrdinal) {

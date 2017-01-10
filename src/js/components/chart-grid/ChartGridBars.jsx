@@ -193,7 +193,10 @@ var ChartGridBars = React.createClass({
 		var xRangeInner = [0, gridScales.cols.rangeBand() - barLabelOverlap];
 		var yRangeInner = [displayConfig.afterLegend, gridScales.rows.rangeBand() - displayConfig.afterLegend];
 		var xAxis = scaleUtils.generateScale("linear", primaryScale, chartProps.data, xRangeInner);
-		var yAxis = scaleUtils.generateScale("ordinal", primaryScale, chartProps.data, yRangeInner);
+		var yAxis = scaleUtils.generateScale("ordinal", primaryScale, chartProps.data, yRangeInner, {
+			inner: displayConfig.barInnerPadding,
+			outer: displayConfig.barOuterPadding
+		});
 
 		var Outer = React.createFactory(XYChart);
 		var outerProps = {
