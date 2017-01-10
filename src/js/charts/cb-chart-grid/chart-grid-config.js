@@ -49,7 +49,7 @@ var display = {
 		left: "0.25em"
 	},
 	padding: {
-		top: "0.2em",
+		top: "0.4em",
 		right: 0,
 		bottom: "1em",
 		left: 0

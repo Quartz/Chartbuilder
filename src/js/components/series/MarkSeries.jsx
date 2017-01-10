@@ -15,7 +15,7 @@ var MarkSeries = React.createClass({
 
 	render: function() {
 		var props = this.props;
-		var radius = props.dimensions.width * 0.005;
+		var radius = props.dimensions.width * 0.007; //TODO: hardcode
 		var marks = map(props.data, function(d, i) {
 			return (
 				<circle

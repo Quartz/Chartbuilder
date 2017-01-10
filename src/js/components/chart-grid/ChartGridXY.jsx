@@ -156,13 +156,14 @@ var ChartGridXY = React.createClass({
 				tickWidths.max
 			),
 			height: (
-				dimensions.height - margin.top - margin.bottom
+				dimensions.height + displayConfig.xy.padding.bottom
 			)
 		};
 
 		var outerDimensions = {
 			width: dimensions.width,
-			height: dimensions.height
+			height: dimensions.height + margin.top + margin.bottom +
+				displayConfig.xy.padding.bottom
 		}
 
 		// range for all charts in grid (outer)
@@ -214,6 +215,7 @@ var ChartGridXY = React.createClass({
 				>
 					<VerticalAxis
 						tickWidths={tickWidths.widths}
+						textAlign="inside"
 						tickValues={primaryScale.tickValues}
 						tickFormat={yAxis.tickFormat}
 						dimensions={chartAreaDimensions}
