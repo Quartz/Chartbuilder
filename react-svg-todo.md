@@ -6,18 +6,26 @@ from d4 to react.
 	- [ ] General cleanup
 	- [ ] export working?
 	- [ ] is RendererWrapper still needed?
+	- [ ] default to XY chart
+	- [ ] weird things happen when i make one chart, then paste in data for another without refreshing
 - [x] XY chart
 	- [x] Render types and combinations of types
 	- [x] Number axis
 	- [x] Axes with formatting and prefix/suffix
+	- [ ] Make sure line groups are on top of _all_ axis groups
+	- [ ] Paste of data doesn't update
+	- [ ] If there's only one series collapse the space needed for the legend
+	- [ ] If there's only one seires make changes to the series name change the title
 - [X] Chart grid bars
 	- [X] Render bars
 	- [X] Render y axis
 	- [X] Spacing
+	- [ ] Multi-series chart grids with Names axis should default to bars
 - [X] Chart grid XY
 	- [X] Render lines/dots/cols
 	- [X] Render y axis
 	- [X] Render x axis
 	- [X] Handle case of dates in bar chart grid
 	- [X] Sizing/spacing/style
+	- [ ] better handling of a single series
 
