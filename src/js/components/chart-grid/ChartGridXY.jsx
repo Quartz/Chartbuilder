@@ -125,6 +125,8 @@ var ChartGridXY = React.createClass({
 			<HorizontalAxis
 				tickFormat={xAxis.tickFormat}
 				tickValues={xAxis.tickValues}
+				prefix={props.scale.numericSettings.prefix}
+				suffix={props.scale.numericSettings.suffix}
 				key="x-axis"
 			/>,
 			<HorizontalGridLines
