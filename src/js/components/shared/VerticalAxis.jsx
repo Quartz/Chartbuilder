@@ -22,7 +22,10 @@ var VerticalAxis = React.createClass({
 		tickFormat: PropTypes.func,
 		prefix: PropTypes.string,
 		suffix: PropTypes.string,
-		tickWidths: PropTypes.array,
+		tickWidths: PropTypes.shape({
+			widths: PropTypes.array,
+			max: PropTypes.number
+		}),
 		colorIndex: PropTypes.number,
 		tickTextHeight: PropTypes.number
 	},
@@ -83,11 +86,11 @@ var VerticalAxis = React.createClass({
 		var concealerHeight = props.tickTextHeight + props.displayConfig.blockerRectOffset;
 		var orientation = this._orientation[props.orient]
 		var textAnchor = orientation.textAnchor[props.textAlign];
-		var maxTickWidth = max(props.tickWidths);
 
 		return map(props.tickValues, function(tickValue, i) {
 			var formatted = props.tickFormat(tickValue);
-			var currTickWidth = props.tickWidths[i];
+			var currTickWidth = props.tickWidths.widths[i];
+			var maxTickWidth = Math.max(currTickWidth, props.tickWidths.max);
 
 			var rectWidth;
 			if (props.textAlign === "inside") {
