@@ -12,8 +12,8 @@ from d4 to react.
 	- [x] Render types and combinations of types
 	- [x] Number axis
 	- [x] Axes with formatting and prefix/suffix
-	- [ ] Make sure line groups are on top of _all_ axis groups
-	- [ ] Paste of data doesn't update
+	- [X] Make sure line groups are on top of _all_ axis groups
+	- [X] Paste of data doesn't update
 	- [ ] If there's only one series collapse the space needed for the legend
 	- [ ] If there's only one seires make changes to the series name change the title
 - [X] Chart grid bars
@@ -21,6 +21,10 @@ from d4 to react.
 	- [X] Render y axis
 	- [X] Spacing
 	- [ ] Multi-series chart grids with Names axis should default to bars
+		- NS: this is current chartbuilder behavior, we currently don't discriminate
+		btwn a paste and small data edit so we respect the user's type decision, so
+		if they say "line" then paste in new data it will go with line. would have
+		to change how to detect new data and parse it
 - [X] Chart grid XY
 	- [X] Render lines/dots/cols
 	- [X] Render y axis
