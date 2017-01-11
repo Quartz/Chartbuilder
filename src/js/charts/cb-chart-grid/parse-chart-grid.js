@@ -103,7 +103,7 @@ function parseChartgrid(config, _chartProps, callback, parseOpts) {
 			}
 		});
 
-		scale.numericSettings = currScale;
+		chartProps.scale.numericSettings = currScale;
 
 		if (chartProps.mobile) {
 			if (chartProps.mobile.scale) {

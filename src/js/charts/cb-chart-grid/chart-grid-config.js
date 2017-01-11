@@ -98,7 +98,7 @@ var defaultProps = {
 				displayTZ: "as-entered"
 			},
 			numericSettings: {
-				ticks: null,
+				ticks: 5,
 				precision: 0,
 				prefix: "",
 				suffix: ""
