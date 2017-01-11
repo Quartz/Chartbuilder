@@ -8,7 +8,6 @@ var React = require("react");
 var ReactDOM = require("react-dom");
 var PropTypes = React.PropTypes;
 var update = require("react-addons-update");
-var d4 = require("d4");
 
 // Date parsing settings
 var DateScaleMixin = require("../mixins/DateScaleMixin.js");

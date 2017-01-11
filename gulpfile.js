@@ -177,7 +177,6 @@ gulp.task("watch", [
 ], function (done) {
 	gulp.watch(config.paths.src.styl + "/**", ["stylus"]);
 	gulp.watch(config.paths.src.htdocs + "/**", ["copy-htdocs"]);
-	gulp.watch("./node_modules/d4/d4.js", ["browserify:dev"]);
 	gulp.watch("./node_modules/d3/d3.js", ["browserify:dev"]);
 	done();
 });
@@ -203,7 +202,6 @@ gulp.task("test-page-setup", [
 	gulp.watch(config.paths.src.js + "/**", ["browserify:test"]);
 	gulp.watch("test/test-page/index.html", ["copy-test-htdocs"]);
 	gulp.watch(config.paths.src.styl + "/**", ["stylus"]);
-	gulp.watch("./node_modules/d4/d4.js", ["browserify:dev"]);
 	gulp.watch("./node_modules/d3/d3.js", ["browserify:dev"]);
 	done();
 });

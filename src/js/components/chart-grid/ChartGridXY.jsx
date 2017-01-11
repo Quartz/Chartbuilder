@@ -3,26 +3,25 @@
  * Render a grid of N columns by N rows of XY (line, column, dot) charts
 */
 
-var React = require("react");
+var React     = require("react");
 var PropTypes = React.PropTypes;
-var update = require("react-addons-update");
+var update    = require("react-addons-update");
 
-var bind = require("lodash/bind");
-var clone = require("lodash/clone");
-var filter = require("lodash/filter");
-var map = require("lodash/map");
-var max = require("lodash/max");
-var reduce          = require("lodash/reduce");
+var bind      = require("lodash/bind");
+var clone     = require("lodash/clone");
+var filter    = require("lodash/filter");
+var map       = require("lodash/map");
+var max       = require("lodash/max");
+var reduce    = require("lodash/reduce");
 
 /* Helper functions */
-var cb_xy = require("../../charts/cb-charts").cb_xy;
 var help = require("../../util/helper.js");
 
 /* Renderer mixins */
 var ChartRendererMixin = require("../mixins/ChartRendererMixin.js");
 
 var HorizontalGridLines = require("../shared/HorizontalGridLines.jsx");
-var HorizontalAxis = require("../shared/HorizontalAxis.jsx");
+var HorizontalAxis      = require("../shared/HorizontalAxis.jsx");
 var VerticalGridLines   = require("../shared/VerticalGridLines.jsx");
 var BarGroup            = require("../series/BarGroup.jsx");
 var SvgWrapper          = require("../svg/SvgWrapper.jsx");
@@ -125,8 +124,6 @@ var ChartGridXY = React.createClass({
 			<HorizontalAxis
 				tickFormat={xAxis.tickFormat}
 				tickValues={xAxis.tickValues}
-				prefix={props.scale.numericSettings.prefix}
-				suffix={props.scale.numericSettings.suffix}
 				key="x-axis"
 			/>,
 			<HorizontalGridLines
@@ -222,10 +219,12 @@ var ChartGridXY = React.createClass({
 						x2={tickWidths.max + styleConfig.xOverTick}
 					/>
 					<VerticalAxis
-						tickWidths={tickWidths.widths}
+						tickWidths={tickWidths}
 						textAlign="inside"
 						tickValues={primaryScale.tickValues}
 						tickFormat={yAxis.tickFormat}
+						prefix={primaryScale.prefix}
+						suffix={primaryScale.suffix}
 						dimensions={chartAreaDimensions}
 						styleConfig={props.styleConfig}
 						displayConfig={displayConfig}

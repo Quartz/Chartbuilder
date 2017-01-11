@@ -229,7 +229,7 @@ var HiddenSvgBarLabels = React.createClass({
 			);
 		}, this);
 		return (
-			<g className="d4 hidden-svg">
+			<g className="hidden-svg">
 				<g className="axis">
 					{labelText}
 				</g>
