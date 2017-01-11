@@ -213,6 +213,12 @@ var ChartGridXY = React.createClass({
 					key={"grid-row-" + i}
 					transform={ "translate(" + [0, yPos] + ")" }
 				>
+					<HorizontalGridLines
+						yScale={yAxis.scale}
+						tickValues={primaryScale.tickValues}
+						x1={0}
+						x2={tickWidths.max + styleConfig.xOverTick}
+					/>
 					<VerticalAxis
 						tickWidths={tickWidths.widths}
 						textAlign="inside"
