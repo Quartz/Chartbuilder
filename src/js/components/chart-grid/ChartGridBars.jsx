@@ -131,16 +131,20 @@ var ChartGridBars = React.createClass({
 			return d.entry;
 		});
 
-		var tickWidths = map(tickLabels, function(t) {
+		var widthPerTick = map(tickLabels, function(t) {
 			return help.computeTextWidth(t, tickFont);
 		});
 
-		var maxTickWidth = max(tickWidths);
+		var tickWidths = {
+			widths: widthPerTick,
+			max: max(widthPerTick)
+		};
+
 		var chartAreaDimensions = {
 			width: (
 				dimensions.width - margin.left - margin.right -
 				displayConfig.padding.left - displayConfig.padding.right -
-				maxTickWidth
+				tickWidths.max
 			),
 			height: (
 				dimensions.height +
@@ -264,7 +268,7 @@ var ChartGridBars = React.createClass({
 				{verticalAxes}
 				<g
 					className="grid-charts"
-					transform={ "translate(" + [maxTickWidth, 0] + ")" }
+					transform={ "translate(" + [tickWidths.max, 0] + ")" }
 				>
 					{grid}
 				</g>
