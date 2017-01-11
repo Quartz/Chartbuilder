@@ -53,6 +53,7 @@
     "chartbuilder-ui": "~1.5.4",
     "classnames": "^2.2.1",
     "d3": "^3.5.5",
+    "d3-scale": "^1.0.4",
     "d4": "git://github.com/yanofsky/d4.git",
     "flux": "~2.1.1",
     "lodash": "^4.0.0",
