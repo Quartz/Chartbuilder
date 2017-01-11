@@ -65,6 +65,11 @@ function _timeScale(scaleOptions, data, range) {
 		formatAndFreq.format = autoSettings.format;
 	}
 
+	// use min/max dates if our auto calc comes up with empty array
+	if (formatAndFreq.frequency.length === 0) {
+		formatAndFreq.frequency = [minDate, maxDate];
+	}
+
 	return {
 		scale: d3.time.scale().range(range).domain([minDate, maxDate]),
 		tickValues: formatAndFreq.frequency,

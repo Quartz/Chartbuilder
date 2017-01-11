@@ -325,6 +325,7 @@ var XYRenderer = React.createClass({
 					tickValues={scale.primaryScale.tickValues}
 					x2={chartAreaDimensions.width + tickWidths.secondaryScale.max}
 				/>
+				{verticalAxes}
 				{this._generateSeries(yAxes)}
 				<HorizontalAxis
 					prefix={(scale.numericSettings) ? scale.numericSettings.prefix : ""}
@@ -334,7 +335,6 @@ var XYRenderer = React.createClass({
 					textAnchor={this._xAxisTextAnchor(_chartProps, scale.hasDate, hasColumn)}
 					orient="bottom"
 				/>
-				{verticalAxes}
 			</XYChart>
 			{/* chart legend */}
 			<XYLabels

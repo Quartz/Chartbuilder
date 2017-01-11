@@ -4,7 +4,7 @@ from d4 to react.
 - [ ] Overall
 	- [ ] Comment new stuff
 	- [ ] General cleanup
-	- [ ] export working?
+	- [X] export working?
 	- [ ] is RendererWrapper still needed?
 	- [ ] default to XY chart
 	- [ ] weird things happen when i make one chart, then paste in data for another without refreshing
