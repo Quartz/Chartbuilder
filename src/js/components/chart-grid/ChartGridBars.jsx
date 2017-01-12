@@ -123,7 +123,7 @@ var ChartGridBars = React.createClass({
 		var chartProps = props.chartProps;
 		var dimensions = props.dimensions;
 		var primaryScale = chartProps.scale.primaryScale;
-		var tickFont = styleConfig.fontSizes.medium + "px " + styleConfig.fontFamily;
+		var tickFont = styleConfig.fontSizes.medium + "px " + styleConfig.fontFamilies.axes;
 		var tickTextHeight = help.computeTextWidth("M", tickFont);
 
 		/* Get the text values used for the labels */

@@ -17,7 +17,10 @@
 var chart_style = {
 	overtick_top: "0.8em",
 	overtick_bottom: "0.8em",
-	fontFamily: "Khula-Light",
+	fontFamilies: { // necessary for calculating text width before render
+		axes: "Khula-Light",
+		labels: "Khula-Light"
+	},
 	fontSizes: {
 		large: "1.2em",
 		medium: "1em",

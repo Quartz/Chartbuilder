@@ -199,7 +199,7 @@ var XYRenderer = React.createClass({
 		var needsLabelOffset = this._needsLabelOffset(_chartProps._annotations.labels, _chartProps.data)
 
 		// set the tick font and measure the ticks
-		var tickFont = styleConfig.fontSizes.medium + "px " + styleConfig.fontFamily;
+		var tickFont = styleConfig.fontSizes.medium + "px " + styleConfig.fontFamilies.axes;
 		var tickWidths = this._getTickWidths(_chartProps.scale, tickFont);
 		var tickTextHeight = help.computeTextWidth("M", tickFont);
 
@@ -499,6 +499,7 @@ var XYLabels = React.createClass({
 		var displayConfig = props.displayConfig;
 		var dimensions = props.dimensions;
 		var labelComponents = [];
+		var labelFont = styleConfig.fontSizes.medium + "px " + styleConfig.fontFamilies.labels;
 
 		var labelConfig = {
 			xMargin: displayConfig.labelXMargin,
@@ -550,7 +551,7 @@ var XYLabels = React.createClass({
 		return (
 			<g
 				transform={ "translate(" + [0, translateY] + ")" }
-				className="renderer-annotations" style={{ font: props.font }}>
+				className="renderer-annotations" style={{ font: labelFont }}>
 				{labelComponents}
 			</g>
 		);

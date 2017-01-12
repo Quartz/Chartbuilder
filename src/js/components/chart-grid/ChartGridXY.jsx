@@ -143,7 +143,7 @@ var ChartGridXY = React.createClass({
 		var dimensions = props.dimensions;
 		var primaryScale = chartProps.scale.primaryScale;
 
-		var tickFont = styleConfig.fontSizes.medium + "px " + styleConfig.fontFamily;
+		var tickFont = styleConfig.fontSizes.medium + "px " + styleConfig.fontFamilies.axes;
 		var tickTextHeight = help.computeTextWidth("M", tickFont);
 		var tickWidths = scaleUtils.getTickWidths(primaryScale, tickFont);
 
