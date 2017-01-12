@@ -36,8 +36,8 @@ var display = {
 	labelXMargin: "0.6em",
 	labelTextMargin: "0.3em",
 	labelRowHeight: "1.2em",
-	afterTitle: "1.6em",
-	afterLegend: "1.3em",
+	afterTitle: "1.4em",
+	afterLegend: "1em",
 	blockerRectOffset: "0.2em",
 	lineMarkThreshold: 10, // render marks (dots) on lines if data < N
 	columnOuterPadding: 0.01, // % of width to pad for columns

@@ -235,7 +235,7 @@ var XYRenderer = React.createClass({
 		};
 
 		// account for legend label offset
-		if (needsLabelOffset) {
+		if (needsLabelOffset && props.chartProps.data.length > 1) {
 			chartAreaTranslateY += displayConfig.afterLegend;
 			chartAreaDimensions.height -= displayConfig.afterLegend;
 		}

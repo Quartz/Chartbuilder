@@ -1,6 +1,7 @@
 var React = require("react");
 var PropTypes = React.PropTypes;
 var map = require("lodash/map");
+var isNumber = require("lodash/isNumber");
 var ordinalAdjust = require("../../util/scale-utils").ordinalAdjust;
 
 var VerticalGridLines = React.createClass({
@@ -38,6 +39,9 @@ var VerticalGridLines = React.createClass({
 
 		return map(props.tickValues, function(tickValue, i) {
 			var scalePos = ordinalAdjust(props.xScale, tickValue);
+			//TODO: DRY
+			var y1 = (isNumber(props.y1)) ? props.y1 : yRange[0] || 0;
+			var y2 = (isNumber(props.y2)) ? props.y2 : yRange[1] || props.dimensions.height;
 
 			return (
 				<line
@@ -45,8 +49,8 @@ var VerticalGridLines = React.createClass({
 					className={["tick", props.className].join(" ")}
 					x1={scalePos}
 					x2={scalePos}
-					y1={props.y1 || yRange[0] || 0}
-					y2={props.y2 || yRange[1] || props.dimensions.height}
+					y1={y1}
+					y2={y2}
 				/>
 			)
 		});
