@@ -19,7 +19,8 @@ var ChartGridBars = require("./ChartGridBars.jsx");
 var ChartGridXY = require("./ChartGridXY.jsx");
 
 /**
- * ### Component that renders bar (row) charts in a chart grid
+ * ### Component that decides which grid (small multiples) type to render and
+ * passes props to that renderer
  * @property {boolean} editable - Allow the rendered component to interacted with and edited
  * @property {object} displayConfig - Parsed visual display configuration for chart grid
  * @property {object} chartProps - Properties used to draw this chart

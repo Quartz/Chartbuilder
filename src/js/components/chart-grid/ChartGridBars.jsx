@@ -26,7 +26,6 @@ var help = require("../../util/helper.js");
 /* Renderer mixins */
 var ChartRendererMixin = require("../mixins/ChartRendererMixin.js");
 
-/* One `GridChart` will be drawn for every column used in our grid */
 var HorizontalGridLines = require("../shared/HorizontalGridLines.jsx");
 var VerticalGridLines   = require("../shared/VerticalGridLines.jsx");
 var BarGroup            = require("../series/BarGroup.jsx");
@@ -73,7 +72,9 @@ var ChartGridBars = React.createClass({
 		};
 	},
 
-	// render a single bar grid
+	// render a single bar in the grid. this gets passed to `gridUtils.makeMults` to
+	// render one for each column of data
+	// TODO: have in mind a maybe better way to do this
 	_barGridBlock: function(d, i) {
 		var props = this.props;
 
@@ -175,9 +176,11 @@ var ChartGridBars = React.createClass({
 			yOuterPadding: props.displayConfig.gridPadding.yOuterPadding
 		});
 
+		// Create temporary x axis to figure out where the furthest bar label is, so
+		// that we can offset it
+		// TODO: this is ugly
 		var _tmpXAxis = scaleUtils.generateScale("linear", primaryScale, chartProps.data, [0, gridScales.cols.rangeBand()]);
 
-		// todo: this is a bit ugly
 		var barLabels = { widths: [], xVals: []};
 		each(chartProps.data, function(series, i) {
 			barLabels.widths[i] = [];
@@ -193,7 +196,7 @@ var ChartGridBars = React.createClass({
 		var barLabelsMaxX = max(barLabels.xVals);
 		var barLabelOverlap = Math.max(0, barLabelsMaxX - gridScales.cols.rangeBand());
 
-		// range and axes for each chart in the grid (inner)
+		// range and axes for each individual small chart in the grid (inner)
 		var xRangeInner = [0, gridScales.cols.rangeBand() - barLabelOverlap];
 		var yRangeInner = [displayConfig.afterLegend, gridScales.rows.rangeBand() - displayConfig.afterLegend];
 		var xAxis = scaleUtils.generateScale("linear", primaryScale, chartProps.data, xRangeInner);
@@ -202,6 +205,8 @@ var ChartGridBars = React.createClass({
 			outer: displayConfig.barOuterPadding
 		});
 
+		// `Outer` is the common wrapper component that will be used for each chart
+		// in the grid
 		var Outer = React.createFactory(Chart);
 		var outerProps = {
 			chartType: "bar",

@@ -20,7 +20,6 @@ var reduce              = require("lodash/reduce");
 var some                = require("lodash/some");
 
 // chart elements
-// TODO: factor these into their own lib
 var Chart               = require("../shared/Chart.jsx");
 var HorizontalAxis      = require("../shared/HorizontalAxis.jsx");
 var HorizontalGridLines = require("../shared/HorizontalGridLines.jsx");
@@ -34,7 +33,7 @@ var ChartViewActions    = require("../../actions/ChartViewActions");
 // Svg components
 var SvgRectLabel        = require("../svg/SvgRectLabel.jsx");
 
-// Helpers
+// Utilities
 var help                = require("../../util/helper.js");
 var scaleUtils          = require("../../util/scale-utils.js");
 var seriesUtils         = require("../../util/series-utils.js");
@@ -74,6 +73,8 @@ var XYRenderer = React.createClass({
 		return { labelYMax: 0 };
 	},
 
+	// we need to know the largest y value for a label so that we can
+	// compute where the chart should start
 	_updateLabelYMax: function(labelYMax) {
 		this.setState({ labelYMax: labelYMax });
 	},
@@ -198,7 +199,7 @@ var XYRenderer = React.createClass({
 		var hasColumn = this._chartHasColumn(_chartProps.chartSettings);
 		var needsLabelOffset = this._needsLabelOffset(_chartProps._annotations.labels, _chartProps.data)
 
-		// set the tick font and measure the ticks
+		// set the tick font and figure out how wide ticks will be before rendering
 		var tickFont = styleConfig.fontSizes.medium + "px " + styleConfig.fontFamilies.axes;
 		var tickWidths = this._getTickWidths(_chartProps.scale, tickFont);
 		var tickTextHeight = help.computeTextWidth("M", tickFont);
@@ -254,6 +255,7 @@ var XYRenderer = React.createClass({
 		);
 		var xRange = [xPadding, chartAreaDimensions.width - xPadding];
 		var xAxis = this._generateXAxis(scale, _chartProps.data, xRange);
+
 		// linear x axis used for placing annotations based on scale
 		var xAxisLinear = scaleUtils.generateScale("linear", {domain: xRange}, null, xRange);
 

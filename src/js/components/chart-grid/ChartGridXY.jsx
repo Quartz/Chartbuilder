@@ -32,9 +32,6 @@ var scaleUtils          = require("../../util/scale-utils.js");
 var seriesUtils         = require("../../util/series-utils.js");
 var gridUtils           = require("../../util/grid-utils.js");
 
-/* One `GridChart` will be drawn for every column used in our grid */
-var GridChart = require("./GridChart.jsx");
-
 /**
  * ### Component that renders xy charts in a chart grid
  * @property {boolean} editable - Allow the rendered component to interacted with and edited
@@ -84,6 +81,9 @@ var ChartGridXY = React.createClass({
 		}
 	},
 
+	// render a single chart in the grid. this gets passed to `gridUtils.makeMults` to
+	// render one for each column of data
+	// TODO: have in mind a maybe better way to do this
 	_xyGridBlock: function(gridType, xAxis, yAxis, d, i) {
 		var props = this.props;
 		var isFirstBlock = Math.floor((i + 1) / props.chartProps._grid.cols) === 0;
@@ -185,6 +185,8 @@ var ChartGridXY = React.createClass({
 		var xAxis = this._generateXAxis(chartProps.scale, chartProps.data, xRangeInner);
 		var yAxis = scaleUtils.generateScale("linear", primaryScale, chartProps.data, yRangeInner);
 
+		// `Outer` is the common wrapper component that will be used for each chart
+		// in the grid
 		var Outer = React.createFactory(Chart);
 		var outerProps = {
 			chartType: "xy-grid",
