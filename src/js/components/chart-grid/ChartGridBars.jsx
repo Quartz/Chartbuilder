@@ -34,7 +34,7 @@ var SvgWrapper          = require("../svg/SvgWrapper.jsx");
 var scaleUtils          = require("../../util/scale-utils.js");
 var seriesUtils         = require("../../util/series-utils.js");
 var gridUtils           = require("../../util/grid-utils.js");
-var XYChart             = require("../chart-xy/XYChart.jsx");
+var Chart               = require("../shared/Chart.jsx");
 var VerticalAxis        = require("../shared/VerticalAxis.jsx");
 var BarLabels           = require("../shared/BarLabels.jsx");
 var BlockerRects        = require("../shared/BlockerRects.jsx");
@@ -202,7 +202,7 @@ var ChartGridBars = React.createClass({
 			outer: displayConfig.barOuterPadding
 		});
 
-		var Outer = React.createFactory(XYChart);
+		var Outer = React.createFactory(Chart);
 		var outerProps = {
 			chartType: "bar",
 			styleConfig: props.styleConfig,

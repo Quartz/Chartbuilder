@@ -3,7 +3,9 @@ var PropTypes = React.PropTypes;
 var map = require("lodash/map");
 var assign = require("lodash/assign");
 
-var XYChart = React.createClass({
+// Wrapper class for charts. Clone all children assigning them the properties of
+// this component so that chart configuration is passed down
+var Chart = React.createClass({
 
 	propTypes: {
 		xScale: PropTypes.func,
@@ -41,4 +43,4 @@ var XYChart = React.createClass({
 
 });
 
-module.exports = XYChart;
+module.exports = Chart;

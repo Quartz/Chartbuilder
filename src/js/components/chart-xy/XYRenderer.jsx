@@ -21,7 +21,7 @@ var some                = require("lodash/some");
 
 // chart elements
 // TODO: factor these into their own lib
-var XYChart             = require("./XYChart.jsx");
+var Chart               = require("../shared/Chart.jsx");
 var HorizontalAxis      = require("../shared/HorizontalAxis.jsx");
 var HorizontalGridLines = require("../shared/HorizontalGridLines.jsx");
 var SvgWrapper          = require("../svg/SvgWrapper.jsx");
@@ -304,7 +304,7 @@ var XYRenderer = React.createClass({
 			styleConfig={this.props.styleConfig}
 		>
 			{/* main chart area */}
-			<XYChart
+			<Chart
 				chartType="xy"
 				dimensions={chartAreaDimensions}
 				styleConfig={this.props.styleConfig}
@@ -335,7 +335,7 @@ var XYRenderer = React.createClass({
 					textAnchor={this._xAxisTextAnchor(_chartProps, scale.hasDate, hasColumn)}
 					orient="bottom"
 				/>
-			</XYChart>
+			</Chart>
 			{/* chart legend */}
 			<XYLabels
 				key="xy-labels"

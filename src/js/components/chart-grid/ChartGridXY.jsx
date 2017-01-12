@@ -25,7 +25,7 @@ var HorizontalAxis      = require("../shared/HorizontalAxis.jsx");
 var VerticalGridLines   = require("../shared/VerticalGridLines.jsx");
 var BarGroup            = require("../series/BarGroup.jsx");
 var SvgWrapper          = require("../svg/SvgWrapper.jsx");
-var XYChart             = require("../chart-xy/XYChart.jsx");
+var Chart               = require("../shared/Chart.jsx");
 var VerticalAxis        = require("../shared/VerticalAxis.jsx");
 var SeriesLabel         = require("../shared/SeriesLabel.jsx");
 var scaleUtils          = require("../../util/scale-utils.js");
@@ -185,7 +185,7 @@ var ChartGridXY = React.createClass({
 		var xAxis = this._generateXAxis(chartProps.scale, chartProps.data, xRangeInner);
 		var yAxis = scaleUtils.generateScale("linear", primaryScale, chartProps.data, yRangeInner);
 
-		var Outer = React.createFactory(XYChart);
+		var Outer = React.createFactory(Chart);
 		var outerProps = {
 			chartType: "xy-grid",
 			styleConfig: props.styleConfig,
