@@ -15,7 +15,7 @@ var ChartServerActions = require("../actions/ChartServerActions");
 var chartbuilderUI = require("chartbuilder-ui");
 var ButtonGroup = chartbuilderUI.ButtonGroup;
 
-var chartConfig = require("../charts/chart-config");
+var chartConfig = require("../charts/chart-type-configs");
 
 /**
  * Select a new chart type, copying shared settings over to the new type.

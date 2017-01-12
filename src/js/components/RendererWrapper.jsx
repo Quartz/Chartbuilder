@@ -32,7 +32,7 @@ var ChartFooter = require("./svg/ChartFooter.jsx");
  * also associates a given chart type with its Editor and Renderer components.
  * Used here to identify the Renderer.
 */
-var chartConfigs = require("../charts/chart-config");
+var chartConfigs = require("../charts/chart-type-configs");
 var chartStyle = require("../config/chart-style");
 var chartRenderers = require("../charts/renderers");
 

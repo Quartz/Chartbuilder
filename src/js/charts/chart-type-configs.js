@@ -1,7 +1,7 @@
 // Object containing chart types and their respective configs
-var chartConfig = {
+var chart_type_configs = {
 	xy: require("./cb-xy/xy-config"),
 	chartgrid: require("./cb-chart-grid/chart-grid-config"),
 };
 
-module.exports = chartConfig;
+module.exports = chart_type_configs;

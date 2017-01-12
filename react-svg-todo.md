@@ -2,7 +2,7 @@ To-do list specific to the `react-svg` branch, where we are switching rendering
 from d4 to react.
 
 - [ ] Overall
-	- [ ] Comment new stuff
+	- [X] Comment new stuff
 	- [ ] General cleanup
 	- [X] Delete d4 stuff
 	- [X] export working?

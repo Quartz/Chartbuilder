@@ -2,7 +2,7 @@
 
 var ChartServerActions = require("../actions/ChartServerActions");
 var defaultInput = require("../config/default-input");
-var chartConfig = require("../charts/chart-config");
+var chartConfig = require("../charts/chart-type-configs");
 //var testInput = require("../../../test/util/test-input");
 
 module.exports = {

@@ -15,7 +15,7 @@ var SessionStore = require("./SessionStore");
  * settings. The `ChartProptiesStore` is resposible for parsing the input before
  * sending parsed data back to the app, so we require the configs here.
 */
-var chartConfig = require("../charts/chart-config");
+var chartConfig = require("../charts/chart-type-configs");
 
 /* Singleton that houses chart props */
 var _chartProps = {};
