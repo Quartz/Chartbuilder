@@ -27,10 +27,7 @@ var display = {
 	afterTitle: "1.6em", // distance between top of title and top of legend or chart
 	afterLegend: "0.8em", // distance between top of legend and top of chart
 	blockerRectOffset: "0.25em", // distance between text and background blocker rect
-	paddingPerBar: "0.7em", // extra space around bars
 	barHeight: "1.9em", // height of each bars
-	afterXYBottom: "2em",
-	afterXYRight: "0.8em",
 	columnExtraPadding: "0.5em",
 	barInnerPadding: 0.4, // % of col group width to pad btwn each
 	barOuterPadding: 0.1, // % of col group width to pad btwn each
