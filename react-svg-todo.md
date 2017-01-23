@@ -1,12 +1,12 @@
 To-do list specific to the `react-svg` branch, where we are switching rendering
 from d4 to react.
 
-- [ ] Overall
+- [X] Overall
 	- [X] Comment new stuff
-	- [ ] General cleanup
+	- [X] General cleanup
 	- [X] Delete d4 stuff
 	- [X] export working?
-	- [ ] default to XY chart
+	- [X] default to XY chart
 	- [X] weird things happen when i make one chart, then paste in data for another without refreshing
 - [x] XY chart
 	- [x] Render types and combinations of types
