@@ -136,12 +136,13 @@ var XYRenderer = React.createClass({
 
 	// create flat array of series components based on data and scales
 	_generateSeries: function(yAxes) {
+		var props = this.props;
 		var primaryScale = yAxes.primaryScale.scale;
 		var secondaryScale = yAxes.secondaryScale.scale;
-		var chartProps = this.props.chartProps;
+		var chartProps = props.chartProps;
 
 		// should lines contain dots
-		var lineMarkThreshold = this.props.displayConfig.lineMarkThreshold;
+		var lineMarkThreshold = props.displayConfig.lineMarkThreshold;
 		var pointsPerSeries = chartProps.data[0].values.length;
 		var renderLinePoints = (pointsPerSeries < lineMarkThreshold);
 
@@ -155,6 +156,7 @@ var XYRenderer = React.createClass({
 			var seriesProps = {
 				key: i,
 				data: d.values,
+				dotRadiusFactor: props.styleConfig.dotRadiusFactor,
 				yScale: (setting.altAxis ? secondaryScale : primaryScale),
 				colorIndex: setting.colorIndex
 			}

@@ -9,13 +9,18 @@ var MarkSeries = React.createClass({
 	propTypes: {
 		data: PropTypes.array,
 		dimensions: PropTypes.object,
+		dotRadiusFactor: PropTypes.number,
 		xScale: PropTypes.func,
 		yScale: PropTypes.func
 	},
 
+	getDefaultProps: function() {
+		return { dotRadiusFactor: 0.007 }
+	},
+
 	render: function() {
 		var props = this.props;
-		var radius = props.dimensions.width * 0.007; //TODO: hardcode
+		var radius = props.dimensions.width * props.dotRadiusFactor;
 		var marks = map(props.data, function(d, i) {
 			return (
 				<circle
