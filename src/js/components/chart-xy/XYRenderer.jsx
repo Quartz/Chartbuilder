@@ -257,7 +257,8 @@ var XYRenderer = React.createClass({
 		var xAxis = this._generateXAxis(scale, _chartProps.data, xRange);
 
 		// linear x axis used for placing annotations based on scale
-		var xAxisLinear = scaleUtils.generateScale("linear", {domain: xRange}, null, xRange);
+		var xAxisLinear = scaleUtils.generateScale("linear",
+			{ domain: xAxis.scale.domain() }, null, xRange);
 
 		// create 1 or 2 vertical axes
 		var verticalAxes = map(scaleNames, function(key, i) {
