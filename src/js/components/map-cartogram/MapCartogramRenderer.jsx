@@ -78,7 +78,7 @@ const PolygonCollection = React.createClass({
       force.start();
     }
   },
-  componentWillUpdate: function(nextProps, nextState) {
+  componentWillUpdate: function(nextProps, nextState, tk) {
 
     const stylings = nextProps.chartProps.stylings;
     const typeCast = nextProps.schemaName;
@@ -103,7 +103,8 @@ const PolygonCollection = React.createClass({
                 helperCarto.switchDorling (d3Node, stylings) :
                 helperCarto.switchDemers (d3Node, stylings);
 
-      if (this.props.chartProps.stylings[typeCast] !== stylings[typeCast]
+      // Only tick if making a large change to the layout
+      if (this.props.cartogramType !== nextProps.cartogramType
           || this.props.chartProps.stylings.showDC !== stylings.showDC
           || nextProps.schemaName !== this.props.schemaName) {
 

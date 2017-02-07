@@ -61,6 +61,7 @@ class MapRenderer extends React.Component{
     const stylings = chartProps.stylings;
     const schema = chartProps.schema.schema;
     const schemaName = (schema.name === 'states50') ? 'type' : 'typeOther';
+    const cartogramType = stylings[schemaName];
 
     const grid = this.constructGrid(schema.name);
     const centroids = this.constructCentroids(this.props);
@@ -75,7 +76,7 @@ class MapRenderer extends React.Component{
     const cellSize = stylings.gridcellSize;
 
     const projection = d3.geo[schema.proj]()
-      .translate((stylings[schemaName] === 'grid') ? schema.translate : schema.translateCartogram)
+      .translate((cartogramType === 'grid') ? schema.translate : schema.translateCartogram)
       .scale(schema.scale);
 
     const scales = {};
@@ -83,7 +84,7 @@ class MapRenderer extends React.Component{
 
     // for dorling and demers calculations
     radius
-    	.range([0, (stylings[schemaName] === 'dorling') ? +stylings.dorlingradiusVal : +stylings.demerssquareWidth])
+    	.range([0, (cartogramType === 'dorling') ? +stylings.dorlingradiusVal : +stylings.demerssquareWidth])
     	.domain([0, d3.max(chartProps.alldata, function(d){ return +d[valueColumn]} )]);
 
     const showDC = (!stylings.showDC) ? false : true;
@@ -145,6 +146,7 @@ class MapRenderer extends React.Component{
             nodes={nodes}
             schemaName={schemaName}
             metadata={metadata}
+            cartogramType={cartogramType}
           />
     );
   }
