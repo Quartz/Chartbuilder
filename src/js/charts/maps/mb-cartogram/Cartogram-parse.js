@@ -54,8 +54,6 @@ let parseCartogram = (config, _chartProps, callback, parseOpts, priorData = fals
   const scaleNames = [];
   const scaleIndex = [];
 
-  console.log(bySeries, 'by series');
-
   bySeries.series.forEach((d) => {
     scaleIndex.push(d.name);
     scaleNames.push(d.name);
@@ -65,19 +63,14 @@ let parseCartogram = (config, _chartProps, callback, parseOpts, priorData = fals
   /*chartProps.chartSettings.forEach((d,i) => {
   	// tk
     if (d.label && scaleIndex[i] !== d.label) {
-    	console.log(i, d.label);
     	scaleNames[i] = d.label;
     }
   }); */
-
-  console.log(scaleNames, 'scaleNames');
 
   const labels = chartProps._annotations.labels;
   const allColumn = true;
   // check if either scale contains columns, as we'll need to zero the axis
   const _computed = {};
-
-  console.log(scaleIndex, 'index');
 
   scaleIndex.forEach((name, i) => {
     _computed[i] = {
@@ -103,14 +96,10 @@ let parseCartogram = (config, _chartProps, callback, parseOpts, priorData = fals
       return +d[valueColumn];
     });
 
-    console.log(values, 'values')
-
     _computed[i].data = _computed[i].data.concat(values);
 
     return settings;
   });
-
-  console.log(_computed, 'computed');
 
   // not needed
   labels.values = map(bySeries.series, (dataSeries, i) => {
@@ -132,8 +121,6 @@ let parseCartogram = (config, _chartProps, callback, parseOpts, priorData = fals
 
   // Calculate domain and tick values for any scales that exist
   each(scaleNames, (name, j) => {
-
-  	console.log(j, 'j');
 
     let currScale;
     const currLegend = {};

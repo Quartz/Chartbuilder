@@ -71,6 +71,8 @@ const _collideDemers = (k, nodes) => {
 
 const enter_demers = (selection, stylings, force, data) => {
 
+	console.log('enter demers');
+
 	d3.selectAll('.carto-shapes').remove();
 
 	selection
@@ -174,9 +176,12 @@ const update_node = (selection) => {
 
 const update_demers = (e, selection, nodes) => {
 
+	console.log('update demers');
+
 	selection.each(_gravity(e.alpha * .1))
 			.each(_collideDemers(.05, nodes))
 			.attr("transform", function(d) {
+				console.log(d, 'd');
 				return "translate(" + (d.x - d.r) + "," + (d.y - d.r) + ")";
 			});
 }

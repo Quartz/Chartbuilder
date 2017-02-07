@@ -16,19 +16,16 @@ const convertFipstoPostal = require('us-abbreviations')('fips','postal');
 
 class MapRenderer extends React.Component{
 
-  constructor(props) {
-    super(props);
-
-	  const schema = props.chartProps.schema.schema;
-    const cartogramType = schema.name;
+  constructCentroids(props) {
 
     const centroidsConst = [];
+
+    const schema = props.chartProps.schema.schema;
+    const cartogramType = schema.name;
+
     const data = topojson.feature(schema.topojson, schema.topojson.objects[schema.feature]);
 
-    console.log(data,'data');
-    console.log(schema, 'schema');
-
-    data.features.map((polygonData, i) => {
+  	data.features.map((polygonData, i) => {
 
       const center = centroid(polygonData);
       const id = polygonData.id < 10 ? '0' + polygonData.id.toString() : polygonData.id;
@@ -38,9 +35,14 @@ class MapRenderer extends React.Component{
           "properties":{"name":id} });
     });
 
+  	return centroidsConst;
+  }
+
+ 	constructGrid(cartogramType) {
+
 	  const grid = {};
 
-    if (cartogramType === 'states50') {
+ 		if (cartogramType === 'states50') {
 
 	    d3.select("#grid." + cartogramType)
 	    .text().split("\n")
@@ -52,23 +54,23 @@ class MapRenderer extends React.Component{
 	    });
   	}
 
-  	this.state = {
-      grid: grid,
-      nodes: [],
-      centroids: centroidsConst
-    }
+  	return grid;
   }
+
   render() {
+
     const chartProps = this.props.chartProps;
     const stylings = chartProps.stylings;
     const schema = chartProps.schema.schema;
     const schemaName = (schema.name === 'states50') ? 'type' : 'typeOther';
-    const grid = this.state.grid;
+
+    const grid = this.constructGrid(schema.name);
+    const centroids = this.constructCentroids(this.props);
+
     const metadata = this.props.metadata;
 
 		const displayConfig = this.props.displayConfig;
 
-    const centroids = this.state.centroids;
 
     const columnNames = chartProps.columns;
     const keyColumn = columnNames[0];
@@ -76,15 +78,17 @@ class MapRenderer extends React.Component{
     const cellSize = stylings.gridcellSize;
 
     const projection = d3.geo[schema.proj]()
-      .translate(stylings.type === 'grid' ? schema.translate : schema.translateCartogram)
+      .translate((stylings[schemaName] === 'grid') ? schema.translate : schema.translateCartogram)
       .scale(schema.scale);
+
+    console.log('schema', JSON.stringify(schema.scale), JSON.stringify(schema.name),stylings);
 
     const scales = {};
     const dataById = d3.map(chartProps.alldata, function(d) { return schema.matchLogic(d[keyColumn]); });
 
     // for dorling
     radius
-    	.range([0, stylings.type === 'dorling' ? +stylings.dorlingradiusVal : +stylings.demerssquareWidth])
+    	.range([0, (stylings[schemaName] === 'dorling') ? +stylings.dorlingradiusVal : +stylings.demerssquareWidth])
     	.domain([0, d3.max(chartProps.alldata, function(d){ return +d[valueColumn]} )]);
 
     const showDC = (!stylings.showDC) ? false : true;
@@ -103,7 +107,10 @@ class MapRenderer extends React.Component{
 
         const shp = d.id;
         const shpData = dataById.get(schema.matchLogic(shp));
+        console.log(d.geometry.coordinates, 'coordinates');
         const point = projection(d.geometry.coordinates);
+
+        console.log(point, 'point');
 
         let fillVal;
         if (chartProps.chartSettings[shpData.index].scale.domain[0] ===

@@ -23,9 +23,10 @@ const enterNode = (selection, stylings, data, typeCast) => {
 
   selection.classed('node', true);
 
+  console.log(stylings, typeCast, 'GRR');
+
   switch(stylings[typeCast]) {
     case('grid'):
-    console.log('case grid');
       helperCarto.enterGrid(selection, stylings, force, data);
       break;
     case('dorling'):
@@ -83,19 +84,17 @@ const PolygonCollection = React.createClass({
       force.start();
     }
   },
-  componentDidUpdate: function(nextProps, nextState) {
+  componentWillUpdate: function(nextProps, nextState) {
 
   	console.log('did update');
 
-    const stylings = this.props.chartProps.stylings;
-    const typeCast = this.props.schemaName;
+    const stylings = nextProps.chartProps.stylings;
+    const typeCast = nextProps.schemaName;
 
     d3Nodes = d3.select(ReactDOM.findDOMNode(this.refs.graph));
 
-    console.log('nodes', this.props.nodes);
-
     let theseNodes = d3Nodes.selectAll('.node')
-      .data(this.props.nodes, function (node) { return node.shp; });
+      .data(nextProps.nodes, function (node) { return node.shp; });
 
     theseNodes.enter().append('g')
       .attr('class','node');
@@ -104,7 +103,13 @@ const PolygonCollection = React.createClass({
 
     const d3Node = d3.select(ReactDOM.findDOMNode(this.refs.graph)).selectAll('.node');
 
-    enterNode(d3Node, stylings, this.props.nodes, typeCast);
+    enterNode(d3Node, stylings, nextProps.nodes, typeCast);
+
+    console.log(stylings, 'stylings');
+    console.log(JSON.stringify(nextProps.schemaName), 'nextProps');
+    console.log(JSON.stringify(this.props.schemaName),'this');
+
+    console.log(d3Node, 'd3node');
 
     if (stylings[typeCast] !== 'grid') {
 
@@ -112,24 +117,25 @@ const PolygonCollection = React.createClass({
                 helperCarto.switchDorling (d3Node, stylings) :
                 helperCarto.switchDemers (d3Node, stylings);
 
-      if (stylings[typeCast] !== nextProps.stylings[typeCast]
-          || stylings.showDC !== nextProps.stylings.showDC) {
+      if (this.props.chartProps.stylings[typeCast] !== stylings[typeCast]
+          || this.props.chartProps.stylings.showDC !== stylings.showDC
+          || nextProps.schemaName !== this.props.schemaName) {
+
+      	console.log('passed the if', nextProps, 'next');
 
         force.on("tick", (e, i) => {
           if (i > 200) force.stop();
           return (stylings[typeCast] === 'dorling') ?
-                  helperCarto.updateDorling (e, d3Node, this.props.nodes) :
-                  helperCarto.updateDemers (e, d3Node, this.props.nodes);
-        })
-        .resume();
+                  helperCarto.updateDorling (e, d3Node, nextProps.nodes) :
+                  helperCarto.updateDemers (e, d3Node, nextProps.nodes);
+        }).resume();
 
-        force.nodes(this.props.nodes);
+        force.nodes(nextProps.nodes);
         force.start();
-
+      } else {
+      	force.stop();
       }
-      else force.stop();
-    }
-    else {
+    } else {
       force.stop();
       helperCarto.switchGrid(d3Node, stylings);
     }
