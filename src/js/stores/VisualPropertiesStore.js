@@ -26,7 +26,7 @@ const newLineRegex = /\r\n|\r|\n/;
  * ### ChartProptiesStore.js
  * Flux store for chart properties such as data, settings, scale
 */
-const ChartPropertiesStore = assign({}, EventEmitter.prototype, {
+const VisualPropertiesStore = assign({}, EventEmitter.prototype, {
 
 	emitChange: function() {
 		this.emit(CHANGE_EVENT);
@@ -45,7 +45,7 @@ const ChartPropertiesStore = assign({}, EventEmitter.prototype, {
 	 * @param k
 	 * @return {any} - Return value at key `k`
 	 * @instance
-	 * @memberof ChartPropertiesStore
+	 * @memberof VisualPropertiesStore
 	 */
 	get: function(k) {
 		return _chartProps[k];
@@ -55,7 +55,7 @@ const ChartPropertiesStore = assign({}, EventEmitter.prototype, {
 	 * getAll
 	 * @return {object} - Return all chartProps
 	 * @instance
-	 * @memberof ChartPropertiesStore
+	 * @memberof VisualPropertiesStore
 	 */
 	getAll: function() {
 		return _chartProps;
@@ -65,7 +65,7 @@ const ChartPropertiesStore = assign({}, EventEmitter.prototype, {
 	 * clear
 	 * Set chartProps to empty
 	 * @instance
-	 * @memberof ChartPropertiesStore
+	 * @memberof VisualPropertiesStore
 	 */
 	clear: function() {
 		_chartProps = {};
@@ -79,6 +79,8 @@ function registeredCallback(payload) {
 	let config;
 	let thisModel;
 
+	console.log(action, 'action');
+
 	switch(action.eventName) {
 		/*
 		* Receive a new model, which includes metadata. Respond by parsing input and
@@ -90,7 +92,7 @@ function registeredCallback(payload) {
 			chartType = thisModel.metadata.chartType;
 			config = chartConfig[chartType] || mapConfig[chartType];
 			parser = config.parser;
-			_chartProps = parser(config, thisModel.chartProps);
+			_chartProps = parser(config, thisModel.chartProps, undefined, action.eventName);
 			break;
 
 		/*
@@ -101,7 +103,7 @@ function registeredCallback(payload) {
 			parser = config.parser;
 			parser(config, action.chartProps, function(newProps) {
 				_chartProps = newProps;
-				ChartPropertiesStore.emitChange();
+				VisualPropertiesStore.emitChange();
 			});
 			break;
 
@@ -111,7 +113,7 @@ function registeredCallback(payload) {
 		*/
 		case "update-chart-prop":
 			_chartProps[action.key] = action.newProp;
-			ChartPropertiesStore.emitChange();
+			VisualPropertiesStore.emitChange();
 			break;
 
 		/*
@@ -124,8 +126,8 @@ function registeredCallback(payload) {
 			_chartProps[action.key] = action.newProp;
 			parser(config, _chartProps, function(newProps) {
 				_chartProps = newProps;
-				ChartPropertiesStore.emitChange();
-			});
+				VisualPropertiesStore.emitChange();
+			},action.key,true,_chartProps.schema);
 			break;
 
 		case "update-data-input":
@@ -137,7 +139,7 @@ function registeredCallback(payload) {
 				var parseOpts = { columnsChanged: columnsChanged };
 				parser(config, _chartProps, function(newProps) {
 					_chartProps = newProps;
-					ChartPropertiesStore.emitChange();
+					VisualPropertiesStore.emitChange();
 				}, parseOpts);
 			});
 			break;
@@ -155,6 +157,6 @@ function checkColumnChange(newInput, callback) {
 }
 
 /* Respond to actions coming from the dispatcher */
-ChartPropertiesStore.dispatchToken = Dispatcher.register(registeredCallback);
+VisualPropertiesStore.dispatchToken = Dispatcher.register(registeredCallback);
 
-module.exports = ChartPropertiesStore;
+module.exports = VisualPropertiesStore;

@@ -1,27 +1,15 @@
-const boroughs = {
-    1: ['Staten Island'],
-    2: ['Queens'],
-    4: ['Brooklyn'],
-    3: ['Manhattan'],
-    5: ['Bronx'],
-    'Staten Island': 1,
-    'Queens': 2,
-    'Brooklyn': 4,
-    'Manhattan':3,
-    'Bronx':5
-}
+const fipscounties = require('./helpers/counties-fips');
 
 const nyc = {
-		label: 'NYC',
-    name: 'NYC',
-    values: boroughs,
+    label: 'U.S. Counties',
+    name: 'countiesUS',
+    values: fipscounties,
     proj: 'mercator',
-    translate: [46400, 28000],
-    translateCartogram: [46400, 28000],
+    translate: [],
     precision: 1,
-    scale: [35700],
-    topojson: require('./../mapfiles/nyc/nyc.json'),
-    feature: 'nyc',
+    scale: [],
+    topojson: require('./../mapfiles/us-counties/us-counties.json'),
+    feature: 'counties',
     adjustLabels: function(adjusty=0,adjustx=0, label) {
       return [adjusty,adjustx,label];
     },
@@ -32,6 +20,7 @@ const nyc = {
         else { return val; }
     },
     test: function(column_val, polygon_val) {
+
       return (this.matchLogic(polygon_val) == column_val);
     }
   }

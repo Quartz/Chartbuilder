@@ -5,8 +5,8 @@ import update from 'react-addons-update';
 import {TextArea, AlertGroup} from 'chartbuilder-ui';
 
 // Flux actions
-const ChartViewActions = require("../../actions/ChartViewActions");
-const ChartServerActions = require("../../actions/ChartServerActions");
+const VisualViewActions = require("../../actions/VisualViewActions");
+const VisualServerActions = require("../../actions/VisualServerActions");
 const validateChartModel = require("../../util/validate-chart-model");
 const DataSeriesTypeSettings = require("../shared/DataSeriesTypeSettings.jsx");
 
@@ -47,14 +47,14 @@ var DataInput = React.createClass({
 				raw: v,
 				type: undefined
 			}});
-			ChartViewActions.updateInput(k, input);
+			VisualViewActions.updateInput(k, input);
 		}
 		else if (k == "type") {
 			input = update(this.props.chartProps.input, { $set: {
 				raw: v.raw,
 				type: v.type
 			}});
-			ChartViewActions.updateAndReparse("input", input);
+			VisualViewActions.updateAndReparse("input", input);
 		}
 		else {
 			return;
@@ -71,7 +71,7 @@ var DataInput = React.createClass({
 			parsedModel = validateChartModel(this.result);
 			if (parsedModel) {
 				// Update flux store with incoming model
-				ChartServerActions.receiveModel(parsedModel);
+				VisualServerActions.receiveModel(parsedModel);
 			}
 		};
 		this._toggleDropState();

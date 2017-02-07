@@ -1,6 +1,6 @@
 // Get data from and save to local storage
 
-const MapServerActions = require("../actions/ChartServerActions");
+const MapServerActions = require("../actions/VisualServerActions");
 const defaultInput = require("../config/mapconfig/default-input");
 const mapConfig = require("../charts/maps/map-config");
 

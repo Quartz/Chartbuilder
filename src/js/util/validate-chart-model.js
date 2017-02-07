@@ -6,7 +6,6 @@
  * @memberof helper
 */
 function validate_chart_model(modelStr) {
-	console.log('validate model');
 	let parsed;
 
 	try {

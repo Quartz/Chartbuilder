@@ -7,9 +7,6 @@ var ChartEditorMixin = require("../mixins/ChartEditorMixin");
 var XY_yScaleSettings = require("../shared/XY_yScaleSettings.jsx");
 var ChartGrid_xScaleSettings = require("./ChartGrid_xScaleSettings.jsx");
 
-// Flux stores
-//var ChartViewActions = require("../../actions/ChartViewActions");
-
 // Chartbuilder UI components
 var chartbuilderUI = require("chartbuilder-ui");
 var ButtonGroup = chartbuilderUI.ButtonGroup;

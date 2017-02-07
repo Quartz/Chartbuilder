@@ -27,7 +27,7 @@ var NumericScaleMixin = require("../mixins/NumericScaleMixin.js");
 
 
 // Flux actions
-var ChartViewActions = require("../../actions/ChartViewActions");
+var VisualViewActions = require("../../actions/VisualViewActions");
 
 // Svg components
 var SvgRectLabel = require("../svg/SvgRectLabel.jsx");
@@ -484,7 +484,7 @@ var XYLabels = React.createClass({
 		// tell the parent app that dragging has been enabled
 		var annotations = this.props.chartProps._annotations;
 		annotations.labels.hasDragged = true;
-		ChartViewActions.updateChartProp("_annotations", annotations);
+		VisualViewActions.updateChartProp("_annotations", annotations);
 	},
 
 	_handleLabelPositionUpdate: function(ix, pos) {
@@ -498,7 +498,7 @@ var XYLabels = React.createClass({
 					hasDragged: this.props.chartProps._annotations.labels.hasDragged
 				}
 			}});
-			ChartViewActions.updateChartProp("_annotations", annotations);
+			VisualViewActions.updateChartProp("_annotations", annotations);
 		/* Otherwise if undragged, update in XYLabls state */
 		} else {
 			var undragged = this.state.undraggedLabels;

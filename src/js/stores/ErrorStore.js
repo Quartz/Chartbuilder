@@ -8,7 +8,7 @@ const Dispatcher = require("../dispatcher/dispatcher");
 const errorNames = require("../util/error-names");
 const validateDataInput = require("../util/validate-data-input");
 const validateMapDataInput = require("../util/validate-map-data-input");
-const ChartPropertiesStore = require("./ChartPropertiesStore");
+const VisualPropertiesStore = require("./VisualPropertiesStore");
 
 /* Singleton that houses errors */
 let _errors = { valid: true, messages: [] };
@@ -79,12 +79,34 @@ function registeredCallback(payload) {
 		/* *
 		* Data input updated or reparse called
 		* */
-		/*case "update-data-input":
-			console.log('update data input');*/
+
 		case "update-and-reparse":
 
-			Dispatcher.waitFor([ChartPropertiesStore.dispatchToken]);
-			chartProps = ChartPropertiesStore.getAll();
+			Dispatcher.waitFor([VisualPropertiesStore.dispatchToken]);
+			chartProps = VisualPropertiesStore.getAll();
+
+			error_messages = [];
+			if (chartProps.visualType === 'chart') {
+				input_errors = validateDataInput(chartProps);
+			}
+			else if (chartProps.visualType === 'map') {
+				input_errors = validateMapDataInput(chartProps);
+			}
+			error_messages = error_messages.concat(input_errors);
+
+			_errors.messages = error_messages.map(function(err_name) {
+				return errorNames[err_name];
+			});
+
+			isInvalid = some(_errors.messages, { type: "error" } );
+			_errors.valid = !isInvalid;
+
+			ErrorStore.emitChange();
+			break;
+		case "update-data-input":
+
+			Dispatcher.waitFor([VisualPropertiesStore.dispatchToken]);
+			chartProps = VisualPropertiesStore.getAll();
 
 			error_messages = [];
 			if (chartProps.visualType === 'chart') {
@@ -106,8 +128,8 @@ function registeredCallback(payload) {
 			break;
 		case "receive-model":
 
-			Dispatcher.waitFor([ChartPropertiesStore.dispatchToken]);
-			chartProps = ChartPropertiesStore.getAll();
+			Dispatcher.waitFor([VisualPropertiesStore.dispatchToken]);
+			chartProps = VisualPropertiesStore.getAll();
 
 			error_messages = [];
 			if (chartProps.visualType === 'chart') {

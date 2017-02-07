@@ -7,7 +7,7 @@ import d3 from 'd3';
 import {filter, toNumber, assign} from 'lodash';
 
 // Flux actions
-const MapViewActions = require("../../actions/ChartViewActions");
+const MapViewActions = require("../../actions/VisualViewActions");
 
 const PolygonCollection = React.createClass({
 
@@ -44,7 +44,6 @@ const PolygonCollection = React.createClass({
     const adjustLabels = mapSchema.adjustLabels;
 
     const columnNames = chartProps.columns;
-    console.log(columnNames, 'names');
     const keyColumn = columnNames[0];
     const valueColumn = columnNames.length === 2 ? columnNames[1] : columnNames[2];
 
@@ -62,7 +61,8 @@ const PolygonCollection = React.createClass({
 
       alldata.forEach(function(d, j) {
         if (thisvalue === undefined || !thisvalue.length) {
-          thisvalue = Object.assign(filter(d.values, function(o) { return mapSchema.test(o[keyColumn], polygonData.id); }), {index:d.index});
+          thisvalue = Object.assign(filter(d.values, function(o) {
+          	return mapSchema.test(o[keyColumn], polygonData.id); }), {index:d.index});
         }
       });
 
@@ -88,8 +88,6 @@ const PolygonCollection = React.createClass({
 
       const styles2 = {};
 
-      console.log(thisvalue, 'this value');
-
       if (thisvalue.length) {
         styles2.stroke = currSettings[thisvalue.index].d3scale(thisvalue[0][valueColumn]);
         styles2.fill = currSettings[thisvalue.index].d3scale(thisvalue[0][valueColumn]);
@@ -101,14 +99,12 @@ const PolygonCollection = React.createClass({
 
       assign(styles2, {fillOpacity:0.2},{strokeWidth: '1.25px'});
 
-      if (!thisvalue.length) return (false);
-      else {
+      if (thisvalue.length) {
         const dataMax = d3.max(this.props.chartProps.alldata, function(d){ return +d[valueColumn]; } );
         radius.domain([0, dataMax]);
         renderRadius = radius(thisvalue[0][valueColumn]);
-      }
 
-      circleReturn.push(
+        circleReturn.push(
           <circle
             key= {`circle_with_${i}`}
             style={styles2}
@@ -117,7 +113,8 @@ const PolygonCollection = React.createClass({
             cy={attributes.y}
             className={'state-labels-show'}
           >
-          </circle>)
+          </circle>);
+      }
 
       return (
         <g key= {`polygon_with_${i}`}>

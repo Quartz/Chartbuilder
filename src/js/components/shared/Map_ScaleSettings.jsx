@@ -121,8 +121,6 @@ const Map_ScaleSettings = React.createClass({
 
     if (currScale.type === 'threshold') {
 
-    	console.log('her..');
-
       thresholdsLabel.push(<div className="inline-label">Define thresholds</div>);
 
       for (let i = 0; i < currScale.tickValues.length; i++) {

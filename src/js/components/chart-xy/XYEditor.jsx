@@ -281,7 +281,6 @@ const XY_chartSettings = React.createClass({
 		/* We need the index (ix) of the settings object to know which to update */
 		chartSettings[ix][k] = v;
 		/* `axis` and `colorIndex` require reparsing the input and splitting it up */
-		console.log(chartSettings,'settings');
 		this.props.onUpdateReparse(chartSettings);
 	},
 

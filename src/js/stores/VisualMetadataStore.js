@@ -10,7 +10,7 @@ var EventEmitter = require("events").EventEmitter;
 var Dispatcher = require("../dispatcher/dispatcher");
 
 /* Require the `ChartProptiesStore so that we can wait for it to update */
-var ChartPropertiesStore = require("./ChartPropertiesStore");
+var VisualPropertiesStore = require("./VisualPropertiesStore");
 
 /* Singleton that houses metadata */
 var _metadata = {};
@@ -18,10 +18,10 @@ var titleDirty = false;
 var CHANGE_EVENT = "change";
 
 /**
- * ### ChartMetadataStore.js
+ * ### VisualMetadataStore.js
  * Flux store for chart metadata such as title, source, size, etc.
 */
-var ChartMetadataStore = assign({}, EventEmitter.prototype, {
+var VisualMetadataStore = assign({}, EventEmitter.prototype, {
 
 	emitChange: function() {
 		this.emit(CHANGE_EVENT);
@@ -40,7 +40,7 @@ var ChartMetadataStore = assign({}, EventEmitter.prototype, {
 	 * @param k
 	 * @return {any} - Return value at key `k`
 	 * @instance
-	 * @memberof ChartMetadataStore
+	 * @memberof VisualMetadataStore
 	 */
 	get: function(k) {
 		return _metadata[k];
@@ -50,7 +50,7 @@ var ChartMetadataStore = assign({}, EventEmitter.prototype, {
 	 * getAll
 	 * @return {object} - Return all metadata
 	 * @instance
-	 * @memberof ChartMetadataStore
+	 * @memberof VisualMetadataStore
 	 */
 	getAll: function() {
 		return clone(_metadata);
@@ -60,7 +60,7 @@ var ChartMetadataStore = assign({}, EventEmitter.prototype, {
 	 * clear
 	 * Set metadata to empty
 	 * @instance
-	 * @memberof ChartMetadataStore
+	 * @memberof VisualMetadataStore
 	 */
 	clear: function() {
 		_metadata = {};
@@ -79,11 +79,11 @@ function registeredCallback(payload) {
 		* `ChartProptiesStore`
 		*/
 		case "receive-model":
-			Dispatcher.waitFor([ChartPropertiesStore.dispatchToken]);
+			Dispatcher.waitFor([VisualPropertiesStore.dispatchToken]);
 			_metadata = action.model.metadata;
-			data = ChartPropertiesStore.get("data");
+			data = VisualPropertiesStore.get("data");
 			_metadata.title = defaultTitle(data);
-			ChartMetadataStore.emitChange();
+			VisualMetadataStore.emitChange();
 			break;
 
 		/* Metadata alone is being updated */
@@ -94,14 +94,14 @@ function registeredCallback(payload) {
 			if (action.key == "title") {
 				titleDirty = true;
 			}
-			ChartMetadataStore.emitChange();
+			VisualMetadataStore.emitChange();
 			break;
 
 		case "update-and-reparse":
 			if (!titleDirty) {
-				data = ChartPropertiesStore.get("data");
+				data = VisualPropertiesStore.get("data");
 				_metadata.title = defaultTitle(data);
-				ChartMetadataStore.emitChange();
+				VisualMetadataStore.emitChange();
 			}
 			break;
 
@@ -115,7 +115,7 @@ function registeredCallback(payload) {
 
 //Dispatcher.register(registeredCallback);
 /* Respond to actions coming from the dispatcher */
-ChartMetadataStore.dispatchToken = Dispatcher.register(registeredCallback);
+VisualMetadataStore.dispatchToken = Dispatcher.register(registeredCallback);
 
 function defaultTitle(data) {
 	if (data.length === 1 && _metadata.title === "") {
@@ -125,4 +125,4 @@ function defaultTitle(data) {
 	}
 }
 
-module.exports = ChartMetadataStore;
+module.exports = VisualMetadataStore;

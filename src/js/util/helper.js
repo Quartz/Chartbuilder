@@ -41,8 +41,6 @@ const exact_ticks = (domain, numticks, scalevals, type, tickVals, precision) => 
   if (type === 'threshold') {
     numticks -= 3;
 
-    console.log('arg');
-
     if ((tickVals.length - 1) !== numticks) {
 
       const max = d3.max(tickVals);
@@ -74,8 +72,6 @@ const exact_ticks = (domain, numticks, scalevals, type, tickVals, precision) => 
 
   }
 
-  //console.log(numticks, type, domain, tickVals);
-
   if (domain[1] * domain[0] < 0) {
     //if the domain crosses zero, make sure there is a zero line
     let hasZero = false;
@@ -89,7 +85,6 @@ const exact_ticks = (domain, numticks, scalevals, type, tickVals, precision) => 
       ticks.push(0);
     }
   }
-  //console.log(ticks,'ultimate ticks');
 
   return ticks;
 
@@ -501,8 +496,6 @@ const return_D3_scale = (colorIndex, number_colors, domain, type, allvalues, tic
         .range(colors);
       break;
     case('threshold'):
-
-    //console.log(tickValues,'ticks');
 
       const tickValuesThreshold = clone(tickValues);
 

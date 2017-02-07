@@ -216,10 +216,6 @@ const LegendSpace = React.createClass({
 		return tickOffsets;
 	},
 	render: function() {
-
-		//console.log('render legend');
-		//console.log(this.props,'props');
-
 		const chartProps = this.props.chartProps;
 		const stylings = chartProps.stylings;
 		const metadata = this.props.metadata;
@@ -270,8 +266,6 @@ const LegendSpace = React.createClass({
 										width={legendRectWidth + 'px'}
 									/>);
 			});
-
-			console.log(legendData.colorValues,'values');
 
 			/*
 				Legend ticks

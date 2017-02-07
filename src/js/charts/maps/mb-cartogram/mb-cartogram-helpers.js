@@ -99,9 +99,11 @@ const enter_demers = (selection, stylings, force, data) => {
 
 const enter_grid = (selection, stylings, force, data) => {
 
- d3.selectAll('.carto-shapes').remove();
+  d3.selectAll('.carto-shapes').remove();
 
- selection.attr('transform',(d,i) => {
+  console.log('enter grid f');
+
+  selection.attr('transform',(d,i) => {
 		return 'translate('+ d.xx + ',' + d.yy +')'
 	});
 

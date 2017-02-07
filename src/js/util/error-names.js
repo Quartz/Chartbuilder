@@ -36,7 +36,7 @@ const error_names = {
 	},
 	"TOO_FEW_SERIES": {
 		location: "input",
-		text: "You have fewer than 2 columns. Use the first column to lay out your map subunits.",
+		text: "You did not input a value column. Use at least two columns, with one for geographies, one for values.",
 		type: "error"
 	},
 	"NAN_VALUES": {

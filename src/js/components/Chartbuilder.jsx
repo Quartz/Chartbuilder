@@ -8,8 +8,8 @@
 import React, {Component, PropTypes} from 'react';
 
 /* Flux stores */
-const ChartPropertiesStore = require("../stores/ChartPropertiesStore");
-const ChartMetadataStore = require("../stores/ChartMetadataStore");
+const VisualPropertiesStore = require("../stores/VisualPropertiesStore");
+const ChartMetadataStore = require("../stores/VisualMetadataStore");
 const SessionStore = require("../stores/SessionStore");
 const ErrorStore = require("../stores/ErrorStore");
 
@@ -48,7 +48,7 @@ const ChartbuilderLocalStorageAPI = require("../util/ChartbuilderLocalStorageAPI
 */
 function getStateFromStores() {
 	return {
-		chartProps: ChartPropertiesStore.getAll(),
+		chartProps: VisualPropertiesStore.getAll(),
 		metadata: ChartMetadataStore.getAll(),
 		errors: ErrorStore.getAll(),
 		session: SessionStore.getAll()
@@ -112,7 +112,7 @@ var Chartbuilder = React.createClass({
 
 	/* Add listeners to update component state when stores update */
 	componentDidMount: function() {
-		ChartPropertiesStore.addChangeListener(this._onChange);
+		VisualPropertiesStore.addChangeListener(this._onChange);
 		ChartMetadataStore.addChangeListener(this._onChange);
 		ErrorStore.addChangeListener(this._onChange);
 		SessionStore.addChangeListener(this._onChange);
@@ -120,7 +120,7 @@ var Chartbuilder = React.createClass({
 
 	/* Remove listeners on component unmount */
 	componentWillUnmount: function() {
-		ChartPropertiesStore.removeChangeListener(this._onChange);
+		VisualPropertiesStore.removeChangeListener(this._onChange);
 		ChartMetadataStore.removeChangeListener(this._onChange);
 		ErrorStore.removeChangeListener(this._onChange);
 		SessionStore.removeChangeListener(this._onChange);

@@ -1,7 +1,6 @@
 // Svg text elements used to describe chart
 var React = require("react");
 var PropTypes = React.PropTypes;
-var ChartViewActions = require("../../actions/ChartViewActions");
 var markdown = require("markdown-it")();
 var reduce = require("lodash/reduce");
 var map = require("lodash/map");

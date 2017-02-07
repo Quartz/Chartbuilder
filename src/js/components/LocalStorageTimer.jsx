@@ -1,5 +1,5 @@
 var SessionStore = require("../stores/SessionStore");
-var ChartViewActions = require("../actions/ChartViewActions");
+var VisualViewActions = require("../actions/VisualViewActions");
 var ChartbuilderLocalStorageAPI = require("../util/ChartbuilderLocalStorageAPI");
 
 /* Node modules */
@@ -25,7 +25,7 @@ var LocalStorageTimer = React.createClass({
 
 	_disableTimer: function() {
 		clearTimeout(timer);
-		ChartViewActions.stopTimer();
+		VisualViewActions.stopTimer();
 	},
 
 	_handleLoadChart: function() {
@@ -38,7 +38,7 @@ var LocalStorageTimer = React.createClass({
 			timer = setTimeout(function() {
 				this._disableTimer();
 			}.bind(this), TIMER_DURATION);
-			ChartViewActions.startTimer();
+			VisualViewActions.startTimer();
 		}
 	},
 

@@ -4,7 +4,7 @@ import {filter} from 'lodash';
 import {centroid} from 'turf';
 
 // Flux actions
-const MapViewActions = require("../../actions/ChartViewActions");
+const MapViewActions = require("../../actions/VisualViewActions");
 
 const PolygonCollection = React.createClass({
 

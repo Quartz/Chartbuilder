@@ -27,8 +27,8 @@ const MapEditorMixin = require("../mixins/MapEditorMixin.js");
 const map_strokes = [
   {
     title: "",
-    content: "Darker Grey",
-    value: "#333"
+    content: "Black",
+    value: "#000"
   },
   {
     title: "",
@@ -37,13 +37,8 @@ const map_strokes = [
   },
   {
     title: "",
-    content: "Grey",
+    content: "Light Grey",
     value: "#aaa"
-  },
-  {
-    title: "",
-    content: "Lightest Grey",
-    value: "#eee"
   },
   {
     title: "",
@@ -52,12 +47,26 @@ const map_strokes = [
   }
 ];
 
-const map_type = [
+
+const map_type_50 = [
   {
     title: "",
     content: "Grid",
     value: "grid"
   },
+  {
+    title: "",
+    content: "Demers",
+    value: "demers"
+  },
+  {
+    title: "",
+    content: "Dorling",
+    value: "dorling"
+  }
+];
+
+const map_type = [
   {
     title: "",
     content: "Demers",
@@ -97,13 +106,14 @@ let MapEditor = React.createClass({
 
   getDefaultProps: function() {
     return {
-      numSteps: 4
+      numSteps: 3
     };
   },
   render: function() {
 
     const mapProps = this.props.chartProps;
     const stylings = mapProps.stylings;
+    const schemaName = this.props.chartProps.input.type;
 
     /* Create a settings component for each data series (column) */
     const mapSettings = map(mapProps.chartSettings, bind(function(chartSetting, i) {
@@ -139,6 +149,7 @@ let MapEditor = React.createClass({
     const mapStyles = (<MapCartogram_mapStyles
 						chartStyles={stylings}
 						key="cartogram_styles"
+						schemaName={schemaName}
 						stepNumber={this.props.stepNumber}
 						metadata={this.props.metadata}
 						onUpdate={this._handlePropUpdate.bind(null, "stylings")}
@@ -269,13 +280,26 @@ const MapCartogram_mapStyles = React.createClass({
     let valuesOption = false;
 
     cartogramOption.push(<h3>Cartogram Type</h3>);
-    cartogramOption.push(<ButtonGroup
-        className="button-group-wrapper"
-        buttons={map_type}
-        key="cartogram_type"
-        onClick={this._handleStylesUpdate.bind(null, "type")}
-        value={stylings.type}
-      />);
+
+    // provide more options for the 50-state US map
+    // note that it alters a different styling prop
+    if (this.props.schemaName === 'states50') {
+	    cartogramOption.push(<ButtonGroup
+	        className="button-group-wrapper"
+	        buttons={map_type_50}
+	        key="cartogram_type"
+	        onClick={this._handleStylesUpdate.bind(null, "type")}
+	        value={stylings.type}
+	      />);
+  	} else {
+  		cartogramOption.push(<ButtonGroup
+	        className="button-group-wrapper"
+	        buttons={map_type}
+	        key="cartogram_type"
+	        onClick={this._handleStylesUpdate.bind(null, "typeOther")}
+	        value={stylings.typeOther}
+	      />);
+  	}
 
     if (stylings.type === 'grid') {
       valuesOption = (<div className="toggle">

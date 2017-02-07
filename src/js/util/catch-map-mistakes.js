@@ -3,9 +3,8 @@ const some = require("lodash/some");
 const reduce = require("lodash/reduce");
 const sizeof = require("sizeof");
 
-const INTERVAL_BASE_VALS = [1, 2, 2.5, 5, 10, 25]; // used to determine "good" tick intervals
+const INTERVAL_BASE_VALS = [1, 2, 2.5, 5, 10, 25, 50, 100]; // used to determine "good" tick intervals
 const MAX_TICKS = 8;
-
 
 function axis_ticks_even(scale) {
 	return;

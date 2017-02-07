@@ -16,8 +16,10 @@ const parseMapType = require('./../../../util/parse-map-type');
  * @memberof xy_config
  */
 
+ const defaultmap = 'states50';
 
-const parse50 = (config, _chartProps, callback, parseOpts, priorData = [], priorSchema = []) => {
+
+const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, priorSchema = false) => {
   // Build chart settings from defaults or provided settings
 
   parseOpts = parseOpts || {};
@@ -25,8 +27,20 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = [], prior
   // this can probably be avoided by applying new settings differently
   let chartProps = JSON.parse(JSON.stringify(_chartProps));
 
+  let maptype;
+
+  if (parseOpts === 'input') {
+  	maptype = chartProps.input.type;
+  } else {
+	  if (!chartProps.input.type) {
+	  	maptype = defaultmap;
+	  } else {
+	  	maptype = chartProps.input.type;
+	  }
+  }
+
   let bySeries = dataBySeries(chartProps.input.raw, chartProps, {
-    type: chartProps.input.type
+    type: maptype
   });
 
   const dataParsed = bySeries.data;
@@ -120,7 +134,6 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = [], prior
         currScale.precision = tickPrecision;
       }
       currScale.tickValues[i] = currScale.precision ? Math.round(v * (10 * currScale.precision)) / (10 * currScale.precision) : v;
-
     });
 
     currScale.d3scale = help.returnD3Scale(currScale.colorIndex, totalcolors, currScale.domain, currScale.type, _computed[j].data, currScale.tickValues);
@@ -187,25 +200,33 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = [], prior
     });
   });
 
+  /*
+  	Schemas
+  */
+
   const firstColumn = columnNames[0];
   const allData = bySeries.series;
 
   let schema;
 
-  if (priorData.length) {
-
-    const test2 = parseMapType.first_column(priorData, firstColumn);
-    const test = parseMapType.first_column(allData, firstColumn);
-
-    const test3 = help.isEqualTest(test2, test);
-
-    if (!test3) schema = parseMapType.determine_map(firstColumn, allData);
-    else schema = priorSchema;
+  if (priorData) {
+  	if (parseOpts === 'input') {
+  		schema = parseMapType.assign_map(firstColumn, allData, maptype);
+  	} else {
+	    if (!priorSchema) schema = parseMapType.determine_map(firstColumn, allData);
+	    else schema = priorSchema;
+  	}
   }
   else {
-
-    schema = parseMapType.determine_map(firstColumn, allData);
+  	// if making a map type switch, use the previous map type option
+  	if (parseOpts === 'receive-model' && maptype !== defaultmap) {
+  		schema = parseMapType.assign_map(firstColumn, allData, maptype);
+  	} else {
+  	// if just parsing data or something else, change it.
+    	schema = parseMapType.determine_map(firstColumn, allData);
+  	}
   }
+
 
 
     /*

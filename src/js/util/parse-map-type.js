@@ -27,14 +27,29 @@ const testSchema = (mapSchema, firstColumn) => {
 
   mapSchema.forEach(function(d) {
     let thisLength = 0;
-    for (let key in d.topojson.objects[d.feature].geometries) {
-      firstColumn.forEach(function(g) {
-        if (d.test(g,key)) {
-          thisLength++;
-        }
-      })
+
+    const geometries = d.topojson.objects[d.feature].geometries;
+    /* if the first column is way longer than the schema, skip over it
+    */
+    if (geometries.length * 1.25 < length) {
+    	testLength.push(0);
     }
-    testLength.push(thisLength/d.topojson.objects[d.feature].geometries.length);
+    else {
+    	let i = 0;
+	    for (let key in geometries) {
+	    	i++;
+	    	/* only test the first 35 entries. if there is that much ambiguity,
+	    	count on the user to override. this greatly improves speed */
+	    	if (i < 35) {
+		      firstColumn.forEach(function(g) {
+		        if (d.test(g,key)) {
+		          thisLength++;
+		        }
+		      });
+	    	}
+	    }
+	    testLength.push(thisLength/geometries.length);
+  	}
   });
 
   const objIndex = testLength.indexOf(max(testLength));
@@ -42,9 +57,8 @@ const testSchema = (mapSchema, firstColumn) => {
 
   return schema;
 }
- 
-const determineMap = (columnName, input) => {
 
+const determineMap = (columnName, input) => {
   if (!input.length) return;
 
   const firstColumn = buildFirstColumn(input, columnName);
@@ -58,11 +72,38 @@ const determineMap = (columnName, input) => {
   return mapType;
 }
 
+const findSchema = (schemaName) => {
+	let schema;
+
+	mapSchema.forEach(function(d,i) {
+		if (schemaName === d.name) {
+			schema = d;
+		}
+	});
+
+	return schema;
+}
+
+const assignMap = (columnName, input, schemaName) => {
+	if (!input.length) return;
+
+  const firstColumn = buildFirstColumn(input, columnName);
+  const schema = findSchema(schemaName);
+
+  const mapType = {
+    firstColumn : firstColumn,
+    schema : schema
+  };
+
+	return mapType;
+}
+
 /**
- * Helper functions!
+ * Helper functions
  * @name helper
  */
 const map_type_helper = Object.freeze({
+	assign_map: assignMap,
   first_column: buildFirstColumn,
   determine_map: determineMap
 });

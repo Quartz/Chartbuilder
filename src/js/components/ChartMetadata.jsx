@@ -9,8 +9,7 @@ import chartbuilderUI, {ButtonGroup, TextInput} from "chartbuilder-ui";
 import {clone} from 'lodash';
 
 // Flux stores
-const ChartMetadataStore = require("../stores/ChartMetadataStore");
-const ChartViewActions = require("../actions/ChartViewActions");
+const VisualViewActions = require("../actions/VisualViewActions");
 
 // Give chart sizes friendly names
 const chart_sizes = [
@@ -81,7 +80,7 @@ var ChartMetadata = React.createClass({
 
 	// Update metadata store with new settings
 	_handleMetadataUpdate: function(k, v) {
-		ChartViewActions.updateMetadata(k, v);
+		VisualViewActions.updateMetadata(k, v);
 	},
 
 	render: function() {

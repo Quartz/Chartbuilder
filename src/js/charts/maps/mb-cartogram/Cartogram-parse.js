@@ -3,7 +3,7 @@ import {clone, map, assign, each, filter, flatten} from 'lodash';
 const colorScales = require('./../../../util/colorscales');
 const dataBySeries = require("./../../../util/parse-map-data-by-series");
 const help = require("../../../util/helper");
-//const help_50 = require("./50-parse-helpers");
+
 const SessionStore = require("../../../stores/SessionStore");
 
 const parseColumns = require("./../../../util/parse-delimited-input")._parseColumnVals;
@@ -11,13 +11,15 @@ const parseMapType = require('./../../../util/parse-map-type');
 
 const parseDelimInput = require("./../../../util/parse-delimited-input").parser;
 
+const defaultmap = 'states50';
+
 /**
  * see [ChartConfig#parser](#chartconfig/parser)
  * @see ChartConfig#parser
  * @instance
  * @memberof xy_config
  */
-let parse50 = (config, _chartProps, callback, parseOpts, priorData = [], priorSchema = []) => {
+let parseCartogram = (config, _chartProps, callback, parseOpts, priorData = false, priorSchema = false) => {
   // Build chart settings from defaults or provided settings
 
   parseOpts = parseOpts || {};
@@ -25,8 +27,20 @@ let parse50 = (config, _chartProps, callback, parseOpts, priorData = [], priorSc
   // this can probably be avoided by applying new settings differently
   let chartProps = JSON.parse(JSON.stringify(_chartProps));
 
+  let maptype;
+
+  if (parseOpts === 'input') {
+  	maptype = chartProps.input.type;
+  } else {
+	  if (!chartProps.input.type) {
+	  	maptype = defaultmap;
+	  } else {
+	  	maptype = chartProps.input.type;
+	  }
+  }
+
   let bySeries = dataBySeries(chartProps.input.raw, chartProps, {
-    type: chartProps.input.type
+    type: maptype
   });
 
   const dataParsed = bySeries.data;
@@ -40,19 +54,30 @@ let parse50 = (config, _chartProps, callback, parseOpts, priorData = [], priorSc
   const scaleNames = [];
   const scaleIndex = [];
 
+  console.log(bySeries, 'by series');
+
   bySeries.series.forEach((d) => {
     scaleIndex.push(d.name);
     scaleNames.push(d.name);
   });
 
-  chartProps.chartSettings.forEach((d,i) => {
-    if (d.label && scaleIndex[i] !== d.label) scaleNames[i] = d.label;
-  });
+  // what are we doing here?
+  /*chartProps.chartSettings.forEach((d,i) => {
+  	// tk
+    if (d.label && scaleIndex[i] !== d.label) {
+    	console.log(i, d.label);
+    	scaleNames[i] = d.label;
+    }
+  }); */
+
+  console.log(scaleNames, 'scaleNames');
 
   const labels = chartProps._annotations.labels;
   const allColumn = true;
   // check if either scale contains columns, as we'll need to zero the axis
   const _computed = {};
+
+  console.log(scaleIndex, 'index');
 
   scaleIndex.forEach((name, i) => {
     _computed[i] = {
@@ -78,10 +103,14 @@ let parse50 = (config, _chartProps, callback, parseOpts, priorData = [], priorSc
       return +d[valueColumn];
     });
 
+    console.log(values, 'values')
+
     _computed[i].data = _computed[i].data.concat(values);
 
     return settings;
   });
+
+  console.log(_computed, 'computed');
 
   // not needed
   labels.values = map(bySeries.series, (dataSeries, i) => {
@@ -102,7 +131,9 @@ let parse50 = (config, _chartProps, callback, parseOpts, priorData = [], priorSc
   const factor = Math.pow(10, maxPrecision);
 
   // Calculate domain and tick values for any scales that exist
-  each(scaleNames, (name,j) => {
+  each(scaleNames, (name, j) => {
+
+  	console.log(j, 'j');
 
     let currScale;
     const currLegend = {};
@@ -208,28 +239,34 @@ let parse50 = (config, _chartProps, callback, parseOpts, priorData = [], priorSc
     allData.push(thisItem);
   });
 
-  allData = flatten(allData);
-
-
   const firstColumn = columnNames[0];
   const allSeriesData = bySeries.series;
 
   let schema;
 
-  if (priorData.length) {
 
-    const test2 = parseMapType.first_column(priorData, firstColumn);
-    const test = parseMapType.first_column(allSeriesData, firstColumn);
-
-    const test3 = help.isEqualTest(test2, test);
-
-    if (!test3) schema = parseMapType.determine_map(firstColumn, allSeriesData);
-    else schema = priorSchema;
+  if (priorData) {
+  	if (parseOpts === 'input') {
+  		schema = parseMapType.assign_map(firstColumn, bySeries.series, maptype);
+  	} else {
+	    if (!priorSchema) {
+	    	schema = parseMapType.determine_map(firstColumn, bySeries.series);
+	    }
+	    else schema = priorSchema;
+  	}
   }
   else {
-
-    schema = parseMapType.determine_map(firstColumn, allSeriesData);
+  	// if making a map type switch, use the previous map type option
+  	if (parseOpts === 'receive-model' && maptype !== defaultmap) {
+  		schema = parseMapType.assign_map(firstColumn, bySeries.series, maptype);
+  	} else {
+  	// if just parsing data or something else, change it.
+    	schema = parseMapType.determine_map(firstColumn, bySeries.series);
+  	}
   }
+
+
+  allData = flatten(allData);
 
     /*
 
@@ -259,8 +296,6 @@ let parse50 = (config, _chartProps, callback, parseOpts, priorData = [], priorSc
     } */
 
 
-    //console.log(bySeries.series,'series');
-
   let newChartProps = assign(chartProps, {
     chartSettings: chartSettings,
     columns: columnNames,
@@ -282,4 +317,4 @@ let parse50 = (config, _chartProps, callback, parseOpts, priorData = [], priorSc
 
 }
 
-module.exports = parse50;
+module.exports = parseCartogram;

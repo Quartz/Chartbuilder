@@ -20,7 +20,6 @@ const update = require("react-addons-update");
 
 const SvgText = require("./svg/SvgText.jsx");
 
-const ChartViewActions = require("../actions/ChartViewActions");
 const convertConfig = require("../util/parse-config-values");
 const SessionStore = require("../stores/SessionStore");
 const breakpoints = require("../config/chartconfig/chart-breakpoints");

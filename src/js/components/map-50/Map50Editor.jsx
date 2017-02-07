@@ -19,12 +19,11 @@ import {ButtonGroup, ColorPicker, Dropdown, LabelledTangle, TextInput, Toggle} f
 const colorScales = require('./../../util/colorscales');
 const MapEditorMixin = require("./../mixins/MapEditorMixin.js");
 
-
 const map_strokes = [
   {
     title: "",
-    content: "Darker Grey",
-    value: "#333"
+    content: "Black",
+    value: "#000"
   },
   {
     title: "",
@@ -33,13 +32,8 @@ const map_strokes = [
   },
   {
     title: "",
-    content: "Grey",
+    content: "Light Grey",
     value: "#aaa"
-  },
-  {
-    title: "",
-    content: "Lightest Grey",
-    value: "#eee"
   },
   {
     title: "",
@@ -88,7 +82,7 @@ let MapEditor = React.createClass({
 	},
 	getDefaultProps: function() {
 		return {
-			numSteps: 4
+			numSteps: 3
 		};
 	},
 	render: function() {
@@ -108,7 +102,7 @@ let MapEditor = React.createClass({
 						onUpdateReparse={this._handlePropAndReparse.bind(null, "chartSettings")}
 						numColors={this.props.numColors}
 						index={i}
-						key={i}
+						key={i + '-settings'}
 					/>
 
 					<Map_ScaleSettings
@@ -135,7 +129,6 @@ let MapEditor = React.createClass({
 						metadata={this.props.metadata}
 						onUpdate={this._handlePropUpdate.bind(null, "stylings")}
 						onUpdateReparse={this._handlePropAndReparse.bind(null, "stylings")}
-						key='stylings'
 					/>);
 
 		const axisErrors = this.props.errors.messages.filter(function(e) {
@@ -259,6 +252,7 @@ const MapChoro_mapStyles = React.createClass({
             label="Legend ticks"
             onToggle={this._handleStylesUpdate.bind(null, "showLegendTicks")}
             toggled={stylings.showLegendTicks}
+            key="legend_ticks"
           /></div>);
 
 		if (this.props.metadata.chartType === 'map50') {

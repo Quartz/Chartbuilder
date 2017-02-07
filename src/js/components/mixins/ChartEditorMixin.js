@@ -2,7 +2,7 @@ var React = require("react");
 var update = require("react-addons-update");
 
 // Flux actions
-var ChartViewActions = require("../../actions/ChartViewActions");
+var VisualViewActions = require("../../actions/VisualViewActions");
 
 /**
  * ### Functions common to chart editors
@@ -18,7 +18,7 @@ var ChartEditorMixin = {
 	 * @param v - `chartProp` value
 	 */
 	_handlePropUpdate: function(k, v) {
-		ChartViewActions.updateChartProp(k, v);
+		VisualViewActions.updateChartProp(k, v);
 	},
 
 	/**
@@ -28,7 +28,7 @@ var ChartEditorMixin = {
 	 * @param v - `chartProp` value
 	 */
 	_handlePropAndReparse: function(k, v) {
-		ChartViewActions.updateAndReparse(k, v);
+		VisualViewActions.updateAndReparse(k, v);
 	},
 
 	/**

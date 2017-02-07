@@ -5,9 +5,6 @@ import {clone} from 'lodash';
 var MapEditorMixin = require("../mixins/MapEditorMixin");
 //var XY_yScaleSettings = require("../shared/XY_yScaleSettings.jsx");
 
-// Flux stores
-//var ChartViewActions = require("../../actions/ChartViewActions");
-
 // Chartbuilder UI components
 import {ButtonGroup, LabelledTangle, TextInput} from 'chartbuilder-ui';
 

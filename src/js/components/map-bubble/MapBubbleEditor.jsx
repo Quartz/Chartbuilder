@@ -17,12 +17,11 @@ const DataInput = require("../shared/DataInput.jsx");
 const colorScales = require('./../../util/colorscales');
 const MapEditorMixin = require("../mixins/MapEditorMixin.js");
 
-
 const map_strokes = [
   {
     title: "",
-    content: "Darker Grey",
-    value: "#333"
+    content: "Black",
+    value: "#000"
   },
   {
     title: "",
@@ -31,13 +30,8 @@ const map_strokes = [
   },
   {
     title: "",
-    content: "Grey",
+    content: "Light Grey",
     value: "#aaa"
-  },
-  {
-    title: "",
-    content: "Lightest Grey",
-    value: "#eee"
   },
   {
     title: "",
@@ -45,6 +39,7 @@ const map_strokes = [
     value: "#fff"
   }
 ];
+
 
 /**
  * ### Editor interface for a XY chart
@@ -72,7 +67,7 @@ const MapEditor = React.createClass({
 
   getDefaultProps: function() {
     return {
-      numSteps: 4
+      numSteps: 3
     };
   },
 

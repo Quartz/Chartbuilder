@@ -52,7 +52,6 @@ function validateDataInput(chartProps) {
 	const nanSeries = somePointTest(
 			series,
 			function(val) {
-				if ((isNaN(val[valueColumn]) && val[valueColumn] !== undefined && val[valueColumn] !== "")) console.log(val);
 				return (isNaN(val[valueColumn]) && val[valueColumn] !== undefined && val[valueColumn] !== "");
 			}
 		);
@@ -89,7 +88,6 @@ function validateDataInput(chartProps) {
 	}*/
 
 	// Whether axis ticks divide evenly
-	//console.log(scale,'scale');
 	if (!catchMapMistakes.axisTicksEven(scale)) {
 		inputErrors.push("UNEVEN_TICKS");
 	}

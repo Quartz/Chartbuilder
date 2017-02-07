@@ -4,7 +4,7 @@ import ReactDOM from 'React-dom';
 import d3 from 'd3';
 
 // Flux actions
-const MapViewActions = require("../../actions/ChartViewActions");
+const MapViewActions = require("../../actions/VisualViewActions");
 
 // Color scales and helpers
 const colorScales = require('./../../util/colorscales');
@@ -19,12 +19,13 @@ const force = d3.layout.force()
 
 let d3Nodes;
 
-const enterNode = (selection, stylings, data) => {
+const enterNode = (selection, stylings, data, typeCast) => {
 
   selection.classed('node', true);
 
-  switch(stylings.type){
+  switch(stylings[typeCast]) {
     case('grid'):
+    console.log('case grid');
       helperCarto.enterGrid(selection, stylings, force, data);
       break;
     case('dorling'):
@@ -46,24 +47,31 @@ const PolygonCollection = React.createClass({
   },
   componentDidMount: function() {
 
+  	console.log('did mount');
+
     const stylings = this.props.chartProps.stylings;
+    const typeCast = this.props.schemaName;
 
     d3Nodes = d3.select(ReactDOM.findDOMNode(this.refs.graph));
+
+    console.log(this.props.nodes, 'nodes');
 
     const theseNodes = d3Nodes.selectAll('.node')
       .data(this.props.nodes, function (node) { return node.shp; })
 
     theseNodes.enter().append('g').attr('class','node');
-    	enterNode(theseNodes, stylings, this.props.nodes);
+
+    enterNode(theseNodes, stylings, this.props.nodes, typeCast);
+
     theseNodes.exit().remove();
 
     const d3Node = d3.select(ReactDOM.findDOMNode(this.refs.graph)).selectAll('.node');
 
-    if (stylings.type !== 'grid') {
+    if (stylings[typeCast] !== 'grid') {
 
       force.on("tick", (e, i) => {
         if (i > 200) force.stop();
-        return (stylings.type === 'dorling') ?
+        return (stylings[typeCast] === 'dorling') ?
                 helperCarto.updateDorling (e, d3Node, this.props.nodes) :
                 helperCarto.updateDemers (e, d3Node, this.props.nodes);
       })
@@ -75,17 +83,18 @@ const PolygonCollection = React.createClass({
       force.start();
     }
   },
-  componentDidUpdate:  function(nextProps, nextState) {
+  componentDidUpdate: function(nextProps, nextState) {
 
   	console.log('did update');
+
     const stylings = this.props.chartProps.stylings;
+    const typeCast = this.props.schemaName;
 
     d3Nodes = d3.select(ReactDOM.findDOMNode(this.refs.graph));
 
-    let theseNodes = d3Nodes.selectAll('.node')
-      .data(this.props.nodes, function (node) { return node.shp; });
+    console.log('nodes', this.props.nodes);
 
-    d3.selectAll('.node').selectAll('*')
+    let theseNodes = d3Nodes.selectAll('.node')
       .data(this.props.nodes, function (node) { return node.shp; });
 
     theseNodes.enter().append('g')
@@ -95,20 +104,20 @@ const PolygonCollection = React.createClass({
 
     const d3Node = d3.select(ReactDOM.findDOMNode(this.refs.graph)).selectAll('.node');
 
-    enterNode(d3Node, stylings, this.props.nodes);
+    enterNode(d3Node, stylings, this.props.nodes, typeCast);
 
-    if (stylings.type !== 'grid') {
+    if (stylings[typeCast] !== 'grid') {
 
-      (stylings.type === 'dorling') ?
+      (stylings[typeCast] === 'dorling') ?
                 helperCarto.switchDorling (d3Node, stylings) :
                 helperCarto.switchDemers (d3Node, stylings);
 
-      if (stylings.type !== nextProps.stylings.type
+      if (stylings[typeCast] !== nextProps.stylings[typeCast]
           || stylings.showDC !== nextProps.stylings.showDC) {
 
         force.on("tick", (e, i) => {
           if (i > 200) force.stop();
-          return (stylings.type === 'dorling') ?
+          return (stylings[typeCast] === 'dorling') ?
                   helperCarto.updateDorling (e, d3Node, this.props.nodes) :
                   helperCarto.updateDemers (e, d3Node, this.props.nodes);
         })
@@ -122,7 +131,7 @@ const PolygonCollection = React.createClass({
     }
     else {
       force.stop();
-      helperCarto.switchGrid(d3Node, stylings)
+      helperCarto.switchGrid(d3Node, stylings);
     }
   },
   render: function() {
@@ -134,6 +143,8 @@ const PolygonCollection = React.createClass({
     		topTranslation += 20;
     	}
     }
+
+    console.log(this.props,'props');
 
     const translation = `translate(${this.props.displayConfig.margin.left},${topTranslation})`;
 

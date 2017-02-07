@@ -6,9 +6,6 @@ var clone = require("lodash/clone");
 var ChartEditorMixin = require("../mixins/ChartEditorMixin");
 var XY_yScaleSettings = require("../shared/XY_yScaleSettings.jsx");
 
-// Flux stores
-//var ChartViewActions = require("../../actions/ChartViewActions");
-
 // Chartbuilder UI components
 var chartbuilderUI = require("chartbuilder-ui");
 var ButtonGroup = chartbuilderUI.ButtonGroup;

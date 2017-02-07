@@ -9,7 +9,7 @@ import {clone, map, keys, concat} from 'lodash';
 const helper = require("../util/helper");
 
 // Flux actions
-const ChartServerActions = require("../actions/ChartServerActions");
+const VisualServerActions = require("../actions/VisualServerActions");
 
 // Chartbuilder UI components
 import {ButtonGroup} from 'chartbuilder-ui';
@@ -52,11 +52,13 @@ var ChartTypeSelctor = React.createClass({
 	_handleChartTypeChange: function(chartType) {
 		/* Dont rerender if the chart type is the same */
 
-		console.log(this.props,'props first to go..')
-
 		if (chartType === this.props.metadata.chartType) {
 			return;
 		}
+
+		/* If switching from chart to map or vice versa, help the ..
+			 user out with a default dataset
+		*/
 
 		const visualConfig = chartConfig[chartType] || mapConfig[chartType];
 
@@ -88,12 +90,11 @@ var ChartTypeSelctor = React.createClass({
 		newProps.stylings = stylings;
 
 		/* Dispatch the new model to the flux stores */
-		ChartServerActions.receiveModel({
+		VisualServerActions.receiveModel({
 			chartProps: newProps,
 			metadata: metadata
 		});
 	},
-
 	render: function() {
 
 		return (

@@ -6,6 +6,7 @@ const convertPostaltoFullFips = require('us-abbreviations')('full','fips');
 const toTitleCase = require('./../../../util/helper.js').toTitleCase;
 
 const us = {
+		label: 'U.S. 50 State',
     name: 'states50',
     proj: 'albersUsa',
     translate: [320, 180],
@@ -67,18 +68,12 @@ const us = {
     test: function(column_val, polygon_val) {
       // loop through object .. find the key val of the one you want..
       // standardize case/trim whitespace
-      //console.log(column_val, 'vals');
 	     if (typeof column_val == 'string') {
 	      column_val = toTitleCase(column_val.trim());
 	      if (column_val.length === 2) column_val = column_val.toUpperCase();
     	}
-      //console.log(column_val,'arg');
+
       const column_val_converted = this.matchLogic(column_val); //
-
-      //console.log(column_val_converted,'no?')
-
-      //console.log(column_val_converted,polygon_val, column_val);
-
       return (toNumber(column_val_converted) === toNumber(polygon_val));
     }
   }

@@ -12,7 +12,7 @@ var ChartbuilderDispatcher = assign(new Dispatcher(), {
 
 	/**
 	 * Incoming server action. Normally a localStorage object
-	 * See `./actions/ChartServerActions.js`
+	 * See `./actions/VisualServerActions.js`
 	 * @param {Object} action { eventName: "string", <data>: <value>}
 	 * @instance
 	 * @memberof ChartbuilderDispatcher
@@ -27,7 +27,7 @@ var ChartbuilderDispatcher = assign(new Dispatcher(), {
 
 	/**
 	 * Incoming view action. Normally comes from a React component.
-	 * See `./actions/ChartPropertiesActions.js`
+	 * See `./actions/VisualPropertiesActions.js`
 	 * @param {Object} action { eventName: "string", <data>: <value>}
 	 * @instance
 	 * @memberof ChartbuilderDispatcher

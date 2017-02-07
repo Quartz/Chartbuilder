@@ -1,10 +1,10 @@
 var Dispatcher = require("../dispatcher/dispatcher");
 
 /**
- * ### ChartServerActions
+ * ### VisualServerActions
  * Send data from some external API, usually localStorage in our case
 */
-var ChartServerActions = {
+var VisualServerActions = {
 
 	/**
 	* Update the whole chart model
@@ -21,4 +21,4 @@ var ChartServerActions = {
 
 };
 
-module.exports = ChartServerActions;
+module.exports = VisualServerActions;
