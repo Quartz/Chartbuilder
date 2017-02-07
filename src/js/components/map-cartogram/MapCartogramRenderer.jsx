@@ -23,8 +23,6 @@ const enterNode = (selection, stylings, data, typeCast) => {
 
   selection.classed('node', true);
 
-  console.log(stylings, typeCast, 'GRR');
-
   switch(stylings[typeCast]) {
     case('grid'):
       helperCarto.enterGrid(selection, stylings, force, data);
@@ -48,14 +46,10 @@ const PolygonCollection = React.createClass({
   },
   componentDidMount: function() {
 
-  	console.log('did mount');
-
     const stylings = this.props.chartProps.stylings;
     const typeCast = this.props.schemaName;
 
     d3Nodes = d3.select(ReactDOM.findDOMNode(this.refs.graph));
-
-    console.log(this.props.nodes, 'nodes');
 
     const theseNodes = d3Nodes.selectAll('.node')
       .data(this.props.nodes, function (node) { return node.shp; })
@@ -86,8 +80,6 @@ const PolygonCollection = React.createClass({
   },
   componentWillUpdate: function(nextProps, nextState) {
 
-  	console.log('did update');
-
     const stylings = nextProps.chartProps.stylings;
     const typeCast = nextProps.schemaName;
 
@@ -105,12 +97,6 @@ const PolygonCollection = React.createClass({
 
     enterNode(d3Node, stylings, nextProps.nodes, typeCast);
 
-    console.log(stylings, 'stylings');
-    console.log(JSON.stringify(nextProps.schemaName), 'nextProps');
-    console.log(JSON.stringify(this.props.schemaName),'this');
-
-    console.log(d3Node, 'd3node');
-
     if (stylings[typeCast] !== 'grid') {
 
       (stylings[typeCast] === 'dorling') ?
@@ -120,8 +106,6 @@ const PolygonCollection = React.createClass({
       if (this.props.chartProps.stylings[typeCast] !== stylings[typeCast]
           || this.props.chartProps.stylings.showDC !== stylings.showDC
           || nextProps.schemaName !== this.props.schemaName) {
-
-      	console.log('passed the if', nextProps, 'next');
 
         force.on("tick", (e, i) => {
           if (i > 200) force.stop();
@@ -149,8 +133,6 @@ const PolygonCollection = React.createClass({
     		topTranslation += 20;
     	}
     }
-
-    console.log(this.props,'props');
 
     const translation = `translate(${this.props.displayConfig.margin.left},${topTranslation})`;
 

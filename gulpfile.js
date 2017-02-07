@@ -149,7 +149,7 @@ gulp.task("copy-fonts", function () {
 });
 
 gulp.task("copy-assets", function () {
-	return gulp.src(config.paths.src.assets + "/**")
+	return gulp.src([config.paths.src.assets + "/**", config.paths.src.datasets + "/**"])
 		.pipe(changed(config.paths.build.assets))
 		.pipe(gulp.dest(config.paths.build.assets))
 		.pipe(reload({ stream: true }));

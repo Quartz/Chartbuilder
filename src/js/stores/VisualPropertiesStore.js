@@ -79,8 +79,6 @@ function registeredCallback(payload) {
 	let config;
 	let thisModel;
 
-	console.log(action, 'action');
-
 	switch(action.eventName) {
 		/*
 		* Receive a new model, which includes metadata. Respond by parsing input and

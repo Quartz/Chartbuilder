@@ -14,7 +14,8 @@ var paths = {
 		js: dirs.src + '/js',
 		styl: dirs.src + '/styl',
 		fonts: dirs.src + '/fonts',
-		assets: dirs.src + '/assets'
+		assets: dirs.src + '/assets',
+		datasets: dirs.src + '/js/config/mapconfig/demo-datasets'
 	},
 	tmp: {
 		css: dirs.tmp + '/css',
@@ -28,7 +29,8 @@ var paths = {
 		img: dirs.build + '/img',
 		js: dirs.build + '/js',
 		fonts: dirs.build + '/fonts',
-		assets: dirs.build + '/assets'
+		assets: dirs.build + '/assets',
+		datasets: dirs.build + '/assets/'
 	},
 	dist: {
 		css: dirs.dist + '/css'

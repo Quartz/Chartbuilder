@@ -68,7 +68,7 @@ const DataSeriesTypeSettings = React.createClass({
 						options={this._availableMaps()}
 						value={this.props.chartProps.input.type}
 					/>
-					<a href="tk" className="download-dataset">Download a default {this._availableMapName(this.props.chartProps.input.type)} dataset (.csv)</a>
+					<a href={"./assets/datasets/" + this.props.chartProps.input.type + "/demo.csv"} className="download-dataset">Download a starter {this._availableMapName(this.props.chartProps.input.type)} dataset (.csv)</a>
 				</div>
 			);
 		}

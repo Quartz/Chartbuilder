@@ -37,7 +37,6 @@ class MapRenderer extends React.Component{
 
   	return centroidsConst;
   }
-
  	constructGrid(cartogramType) {
 
 	  const grid = {};
@@ -56,7 +55,6 @@ class MapRenderer extends React.Component{
 
   	return grid;
   }
-
   render() {
 
     const chartProps = this.props.chartProps;
@@ -71,7 +69,6 @@ class MapRenderer extends React.Component{
 
 		const displayConfig = this.props.displayConfig;
 
-
     const columnNames = chartProps.columns;
     const keyColumn = columnNames[0];
     const valueColumn = columnNames.length === 2 ? columnNames[1] : columnNames[2];
@@ -81,12 +78,10 @@ class MapRenderer extends React.Component{
       .translate((stylings[schemaName] === 'grid') ? schema.translate : schema.translateCartogram)
       .scale(schema.scale);
 
-    console.log('schema', JSON.stringify(schema.scale), JSON.stringify(schema.name),stylings);
-
     const scales = {};
     const dataById = d3.map(chartProps.alldata, function(d) { return schema.matchLogic(d[keyColumn]); });
 
-    // for dorling
+    // for dorling and demers calculations
     radius
     	.range([0, (stylings[schemaName] === 'dorling') ? +stylings.dorlingradiusVal : +stylings.demerssquareWidth])
     	.domain([0, d3.max(chartProps.alldata, function(d){ return +d[valueColumn]} )]);
@@ -95,22 +90,20 @@ class MapRenderer extends React.Component{
 
     const nodes = centroids.filter(function(d) {
 
-        if (schema.name === 'states50') {
-
-          if (showDC) return (dataById.has(schema.matchLogic(d.id)) && schema.test(d.id, d.id));
-          //dc id = 11
-          else return (dataById.has(schema.matchLogic(d.id)) && schema.test(d.id, d.id) && d.id != 11);
+      if (schema.name === 'states50') {
+      	//dc id = 11
+        if (showDC) {
+        	return (dataById.has(schema.matchLogic(d.id)) && schema.test(d.id, d.id));
+        } else {
+        	return (dataById.has(schema.matchLogic(d.id)) && schema.test(d.id, d.id) && d.id != 11);
         }
-        else return (dataById.has(schema.matchLogic(d.id)) && schema.test(d.id, d.id));
+       } else return (dataById.has(schema.matchLogic(d.id)) && schema.test(d.id, d.id));
       })
       .map((d) => {
 
         const shp = d.id;
         const shpData = dataById.get(schema.matchLogic(shp));
-        console.log(d.geometry.coordinates, 'coordinates');
         const point = projection(d.geometry.coordinates);
-
-        console.log(point, 'point');
 
         let fillVal;
         if (chartProps.chartSettings[shpData.index].scale.domain[0] ===
