@@ -99,7 +99,6 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
   each(scaleNames, (name, j) => {
 
     let currScale;
-    const currLegend = {};
 
     //use the existing scale config unless it is undefined
     if (chartProps.scale) {
@@ -109,7 +108,15 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
     	currScale = clone(config.defaultProps.chartProps.chartSettings[0].scale, true);
     }
 
-    /* compute domain based on currScale passed in values or on the full dataset, whichever needed
+    /*
+		The scales are computed as follows:
+
+		there is the data "domain" -- the full domain of the value extent.
+		there is the scale domain -- the domain for the specific type of scale, threshold, cluster etc
+		there are the ticks -- computed based on the scale domain and the data's properties
+
+		first, compute full domain based on currScale passed in values or on the full dataset, whichever needed
+
     */
     let domain = help.computeMapScaleDomain(currScale, _computed[j].data);
     assign(currScale, domain);
@@ -132,7 +139,7 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
     // compute the tick values based on the scale and the data
     const ticks = currScale.ticks;
 
-	  currScale.tickValues = help.exactTicks(currScale.domain, ticks, currScale.type, currScale.tickValues);
+	  currScale.tickValues = help.exactTicks(currScale.domain, ticks, currScale.type, currScale.tickValues, _computed[j].data);
     //round the tick values by the precision indicated
    	// set a minimum level of precison (ie., 0, meaning no decimal points, or 1)
     //
@@ -143,19 +150,24 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
     currScale.tickValues.forEach((v, i) => {
       currScale.tickValues[i] = (help.getDecimals(v) > currScale.precision) ? help.roundToPrecision(v, currScale.precision) : v;  //Math.round(v * (Math.pow(10, currScale.precision)) / (Math.pow(10, currScale.precision))) : v;
     });
-    /* Build scale */
+    /* Build scale based on the data and the full domain */
     currScale.d3scale = help.returnD3Scale(currScale.colorIndex, totalcolors, currScale.domain, currScale.type, _computed[j].data, currScale.tickValues);
-    currLegend.d3scale = help.returnD3Scale(currScale.colorIndex, totalcolors, currScale.domain, currScale.type, _computed[j].data, currScale.tickValues);
 
     scale[j] = currScale;
     chartSettings[j].scale = currScale;
 
-    currLegend.colorValues = colorScales.scalesMap(currScale.colorIndex)[totalcolors];
-    currLegend.type = currScale.type;
-    currLegend.label = chartSettings[j].label;
-    currLegend.prefix = currScale.prefix;
-    currLegend.suffix = currScale.suffix;
-    currLegend.tickValues = help.constructLegendTicks(currScale.tickValues, currScale.ticks, currScale.type);
+    //
+    // compute the legend based on the scales built
+    //
+    const currLegend = {
+    	d3scale:help.returnD3Scale(currScale.colorIndex, totalcolors, currScale.domain, currScale.type, _computed[j].data, currScale.tickValues),
+    	colorValues:colorScales.scalesMap(currScale.colorIndex)[totalcolors],
+    	type:currScale.type,
+    	label:chartSettings[j].label,
+    	prefix:currScale.prefix,
+    	suffix:currScale.suffix,
+    	tickValues:help.constructLegendTicks(currScale.tickValues, currScale.ticks, currScale.type)
+    }
 
     legends[name] = currLegend;
     chartSettings[j].legends = currLegend;

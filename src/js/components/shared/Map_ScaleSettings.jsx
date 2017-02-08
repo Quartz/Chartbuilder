@@ -109,7 +109,7 @@ const Map_ScaleSettings = React.createClass({
     // add threshold field input
     if (currScale.type === 'threshold') {
 
-      thresholdsLabel.push(<div className="inline-label" key={i + '_threshold_label'}>Define thresholds</div>);
+      thresholdsLabel.push(<div className="inline-label">Define thresholds</div>);
 
       for (let i = 0; i < currScale.tickValues.length; i++) {
       	let thisTick = currScale.tickValues[i];

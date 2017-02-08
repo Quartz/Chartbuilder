@@ -203,7 +203,7 @@ const LegendSpace = React.createClass({
 
 		// Position the legend differently for threshold
 		if (legendData.type === 'threshold') {
-			tickOffsets.x = (j === 0) ? 0 : (legendRectWidth * (j)) + (legendMargin * (j));
+			tickOffsets.x = (j === 0) ? legendRectWidth : (legendRectWidth * (j + 1)) + (legendMargin * (j + 1));
 		}
 
 		// For non-thresholds, make a solid block rather than splitting for two rect legends
@@ -302,7 +302,8 @@ const LegendSpace = React.createClass({
 			if (stylings.showLegendTicks) {
 				const legendText = legendData.tickValues.map((thisTick, j) => {
 
-					const legendRectWidth = legendTotalRectWidth / (legendData.tickValues.length - 1);
+					const legendRectWidth = legendTotalRectWidth / legendData.colorValues.length;
+					//const legendTickWidth = legendTotalRectWidth / (legendData.tickValues.length - 1);
 
 					const tickOffsets = this._tickOffsets(j, thisTick, legendData, legendRectWidth);
 

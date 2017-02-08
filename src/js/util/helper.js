@@ -32,8 +32,8 @@ let socialbinary = false;
  * @memberof helper
  */
 
-const exact_ticks = (domain, numticks, type, tickVals) => {
-  const ticks = [];
+const exact_ticks = (domain, numticks, type, tickVals, allvalues) => {
+  let ticks = [];
   let i;
   let delta;
 
@@ -55,7 +55,9 @@ const exact_ticks = (domain, numticks, type, tickVals) => {
     }
 
     return ticks
-  } else {
+  } else if (type === 'cluster') {
+  	ticks = _compute_domain('cluster', numticks, allvalues);
+	} else {
     numticks -= 1;
     delta = domain[1] - domain[0];
 
@@ -187,7 +189,7 @@ function compute_scale_domain(scaleObj, data, opts) {
  * @static
  * @memberof helper
  */
-function compute_map_scale_domain(scaleObj, data, opts) {
+function compute_map_scale_domain(scaleObj, data, opts, type, ticks, number_colors) {
 	// Compute the domain (`[min, max]`) of a scale based on its data points.
 	// `data` is a flat array of all values used in this scale, and is
 	// created by `input-parsers/parse-<chart>.js`
@@ -225,6 +227,8 @@ function compute_map_scale_domain(scaleObj, data, opts) {
 	if (opts.minZero) {
 		_domain[0] = Math.min(_domain[0], 0);
 	}
+
+
 
 	return {
 		domain: _domain
