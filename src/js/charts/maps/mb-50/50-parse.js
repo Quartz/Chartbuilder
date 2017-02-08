@@ -47,7 +47,6 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
 	  	maptype = chartProps.input.type;
 	  }
   }
-  console.log('parse');
 
   let bySeries = dataBySeries(chartProps.input.raw, chartProps, {
     type: maptype
@@ -102,8 +101,6 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
     let currScale;
     const currLegend = {};
 
-    console.log(chartProps.scale, 'scale', );
-
     //use the existing scale config unless it is undefined
     if (chartProps.scale) {
       if (chartProps.scale[j]) currScale = chartProps.scale[j];
@@ -134,17 +131,11 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
 
     // compute the tick values based on the scale and the data
     const ticks = currScale.ticks;
-    console.log(ticks, JSON.stringify(currScale.tickValues), 'etc');
-
-    console.log(JSON.stringify(currScale.domain),'test1');
 
 	  currScale.tickValues = help.exactTicks(currScale.domain, ticks, currScale.type, currScale.tickValues);
     //round the tick values by the precision indicated
    	// set a minimum level of precison (ie., 0, meaning no decimal points, or 1)
     //
-    console.log(JSON.stringify(currScale.tickValues), 'hm');
-
-    console.log(JSON.stringify(currScale.domain),'test2');
     if (mintickPrecision > currScale.precision) {
       currScale.precision = mintickPrecision;
     }
@@ -152,24 +143,12 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
     currScale.tickValues.forEach((v, i) => {
       currScale.tickValues[i] = (help.getDecimals(v) > currScale.precision) ? help.roundToPrecision(v, currScale.precision) : v;  //Math.round(v * (Math.pow(10, currScale.precision)) / (Math.pow(10, currScale.precision))) : v;
     });
-
-
-    console.log(JSON.stringify(currScale.domain),'test3');
-
-
     /* Build scale */
     currScale.d3scale = help.returnD3Scale(currScale.colorIndex, totalcolors, currScale.domain, currScale.type, _computed[j].data, currScale.tickValues);
-
-    console.log(JSON.stringify(currScale.domain),'test4');
     currLegend.d3scale = help.returnD3Scale(currScale.colorIndex, totalcolors, currScale.domain, currScale.type, _computed[j].data, currScale.tickValues);
-
-
 
     scale[j] = currScale;
     chartSettings[j].scale = currScale;
-
-
-    console.log(JSON.stringify(currScale.domain),'test5');
 
     currLegend.colorValues = colorScales.scalesMap(currScale.colorIndex)[totalcolors];
     currLegend.type = currScale.type;
@@ -178,13 +157,8 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
     currLegend.suffix = currScale.suffix;
     currLegend.tickValues = help.constructLegendTicks(currScale.tickValues, currScale.ticks, currScale.type);
 
-
-    console.log(JSON.stringify(currScale.domain),'test6');
-
     legends[name] = currLegend;
     chartSettings[j].legends = currLegend;
-
-
     /*
 
     work on mobile

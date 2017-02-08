@@ -56,7 +56,6 @@ const exact_ticks = (domain, numticks, type, tickVals) => {
 
     return ticks
   } else {
-  	console.log(numticks, JSON.stringify(domain));
     numticks -= 1;
     delta = domain[1] - domain[0];
 
@@ -102,16 +101,15 @@ const _compute_domain = (type, ticks, allvalues) => {
     case('cluster'):
       if (ticks === allvalues.length) {
         return allvalues.map(d => parseInt(d));
-      }
-      else {
+      } else {
         for (const z of ss.ckmeans(allvalues,ticks)) {
           scaleconstruct.push(find_median(z));
         };
       }
+      console.log(scaleconstruct,'scale');
       return scaleconstruct;
       break;
     case('threshold'):
-
       ss.ckmeans(allvalues,ticks).forEach(function(z) {
         scaleconstruct.push(find_median(z));
       });
@@ -205,8 +203,6 @@ function compute_map_scale_domain(scaleObj, data, opts) {
 
 	var extent = (scaleDomain.length > 0) ? [scaleDomain[0], scaleDomain[1]] : d3.extent(data);
 
-	console.log(JSON.stringify(extent), 'hm', JSON.stringify(scaleDomain));
-
 	var niced = d3.scale.linear()
 			.domain(extent);
 			//.nice();
@@ -231,8 +227,7 @@ function compute_map_scale_domain(scaleObj, data, opts) {
 	}
 
 	return {
-		domain: _domain,
-		custom: (!defaultMin || !defaultMax)
+		domain: _domain
 	};
 }
 
@@ -543,32 +538,31 @@ const return_D3_scale = (colorIndex, number_colors, domain, type, allvalues, tic
   const colors = colorScales.scalesMap(colorIndex)[number_colors];
 
   const newDomain = clone(domain);
-
   // adjust scale so it returns a color for single value entries
-  const domainMax = d3.min(domain);
-  const domainMin = d3.max(domain);
-
-  if (domainMax === domainMin && type === 'quantize') {
-    newDomain[0] = domainMin - 1;
-    newDomain[newDomain.length - 1] = domainMax + 1;
-  }
+  const domainMax = d3.min(newDomain);
+  const domainMin = d3.max(newDomain);
 
   switch(type) {
     case('quantize'):
+	    if (domainMax === domainMin) {
+		    newDomain[0] = domainMin - 1;
+		    newDomain[newDomain.length - 1] = domainMax + 1;
+		  }
+
       return d3.scale.quantize()
         .domain(newDomain)
         .range(colors);
       break;
     case('cluster'):
-
       const computeddomain = _compute_domain(type, (number_colors - 1), allvalues);
+
+      console.log(computeddomain, 'computed');
 
       return d3.scale.quantile()
         .domain(computeddomain)
         .range(colors);
       break;
     case('threshold'):
-
       const tickValuesThreshold = clone(tickValues);
 
       tickValuesThreshold[0] = tickValuesThreshold[0] + 1;
