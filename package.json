@@ -20,11 +20,6 @@
     "type": "git",
     "url": "https://github.com/Quartz/Chartbuilder"
   },
-  "browserify": {
-    "transform": [
-      "reactify"
-    ]
-  },
   "author": "Quartz",
   "contributors": [
     {
@@ -55,6 +50,8 @@
     "sugar-date": "^1.5.1"
   },
   "devDependencies": {
+    "babel-preset-react": "^6.22.0",
+    "babelify": "^7.3.0",
     "browser-sync": "2.x.x",
     "browserify": "^13.0.0",
     "del": "2.2.0",
@@ -73,7 +70,6 @@
     "nib": "^1.0.2",
     "nomnom": "^1.8.0",
     "react-addons-test-utils": "^0.14.7",
-    "reactify": "^1.1.1",
     "rewireify": "^0.2.5",
     "smokestack": "^3.4.1",
     "tap-closer": "^1.0.0",

@@ -9,7 +9,6 @@ var reload = browserSync.reload;
 var browserify = require("browserify");
 var envify = require("envify/custom");
 var source = require("vinyl-source-stream");
-var reactify = require("reactify");
 var watchify = require("watchify");
 
 // Gulp plugins
@@ -65,7 +64,10 @@ gulp.task("browserify:dev", function () {
 		fullPaths: true
 	};
 
-	var bundler = watchify(browserify(props).transform(envify({ NODE_ENV: "dev" })));
+	var bundler = watchify(browserify(props)
+		.transform("babelify", {presets: ["react"]})
+		.transform(envify({ NODE_ENV: "dev" })
+		));
 
 	function rebundle() {
 		var stream = bundler.bundle();
@@ -90,6 +92,7 @@ gulp.task("browserify:test", function () {
 	var bundler = browserify("./test/test-page/main.js", {
 				debug: true
 			})
+			.transform("babelify", {presets: ["react"]})
 			.transform(envify({ NODE_ENV: "dev" }));
 
 	return bundler.bundle()
@@ -100,6 +103,7 @@ gulp.task("browserify:test", function () {
 
 gulp.task("browserify:prod", function () {
 	var bundler = browserify(config.paths.src.js + "/index.js")
+			.transform("babelify", {presets: ["react"]})
 			.transform(envify({ NODE_ENV: "prod" }));
 
 	return bundler.bundle()

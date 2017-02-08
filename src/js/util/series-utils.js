@@ -5,10 +5,10 @@ var LineSeries     = require("../components/series/LineSeries.jsx");
 var MarkSeries     = require("../components/series/MarkSeries.jsx");
 
 var series_components = {
-	"line": React.createFactory(LineSeries),
-	"lineMark": React.createFactory(LineMarkSeries),
-	"column": React.createFactory(BarGroup),
-	"scatterPlot": React.createFactory(MarkSeries)
+	"line": createFactory(LineSeries),
+	"lineMark": createFactory(LineMarkSeries),
+	"column": createFactory(BarGroup),
+	"scatterPlot": createFactory(MarkSeries)
 };
 
 function create_series(type, props) {
