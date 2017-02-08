@@ -41,8 +41,8 @@ const exact_ticks = (domain, numticks, type, tickVals, allvalues) => {
     numticks -= 3;
 
     if ((tickVals.length - 1) !== numticks) {
-      const max = d3.max(tickVals);
-      const min = d3.min(tickVals);
+      const max = d3.max(tickVals) - 1;
+      const min = d3.min(tickVals) + 1;
 
       delta = max - min;
 
