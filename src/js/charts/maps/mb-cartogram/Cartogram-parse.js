@@ -200,7 +200,7 @@ let parseCartogram = (config, _chartProps, callback, parseOpts, priorData = fals
 
   // this should all be included in one big loopa loop
 
-  each(chartSettings, (z,g) => {
+  /*each(chartSettings, (z,g) => {
 
     map(bySeries.series, (dataSeries, i) => {
       if (dataSeries.name === z.label) {
@@ -210,10 +210,10 @@ let parseCartogram = (config, _chartProps, callback, parseOpts, priorData = fals
 
           /*chartSettings[g].scale.numericSettings = clone(chartSettings[g].scale) ||
             clone(config.defaultProps.chartProps.chartSettings[0].scale);*/
-        }
+        /*}
       }
     });
-  });
+  });*/
 
   let allData = [];
 

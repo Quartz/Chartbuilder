@@ -49,7 +49,7 @@ const map_strokes = [
  * @instance
  * @memberof editors
  */
-let MapEditor = React.createClass({
+const MapEditor = React.createClass({
 
 	propTypes: {
 		errors: PropTypes.object,
@@ -66,7 +66,7 @@ let MapEditor = React.createClass({
 
 	mixins: [MapEditorMixin],
 
-	getTypeOptions: function(colors) {
+	_getTypeOptions: function(colors) {
 		if (colors < 2) {
 			return [
 			  { title: "Even Breaks", content: "Even Breaks", value: "quantize" },
@@ -89,22 +89,18 @@ let MapEditor = React.createClass({
 
 		const mapProps = this.props.chartProps;
     const stylings = mapProps.stylings;
-
 		/* Create a settings component for each data series (column) */
 		const mapSettings = map(mapProps.chartSettings, bind(function(chartSetting, i) {
-		const typeOption = this.getTypeOptions(chartSetting.scale.colors);
-
+			const typeOption = this._getTypeOptions(chartSetting.scale.colors);
 			return (
-				<div>
+				<div key={i + '-div'}>
 					<Map50_mapSettings
 						chartSettings={mapProps.chartSettings}
 						onUpdate={this._handlePropUpdate.bind(null, "chartSettings")}
 						onUpdateReparse={this._handlePropAndReparse.bind(null, "chartSettings")}
 						numColors={this.props.numColors}
 						index={i}
-						key={i + '-settings'}
 					/>
-
 					<Map_ScaleSettings
 						scale={mapProps.scale}
 						stylings={mapProps.stylings}
@@ -116,9 +112,7 @@ let MapEditor = React.createClass({
 						typeOptions={typeOption}
 						stepNumber="0"
 						index={i}
-						key={i + '-scale'}
 					/>
-
 				</div>
 			);
 		}, this));

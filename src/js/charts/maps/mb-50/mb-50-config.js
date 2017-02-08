@@ -98,8 +98,7 @@ const defaultProps = Object.freeze({
 	  stylings: {
       stroke:'#666',
       showLegendTicks: true,
-      showStateLabels: false,
-      legendPrecision: 1
+      showStateLabels: false
 	  },
     chartSettings: [
       {

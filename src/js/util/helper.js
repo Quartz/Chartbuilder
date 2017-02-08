@@ -32,8 +32,7 @@ let socialbinary = false;
  * @memberof helper
  */
 
-const exact_ticks = (domain, numticks, scalevals, type, tickVals, precision) => {
-
+const exact_ticks = (domain, numticks, type, tickVals) => {
   const ticks = [];
   let i;
   let delta;
@@ -42,7 +41,6 @@ const exact_ticks = (domain, numticks, scalevals, type, tickVals, precision) => 
     numticks -= 3;
 
     if ((tickVals.length - 1) !== numticks) {
-
       const max = d3.max(tickVals);
       const min = d3.min(tickVals);
 
@@ -52,24 +50,20 @@ const exact_ticks = (domain, numticks, scalevals, type, tickVals, precision) => 
         ticks.push(min + (delta / numticks) * i);
       }
       ticks.push(max);
-    }
-    else {
+    } else {
      return tickVals;
     }
 
     return ticks
-
   } else {
-
+  	console.log(numticks, JSON.stringify(domain));
     numticks -= 1;
-
     delta = domain[1] - domain[0];
 
     for (i = 0; i < numticks; i++) {
       ticks.push(domain[0] + (delta / numticks) * i);
     }
     ticks.push(domain[1]);
-
   }
 
   if (domain[1] * domain[0] < 0) {
@@ -87,8 +81,6 @@ const exact_ticks = (domain, numticks, scalevals, type, tickVals, precision) => 
   }
 
   return ticks;
-
-
 }
 
 const find_median = (data) => {
@@ -153,11 +145,71 @@ function compute_scale_domain(scaleObj, data, opts) {
 		throw new TypeError("data passed to compute_scale_domain must be an array");
 	}
 
-	var extent = d3.extent(data);
+	var extent = (scaleDomain.length > 0) ? [scaleDomain[0], scaleDomain[1]] : d3.extent(data);
+
 	var niced = d3.scale.linear()
 			.domain(extent)
 			.nice()
 			.domain();
+
+	if (!scaleObj.domain || !scaleObj.custom) {
+		if (opts.nice) {
+			_domain = niced;
+		} else {
+			_domain = extent;
+		}
+		defaultMin = true;
+		defaultMax = true;
+	} else {
+		_domain = (opts.nice) ? niced : extent;
+		defaultMin = (_domain[0] === scaleDomain[0] || isUndefined(scaleDomain[0]));
+		defaultMax = (_domain[1] === scaleDomain[1] || isUndefined(scaleDomain[1]));
+		_domain = scaleDomain;
+	}
+
+	if (opts.minZero) {
+		_domain[0] = Math.min(_domain[0], 0);
+	}
+
+	return {
+		domain: _domain,
+		custom: (!defaultMin || !defaultMax)
+	};
+}
+
+
+/**
+ * compute_map_scale_domain
+ *
+ * @param scaleObj - Current scale before generating new domain
+ * @param {number[]} data - All values in the current scale
+ * @param {object} opts - Whether to return nice values or force a minimum of 0
+ * or below
+ * @return {object} { domain: [min, max], custom: <boolean> }
+ * @static
+ * @memberof helper
+ */
+function compute_map_scale_domain(scaleObj, data, opts) {
+	// Compute the domain (`[min, max]`) of a scale based on its data points.
+	// `data` is a flat array of all values used in this scale, and is
+	// created by `input-parsers/parse-<chart>.js`
+	opts = opts || {};
+	var scaleDomain = scaleObj.domain || [];
+	var _domain;
+	var defaultMin;
+	var defaultMax;
+
+	if (!isArray(data)) {
+		throw new TypeError("data passed to compute_scale_domain must be an array");
+	}
+
+	var extent = (scaleDomain.length > 0) ? [scaleDomain[0], scaleDomain[1]] : d3.extent(data);
+
+	console.log(JSON.stringify(extent), 'hm', JSON.stringify(scaleDomain));
+
+	var niced = d3.scale.linear()
+			.domain(extent);
+			//.nice();
 
 	if (!scaleObj.domain || !scaleObj.custom) {
 		if (opts.nice) {
@@ -263,6 +315,24 @@ function precision(a) {
 		return 0;
   }
 }
+
+/**
+
+**/
+function get_decimals(num) {
+	//http://stackoverflow.com/questions/10454518/javascript-how-to-retrieve-the-number-of-decimals-of-a-string-number
+	//
+  var match = (''+num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+  if (!match) { return 0; }
+  return Math.max(
+       0,
+       // Number of digits right of decimal point.
+       (match[1] ? match[1].length : 0)
+       // Adjust for scientific notation.
+       - (match[2] ? +match[2] : 0));
+}
+
+
 
 /**
  * transform_coords
@@ -472,19 +542,21 @@ const return_D3_scale = (colorIndex, number_colors, domain, type, allvalues, tic
 
   const colors = colorScales.scalesMap(colorIndex)[number_colors];
 
+  const newDomain = clone(domain);
+
   // adjust scale so it returns a color for single value entries
   const domainMax = d3.min(domain);
   const domainMin = d3.max(domain);
 
   if (domainMax === domainMin && type === 'quantize') {
-    domain[0] = domainMin - 1;
-    domain[domain.length - 1] = domainMax + 1;
+    newDomain[0] = domainMin - 1;
+    newDomain[newDomain.length - 1] = domainMax + 1;
   }
 
   switch(type) {
     case('quantize'):
       return d3.scale.quantize()
-        .domain(domain)
+        .domain(newDomain)
         .range(colors);
       break;
     case('cluster'):
@@ -507,7 +579,7 @@ const return_D3_scale = (colorIndex, number_colors, domain, type, allvalues, tic
         .range(colors);
       break;
     case (undefined):
-      return  d3.scale[type]().domain(domain).range(colors);
+      return  d3.scale[type]().domain(newDomain).range(colors);
       break;
   }
 }
@@ -521,9 +593,11 @@ var helper = {
 	roundToPrecision: round_to_precision,
 	combineMarginPadding: combine_margin_pading,
 	computeScaleDomain: compute_scale_domain,
+	computeMapScaleDomain: compute_map_scale_domain,
   constructLegendTicks: construct_legend_ticks,
   constructLegendTransform: construct_legend_transform,
 	precision: precision,
+	getDecimals: get_decimals,
 	transformCoords: transform_coords,
 	toTitleCase: convert_title_case,
 	mergeOrApply: merge_or_apply,

@@ -82,11 +82,12 @@ const PolygonCollection = React.createClass({
 
     const stylings = nextProps.chartProps.stylings;
     const typeCast = nextProps.schemaName;
+    const nodes = nextProps.nodes;
 
     d3Nodes = d3.select(ReactDOM.findDOMNode(this.refs.graph));
 
     let theseNodes = d3Nodes.selectAll('.node')
-      .data(nextProps.nodes, function (node) { return node.shp; });
+      .data(nodes, function (node) { return node.shp; });
 
     theseNodes.enter().append('g')
       .attr('class','node');
@@ -94,11 +95,11 @@ const PolygonCollection = React.createClass({
     theseNodes.exit().remove();
 
     const d3Node = d3.select(ReactDOM.findDOMNode(this.refs.graph)).selectAll('.node');
-
-    enterNode(d3Node, stylings, nextProps.nodes, typeCast);
+    enterNode(d3Node, stylings, nodes, typeCast);
 
     if (stylings[typeCast] !== 'grid') {
 
+    	//update the dorling or demers
       (stylings[typeCast] === 'dorling') ?
                 helperCarto.switchDorling (d3Node, stylings) :
                 helperCarto.switchDemers (d3Node, stylings);
@@ -111,16 +112,17 @@ const PolygonCollection = React.createClass({
         force.on("tick", (e, i) => {
           if (i > 200) force.stop();
           return (stylings[typeCast] === 'dorling') ?
-                  helperCarto.updateDorling (e, d3Node, nextProps.nodes) :
-                  helperCarto.updateDemers (e, d3Node, nextProps.nodes);
+                  helperCarto.updateDorling (e, d3Node, nodes) :
+                  helperCarto.updateDemers (e, d3Node, nodes);
         }).resume();
 
-        force.nodes(nextProps.nodes);
+        force.nodes(nodes);
         force.start();
       } else {
       	force.stop();
       }
     } else {
+    	//update or swap out for grid
       force.stop();
       helperCarto.switchGrid(d3Node, stylings);
     }

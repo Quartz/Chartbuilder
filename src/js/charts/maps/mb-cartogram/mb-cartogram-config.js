@@ -30,8 +30,6 @@ const MapConfig = require("../MapConfig");
 * @property {object} padding - Distances btwn inner chart elements and container
 */
 
-
-
 const display = Object.freeze({
   labelRectSize: "0.6em",
   labelXMargin: "0.6em",
@@ -52,7 +50,7 @@ const display = Object.freeze({
     top: "1.4em",
     right: "0.8em",
     bottom: "1.2em",
-    left: "0.8em",
+    left: "0.7em",
     maptop: "2.2em",
     subtitle: "2em",
     legendleft: "0.8em",

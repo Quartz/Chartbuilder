@@ -15,7 +15,6 @@ import {ButtonGroup, TextInput, LabelledTangle, AlertGroup} from 'chartbuilder-u
  * @memberof editors
  */
 const Map_ScaleSettings = React.createClass({
-
   propTypes: {
     className: PropTypes.string,
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
@@ -28,26 +27,23 @@ const Map_ScaleSettings = React.createClass({
     titleOverride: PropTypes.string,
     errors: PropTypes.array
   },
-
   _handleScaleUpdate: function(k, v) {
 
     const scale = cloneDeep(this.props.scale, true);
 
-    if(k != "precision") {
+    /*if(k != "precision") {
       scale[this.props.index].precision = 0;
-    }
+    }*/
 
     scale[this.props.index][k] = v;
     this.props.onUpdate(scale);
   },
   _handleThresholdUpdate: function(k, v) {
-
     const scale = cloneDeep(this.props.scale, true);
 
     scale[this.props.index][k.key][k.iter] = v;
     this.props.onUpdate(scale);
   },
-
   _handleDomainUpdate: function(k, v) {
     const scale = cloneDeep(this.props.scale,true);
 
@@ -59,9 +55,7 @@ const Map_ScaleSettings = React.createClass({
 
     this.props.onUpdate(scale);
   },
-
   _renderErrors: function() {
-
     if (!this.props.errors) {
       return null;
     } else if (this.props.errors.length === 0) {
@@ -74,20 +68,16 @@ const Map_ScaleSettings = React.createClass({
       );
     }
   },
-
   render: function() {
+
+    const tangleStep = 1;
+    let prefixSuffix = false;
 
     const currScale = this.props.scale[this.props.index];
     const errors = this._renderErrors();
 
     const thresholds = [];
-    let thresholdsLabel;
-
-    thresholdsLabel = [];
-
-    let tangleStep;
-
-    let prefixSuffix = false;
+    let thresholdsLabel = [];
 
     if (this.props.stylings.showLegendTicks) {
 
@@ -97,8 +87,8 @@ const Map_ScaleSettings = React.createClass({
           className="scale-option"
           onChange={this._handleScaleUpdate.bind(null, "prefix")}
           value={currScale.prefix}
-          placeholder="Prefix"
-        />);
+          placeholder="Prefix" />
+       );
 
       prefixSuffix.push(
         <TextInput
@@ -107,97 +97,88 @@ const Map_ScaleSettings = React.createClass({
           className="scale-option"
           onChange={this._handleScaleUpdate.bind(null, "suffix")}
           value={currScale.suffix}
-          placeholder="Suffix"
-        />);
+          placeholder="Suffix" />
+       );
     }
 
     const range = Math.abs(currScale.domain[1] - currScale.domain[0]);
-    if (range <= 10) {
-      tangleStep = 1;
-    } else {
-      const numDigits = range.toString().length;
-      tangleStep = 1;
-    }
 
+    /*if (range > 10) {
+      const numDigits = range.toString().length;
+    }*/
+    // add threshold field input
     if (currScale.type === 'threshold') {
 
-      thresholdsLabel.push(<div className="inline-label">Define thresholds</div>);
+      thresholdsLabel.push(<div className="inline-label" key={i + '_threshold_label'}>Define thresholds</div>);
 
       for (let i = 0; i < currScale.tickValues.length; i++) {
-        let min;
+      	let thisTick = currScale.tickValues[i];
+        let min = currScale.tickValues[i - 1];
         let max;
-        const thresholdValue = currScale.tickValues[i];
+        let thresholdValue = thisTick;
 
         if ((i + 1) === currScale.tickValues.length) {
-          min = currScale.tickValues[i - 1]
-          max = currScale.tickValues[i] + 2;
-        }
-        else if (i === 0) {
+          max = thisTick + 2;
+        } else if (i === 0) {
           thresholdsLabel = 'Threshold scales';
-          min = currScale.tickValues[i] - 1;
           max = currScale.tickValues[1];
-        }
-        else {
-          min = currScale.tickValues[i - 1];
+        } else {
           max = currScale.tickValues[i + 1];
         }
 
-        const thresholdIntent = {
-          key: 'tickValues',
-          iter: i
-        }
+        const thresholdIntent = { key: 'tickValues', iter: i }
 
         thresholds.push(<LabelledTangle
-              tangleClass="threshold-option tangle-input"
-              onChange={this._handleThresholdUpdate.bind(this, thresholdIntent)}
-              onInput={this._handleThresholdUpdate.bind(this, thresholdIntent)}
-              step={tangleStep}
-              min={min}
-              max={max}
-              key={i + '_threshold'}
-              value={thresholdValue}
-            />)
+          tangleClass="threshold-option tangle-input"
+          onChange={this._handleThresholdUpdate.bind(this, thresholdIntent)}
+          onInput={this._handleThresholdUpdate.bind(this, thresholdIntent)}
+          step={tangleStep}
+          min={min}
+          max={max}
+          key={i + '_threshold'}
+          value={thresholdValue} />
+        );
       }
+    } else {
+    	thresholds.push(
+	    	<LabelledTangle
+	        label="Minimum"
+	        labelClass="editor-label"
+	        step={tangleStep}
+	        tangleClass="scale-option tangle-input"
+	        onChange={this._handleDomainUpdate.bind(null, "min")}
+	        onInput={this._handleDomainUpdate.bind(null, "min")}
+	        value={currScale.domain[0]}
+	      />
+	     );
+	     thresholds.push(
+	      <LabelledTangle
+	        label="Maximum"
+	        step={tangleStep}
+	        labelClass="editor-label"
+	        tangleClass="scale-option tangle-input"
+	        onChange={this._handleDomainUpdate.bind(null, "max")}
+	        onInput={this._handleDomainUpdate.bind(null, "max")}
+	        value={currScale.domain[1]}
+	      />
+	     );
+	     thresholds.push(
+	      <LabelledTangle
+	        label="Precision"
+	        step={tangleStep}
+	        labelClass="editor-label"
+	        tangleClass="scale-option tangle-input"
+	        onChange={this._handleScaleUpdate.bind(null, "precision")}
+	        onInput={this._handleScaleUpdate.bind(null, "precision")}
+	        value={currScale.precision}
+	      />
+	     );
     }
-
-    /*
-     * Figure out the amount by which to increment the tangle (drag) values: Eg
-     * <= 10 = 0.5
-     * < 100 = 1
-     * < 1000 = 10
-     * < 10000 = 100
-     * And so on
-    */
-   /*
-          <ScaleReset
-            scale={this.props.scale}
-            scaleId={this.props.id}
-            onUpdate={this.props.onReset}
-            className="scale-reset"
-          /><LabelledTangle
-            label="Minimum"
-            labelClass="editor-label"
-            tangleClass="scale-option tangle-input"
-            onChange={this._handleDomainUpdate.bind(null, "min")}
-            step={tangleStep}
-            onInput={this._handleDomainUpdate.bind(null, "min")}
-            value={currScale.domain[0]}
-          />
-          <LabelledTangle
-            label="Maximum"
-            step={tangleStep}
-            labelClass="editor-label"
-            tangleClass="scale-option tangle-input"
-            onChange={this._handleDomainUpdate.bind(null, "max")}
-            onInput={this._handleDomainUpdate.bind(null, "max")}
-            value={currScale.domain[1]}
-          />*/
 
     return (
       <div className={this.props.className}>
-
         {prefixSuffix}
-        <div className="scale-tangle-inputs">
+        <div className="scale-tangle-inputs" key={'tangle-scale'}>
           <LabelledTangle
             label="Color breaks"
             labelClass="editor-label"
@@ -207,22 +188,21 @@ const Map_ScaleSettings = React.createClass({
             step={tangleStep}
             min={1}
             max={6}
-            key={'tangle-scale'}
             value={currScale.colors}
           />
-          <div className="section typesection">
-            <ButtonGroup
-              className="button-group-wrapper"
-              onClick={this._handleScaleUpdate.bind(null, "type")}
-              buttons={this.props.typeOptions}
-              key={'type-options'}
-              type={currScale.type}
-              value={currScale.type}
-            />
-          </div>
+	        {thresholdsLabel}
+	        {thresholds}
         </div>
-        {thresholdsLabel}
-        {thresholds}
+        <div className="section typesection"
+            key={'type-options'}>
+          <ButtonGroup
+            className="button-group-wrapper"
+            onClick={this._handleScaleUpdate.bind(null, "type")}
+            buttons={this.props.typeOptions}
+            type={currScale.type}
+            value={currScale.type}
+          />
+        </div>
         {errors}
       </div>
     );

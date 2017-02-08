@@ -9,6 +9,8 @@ const parseDelimInput = require("./../../../util/parse-delimited-input").parser;
 const parseColumns = require("./../../../util/parse-delimited-input")._parseColumnVals;
 const parseMapType = require('./../../../util/parse-map-type');
 
+const defaultmap = 'states50';
+const mintickPrecision = 0;
 /**
  * see [MapConfig#parser](#mapconfig/parser)
  * @see MapConfig#parser
@@ -16,11 +18,18 @@ const parseMapType = require('./../../../util/parse-map-type');
  * @memberof xy_config
  */
 
- const defaultmap = 'states50';
-
-
 const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, priorSchema = false) => {
   // Build chart settings from defaults or provided settings
+
+  const scale = {};
+  const legends = {};
+  const mobileScale = {};
+  //const maxPrecision = 1;
+  //const factor = Math.pow(10, maxPrecision);
+
+
+  const scaleNames = [];
+  const scaleIndex = [];
 
   parseOpts = parseOpts || {};
   // clone so that we aren't modifying original
@@ -38,19 +47,16 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
 	  	maptype = chartProps.input.type;
 	  }
   }
+  console.log('parse');
 
   let bySeries = dataBySeries(chartProps.input.raw, chartProps, {
     type: maptype
   });
 
   const dataParsed = bySeries.data;
-
   let parsedInputEntries = dataParsed.entries;
   const columnNames = dataParsed.columnNames;
 	const valueColumn = columnNames.length === 2 ? columnNames[1] : columnNames[2];
-
-  const scaleNames = [];
-  const scaleIndex = [];
 
   bySeries.series.forEach((d) => {
     scaleIndex.push(d.name);
@@ -70,10 +76,11 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
     let settings;
 
     if (chartProps.chartSettings[i]) settings = chartProps.chartSettings[i];
-    else {
+   /* else {
+    	// use defaults if there a column is missing from the series..
       settings = clone(config.defaultProps.chartProps.chartSettings[0], true);
       settings.colorIndex = i;
-    }
+    }*/
 
     if (parseOpts.columnsChanged) settings.label = clone(bySeries.series[i].name);
     else {
@@ -89,58 +96,80 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
     return settings;
   });
 
-  const scale = {};
-  const legends = {};
-  const mobileScale = {};
-  const maxPrecision = 1;
-  const factor = Math.pow(10, maxPrecision);
-
-  /*
-
-  good god review this
-
-  */
-
   // Calculate domain and tick values for any scales that exist
-  each(scaleNames, (name,j) => {
+  each(scaleNames, (name, j) => {
 
     let currScale;
     const currLegend = {};
 
+    console.log(chartProps.scale, 'scale', );
+
+    //use the existing scale config unless it is undefined
     if (chartProps.scale) {
       if (chartProps.scale[j]) currScale = chartProps.scale[j];
       else currScale = clone(config.defaultProps.chartProps.chartSettings[0].scale, true);
+    } else {
+    	currScale = clone(config.defaultProps.chartProps.chartSettings[0].scale, true);
     }
-    else currScale = clone(config.defaultProps.chartProps.chartSettings[0].scale, true);
 
-    let domain = help.computeScaleDomain(currScale, _computed[j].data);
-
+    /* compute domain based on currScale passed in values or on the full dataset, whichever needed
+    */
+    let domain = help.computeMapScaleDomain(currScale, _computed[j].data);
     assign(currScale, domain);
 
-    if (_computed[j].data.length <= currScale.colors) currScale.colors = _computed[j].data.length;
+    /* colors
 
-    currScale.ticks = currScale.colors + 1;
-    const ticks = currScale.ticks;
-
+    */
+    /* if updating the data length to be shorter for a series, reduce the num of colors
+    */
+    if (_computed[j].data.length <= currScale.colors) {
+    	currScale.colors = _computed[j].data.length;
+    }
     const totalcolors = currScale.colors;
-
+    // should be one more tick than there are legend shapes
+    currScale.ticks = currScale.colors + 1;
     currScale.colorIndex = chartSettings[j].colorIndex;
 
-    currScale.tickValues = help.exactTicks(currScale.domain, ticks, _computed[j].data, currScale.type, currScale.tickValues);
+    /* TICKS */
 
+    // compute the tick values based on the scale and the data
+    const ticks = currScale.ticks;
+    console.log(ticks, JSON.stringify(currScale.tickValues), 'etc');
+
+    console.log(JSON.stringify(currScale.domain),'test1');
+
+	  currScale.tickValues = help.exactTicks(currScale.domain, ticks, currScale.type, currScale.tickValues);
+    //round the tick values by the precision indicated
+   	// set a minimum level of precison (ie., 0, meaning no decimal points, or 1)
+    //
+    console.log(JSON.stringify(currScale.tickValues), 'hm');
+
+    console.log(JSON.stringify(currScale.domain),'test2');
+    if (mintickPrecision > currScale.precision) {
+      currScale.precision = mintickPrecision;
+    }
+    // for each tick value, test the number of decimals. if greater than precision, round down.
     currScale.tickValues.forEach((v, i) => {
-      const tickPrecision = help.precision(Math.round(v*factor)/factor);
-      if (tickPrecision > currScale.precision) {
-        currScale.precision = tickPrecision;
-      }
-      currScale.tickValues[i] = currScale.precision ? Math.round(v * (10 * currScale.precision)) / (10 * currScale.precision) : v;
+      currScale.tickValues[i] = (help.getDecimals(v) > currScale.precision) ? help.roundToPrecision(v, currScale.precision) : v;  //Math.round(v * (Math.pow(10, currScale.precision)) / (Math.pow(10, currScale.precision))) : v;
     });
 
+
+    console.log(JSON.stringify(currScale.domain),'test3');
+
+
+    /* Build scale */
     currScale.d3scale = help.returnD3Scale(currScale.colorIndex, totalcolors, currScale.domain, currScale.type, _computed[j].data, currScale.tickValues);
+
+    console.log(JSON.stringify(currScale.domain),'test4');
     currLegend.d3scale = help.returnD3Scale(currScale.colorIndex, totalcolors, currScale.domain, currScale.type, _computed[j].data, currScale.tickValues);
+
+
 
     scale[j] = currScale;
     chartSettings[j].scale = currScale;
+
+
+    console.log(JSON.stringify(currScale.domain),'test5');
 
     currLegend.colorValues = colorScales.scalesMap(currScale.colorIndex)[totalcolors];
     currLegend.type = currScale.type;
@@ -150,20 +179,15 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
     currLegend.tickValues = help.constructLegendTicks(currScale.tickValues, currScale.ticks, currScale.type);
 
 
-    //currLegend.shapes = help.constructLegendShapes(currScale.colors, );
-    //currLegend.range = help.constructLegendRange(currScale.ticks, currScale.type);
-    //currLegend.domain = help.constructLegendDomain(currScale.tickValues, currScale.ticks);
-
-    //currLegend.spacings = help.constructLegendSpacings();
-    //currLegend.transforms = help.constructLegendTransform(j, legends,currLegend, scaleNames);
-
+    console.log(JSON.stringify(currScale.domain),'test6');
 
     legends[name] = currLegend;
     chartSettings[j].legends = currLegend;
 
+
     /*
 
-    this is not right
+    work on mobile
     */
     /*if (chartProps.mobile) {
       if (chartProps.mobile.scale) {
@@ -185,7 +209,8 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
 
   // this should all be included in one big loopa loop
 
-  each(chartSettings, (z,g) => {
+
+ /* each(chartSettings, (z,g) => {
 
     map(bySeries.series, (dataSeries, i) => {
       if (dataSeries.name === z.label) {
@@ -195,10 +220,10 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
 
           /*chartSettings[g].scale.numericSettings = clone(chartSettings[g].scale) ||
             clone(config.defaultProps.chartProps.chartSettings[0].scale);*/
-        }
+       /* }
       }
     });
-  });
+  });*/
 
   /*
   	Schemas
