@@ -116,7 +116,6 @@ let parseBubble = (config, _chartProps, callback, parseOpts, priorData = false, 
   each(scaleNames, (name,j) => {
 
     let currScale;
-    const currLegend = {};
 
     if (chartProps.scale) {
       if (chartProps.scale[j]) currScale = chartProps.scale[j];
@@ -132,39 +131,30 @@ let parseBubble = (config, _chartProps, callback, parseOpts, priorData = false, 
     const ticks = 2;
 
     currScale.ticks = ticks;
-
     currScale.colorIndex = chartSettings[j].colorIndex;
 
     currScale.tickValues = help.exactTicks(currScale.domain, ticks, _computed[j].data, currScale.type, currScale.tickValues);
-
     currScale.tickValues.forEach((v, i) => {
       const tickPrecision = help.precision(Math.round(v*factor)/factor);
       if (tickPrecision > currScale.precision) {
         currScale.precision = tickPrecision;
       }
       currScale.tickValues[i] = currScale.precision ? Math.round(v * (10 * currScale.precision)) / (10 * currScale.precision) : v;
-
     });
 
     currScale.d3scale = help.returnD3Scale(currScale.colorIndex, totalcolors, currScale.domain, currScale.type, _computed[j].data, currScale.tickValues);
-    currLegend.d3scale = help.returnD3Scale(currScale.colorIndex, totalcolors, currScale.domain, currScale.type, _computed[j].data, currScale.tickValues);
-
     scale[j] = currScale;
     chartSettings[j].scale = currScale;
 
-    currLegend.colorValues = colorScales.scalesMap(currScale.colorIndex)[totalcolors];
-    currLegend.type = currScale.type;
-    currLegend.label = chartSettings[j].label;
-    currLegend.prefix = currScale.prefix;
-    currLegend.suffix = currScale.suffix;
-    //currLegend.shapes = help.constructLegendShapes(1);
-    //currLegend.range = help.constructLegendRange(currScale.ticks, currScale.type);
-    //currLegend.domain = help.constructLegendDomain(currScale.tickValues, currScale.ticks);
-    currLegend.tickValues = help.constructLegendTicks(currScale.tickValues, currScale.ticks, currScale.type);
-
-    //currLegend.spacings = help.constructLegendSpacings();
-    //currLegend.transforms = help.constructLegendTransform(j, legends,currLegend, scaleNames);
-
+    const currLegend = {
+    	d3scale: help.returnD3Scale(currScale.colorIndex, totalcolors, currScale.domain, currScale.type, _computed[j].data, currScale.tickValues),
+	    colorValues: colorScales.scalesMap(currScale.colorIndex)[totalcolors],
+	    type: currScale.type,
+	    label: chartSettings[j].label,
+	    prefix: currScale.prefix,
+	    suffix: currScale.suffix,
+	    tickValues: help.constructLegendTicks(currScale.tickValues, currScale.ticks, currScale.type)
+	  }
 
     legends[name] = currLegend;
     chartSettings[j].legends = currLegend;

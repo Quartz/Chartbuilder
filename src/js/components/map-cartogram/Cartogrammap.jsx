@@ -13,6 +13,7 @@ const ChartRendererMixin = require("../mixins/MapRendererMixin");
 const radius = d3.scale.sqrt();
 const cartogramClass = 'cartogram-Polygons';
 const convertFipstoPostal = require('us-abbreviations')('fips','postal');
+const colorScales = require('./../../util/colorscales').scalesMap;
 
 class MapRenderer extends React.Component{
 

@@ -77,7 +77,7 @@ const Map_ScaleSettings = React.createClass({
     const errors = this._renderErrors();
 
     const thresholds = [];
-    let thresholdsLabel = [];
+    //let thresholdsLabel = [];
 
     if (this.props.stylings.showLegendTicks) {
 
@@ -109,9 +109,10 @@ const Map_ScaleSettings = React.createClass({
     // add threshold field input
     if (currScale.type === 'threshold') {
 
-      thresholdsLabel.push(<div className="inline-label">Define thresholds</div>);
+     //.push(<div className="inline-label">Define thresholds</div>);
 
       for (let i = 0; i < currScale.tickValues.length; i++) {
+      	let thresholdsLabel = '';
       	let thisTick = currScale.tickValues[i];
         let min = currScale.tickValues[i - 1];
         let max;
@@ -120,7 +121,7 @@ const Map_ScaleSettings = React.createClass({
         if ((i + 1) === currScale.tickValues.length) {
           max = thisTick + 2;
         } else if (i === 0) {
-          thresholdsLabel = 'Threshold scales';
+          thresholdsLabel = 'Break thresholds';
           max = currScale.tickValues[1];
         } else {
           max = currScale.tickValues[i + 1];
@@ -135,6 +136,7 @@ const Map_ScaleSettings = React.createClass({
           step={tangleStep}
           min={min}
           max={max}
+          label={thresholdsLabel}
           key={i + '_threshold'}
           value={thresholdValue} />
         );
@@ -190,7 +192,6 @@ const Map_ScaleSettings = React.createClass({
             max={6}
             value={currScale.colors}
           />
-	        {thresholdsLabel}
 	        {thresholds}
         </div>
         <div className="section typesection"
