@@ -273,7 +273,12 @@ const MapCartogram_mapStyles = React.createClass({
 	},
 	render: function() {
 
-		const stylings = this.props.chartStyles
+		const stylings = this.props.chartStyles;
+
+    const schemaName = (this.props.schemaName === 'states50') ? 'type' : 'typeOther';
+    //console.log(schemaName, 'schema');
+    const cartogramType = stylings[schemaName];
+
 		const steps = String(parseInt(this.props.stepNumber) + 1);
 
 		const cartogramOption = [];
@@ -338,17 +343,21 @@ const MapCartogram_mapStyles = React.createClass({
             toggled={stylings.showLegendTicks}
           /></div>);
 
+   console.log(stylings, 'stylings', cartogramType);
+
+   const cartType = (cartogramType === 'dorling') ? 'dorlingradiusVal' : 'demerssquareWidth';
+
     const shapeSize = (<div className="toggle">
               <LabelledTangle
                 tangleClass="tangle-input"
-                onChange={this._handleStylesUpdate.bind(null, 'dorlingradiusVal')}
-                onInput={this._handleStylesUpdate.bind(null, 'dorlingradiusVal')}
+                onChange={this._handleStylesUpdate.bind(null, cartType)}
+                onInput={this._handleStylesUpdate.bind(null, cartType)}
                 step={1}
                 label="Max shape"
                 min={1}
                 max={60}
                 key="radius_val"
-                value={stylings.dorlingradiusVal}
+                value={stylings[cartType]}
               /></div>);
 
 		return (

@@ -553,6 +553,8 @@ const return_D3_scale = (colorIndex, number_colors, domain, type, allvalues, tic
 		    newDomain[newDomain.length - 1] = domainMax + 1;
 		  }
 
+		  console.log(number_colors, colorIndex, colors, 'colors');
+
       return d3.scale.quantize()
         .domain(newDomain)
         .range(colors);

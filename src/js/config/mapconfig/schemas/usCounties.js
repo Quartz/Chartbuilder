@@ -4,11 +4,12 @@ const nyc = {
     label: 'U.S. Counties',
     name: 'countiesUS',
     values: fipscounties,
-    proj: 'mercator',
-    translate: [],
+    proj: 'albersUsa',
+    translate: [310, 180],
+    translateCartogram: [270, 180],
     precision: 1,
-    scale: [],
-    topojson: require('./../mapfiles/us-counties/us-counties.json'),
+    scale: 710,
+    topojson : require('./../mapfiles/us-counties/us-simple.json'),
     feature: 'counties',
     adjustLabels: function(adjusty=0,adjustx=0, label) {
       return [adjusty,adjustx,label];
@@ -20,8 +21,8 @@ const nyc = {
         else { return val; }
     },
     test: function(column_val, polygon_val) {
-
-      return (this.matchLogic(polygon_val) == column_val);
+    	//console.log(this.matchLogic(polygon_val));
+      return (this.matchLogic(+polygon_val) == +column_val);
     }
   }
 

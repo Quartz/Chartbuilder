@@ -1,3 +1,5 @@
-const fipsobj = {};
+const fipsobj = {
+
+};
 
 module.exports = fipsobj;

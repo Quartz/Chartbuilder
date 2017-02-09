@@ -97,7 +97,7 @@ const PolygonCollection = React.createClass({
         styles2.fill = '#aaa'
       }
 
-      assign(styles2, {fillOpacity:0.2},{strokeWidth: '1.25px'});
+      assign(styles2, {fillOpacity:0.075},{strokeWidth: '1px'});
 
       if (thisvalue.length) {
         const dataMax = d3.max(this.props.chartProps.alldata, function(d){ return +d[valueColumn]; } );

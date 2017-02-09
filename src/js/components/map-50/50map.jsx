@@ -58,9 +58,9 @@ const MapRenderer = React.createClass({
     const proj = projectionFunc(projObj);
     const geo = geoPath(proj);
 
-    const projection = d3.geo[schema.proj]()
+    /*const projection = d3.geo()
       .scale(proj.scale)
-      .translate(proj.translate);
+      .translate(proj.translate);*/
 
     return (
           <PolygonCollection

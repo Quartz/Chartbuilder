@@ -40,7 +40,7 @@ const testSchema = (mapSchema, firstColumn) => {
 	    	i++;
 	    	/* only test the first 35 entries. if there is that much ambiguity,
 	    	count on the user to override. this greatly improves speed */
-	    	if (i < 35) {
+	    	if (i < 150) {
 		      firstColumn.forEach(function(g) {
 		        if (d.test(g,key)) {
 		          thisLength++;

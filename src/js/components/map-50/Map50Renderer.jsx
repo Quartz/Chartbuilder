@@ -44,13 +44,17 @@ const PolygonCollection = React.createClass({
 
     const polygonCollection = this.props.data.map((polygonData, i) => {
 
-      const polygonType = (polygonData.type) ? polygonData.type+'_' : '';
+      //const polygonType = (polygonData.type) ? polygonData.type+'_' : '';
 
       let thisvalue;
 
+      //console.log(polygonData, 'polygon');
+
       alldata.forEach(function(d, j) {
         if (thisvalue === undefined || !thisvalue.length) {
-          thisvalue = Object.assign(filter(d.values, function(o) { return mapSchema.test(o[keyColumn], polygonData.id); }), {index:d.index});
+          thisvalue = Object.assign(filter(d.values, function(o) {
+          	return mapSchema.test(o[keyColumn], polygonData.id);
+          }), {index:d.index});
         }
       });
 
@@ -75,7 +79,7 @@ const PolygonCollection = React.createClass({
         return (
           <g key= {`polygon_with_${i}`}>
             <path
-              id= {`polygon_${polygonType}${i}`}
+              id= {`polygon_${i}`}
               d= {geoPath(polygonData.geometry)}
               className={this.props.polygonClass}
               style={styles}
@@ -91,7 +95,7 @@ const PolygonCollection = React.createClass({
       else {
          return (
           <path
-            id= {`polygon_${polygonType}${i}`}
+            id= {`polygon_${i}`}
             key= {`polygon_${i}`}
             d= {geoPath(polygonData.geometry)}
             className={this.props.polygonClass}
