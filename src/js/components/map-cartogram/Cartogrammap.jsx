@@ -31,7 +31,7 @@ class MapRenderer extends React.Component{
       const center = centroid(polygonData);
       const id = polygonData.id < 10 ? '0' + polygonData.id.toString() : polygonData.id;
 
-      centroidsConst.push({"type":"Feature","id":id,
+      centroidsConst.push({"type":"Feature","id":polygonData,
           "geometry":{"type":"Point","coordinates": center.geometry.coordinates},
           "properties":{"name":id} });
     });
@@ -81,6 +81,7 @@ class MapRenderer extends React.Component{
       .scale(schema.scale);
 
     const scales = {};
+    var i = 0;
     const dataById = d3.map(chartProps.alldata, function(d) { return schema.matchLogic(d[keyColumn]); });
 
     // for dorling and demers calculations
@@ -95,16 +96,16 @@ class MapRenderer extends React.Component{
       if (schema.name === 'states50') {
       	//dc id = 11
         if (showDC) {
-        	return (dataById.has(schema.matchLogic(d.id)) && schema.test(d.id, d.id));
+        	return (dataById.has(schema.matchLogic(d.id.id)));// && schema.test(d.id, d.id));
         } else {
-        	return (dataById.has(schema.matchLogic(d.id)) && schema.test(d.id, d.id) && d.id != 11);
+        	return (dataById.has(schema.matchLogic(d.id.id)) && d.id.id != 11);
         }
-       } else return (dataById.has(schema.matchLogic(d.id)) && schema.test(d.id, d.id));
+       } else {
+       	return (dataById.has(schema.matchLogic(d.id.id)));
+       }
       })
       .map((d) => {
-
-        const shp = d.id;
-        const shpData = dataById.get(schema.matchLogic(shp));
+        const shpData = dataById.get(schema.matchLogic(+d.id.id));
         const point = projection(d.geometry.coordinates);
 
         let fillVal;
@@ -125,7 +126,7 @@ class MapRenderer extends React.Component{
         }
 
       return {
-        id: +d.id,
+        id: d.id.id,
         x: point[0], y: point[1],
         x0: point[0], y0: point[1],
         xx: cell0,

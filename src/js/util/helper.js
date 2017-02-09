@@ -108,7 +108,6 @@ const _compute_domain = (type, ticks, allvalues) => {
           scaleconstruct.push(find_median(z));
         };
       }
-      console.log(scaleconstruct,'scale');
       return scaleconstruct;
       break;
     case('threshold'):
@@ -553,16 +552,12 @@ const return_D3_scale = (colorIndex, number_colors, domain, type, allvalues, tic
 		    newDomain[newDomain.length - 1] = domainMax + 1;
 		  }
 
-		  console.log(number_colors, colorIndex, colors, 'colors');
-
       return d3.scale.quantize()
         .domain(newDomain)
         .range(colors);
       break;
     case('cluster'):
       const computeddomain = _compute_domain(type, (number_colors - 1), allvalues);
-
-      console.log(computeddomain, 'computed');
 
       return d3.scale.quantile()
         .domain(computeddomain)

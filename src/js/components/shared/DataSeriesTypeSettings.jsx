@@ -59,6 +59,7 @@ const DataSeriesTypeSettings = React.createClass({
 					</div>
 				);
 		} else if (chartProps.visualType === 'map') {
+			console.log(this.props.chartProps.input.type, JSON.stringify(this.props.chartProps.input.type), 'hm');
 			return(
 				<div className="section datatypesection">
 					<h3>Choose a different map</h3>

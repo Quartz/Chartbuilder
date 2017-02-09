@@ -393,6 +393,15 @@ const RendererWrapper = React.createClass({
 				/>
 			);
 		}
+		const clippingPath = (
+			<clipPath id="ellipse-clip">
+				<rect
+					x='0.8em'
+					y='0.6em'
+					width={620}
+					height={360}
+				/>
+			</clipPath>)
 		return (
 			<div className={["renderer-wrapper", this.state.svgSizeClass, this.props.className].join(" ")}>
 				<svg
@@ -401,6 +410,7 @@ const RendererWrapper = React.createClass({
 					width={dimensions.width}
 					height={dimensions.height}
 				>
+					{clippingPath}
 					<g className="svg-background-wrap">
 						<rect
 							className="svg-background"

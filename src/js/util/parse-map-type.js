@@ -36,13 +36,14 @@ const testSchema = (mapSchema, firstColumn) => {
     }
     else {
     	let i = 0;
+    	let n = 70;
 	    for (let key in geometries) {
 	    	i++;
-	    	/* only test the first 35 entries. if there is that much ambiguity,
+	    	/* only test the first N entries. if there is that much ambiguity,
 	    	count on the user to override. this greatly improves speed */
-	    	if (i < 150) {
+	    	if (i < n) {
 		      firstColumn.forEach(function(g) {
-		        if (d.test(g,key)) {
+		        if (d.test(g,geometries[key])) {
 		          thisLength++;
 		        }
 		      });

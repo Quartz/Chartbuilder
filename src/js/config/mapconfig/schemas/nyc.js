@@ -32,7 +32,7 @@ const nyc = {
         else { return val; }
     },
     test: function(column_val, polygon_val) {
-      return (this.matchLogic(polygon_val) == column_val);
+      return (this.matchLogic(polygon_val.id) == column_val);
     }
   }
 

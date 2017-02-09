@@ -53,7 +53,7 @@ const PolygonCollection = React.createClass({
       alldata.forEach(function(d, j) {
         if (thisvalue === undefined || !thisvalue.length) {
           thisvalue = Object.assign(filter(d.values, function(o) {
-          	return mapSchema.test(o[keyColumn], polygonData.id);
+          	return mapSchema.test(o[keyColumn], polygonData);
           }), {index:d.index});
         }
       });
@@ -106,7 +106,7 @@ const PolygonCollection = React.createClass({
     });
 
     return (
-      <g transform={translation}>{polygonCollection}</g>
+      <g transform={translation} clipPath="url(#ellipse-clip)">{polygonCollection}</g>
     );
   }
 });

@@ -62,7 +62,7 @@ const PolygonCollection = React.createClass({
       alldata.forEach(function(d, j) {
         if (thisvalue === undefined || !thisvalue.length) {
           thisvalue = Object.assign(filter(d.values, function(o) {
-          	return mapSchema.test(o[keyColumn], polygonData.id); }), {index:d.index});
+          	return mapSchema.test(o[keyColumn], polygonData); }), {index:d.index});
         }
       });
 
@@ -97,7 +97,7 @@ const PolygonCollection = React.createClass({
         styles2.fill = '#aaa'
       }
 
-      assign(styles2, {fillOpacity:0.075},{strokeWidth: '1px'});
+      assign(styles2, {fillOpacity:0.075},{strokeWidth: '0.75px'});
 
       if (thisvalue.length) {
         const dataMax = d3.max(this.props.chartProps.alldata, function(d){ return +d[valueColumn]; } );

@@ -63,18 +63,22 @@ const us = {
       return [adjusty,adjustx,label];
     },
     matchLogic(input) {
-      return convertPostaltoFIPS(input) || convertPostaltoFullFips(input) || input;
+    	if (typeof input == 'string') {
+	      input = toTitleCase(input.trim());
+	      if (input.length === 2) input = input.toUpperCase();
+    	}
+
+      return toNumber(convertPostaltoFIPS(input)) || toNumber(convertPostaltoFullFips(input)) || toNumber(input);
     },
     test: function(column_val, polygon_val) {
-      // loop through object .. find the key val of the one you want..
-      // standardize case/trim whitespace
 	     if (typeof column_val == 'string') {
 	      column_val = toTitleCase(column_val.trim());
 	      if (column_val.length === 2) column_val = column_val.toUpperCase();
     	}
 
       const column_val_converted = this.matchLogic(column_val); //
-      return (toNumber(column_val_converted) === toNumber(polygon_val));
+
+      return (toNumber(column_val_converted) == toNumber(polygon_val.id));
     }
   }
 

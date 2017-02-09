@@ -24,10 +24,8 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
   const scale = {};
   const legends = {};
   const mobileScale = {};
-  //const maxPrecision = 1;
-  //const factor = Math.pow(10, maxPrecision);
 
-
+  //
   const scaleNames = [];
   const scaleIndex = [];
 
