@@ -68,7 +68,7 @@
     "simple-statistics": "2.2",
     "sizeof": "^1.0.0",
     "sugar-date": "^1.5.1",
-    "topojson": "^1.6.26",
+    "topojson": "^2.2",
     "turf": "^3.0.14",
     "us-abbreviations": "git://github.com/nbcnews/us-abbreviations.git"
   },

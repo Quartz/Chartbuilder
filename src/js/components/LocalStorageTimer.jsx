@@ -11,7 +11,7 @@ var PropTypes = React.PropTypes;
 var chartbuilderUI = require("chartbuilder-ui");
 var Button = chartbuilderUI.Button;
 var timer;
-var TIMER_DURATION = 30000;
+var TIMER_DURATION = 300000;
 
 /**
  * Button that persists for `TIMER_DURATION` and allows user to re-load the

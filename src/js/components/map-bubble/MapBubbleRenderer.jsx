@@ -17,6 +17,18 @@ const PolygonCollection = React.createClass({
     onClick: React.PropTypes.func,
     chartProps: React.PropTypes.object.isRequired
   },
+  _searchForValue: function(start,stop,mapSchema,d,keyColumn,polygonData,l,testObj) {
+  	for (let j = start; j<stop; j++) {
+  		if (mapSchema.test(d.values[j][keyColumn], polygonData)) {
+
+    		testObj.k[l] = j;
+    		testObj.found = true;
+    		testObj.thisvalue = [Object.assign({'index':d.index},d.values[j])];
+    		break;
+  		}
+  	}
+  	return testObj;
+  },
   render: function() {
 
     const mapSchema = this.props.schema;
@@ -53,18 +65,80 @@ const PolygonCollection = React.createClass({
 
     if (this.props.onClick) onClick = this.props.onClick;
 
+    let testObj = {k: []};
+    for (let l = 0; l < alldata.length; l++ ) {
+    	testObj.k.push(alldata[l].values.length);
+    }
+
     const polygonCollection = this.props.data.map((polygonData, i) => {
 
       let polygonType = (polygonData.type) ? polygonData.type+'_' : '';
 
-      let thisvalue;
+      testObj.thisvalue = [];
 
-      alldata.forEach(function(d, j) {
-        if (thisvalue === undefined || !thisvalue.length) {
-          thisvalue = Object.assign(filter(d.values, function(o) {
-          	return mapSchema.test(o[keyColumn], polygonData); }), {index:d.index});
-        }
-      });
+      for (let l = 0; l < alldata.length; l++ ) {
+      	let d = alldata[l];
+      	//let toTest = testObj.k[l];
+        if (!testObj.thisvalue.length) {
+        	// return if nothing to look for
+        	// skip alorithmically searching if first value if only one value
+        	if (d.values.length === 0) break;
+					if (d.values.length === 1) {
+						if (mapSchema.test(d.values[0][keyColumn], polygonData)) {
+	        		testObj.thisvalue = [Object.assign({'index':d.index},d.values[0])];
+	        		testObj.k[l] = 1;
+	        		testObj.found = true;
+	        		break;
+	        	}
+					}
+
+        	testObj.found = false;
+        	let start = (testObj.k[l] - 3 < 0) ? 0 : testObj.k[l] - 3;
+        	let stop = (testObj.k[l] + 3 > d.values.length) ? d.values.length : testObj.k[l] + 3;
+
+        	testObj = this._searchForValue(start,stop,mapSchema,d,keyColumn,polygonData,l,testObj);
+
+        	if (!testObj.found) {
+
+        		let m = Math.floor(d.values.length / 2);
+        		let n = Math.floor(d.values.length / 4);
+        		let o = Math.floor(d.values.length / 8);
+
+        		// divide and conquer algorithm if no initial match
+        		if (polygonData.id <= mapSchema.matchLogic(d.values[m][keyColumn])) {
+        			if (polygonData.id < mapSchema.matchLogic(d.values[n][keyColumn])) {
+        				if (polygonData.id < mapSchema.matchLogic(d.values[o][keyColumn])) {
+	        				testObj = this._searchForValue(0,o + 1,mapSchema,d,keyColumn,polygonData,l,testObj);
+	        			} else {
+	        				testObj = this._searchForValue(o,n + 1,mapSchema,d,keyColumn,polygonData,l,testObj);
+	        			}
+        			} else {
+        				if (polygonData.id < mapSchema.matchLogic(d.values[n + o][keyColumn])) {
+	        				testObj = this._searchForValue(n,n + o + 1,mapSchema,d,keyColumn,polygonData,l,testObj);
+	        			} else {
+	        				testObj = this._searchForValue(n + o,m + 1,mapSchema,d,keyColumn,polygonData,l,testObj);
+	        			}
+        			}
+
+        		} else {
+        			if (polygonData.id < mapSchema.matchLogic(d.values[m + n][keyColumn])) {
+        				if (polygonData.id < mapSchema.matchLogic(d.values[m + o][keyColumn])) {
+	        				testObj = this._searchForValue(m,m + o + 1,mapSchema,d,keyColumn,polygonData,l,testObj);
+	        			} else {
+	        				testObj = this._searchForValue(m + o,m + n + 1,mapSchema,d,keyColumn,polygonData,l,testObj);
+	        			}
+        			} else {
+        				if (polygonData.id < mapSchema.matchLogic(d.values[m + n + o][keyColumn])) {
+	        				testObj = this._searchForValue(m + n,m + o + n + 1,mapSchema,d,keyColumn,polygonData,l,testObj);
+	        			} else {
+	        				testObj = this._searchForValue(m + n + o,d.values.length,mapSchema,d,keyColumn,polygonData,l,testObj);
+	        			}
+        			}
+        		}
+        	}
+       	}
+       	else break;
+      };
 
       const styles = {fill:'#E9E9E9', stroke: mapStroke};
 
@@ -88,9 +162,9 @@ const PolygonCollection = React.createClass({
 
       const styles2 = {};
 
-      if (thisvalue.length) {
-        styles2.stroke = currSettings[thisvalue.index].d3scale(thisvalue[0][valueColumn]);
-        styles2.fill = currSettings[thisvalue.index].d3scale(thisvalue[0][valueColumn]);
+      if (testObj.thisvalue.length) {
+        styles2.stroke = currSettings[testObj.thisvalue[0].index].d3scale(testObj.thisvalue[0][valueColumn]);
+        styles2.fill = currSettings[testObj.thisvalue[0].index].d3scale(testObj.thisvalue[0][valueColumn]);
       }
       else {
         styles2.stroke = '#999';
@@ -99,10 +173,10 @@ const PolygonCollection = React.createClass({
 
       assign(styles2, {fillOpacity:0.075},{strokeWidth: '0.75px'});
 
-      if (thisvalue.length) {
+      if (testObj.thisvalue.length) {
         const dataMax = d3.max(this.props.chartProps.alldata, function(d){ return +d[valueColumn]; } );
         radius.domain([0, dataMax]);
-        renderRadius = radius(thisvalue[0][valueColumn]);
+        renderRadius = radius(testObj.thisvalue[0][valueColumn]);
 
         circleReturn.push(
           <circle
@@ -115,7 +189,6 @@ const PolygonCollection = React.createClass({
           >
           </circle>);
       }
-
       return (
         <g key= {`polygon_with_${i}`}>
           <path
@@ -129,7 +202,7 @@ const PolygonCollection = React.createClass({
     });
 
     return (
-      <g transform={translation}>{polygonCollection}{circleReturn}</g>
+      <g transform={translation} clipPath="url(#ellipse-clip)">{polygonCollection}{circleReturn}</g>
     );
   }
 });

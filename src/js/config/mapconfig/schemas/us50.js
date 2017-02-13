@@ -1,4 +1,4 @@
-import {clone, reduce, keys, isUndefined, isArray, toNumber} from 'lodash';
+import {toNumber} from 'lodash';
 
 const convertPostaltoFIPS = require('us-abbreviations')('postal','fips');
 const convertPostaltoFullFips = require('us-abbreviations')('full','fips');
@@ -13,7 +13,7 @@ const us = {
     translateCartogram: [270, 180],
     precision: 1,
     scale: 710,
-    topojson : require('./../mapfiles/us-50/us-simple.json'),
+    topojson : require('./../mapfiles/us-50/us-states-sorted.json'),
     feature: 'states',
     adjustLabels: function(adjusty=0,adjustx=0, label) {
 

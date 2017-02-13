@@ -141,6 +141,7 @@ const PolygonCollection = React.createClass({
 
     return (
       <g transform={translation}
+      	clipPath="url(#ellipse-clip)"
         className='cartogram-map-render'
         ref='graph'
       />

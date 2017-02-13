@@ -9,13 +9,8 @@ const React = require("react");
 const ReactDOM = require("react-dom");
 const PropTypes = React.PropTypes;
 
-const assign = require("lodash/assign");
-const clone = require("lodash/clone");
-const isDate = require("lodash/isDate");
-const isEqual = require("lodash/isEqual");
-const throttle = require("lodash/throttle");
-const reduce = require("lodash/reduce");
-const keys = require("lodash/keys");
+import {assign, clone, isDate, isEqual, throttle, reduce, kes, filter, find} from 'lodash';
+
 const update = require("react-addons-update");
 
 const SvgText = require("./svg/SvgText.jsx");
@@ -77,15 +72,11 @@ const RendererWrapper = React.createClass({
 			styleConfig: {}
 		};
 	},
-
 	componentWillReceiveProps: function(nextProps) {
-
 		const newType = nextProps.model.metadata.chartType;
 		const prevType = this.props.model.metadata.chartType;
 		if (newType !== prevType) {
-
 			const chartConfig = convertConfig(chartConfigs[newType] || mapConfigs[newType], null, this.state.emSize, this.state.domNodeWidth);
-
 			this.setState({ chartConfig: chartConfig });
 		}
 	},
@@ -188,6 +179,7 @@ const RendererWrapper = React.createClass({
 	},
 
 	render: function() {
+
 		const chartType = this.props.model.metadata.chartType;
 		const width = this.props.width || this.state.domNodeWidth;
 
@@ -320,13 +312,10 @@ const RendererWrapper = React.createClass({
 		};
 
 		if (this.props.showLegenddata) {
-
 			translate.legendleft = margin.legendleft;
 
 			if (this.props.model.metadata.subtitle) {
-
 				if (this.props.model.metadata.subtitle.length > 0) {
-
 					translate.legendsOneRow = margin.legendsOneRow + 35;
 					translate.legendsTwoRow = margin.legendsTwoRow + 35;
 				}
@@ -366,7 +355,6 @@ const RendererWrapper = React.createClass({
 			}
 
 			if (chartProps.visualType === 'map') {
-
 				translate.subtitle = margin.subtitle;
 
 				const subtitle = (

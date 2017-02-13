@@ -41,12 +41,12 @@ const MapRenderer = React.createClass({
     const stylings = chartProps.stylings;
     const schema = chartProps.schema.schema;
     const featname = schema.feature;
+    const shouldSearch = this.props.shouldSearch;
 
 		const displayConfig = this.props.displayConfig;
     const metadata = this.props.metadata;
 
-    const data = topojson.feature(schema.topojson,
-                  schema.topojson.objects[featname]);
+    const data = topojson.feature(schema.topojson, schema.topojson.objects[featname]);
 
     const projObj = {
       projection: schema.proj,
@@ -58,10 +58,6 @@ const MapRenderer = React.createClass({
     const proj = projectionFunc(projObj);
     const geo = geoPath(proj);
 
-    /*const projection = d3.geo()
-      .scale(proj.scale)
-      .translate(proj.translate);*/
-
     return (
           <PolygonCollection
             chartProps= {chartProps}
@@ -70,6 +66,7 @@ const MapRenderer = React.createClass({
             metadata ={metadata}
             schema={schema}
             proj={proj}
+            shouldSearch={shouldSearch}
             displayConfig={displayConfig}
             polygonClass={polygonClass}
           />

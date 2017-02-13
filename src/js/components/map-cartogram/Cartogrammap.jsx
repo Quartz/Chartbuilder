@@ -105,8 +105,10 @@ class MapRenderer extends React.Component{
        }
       })
       .map((d) => {
-        const shpData = dataById.get(schema.matchLogic(+d.id.id));
+        const shpData = dataById.get(schema.matchLogic(d.id.id));
         const point = projection(d.geometry.coordinates);
+
+        console.log(shpData, 'shp');
 
         let fillVal;
         if (chartProps.chartSettings[shpData.index].scale.domain[0] ===

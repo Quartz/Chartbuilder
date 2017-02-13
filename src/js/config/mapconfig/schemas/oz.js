@@ -1,16 +1,14 @@
-import {toNumber} from 'lodash';
-
 const countries = require('./helpers/world');
 
-const ME = {
-	label: 'Middle East',
-	name: 'middleeast',
+const OZ = {
+	label: 'Australia',
+	name: 'oz',
 	values: countries,
 	proj: 'mercator',
-	translate: [-90, 530],
-	translateCartogram: [-90, 530],
+	translate: [-330, 90],
+	translateCartogram: [210, 190],
 	precision: 1,
-	scale: 560,
+	scale: 260,
 	topojson : require('./../mapfiles/world/world.topo.json'),
 	feature: 'lsib_world',
 	adjustLabels: function(adjusty=0,adjustx=0, label) {
@@ -18,8 +16,8 @@ const ME = {
 	},
 	matchLogic: function(val) {
 
-		//if (this.values[val]) { return this.values[val]; }
-		if (!isNaN(val)) { return toNumber(val); }
+		if (this.values[val]) { return this.values[val]; }
+		else if (!isNaN(val)) { return +val; }
 		else { return val; }
 	},
 	test: function(column_val, polygon_val) {
@@ -27,4 +25,4 @@ const ME = {
 	}
  }
 
-module.exports = ME;
+module.exports = OZ;
