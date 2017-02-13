@@ -13,18 +13,6 @@ const PolygonsRender = React.createClass({
     polygonClass: React.PropTypes.string,
     chartProps: React.PropTypes.object.isRequired
   },
-  _searchForValue: function(start,stop,mapSchema,d,keyColumn,polygonData,l,testObj) {
-  	for (let j = start; j<stop; j++) {
-  		if (mapSchema.test(d.values[j][keyColumn], polygonData)) {
-
-    		testObj.k[l] = j;
-    		testObj.found = true;
-    		testObj.thisvalue = [Object.assign({'index':d.index},d.values[j])];
-    		break;
-  		}
-  	}
-  	return testObj;
-  },
   _updateStyles: function(nextProps) {
 
   	const chartProps = nextProps.chartProps;
@@ -46,14 +34,14 @@ const PolygonsRender = React.createClass({
     	testObj.k[l] = allpolygons.length;
     }
 
-    nextProps.data.forEach((polygonData, i) => {
+    /*nextProps.data.forEach((polygonData, i) => {
     	//
     	testObj = this._matchValues(testObj, polygonData, keyColumn, valueColumn, alldata, allpolygons, mapSchema);
 
       svg.select('#polygon_' + i)
       .style('fill', testObj.thisvalue.length ? currSettings[testObj.thisvalue[0].index].d3scale(testObj.thisvalue[0][valueColumn]) : '#ddd')
       .style('stroke',chartProps.stylings.stroke);
-    });
+    });*/
   },
   shouldComponentUpdate: function(nextProps) {
   	/* only update if the schema type changes.
@@ -75,50 +63,84 @@ const PolygonsRender = React.createClass({
     }
     return topTranslation;
   },
-  _binarySearch: function(ar, el, compare_fn) {
-
+  _bruteSearchForValue: function(start,stop,mapSchema,d,keyColumn,polygonData,testObj,index) {
+  	for (let j = start; j<stop; j++) {
+  		if (testObj.found) break;
+  		console.log(mapSchema.test(d[keyColumn], polygonData[j]));
+  		if (mapSchema.test(d[keyColumn], polygonData[j])) {
+    		testObj.k = j;
+    		testObj.i = j;
+    		testObj.found = true;
+    		testObj.geometry = polygonData[j].geometry;
+    		testObj.thisvalue = [Object.assign({'index':index},d)];
+    		break;
+  		}
+  	}
+  	return testObj;
   },
-  _matchValues: function(testObj={}, testData, keyColumn, valueColumn, alldata, allpolygons, mapSchema) {
+  _binarySearch: function(polygondata, key, testObj, d, index, keyColumn) {
+    let lo = 0;
+    let hi = polygondata.length - 1;
+    let mid;
+    let element;
 
+    while (lo <= hi) {
+        mid = ((lo + hi) >> 1);
+        element = polygondata[mid].id;
+        console.log(mid,'mid search');
+        if (element < key) {
+            lo = mid + 1;
+            //
+        } else if (element > key) {
+            hi = mid - 1;
+            //
+        } else {
+        	testObj.k = mid;
+	    		testObj.i = mid;
+	    		testObj.found = true;
+	    		testObj.geometry = polygondata[mid].geometry;
+	    		testObj.thisvalue = [Object.assign({'index':index},d)];
+        	return testObj;
+        }
+    }
+    return testObj;
+  },
+  _matchValues: function(testObj={}, testData, keyColumn, allpolygons, mapSchema, index) {
+  	//testObj = this._matchValues(testObj, alldata[l][i], keyColumn, allpolygons, mapSchema);;
     testObj.thisvalue = [];
     testObj.found = false;
 
-    let d = alldata;
-  	// loop through
-  	// return if nothing to look for
-  	// skip alorithmically searching if first value if only one value
-  	if (d.values.length === 0) break;
-		if (d.values.length === 1) {
-			if (mapSchema.test(d.values[0][keyColumn], polygonData)) {
-    		testObj.thisvalue = [Object.assign({'index':d.index},d.values[0])];
+    //const d = alldata;
+
+    if (allpolygons.length === 0) return testObj;
+    if (allpolygons.length === 1) {
+			if (mapSchema.test(testData[keyColumn], allpolygons[0])) {
+    		testObj.thisvalue = [Object.assign({'index':index},testData)];
+    		testObj.geometry = allpolygons[0].geometry;
     		testObj.found = true;
-    		break;
+    		testObj.i = 0;
+    		return testObj;
     	}
 		}
+		if (!testObj.found) {
+			// first search a sub selection of the array
+	  	const start = (testObj.k - 3 < 0) ? 0 : testObj.k - 3;
+	  	const stop = (testObj.k + 3 > allpolygons.length) ? allpolygons.length : testObj.k + 3;
 
-    for (let l = 0; l < allpolygons.length; l++) {
-    	// stop looping if value already discovered in a previous group
-    	if (testObj.found) break;
+	  	testObj = this._bruteSearchForValue(start,stop,mapSchema,testData,keyColumn,allpolygons,testObj,index);
 
+	  	// if still not found, perform binary search
+    	if (!testObj.found) {
 
+    		testObj = this._binarySearch(allpolygons, mapSchema.matchLogic(testData[keyColumn]), testObj, testData, index, keyColumn);
+    		return testObj;
 
-    	const start = (testObj.k[l] - 3 < 0) ? 0 : testObj.k[l] - 3;
-    	const stop = (testObj.k[l] + 3 > allpolygons.length) ? allpolygons.length : testObj.k[l] + 3;
-
-
-
-			//console.log(testObj.k[l], 'test');
-
-    	testObj = this._searchForValue(start,stop,mapSchema,d,keyColumn,polygonData,l,testObj);
-
-    	/*if (!testObj.found) {
-
-    		let m = Math.floor(d.values.length / 2);
+    		/*let m = Math.floor(d.values.length / 2);
     		let n = Math.floor(d.values.length / 4);
-    		let o = Math.floor(d.values.length / 8);
+    		let o = Math.floor(d.values.length / 8);*/
 
     		// binary search algorithm if no initial match
-    		if (polygonData.id <= mapSchema.matchLogic(d.values[m][keyColumn])) {
+    		/*if (polygonData.id <= mapSchema.matchLogic(d.values[m][keyColumn])) {
     			if (polygonData.id < mapSchema.matchLogic(d.values[n][keyColumn])) {
     				if (polygonData.id < mapSchema.matchLogic(d.values[o][keyColumn])) {
       				testObj = this._searchForValue(0,o + 1,mapSchema,d,keyColumn,polygonData,l,testObj);
@@ -148,12 +170,8 @@ const PolygonsRender = React.createClass({
       			}
     			}
     		}*/
-
-    		if (!testObj.found) {
-    			//fail safe...
-    		}
-    //	}
-    //};
+    	}
+    };
     return testObj;
   },
   render: function() {
@@ -180,83 +198,86 @@ const PolygonsRender = React.createClass({
 
   	let testObj = {k:[]};
     const polygonCollection = [];
+    const alreadyRenderedPolygons = [];
 
     for (let l = 0; l < alldata.length; l++) {
 
-    	testObj.k[l] = allpolygons.length;
+    	testObj.k = allpolygons.length;
 
+    	for (let i = 0; i < alldata[l].values.length; i++) {
   		// search in the dataset for a match against this polygon.
-    	testObj = this._matchValues(testObj, alldata[l][i], keyColumn, valueColumn, alldata[l], allpolygons, mapSchema);
+  		//console.log(alldata[l], 'hm');
+    	testObj = this._matchValues(testObj, alldata[l]['values'][i], keyColumn, allpolygons, mapSchema, alldata[l]['index']);
 
-    	if (testObj.found) {
-	  		const styles = {};
-	  		styles.stroke = chartProps.stylings.stroke;
+	    	if (testObj.found) {
 
-	    	if (testObj.thisvalue.length) {
-	      	styles.fill = currSettings[testObj.thisvalue[0].index].d3scale(testObj.thisvalue[0][valueColumn]);
-	      } else {
-	      	styles.fill = '#ddd';
-	      }
+	    		//console.log(JSON.stringify(testObj), 'test');
+	    		const valueSet = testObj.thisvalue[0];
+	    		alreadyRenderedPolygons.push(testObj.i);
+		  		const styles = {
+		  							stroke:chartProps.stylings.stroke,
+		  							fill:currSettings[valueSet.index].d3scale(valueSet[valueColumn])
+		  						 };
 
-	      // at the center labels if required
-	      if (showLabels) {
-	        const attributes = {x:null, y:null, text:''};
-	        if (projection(centroid(polygonData).geometry.coordinates)) {
-	          const adjustStateLabels = adjustLabels(null,null,testObj.thisvalue[0][keyColumn]);
-	          attributes.x = centers[0] + adjustStateLabels[1];
-	          attributes.y = centers[1] + adjustStateLabels[0] + 6;
-	          attributes.text = adjustStateLabels[2];
-	        }
+		      // at the center labels if required
+		      if (showLabels) {
+		        const attributes = {x:null, y:null, text:''};
+		        if (projection(centroid(testObj).geometry.coordinates)) {
+		          const adjustStateLabels = adjustLabels(null,null,valueSet[keyColumn]);
+		          attributes.x = centers[0] + adjustStateLabels[1];
+		          attributes.y = centers[1] + adjustStateLabels[0] + 6;
+		          attributes.text = adjustStateLabels[2];
+		        }
 
-	        polygonCollection.push(
-	          <g key= {`polygon_with_${i}`}>
-	            <path
-	              id= {`polygon_${i}`}
-	              d= {geoPath(polygonData.geometry)}
-	              className={this.props.polygonClass}
-	              style={styles}
-	            />
-	            <text
-	              x={attributes.x}
-	              y={attributes.y}
-	              className={'state-labels-show'}
-	            >{attributes.text}</text>
-	          </g>
-	        );
-	      }
-	      else {
-	        polygonCollection.push(
-	          <path
-	            id={`polygon_${i}`}
-	            key={`polygon_${i}`}
-	            d= {geoPath(polygonData.geometry)}
-	            className={this.props.polygonClass}
-	            style={styles}
-	          />
-	        );
-	      }
-	    }
+		        polygonCollection.push(
+		          <g key= {`polygon_with_${testObj.i}`}>
+		            <path
+		              id= {`polygon_${testObj.i}`}
+		              d= {geoPath(testObj.geometry)}
+		              className={this.props.polygonClass}
+		              style={styles}
+		            />
+		            <text
+		              x={attributes.x}
+		              y={attributes.y}
+		              className={'state-labels-show'}
+		            >{attributes.text}</text>
+		          </g>
+		        );
+		      }
+		      else {
+		        polygonCollection.push(
+		          <path
+		            id={`polygon_${testObj.i}`}
+		            key={`polygon_${testObj.i}`}
+		            d= {geoPath(testObj.geometry)}
+		            className={this.props.polygonClass}
+		            style={styles}
+		          />
+		        );
+		      }
+		    }
+		  }
     };
 
-
-    allpolygons.map((polygonData, i) => {
+    //console.log(JSON.stringify(alreadyRenderedPolygons), 'hm');
+    allpolygons.map((polygonData,i) => {
 
     	// return if already found
-    	//if () return
+    	if (alreadyRenderedPolygons.indexOf(i) > -1) return null;
     	// otherwise just show the defalt path
   		const styles = {};
   		styles.stroke = chartProps.stylings.stroke;
       styles.fill = '#ddd';
-        polygonCollection.push(
-          <path
-            id={`polygon_${i}`}
-            key={`polygon_${i}`}
-            d= {geoPath(polygonData.geometry)}
-            className={this.props.polygonClass}
-            style={styles}
-          />
-        );
-      }
+      polygonCollection.push(
+        <path
+          id={`polygon_${i}`}
+          key={`polygon_${i}`}
+          d= {geoPath(polygonData.geometry)}
+          className={this.props.polygonClass}
+          style={styles}
+        />
+      );
     });
 
     return (
