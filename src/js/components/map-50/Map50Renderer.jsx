@@ -37,7 +37,10 @@ const PolygonsRender = React.createClass({
     for (let l = 0; l < alldata.length; l++) {
     	testObj.k = allpolygons.length;
 
-    	const differencedata = (alldata.length === lastdata.length) ?
+    	// if changing the scale, re render everything.
+    	// if just changing specific values, only rerender those.
+    	const scaledifference = (alldata.length === lastdata.length) ? filter(this.props.chartProps.scale[l], function(obj){ return !find(nextProps.chartProps.scale[l], obj); }) : [true];
+    	const differencedata = (alldata.length === lastdata.length && !scaledifference.length) ?
 								    					filter(alldata[l].values, function(obj){ return !find(lastdata[l].values, obj); })
 								    				: alldata[l].values;
 
