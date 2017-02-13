@@ -1,6 +1,6 @@
 import React from 'react';
 import d3 from 'd3';
-import {filter, reduce, find, concat} from 'lodash';
+import {filter, reduce, find, concat, isEqual} from 'lodash';
 import {centroid} from 'turf';
 
 // Flux actions
@@ -39,8 +39,8 @@ const PolygonsRender = React.createClass({
 
     	// if changing the scale, re render everything.
     	// if just changing specific values, only rerender those.
-    	const scaledifference = (alldata.length === lastdata.length) ? filter(this.props.chartProps.scale[l], function(obj){ return !find(nextProps.chartProps.scale[l], obj); }) : [true];
-    	const differencedata = (alldata.length === lastdata.length && !scaledifference.length) ?
+    	const scaledifference = (alldata.length === lastdata.length) ? isEqual(this.props.chartProps.scale[l], nextProps.chartProps.scale[l]) : true;
+    	const differencedata = (alldata.length === lastdata.length && !scaledifference) ?
 								    					filter(alldata[l].values, function(obj){ return !find(lastdata[l].values, obj); })
 								    				: alldata[l].values;
 
