@@ -1,6 +1,6 @@
 import React from 'react';
 import d3 from 'd3';
-import {filter, reduce, difference, concat} from 'lodash';
+import {filter, reduce, find, concat} from 'lodash';
 import {centroid} from 'turf';
 
 // Flux actions
@@ -19,7 +19,9 @@ const PolygonsRender = React.createClass({
     const mapSchema = nextProps.schema;
     const currSettings = chartProps.scale;
 
+    const lastdata = this.props.chartProps.data;
     const alldata = chartProps.data;
+
     const allpolygons = this.props.data;
     const columnNames = chartProps.columns;
 
@@ -30,18 +32,35 @@ const PolygonsRender = React.createClass({
 
     // tk
     let testObj = {k:[]};
+    //const alreadyRenderedPolygons = [];
+
     for (let l = 0; l < alldata.length; l++) {
-    	testObj.k[l] = allpolygons.length;
+    	testObj.k = allpolygons.length;
+
+    	const differencedata = (alldata.length === lastdata.length) ?
+								    					filter(alldata[l].values, function(obj){ return !find(lastdata[l].values, obj); })
+								    				: alldata[l].values;
+
+    	for (let i = 0; i < differencedata.length; i++) {
+    	testObj = this._matchValues(testObj, differencedata[i], keyColumn, allpolygons, mapSchema, alldata[l]['index']);
+
+	    	if (testObj.found) {
+	    		const valueSet = testObj.thisvalue[0];
+	    		//alreadyRenderedPolygons.push(testObj.i);
+
+	    		svg.select('#polygon_' + testObj.i)
+		      .style('fill', currSettings[valueSet.index].d3scale(valueSet[valueColumn]))
+		      .style('stroke',chartProps.stylings.stroke);
+
+	    	}
+	    }
     }
 
-    /*nextProps.data.forEach((polygonData, i) => {
-    	//
-    	testObj = this._matchValues(testObj, polygonData, keyColumn, valueColumn, alldata, allpolygons, mapSchema);
-
-      svg.select('#polygon_' + i)
-      .style('fill', testObj.thisvalue.length ? currSettings[testObj.thisvalue[0].index].d3scale(testObj.thisvalue[0][valueColumn]) : '#ddd')
-      .style('stroke',chartProps.stylings.stroke);
-    });*/
+    /*svg.selectAll('.' + this.props.polygonClass)
+    	.each(function(d ,i) {
+    		if (alreadyRenderedPolygons.indexOf(i) < 0) return;
+    		d3.select(this).style('stroke',chartProps.stylings.stroke).style('fill','#333')
+    	});*/
   },
   shouldComponentUpdate: function(nextProps) {
   	/* only update if the schema type changes.
@@ -66,7 +85,7 @@ const PolygonsRender = React.createClass({
   _bruteSearchForValue: function(start,stop,mapSchema,d,keyColumn,polygonData,testObj,index) {
   	for (let j = start; j<stop; j++) {
   		if (testObj.found) break;
-  		console.log(mapSchema.test(d[keyColumn], polygonData[j]));
+  		//console.log(mapSchema.test(d[keyColumn], polygonData[j]));
   		if (mapSchema.test(d[keyColumn], polygonData[j])) {
     		testObj.k = j;
     		testObj.i = j;
@@ -87,7 +106,6 @@ const PolygonsRender = React.createClass({
     while (lo <= hi) {
         mid = ((lo + hi) >> 1);
         element = polygondata[mid].id;
-        console.log(mid,'mid search');
         if (element < key) {
             lo = mid + 1;
             //
@@ -106,11 +124,9 @@ const PolygonsRender = React.createClass({
     return testObj;
   },
   _matchValues: function(testObj={}, testData, keyColumn, allpolygons, mapSchema, index) {
-  	//testObj = this._matchValues(testObj, alldata[l][i], keyColumn, allpolygons, mapSchema);;
+
     testObj.thisvalue = [];
     testObj.found = false;
-
-    //const d = alldata;
 
     if (allpolygons.length === 0) return testObj;
     if (allpolygons.length === 1) {
@@ -127,49 +143,12 @@ const PolygonsRender = React.createClass({
 	  	const start = (testObj.k - 3 < 0) ? 0 : testObj.k - 3;
 	  	const stop = (testObj.k + 3 > allpolygons.length) ? allpolygons.length : testObj.k + 3;
 
+	  	// first brute search inside the subarray
 	  	testObj = this._bruteSearchForValue(start,stop,mapSchema,testData,keyColumn,allpolygons,testObj,index);
 
-	  	// if still not found, perform binary search
+	  	// if still not found, use binary search
     	if (!testObj.found) {
-
-    		testObj = this._binarySearch(allpolygons, mapSchema.matchLogic(testData[keyColumn]), testObj, testData, index, keyColumn);
-    		return testObj;
-
-    		/*let m = Math.floor(d.values.length / 2);
-    		let n = Math.floor(d.values.length / 4);
-    		let o = Math.floor(d.values.length / 8);*/
-
-    		// binary search algorithm if no initial match
-    		/*if (polygonData.id <= mapSchema.matchLogic(d.values[m][keyColumn])) {
-    			if (polygonData.id < mapSchema.matchLogic(d.values[n][keyColumn])) {
-    				if (polygonData.id < mapSchema.matchLogic(d.values[o][keyColumn])) {
-      				testObj = this._searchForValue(0,o + 1,mapSchema,d,keyColumn,polygonData,l,testObj);
-      			} else {
-      				testObj = this._searchForValue(o,n + 1,mapSchema,d,keyColumn,polygonData,l,testObj);
-      			}
-    			} else {
-    				if (polygonData.id < mapSchema.matchLogic(d.values[n + o][keyColumn])) {
-      				testObj = this._searchForValue(n,n + o + 1,mapSchema,d,keyColumn,polygonData,l,testObj);
-      			} else {
-      				testObj = this._searchForValue(n + o,m + 1,mapSchema,d,keyColumn,polygonData,l,testObj);
-      			}
-    			}
-
-    		} else {
-    			if (polygonData.id < mapSchema.matchLogic(d.values[m + n][keyColumn])) {
-    				if (polygonData.id < mapSchema.matchLogic(d.values[m + o][keyColumn])) {
-      				testObj = this._searchForValue(m,m + o + 1,mapSchema,d,keyColumn,polygonData,l,testObj);
-      			} else {
-      				testObj = this._searchForValue(m + o,m + n + 1,mapSchema,d,keyColumn,polygonData,l,testObj);
-      			}
-    			} else {
-    				if (polygonData.id < mapSchema.matchLogic(d.values[m + n + o][keyColumn])) {
-      				testObj = this._searchForValue(m + n,m + o + n + 1,mapSchema,d,keyColumn,polygonData,l,testObj);
-      			} else {
-      				testObj = this._searchForValue(m + n + o,d.values.length,mapSchema,d,keyColumn,polygonData,l,testObj);
-      			}
-    			}
-    		}*/
+    		return testObj = this._binarySearch(allpolygons, mapSchema.matchLogic(testData[keyColumn]), testObj, testData, index, keyColumn);
     	}
     };
     return testObj;
@@ -205,13 +184,10 @@ const PolygonsRender = React.createClass({
     	testObj.k = allpolygons.length;
 
     	for (let i = 0; i < alldata[l].values.length; i++) {
-  		// search in the dataset for a match against this polygon.
-  		//console.log(alldata[l], 'hm');
     	testObj = this._matchValues(testObj, alldata[l]['values'][i], keyColumn, allpolygons, mapSchema, alldata[l]['index']);
 
 	    	if (testObj.found) {
 
-	    		//console.log(JSON.stringify(testObj), 'test');
 	    		const valueSet = testObj.thisvalue[0];
 	    		alreadyRenderedPolygons.push(testObj.i);
 		  		const styles = {
