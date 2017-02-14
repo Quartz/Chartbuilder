@@ -81,7 +81,6 @@ function registeredCallback(payload) {
 		default:
 			// do nothing
 	}
-
 	return true;
 }
 

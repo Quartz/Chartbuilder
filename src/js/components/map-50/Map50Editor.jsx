@@ -3,7 +3,7 @@
  */
 import React, {PropTypes} from 'react';
 import update from 'react-addons-update';
-import {clone, bind, each, keys, map} from 'lodash';
+import {cloneDeep, bind, each, keys, map} from 'lodash';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 const NumericScaleSettings = require("../shared/NumericScaleSettings.jsx");
@@ -118,12 +118,12 @@ const MapEditor = React.createClass({
 		}, this));
 
 		const mapStyles = (<MapChoro_mapStyles
-						chartStyles={stylings}
-						stepNumber={this.props.stepNumber}
-						metadata={this.props.metadata}
-						onUpdate={this._handlePropUpdate.bind(null, "stylings")}
-						onUpdateReparse={this._handlePropAndReparse.bind(null, "stylings")}
-					/>);
+							chartStyles={stylings}
+							stepNumber={this.props.stepNumber}
+							metadata={this.props.metadata}
+							onUpdate={this._handlePropUpdate.bind(null, "stylings")}
+							onUpdateReparse={this._handlePropAndReparse.bind(null, "stylings")}
+						/>);
 
 		const axisErrors = this.props.errors.messages.filter(function(e) {
 			return e.location === "axis";
@@ -176,7 +176,7 @@ const Map50_mapSettings = React.createClass({
 	_handleSettingsUpdate: function(ix, k, v) {
 
 		/* Clone the array of objects so that we dont mutate existing state */
-		let chartSettings = map(this.props.chartSettings, clone);
+		let chartSettings = map(this.props.chartSettings, cloneDeep);
 		/* We need the index (ix) of the settings object to know which to update */
 		chartSettings[ix][k] = v;
 		/* `axis` and `colorIndex` require reparsing the input and splitting it up */
@@ -222,11 +222,10 @@ const MapChoro_mapStyles = React.createClass({
 	propTypes: {
 
 	},
-
 	_handleStylesUpdate: function(ix, v) {
 
 		/* Clone the object so that we dont mutate existing state */
-		const chartStyles = clone(this.props.chartStyles);
+		const chartStyles = cloneDeep(this.props.chartStyles);
 		/* We need the style (ix) to know which to update (v) */
 		chartStyles[ix] = v;
 		/* */
@@ -255,8 +254,8 @@ const MapChoro_mapStyles = React.createClass({
         <Toggle
           label="State names"
           className="button-group-wrapper"
-          onToggle={this._handleStylesUpdate.bind(null, "showStateLabels")}
           toggled={stylings.showStateLabels}
+          onToggle={this._handleStylesUpdate.bind(null, "showStateLabels")}
           key="show_state_names"
         /></div>);
     }

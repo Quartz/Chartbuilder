@@ -10,7 +10,7 @@ const geoPath = require('react-d3-map-core').geoPath;
 
 const ChartRendererMixin = require("../mixins/MapRendererMixin.js");
 
-const polygonClass = 'polygon-test';
+const polygonClass = 'polygon-render';
 
 let MapRenderer = React.createClass({
 

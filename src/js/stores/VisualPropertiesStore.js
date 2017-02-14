@@ -2,7 +2,7 @@
  * Store the Chart's properties. These are properties relevant to the
  * rendering of the chart.
 */
-import {assign, clone} from 'lodash';
+import {assign} from 'lodash';
 const EventEmitter = require("events").EventEmitter;
 
 /* Flux dispatcher */
@@ -121,11 +121,14 @@ function registeredCallback(payload) {
 		case "update-and-reparse":
 			config = chartConfig[chartType] || mapConfig[chartType];
 			parser = config.parser;
+
 			_chartProps[action.key] = action.newProp;
+
 			parser(config, _chartProps, function(newProps) {
 				_chartProps = newProps;
 				VisualPropertiesStore.emitChange();
-			},action.key,true,_chartProps.schema);
+			}, action.key, true, _chartProps.schema);
+
 			break;
 
 		case "update-data-input":

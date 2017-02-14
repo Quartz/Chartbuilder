@@ -3,7 +3,6 @@
  * and are unrelated to the actual rendering of the chart.
 */
 var assign = require("lodash/assign");
-var clone = require("lodash/clone");
 var EventEmitter = require("events").EventEmitter;
 
 /* Flux dispatcher */
@@ -14,7 +13,6 @@ var VisualPropertiesStore = require("./VisualPropertiesStore");
 
 /* Singleton that houses metadata */
 var _metadata = {};
-var titleDirty = false;
 var CHANGE_EVENT = "change";
 
 /**
@@ -53,7 +51,7 @@ var VisualMetadataStore = assign({}, EventEmitter.prototype, {
 	 * @memberof VisualMetadataStore
 	 */
 	getAll: function() {
-		return clone(_metadata);
+		return _metadata;
 	},
 
 	/**
@@ -72,6 +70,7 @@ var VisualMetadataStore = assign({}, EventEmitter.prototype, {
 function registeredCallback(payload) {
 	var action = payload.action;
 	var data;
+	var titleDirty = false;
 
 	switch(action.eventName) {
 		/*
@@ -98,11 +97,9 @@ function registeredCallback(payload) {
 			break;
 
 		case "update-and-reparse":
-			if (!titleDirty) {
-				data = VisualPropertiesStore.get("data");
-				_metadata.title = defaultTitle(data);
-				VisualMetadataStore.emitChange();
-			}
+			data = VisualPropertiesStore.get("data");
+			_metadata.title = defaultTitle(data);
+			VisualMetadataStore.emitChange();
 			break;
 
 		default:

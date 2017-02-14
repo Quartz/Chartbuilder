@@ -1,6 +1,6 @@
 import React from 'react';
 import d3 from 'd3';
-import {filter, reduce, find, concat, isEqual} from 'lodash';
+import {filter, find, isEqual, differenceby} from 'lodash';
 import {centroid} from 'turf';
 
 // Flux actions
@@ -12,6 +12,16 @@ const PolygonsRender = React.createClass({
     geoPath: React.PropTypes.func,
     polygonClass: React.PropTypes.string,
     chartProps: React.PropTypes.object.isRequired
+  },
+  _filterDifference: function(old,newval, keyColumn, valueColumn) {
+  	const diffArr = [];
+
+		newval.forEach(function(e) {
+		    if(!old.some(s => s[keyColumn] == e[keyColumn] || s[valueColumn] == e[valueColumn])) {
+		        diffArr.push(e);
+		    }
+		});
+		return diffArr;
   },
   _updateStyles: function(nextProps) {
 
@@ -29,53 +39,51 @@ const PolygonsRender = React.createClass({
   	const valueColumn = (columnNames.length === 2) ? columnNames[1] : columnNames[2];
 
     const svg = d3.select('.polygon-group');
-
     // tk
     let testObj = {k:[]};
-    //const alreadyRenderedPolygons = [];
 
     for (let l = 0; l < alldata.length; l++) {
     	testObj.k = allpolygons.length;
 
-    	// if changing the scale, re render everything.
-    	// if just changing specific values, only rerender those.
-    	const scaledifference = (alldata.length === lastdata.length) ? isEqual(this.props.chartProps.scale[l], nextProps.chartProps.scale[l]) : true;
-    	const differencedata = (alldata.length === lastdata.length && !scaledifference) ?
-								    					filter(alldata[l].values, function(obj){ return !find(lastdata[l].values, obj); })
+			// if changing the scale, updating the dataset entirely, or removing or adding rows, re-render everything.
+    	// if just changing specific values, only re-render those.
+    	const scaledifference = (alldata.length === lastdata.length) ? !isEqual(this.props.chartProps.scale[l], nextProps.chartProps.scale[l]) : true;
+    	const differencedata = (alldata.length === lastdata.length && !scaledifference && alldata[l].values.length === lastdata[l].values.length) ?
+								    					this._filterDifference(alldata[l].values,lastdata[l].values, keyColumn, valueColumn)
 								    				: alldata[l].values;
 
     	for (let i = 0; i < differencedata.length; i++) {
-    	testObj = this._matchValues(testObj, differencedata[i], keyColumn, allpolygons, mapSchema, alldata[l]['index']);
+    		testObj = this._matchValues(testObj, differencedata[i], keyColumn, allpolygons, mapSchema, alldata[l]['index']);
 
 	    	if (testObj.found) {
 	    		const valueSet = testObj.thisvalue[0];
-	    		//alreadyRenderedPolygons.push(testObj.i);
 
 	    		svg.select('#polygon_' + testObj.i)
 		      .style('fill', currSettings[valueSet.index].d3scale(valueSet[valueColumn]))
 		      .style('stroke',chartProps.stylings.stroke);
-
 	    	}
 	    }
     }
-
-    /*svg.selectAll('.' + this.props.polygonClass)
-    	.each(function(d ,i) {
-    		if (alreadyRenderedPolygons.indexOf(i) < 0) return;
-    		d3.select(this).style('stroke',chartProps.stylings.stroke).style('fill','#333')
-    	});*/
+  },
+  _updateStroke(nextProps) {
+  	//update all strokes to new stroke val
+    d3.select('.polygon-group')
+    	.selectAll('.' + nextProps.polygonClass)
+    	.style('stroke', nextProps.stylings.stroke);
   },
   shouldComponentUpdate: function(nextProps) {
   	/* only update if the schema type changes.
   	otherwise just update the styles. */
   	if (this.props.schema.name !== nextProps.schema.name
-  		 || this.props.chartProps.stylings.showStateLabels !== nextProps.chartProps.stylings.showStateLabels) {
+  		 || this.props.stylings.showStateLabels !== nextProps.stylings.showStateLabels) {
   		return true;
+  	} else if (this.props.stylings.stroke !== nextProps.stylings.stroke) {
+  		this._updateStroke(nextProps);
+  		return false;
   	} else {
   		this._updateStyles(nextProps);
   		return false;
   	}
-  	return false;
   },
   _topTranslation: function(topTranslation) {
   	if (this.props.metadata.subtitle) {
@@ -88,7 +96,6 @@ const PolygonsRender = React.createClass({
   _bruteSearchForValue: function(start,stop,mapSchema,d,keyColumn,polygonData,testObj,index) {
   	for (let j = start; j<stop; j++) {
   		if (testObj.found) break;
-  		//console.log(mapSchema.test(d[keyColumn], polygonData[j]));
   		if (mapSchema.test(d[keyColumn], polygonData[j])) {
     		testObj.k = j;
     		testObj.i = j;
@@ -143,8 +150,8 @@ const PolygonsRender = React.createClass({
 		}
 		if (!testObj.found) {
 			// first search a sub selection of the array
-	  	const start = (testObj.k - 3 < 0) ? 0 : testObj.k - 3;
-	  	const stop = (testObj.k + 3 > allpolygons.length) ? allpolygons.length : testObj.k + 3;
+	  	const start = (testObj.k - 4 < 0) ? 0 : testObj.k - 4;
+	  	const stop = (testObj.k + 4 > allpolygons.length) ? allpolygons.length : testObj.k + 4;
 
 	  	// first brute search inside the subarray
 	  	testObj = this._bruteSearchForValue(start,stop,mapSchema,testData,keyColumn,allpolygons,testObj,index);
@@ -201,8 +208,12 @@ const PolygonsRender = React.createClass({
 		      // at the center labels if required
 		      if (showLabels) {
 		        const attributes = {x:null, y:null, text:''};
+		        testObj.type = "Feature";
+
 		        if (projection(centroid(testObj).geometry.coordinates)) {
-		          const adjustStateLabels = adjustLabels(null,null,valueSet[keyColumn]);
+		        	const centers = projection(centroid(testObj).geometry.coordinates);
+
+		          const adjustStateLabels = adjustLabels(-4,-4,valueSet[keyColumn]);
 		          attributes.x = centers[0] + adjustStateLabels[1];
 		          attributes.y = centers[1] + adjustStateLabels[0] + 6;
 		          attributes.text = adjustStateLabels[2];

@@ -265,7 +265,6 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
       chartProps.mobile = {};
     } */
 
-
   const newChartProps = assign(chartProps, {
     chartSettings: chartSettings,
     data: bySeries.series,

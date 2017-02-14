@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'React';
-import {clone, cloneDeep} from 'lodash';
+import {cloneDeep} from 'lodash';
 
 const ScaleReset = require("./ScaleReset.jsx");
 

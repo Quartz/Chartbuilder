@@ -10,7 +10,7 @@ const projectionFunc = require('react-d3-map-core').projection;
 const geoPath = require('react-d3-map-core').geoPath;
 
 // move into config?
-const polygonClass = 'polygon-test';
+const polygonClass = 'polygon-render';
 
 const MapRenderer = React.createClass({
 
@@ -34,11 +34,9 @@ const MapRenderer = React.createClass({
 		editable: React.PropTypes.bool,
 		useMobileSettings: React.PropTypes.bool
 	},
-
   render: function() {
 
     const chartProps = this.props.chartProps;
-    const stylings = chartProps.stylings;
     const schema = chartProps.schema.schema;
     const featname = schema.feature;
     const shouldSearch = this.props.shouldSearch;
@@ -61,6 +59,7 @@ const MapRenderer = React.createClass({
     return (
           <PolygonCollection
             chartProps= {chartProps}
+            stylings = {chartProps.stylings}
             data= {data.features}
             geoPath= {geo}
             metadata ={metadata}

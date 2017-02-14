@@ -288,7 +288,6 @@ var Chartbuilder = React.createClass({
 				chartProps: state.chartProps,
 				metadata: state.metadata
 			});
-
 		}
 
 	}

@@ -1,4 +1,4 @@
-import {assign, clone, some, filter} from 'lodash';
+import {assign, cloneDeep, some, filter} from 'lodash';
 
 const EventEmitter = require("events").EventEmitter;
 
@@ -51,7 +51,7 @@ const ErrorStore = assign({}, EventEmitter.prototype, {
 	 * @memberof ErrorStore
 	 */
 	getAll: function() {
-		return clone(_errors);
+		return cloneDeep(_errors);
 	},
 
 	/**
