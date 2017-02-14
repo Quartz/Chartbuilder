@@ -79,6 +79,8 @@ function registeredCallback(payload) {
 	let config;
 	let thisModel;
 
+	console.log(action, 'action');
+
 	switch(action.eventName) {
 		/*
 		* Receive a new model, which includes metadata. Respond by parsing input and
@@ -137,7 +139,7 @@ function registeredCallback(payload) {
 
 			checkColumnChange(action.newProp.raw, function(columnsChanged) {
 				_chartProps[action.key] = action.newProp;
-				var parseOpts = { columnsChanged: columnsChanged };
+				var parseOpts = { columnsChanged: columnsChanged, updateData:true };
 				parser(config, _chartProps, function(newProps) {
 					_chartProps = newProps;
 					VisualPropertiesStore.emitChange();

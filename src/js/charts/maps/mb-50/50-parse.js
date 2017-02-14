@@ -1,4 +1,4 @@
-import {clone, map, assign, each, filter, flatten, isEqual} from 'lodash';
+import {clone, map, assign, each} from 'lodash';
 
 const colorScales = require('./../../../util/colorscales');
 const dataBySeries = require("./../../../util/parse-map-data-by-series");
@@ -15,86 +15,82 @@ const mintickPrecision = 0;
  * see [MapConfig#parser](#mapconfig/parser)
  * @see MapConfig#parser
  * @instance
- * @memberof xy_config
+ * @memberof map50_config
  */
 
 const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, priorSchema = false) => {
   // Build chart settings from defaults or provided settings
 
-  const scale = {};
-  const legends = {};
-  const mobileScale = {};
-
-  //
-  const scaleNames = [];
-  const scaleIndex = [];
-
-  parseOpts = parseOpts || {};
   // clone so that we aren't modifying original
   // this can probably be avoided by applying new settings differently
   let chartProps = JSON.parse(JSON.stringify(_chartProps));
 
+  const scale = {};
+  const legends = {};
+  const mobileScale = {};
+
+  console.log(parseOpts, 'opts');
+
+  parseOpts = parseOpts || {};
+
   let maptype;
-
-  if (parseOpts === 'input') {
-  	maptype = chartProps.input.type;
-  } else {
-	  if (!chartProps.input.type) {
-	  	maptype = defaultmap;
-	  } else {
-	  	maptype = chartProps.input.type;
-	  }
-  }
-
-  let bySeries = dataBySeries(chartProps.input.raw, chartProps, {
-    type: maptype
-  });
-
-  const dataParsed = bySeries.data;
-  let parsedInputEntries = dataParsed.entries;
-  const columnNames = dataParsed.columnNames;
-	const valueColumn = columnNames.length === 2 ? columnNames[1] : columnNames[2];
-
-  bySeries.series.forEach((d) => {
-    scaleIndex.push(d.name);
-    scaleNames.push(d.name);
-  });
+  let bySeries = {};
+  let _computed;
+  let dataParsed;
+  let parsedInputEntries;
+  let columnNames;
 
   const labels = chartProps._annotations.labels;
-  const _computed = {};
 
-  scaleIndex.forEach((name, i) => {
-    _computed[i] = {
-      data : []
-    };
-  });
 
+	if (!chartProps.input.type) {
+  	maptype = defaultmap;
+  } else {
+  	maptype = chartProps.input.type;
+  }
+
+  if (parseOpts === 'input' || parseOpts === 'receive-model' || parseOpts.updateData) {
+  	bySeries = dataBySeries(chartProps.input.raw, chartProps, {
+	    type: maptype
+	  });
+
+	  dataParsed = bySeries.data;
+	  parsedInputEntries = dataParsed.entries;
+	  columnNames = dataParsed.columnNames;
+	  _computed = {};
+  } else {
+	  bySeries.series = chartProps.data;
+	  bySeries.input = chartProps.input;
+	  parsedInputEntries = chartProps.entries;
+	  columnNames = chartProps.columns;
+	  _computed = chartProps.computedData;
+  }
+
+  const valueColumn = columnNames.length === 2 ? columnNames[1] : columnNames[2];
+  const firstColumn = columnNames[0];
+  const allData = bySeries.series;
+
+  // build the _computed and chartSettings objects
+  // this can be condensed into something simpler
   const chartSettings = map(bySeries.series, (dataSeries, i) => {
-    let settings;
 
-    if (chartProps.chartSettings[i]) settings = chartProps.chartSettings[i];
-   /* else {
-    	// use defaults if there a column is missing from the series..
-      settings = clone(config.defaultProps.chartProps.chartSettings[0], true);
-      settings.colorIndex = i;
-    }*/
+  	// use new values if there is new input or switching to different map type
+  	// otherwise the values are assigned to the last chartProps in the above conditional
+  	if (parseOpts === 'input' || parseOpts === 'receive-model' || parseOpts.updateData) {
+	  	_computed[i] = {
+	    	data : map(dataSeries.values, (d) => {
+		      return +d[valueColumn]; })
+	    };
+  	}
 
-    if (parseOpts.columnsChanged) settings.label = clone(bySeries.series[i].name);
-    else {
-      settings.label = settings.label || bySeries.series[i].name;
-    }
-
-    const values = map(dataSeries.values, (d) => {
-      return +d[valueColumn];
-    });
-
-    _computed[i].data = _computed[i].data.concat(values);
+    let settings = chartProps.chartSettings[i] || clone(config.defaultProps.chartProps.chartSettings[0]);
+    settings.label = (parseOpts.columnsChanged) ? clone(bySeries.series[i].name) : settings.label || bySeries.series[i].name;
 
     return settings;
   });
 
   // Calculate domain and tick values for any scales that exist
-  each(scaleNames, (name, j) => {
+  each(_computed, (name, j) => {
 
     let currScale;
 
@@ -116,8 +112,11 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
 		first, compute full domain based on currScale passed in values or on the full dataset, whichever needed
 
     */
-    let domain = help.computeMapScaleDomain(currScale, _computed[j].data);
+    let domain = help.computeMapScaleDomain(currScale, _computed[j].data, parseOpts);
+    console.log(JSON.stringify(domain), 'domain', JSON.stringify(_computed[j].data));
     assign(currScale, domain);
+
+    console.log(currScale, 'curr');
 
     /* colors
 
@@ -136,7 +135,6 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
 
     // compute the tick values based on the scale and the data
     const ticks = currScale.ticks;
-
 	  currScale.tickValues = help.exactTicks(currScale.domain, ticks, currScale.type, currScale.tickValues, _computed[j].data);
     //round the tick values by the precision indicated
    	// set a minimum level of precison (ie., 0, meaning no decimal points, or 1)
@@ -167,7 +165,7 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
     	tickValues:help.constructLegendTicks(currScale.tickValues, currScale.ticks, currScale.type)
     }
 
-    legends[name] = currLegend;
+    legends[j] = currLegend;
     chartSettings[j].legends = currLegend;
     /*
 
@@ -191,30 +189,10 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
 
   });
 
-  // this should all be included in one big loopa loop
-
-
- /* each(chartSettings, (z,g) => {
-
-    map(bySeries.series, (dataSeries, i) => {
-      if (dataSeries.name === z.label) {
-        //chartSettings[g].scale = scale[z.label];
-        if (bySeries.isNumeric) {
-          chartSettings[g].scale.isNumeric = bySeries.isNumeric;
-
-          /*chartSettings[g].scale.numericSettings = clone(chartSettings[g].scale) ||
-            clone(config.defaultProps.chartProps.chartSettings[0].scale);*/
-       /* }
-      }
-    });
-  });*/
-
   /*
   	Schemas
   */
 
-  const firstColumn = columnNames[0];
-  const allData = bySeries.series;
 
   let schema;
 
@@ -228,7 +206,7 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
   }
   else {
   	// if making a map type switch, use the previous map type option
-  	if (parseOpts === 'receive-model' && maptype !== defaultmap) {
+  	if (parseOpts === 'receive-model' && maptype !== defaultmap){
   		schema = parseMapType.assign_map(firstColumn, allData, maptype);
   	} else {
   	// if just parsing data or something else, change it.
@@ -270,6 +248,7 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
     data: bySeries.series,
     entries: parsedInputEntries,
     input: bySeries.input,
+    computedData: _computed,
     columns: columnNames,
     scale: scale,
     legend: legends,

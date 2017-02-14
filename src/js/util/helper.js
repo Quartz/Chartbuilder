@@ -193,18 +193,19 @@ function compute_map_scale_domain(scaleObj, data, opts, type, ticks, number_colo
 	// `data` is a flat array of all values used in this scale, and is
 	// created by `input-parsers/parse-<chart>.js`
 	opts = opts || {};
-	var scaleDomain = scaleObj.domain || [];
-	var _domain;
-	var defaultMin;
-	var defaultMax;
+
+	let scaleDomain = (opts === 'input' || opts === 'receive-model' || opts.updateData) ? [] : scaleObj.domain || [];
+	let _domain;
+	let defaultMin;
+	let defaultMax;
 
 	if (!isArray(data)) {
 		throw new TypeError("data passed to compute_scale_domain must be an array");
 	}
 
-	var extent = (scaleDomain.length > 0) ? [scaleDomain[0], scaleDomain[1]] : d3.extent(data);
+	let extent = (scaleDomain.length > 0) ? [scaleDomain[0], scaleDomain[1]] : d3.extent(data);
 
-	var niced = d3.scale.linear()
+	let niced = d3.scale.linear()
 			.domain(extent);
 			//.nice();
 
@@ -222,12 +223,6 @@ function compute_map_scale_domain(scaleObj, data, opts, type, ticks, number_colo
 		defaultMax = (_domain[1] === scaleDomain[1] || isUndefined(scaleDomain[1]));
 		_domain = scaleDomain;
 	}
-
-	if (opts.minZero) {
-		_domain[0] = Math.min(_domain[0], 0);
-	}
-
-
 
 	return {
 		domain: _domain

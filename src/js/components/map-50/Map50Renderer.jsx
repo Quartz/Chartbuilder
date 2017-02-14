@@ -13,7 +13,7 @@ const PolygonsRender = React.createClass({
     polygonClass: React.PropTypes.string,
     chartProps: React.PropTypes.object.isRequired
   },
-  _filterDifference: function(old,newval, keyColumn, valueColumn) {
+  _filterDifference: function(old, newval, keyColumn, valueColumn) {
   	const diffArr = [];
 
 		newval.forEach(function(e) {
@@ -44,16 +44,12 @@ const PolygonsRender = React.createClass({
 
     for (let l = 0; l < alldata.length; l++) {
     	testObj.k = allpolygons.length;
+    	const indexTest = alldata[l]['index'];
+		 	const seriesdata = alldata[l].values;
 
-			// if changing the scale, updating the dataset entirely, or removing or adding rows, re-render everything.
-    	// if just changing specific values, only re-render those.
-    	const scaledifference = (alldata.length === lastdata.length) ? !isEqual(this.props.chartProps.scale[l], nextProps.chartProps.scale[l]) : true;
-    	const differencedata = (alldata.length === lastdata.length && !scaledifference && alldata[l].values.length === lastdata[l].values.length) ?
-								    					this._filterDifference(alldata[l].values,lastdata[l].values, keyColumn, valueColumn)
-								    				: alldata[l].values;
-
-    	for (let i = 0; i < differencedata.length; i++) {
-    		testObj = this._matchValues(testObj, differencedata[i], keyColumn, allpolygons, mapSchema, alldata[l]['index']);
+    	for (let i = 0; i < seriesdata.length; i++) {
+    		//console.log(seriesdata[i], 'seriesdata');
+    		testObj = this._matchValues(testObj, seriesdata[i], keyColumn, allpolygons, mapSchema, indexTest);
 
 	    	if (testObj.found) {
 	    		const valueSet = testObj.thisvalue[0];
@@ -192,9 +188,10 @@ const PolygonsRender = React.createClass({
     for (let l = 0; l < alldata.length; l++) {
 
     	testObj.k = allpolygons.length;
+    	const indexTest = alldata[l]['index'];
 
     	for (let i = 0; i < alldata[l].values.length; i++) {
-    	testObj = this._matchValues(testObj, alldata[l]['values'][i], keyColumn, allpolygons, mapSchema, alldata[l]['index']);
+    		testObj = this._matchValues(testObj, alldata[l]['values'][i], keyColumn, allpolygons, mapSchema, indexTest);
 
 	    	if (testObj.found) {
 
