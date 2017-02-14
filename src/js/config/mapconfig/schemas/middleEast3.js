@@ -3,14 +3,14 @@ import {toNumber} from 'lodash';
 const countries = require('./helpers/world');
 
 const ME = {
-	label: 'Middle East 1 (Wide)',
-	name: 'middleeast1',
+	label: 'Middle East 3 (Iran)',
+	name: 'middleeast3',
 	values: countries,
 	proj: 'mercator',
-	translate: [-55, 470],
-	translateCartogram: [-55, 470],
+	translate: [-370, 650],
+	translateCartogram: [-370, 650],
 	precision: 1,
-	scale: 500,
+	scale: 770,
 	topojson : require('./../mapfiles/world/world.topo.json'),
 	feature: 'lsib_world',
 	adjustLabels: function(adjusty=0,adjustx=0, label) {
