@@ -103,42 +103,44 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
     }
 
     /*
+    Domain
+
 		The scales are computed as follows:
 
-		there is the data "domain" -- the full domain of the value extent.
-		there is the scale domain -- the domain for the specific type of scale, threshold, cluster etc
-		there are the ticks -- computed based on the scale domain and the data's properties
+			there is the data "domain" -- the full domain of the value extent.
+			there is the scale domain -- the domain for the specific type of scale, threshold, cluster etc
+			there are the ticks -- computed based on the scale domain and the data's properties
 
 		first, compute full domain based on currScale passed in values or on the full dataset, whichever needed
+    */
+    // first add the domain
+    assign(currScale, help.computeMapScaleDomain(currScale, _computed[j].data, parseOpts));
+
+
+
+    /*
+    Colors
 
     */
-    let domain = help.computeMapScaleDomain(currScale, _computed[j].data, parseOpts);
-    console.log(JSON.stringify(domain), 'domain', JSON.stringify(_computed[j].data));
-    assign(currScale, domain);
-
-    console.log(currScale, 'curr');
-
-    /* colors
-
-    */
-    /* if updating the data length to be shorter for a series, reduce the num of colors
-    */
+    // if updating the data length to be shorter for a series, reduce the num of colors
     if (_computed[j].data.length <= currScale.colors) {
     	currScale.colors = _computed[j].data.length;
     }
     const totalcolors = currScale.colors;
-    // should be one more tick than there are legend shapes
+    // One more tick than there are legend shapes
     currScale.ticks = currScale.colors + 1;
     currScale.colorIndex = chartSettings[j].colorIndex;
 
-    /* TICKS */
 
+    /*
+    Ticks
+
+    */
     // compute the tick values based on the scale and the data
     const ticks = currScale.ticks;
 	  currScale.tickValues = help.exactTicks(currScale.domain, ticks, currScale.type, currScale.tickValues, _computed[j].data);
     //round the tick values by the precision indicated
    	// set a minimum level of precison (ie., 0, meaning no decimal points, or 1)
-    //
     if (mintickPrecision > currScale.precision) {
       currScale.precision = mintickPrecision;
     }
@@ -146,15 +148,22 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
     currScale.tickValues.forEach((v, i) => {
       currScale.tickValues[i] = (help.getDecimals(v) > currScale.precision) ? help.roundToPrecision(v, currScale.precision) : v;  //Math.round(v * (Math.pow(10, currScale.precision)) / (Math.pow(10, currScale.precision))) : v;
     });
-    /* Build scale based on the data and the full domain */
+
+    /*
+    Scale
+
+		*/
+    //Build scale based on the data and the full domain
     currScale.d3scale = help.returnD3Scale(currScale.colorIndex, totalcolors, currScale.domain, currScale.type, _computed[j].data, currScale.tickValues);
 
     scale[j] = currScale;
     chartSettings[j].scale = currScale;
 
-    //
+    /*
+    Legend
+
+    */
     // compute the legend based on the scales built
-    //
     const currLegend = {
     	d3scale:help.returnD3Scale(currScale.colorIndex, totalcolors, currScale.domain, currScale.type, _computed[j].data, currScale.tickValues),
     	colorValues:colorScales.scalesMap(currScale.colorIndex)[totalcolors],
@@ -190,10 +199,10 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
   });
 
   /*
-  	Schemas
+  Schemas
+
   */
-
-
+  //
   let schema;
 
   if (priorData) {
@@ -203,8 +212,7 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
 	    if (!priorSchema) schema = parseMapType.determine_map(firstColumn, allData);
 	    else schema = priorSchema;
   	}
-  }
-  else {
+  } else {
   	// if making a map type switch, use the previous map type option
   	if (parseOpts === 'receive-model' && maptype !== defaultmap){
   		schema = parseMapType.assign_map(firstColumn, allData, maptype);
@@ -213,6 +221,8 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
     	schema = parseMapType.determine_map(firstColumn, allData);
   	}
   }
+  // now update the series type
+  bySeries.input.type = schema.schema.name;
 
 
 

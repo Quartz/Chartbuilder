@@ -48,15 +48,13 @@ var DataInput = React.createClass({
 				type: undefined
 			}});
 			VisualViewActions.updateInput(k, input);
-		}
-		else if (k == "type") {
+		} else if (k == "type") {
 			input = update(this.props.chartProps.input, { $set: {
 				raw: v.raw,
 				type: v.type
 			}});
 			VisualViewActions.updateAndReparse("input", input);
-		}
-		else {
+		} else {
 			return;
 		}
 	},
