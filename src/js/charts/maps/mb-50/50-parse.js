@@ -110,10 +110,8 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
 			there is the data "domain" -- the full domain of the value extent.
 			there is the scale domain -- the domain for the specific type of scale, threshold, cluster etc
 			there are the ticks -- computed based on the scale domain and the data's properties
-
-		first, compute full domain based on currScale passed in values or on the full dataset, whichever needed
-    */
-    // first add the domain
+		*/
+		//first, compute full domain based on currScale passed in values or on the full dataset, whichever needed
     assign(currScale, help.computeMapScaleDomain(currScale, _computed[j].data, parseOpts));
 
 
@@ -127,6 +125,7 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
     	currScale.colors = _computed[j].data.length;
     }
     const totalcolors = currScale.colors;
+
     // One more tick than there are legend shapes
     currScale.ticks = currScale.colors + 1;
     currScale.colorIndex = chartSettings[j].colorIndex;
@@ -136,15 +135,15 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
     Ticks
 
     */
-    // compute the tick values based on the scale and the data
+    // compute: the tick values based on the scale and the data
     const ticks = currScale.ticks;
 	  currScale.tickValues = help.exactTicks(currScale.domain, ticks, currScale.type, currScale.tickValues, _computed[j].data);
-    //round the tick values by the precision indicated
+
+    // round: the tick values by the precision indicated
    	// set a minimum level of precison (ie., 0, meaning no decimal points, or 1)
-    if (mintickPrecision > currScale.precision) {
-      currScale.precision = mintickPrecision;
-    }
-    // for each tick value, test the number of decimals. if greater than precision, round down.
+    if (mintickPrecision > currScale.precision) currScale.precision = mintickPrecision;
+
+    // precision: for each tick value, test the number of decimals. if greater than precision, round down.
     currScale.tickValues.forEach((v, i) => {
       currScale.tickValues[i] = (help.getDecimals(v) > currScale.precision) ? help.roundToPrecision(v, currScale.precision) : v;  //Math.round(v * (Math.pow(10, currScale.precision)) / (Math.pow(10, currScale.precision))) : v;
     });
@@ -155,7 +154,7 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
 		*/
     //Build scale based on the data and the full domain
     currScale.d3scale = help.returnD3Scale(currScale.colorIndex, totalcolors, currScale.domain, currScale.type, _computed[j].data, currScale.tickValues);
-
+    // assign the scale values
     scale[j] = currScale;
     chartSettings[j].scale = currScale;
 
@@ -213,11 +212,11 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
 	    else schema = priorSchema;
   	}
   } else {
-  	// if making a map type switch, use the previous map type option
-  	if (parseOpts === 'receive-model' && maptype !== defaultmap){
+  	  // if making a map type switch, use the previous map type option
+  	if (parseOpts === 'receive-model' && maptype !== defaultmap) {
   		schema = parseMapType.assign_map(firstColumn, allData, maptype);
   	} else {
-  	// if just parsing data or something else, change it.
+  	  // if just parsing data or something else, change it.
     	schema = parseMapType.determine_map(firstColumn, allData);
   	}
   }
@@ -227,6 +226,8 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
 
 
     /*
+
+    Mobile
 
     if (chartProps.mobile) {
       if (chartProps.mobile.scale) {

@@ -1,14 +1,14 @@
 const countries = require('./helpers/world');
 
-const Europe = {
-	label: 'Europe',
-	name: 'europe',
+const CA = {
+	label: 'Central America',
+	name: 'centralamerica',
 	values: countries,
 	proj: 'mercator',
-	translate: [270, 590],
-	translateCartogram: [270, 590],
+	translate: [1050, 300],
+	translateCartogram: [1050, 300],
 	precision: 1,
-	scale: 360,
+	scale: 470,
 	topojson : require('./../mapfiles/world/world.topo.json'),
 	feature: 'lsib_world',
 	adjustLabels: function(adjusty=0,adjustx=0, label) {
@@ -25,4 +25,4 @@ const Europe = {
 	}
  }
 
-module.exports = Europe;
+module.exports = CA;

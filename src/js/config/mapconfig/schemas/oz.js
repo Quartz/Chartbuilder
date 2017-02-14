@@ -6,7 +6,7 @@ const OZ = {
 	values: countries,
 	proj: 'mercator',
 	translate: [-330, 90],
-	translateCartogram: [210, 190],
+	translateCartogram: [-330, 90],
 	precision: 1,
 	scale: 260,
 	topojson : require('./../mapfiles/world/world.topo.json'),

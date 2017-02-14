@@ -1,14 +1,16 @@
+import {toNumber} from 'lodash';
+
 const countries = require('./helpers/world');
 
-const Europe = {
-	label: 'Europe',
-	name: 'europe',
+const ME = {
+	label: 'Russia',
+	name: 'russia',
 	values: countries,
 	proj: 'mercator',
-	translate: [270, 590],
-	translateCartogram: [270, 590],
+	translate: [-55, 490],
+	translateCartogram: [-55, 490],
 	precision: 1,
-	scale: 360,
+	scale: 190,
 	topojson : require('./../mapfiles/world/world.topo.json'),
 	feature: 'lsib_world',
 	adjustLabels: function(adjusty=0,adjustx=0, label) {
@@ -16,8 +18,8 @@ const Europe = {
 	},
 	matchLogic: function(val) {
 
-		if (this.values[val]) { return this.values[val]; }
-		else if (!isNaN(val)) { return +val; }
+		//if (this.values[val]) { return this.values[val]; }
+		if (!isNaN(val)) { return toNumber(val); }
 		else { return val; }
 	},
 	test: function(column_val, polygon_val) {
@@ -25,4 +27,4 @@ const Europe = {
 	}
  }
 
-module.exports = Europe;
+module.exports = ME;

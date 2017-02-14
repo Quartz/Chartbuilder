@@ -6,7 +6,7 @@ const NA = {
 	values: countries,
 	proj: 'mercator',
 	translate: [680, 380],
-	translateCartogram: [210, 190],
+	translateCartogram: [680, 380],
 	precision: 1,
 	scale: 220,
 	topojson : require('./../mapfiles/world/world.topo.json'),
