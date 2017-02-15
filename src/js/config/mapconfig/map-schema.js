@@ -17,15 +17,15 @@ const caSchema = require('./schemas/centralamerica.js');
 const saSchema = require('./schemas/southamerica.js');
 const russia = require('./schemas/russia.js');
 
-const statesCounties = require('./schemas/statesCounties.js')
+//const statesCounties = require('./schemas/statesCounties.js')
 
 const maps = [us50Schema,nycSchema,usCountiesSchema,worldSchema,
 							meSchema,meSchema2,meSchema3,meSchema4,meSchema5,asiaSchema,africaSchema,europeSchema,naSchema,
 							ozSchema,saSchema,caSchema,russia];
 
 //states Counties arrives as an array of all states objects
-statesCounties.forEach(function(d) {
+/*statesCounties.forEach(function(d) {
 	maps.push(d);
-})
+})*/
 
 module.exports = maps;

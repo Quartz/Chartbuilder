@@ -124,14 +124,16 @@ const PolygonsRender = React.createClass({
     let mid;
     let element;
 
+    key = (typeof key === 'string') ? key.toLowerCase().replace(/\s+/g, '') : key;
+
     while (lo <= hi) {
-        mid = ((lo + hi) >> 1);
-        element = polygondata[mid].id;
-        if (element < key) {
-            lo = mid + 1;
-            //
-        } else if (element > key) {
+        mid = (lo + hi) >> 1;
+        element = (typeof polygondata[mid].id === 'string') ? polygondata[mid].id.toLowerCase().replace(/\s+/g, '') : polygondata[mid].id;
+       	if (key < element) {
             hi = mid - 1;
+            //
+        } else if (key > element) {
+            lo = mid + 1;
             //
         } else {
         	testObj.k = mid;
@@ -140,6 +142,32 @@ const PolygonsRender = React.createClass({
 	    		testObj.geometry = polygondata[mid].geometry;
 	    		testObj.thisvalue = [Object.assign({'index':index},d)];
         	return testObj;
+        	break;
+        }
+    }
+    return testObj;
+  },
+  _binarySearchCounty: function(polygondata, key, testObj, d, index, keyColumn) {
+    let lo = 0;
+    let hi = polygondata.length - 1;
+    let mid;
+    let element;
+
+    while (lo <= hi) {
+        mid = (lo + hi) >> 1;
+        element = polygondata[mid].id;
+       	if (key < element) {
+            hi = mid - 1;
+        } else if (key > element) {
+            lo = mid + 1;
+        } else {
+        	testObj.k = mid;
+	    		testObj.i = mid;
+	    		testObj.found = true;
+	    		testObj.geometry = polygondata[mid].geometry;
+	    		testObj.thisvalue = [Object.assign({'index':index},d)];
+        	return testObj;
+        	break;
         }
     }
     return testObj;
@@ -169,7 +197,9 @@ const PolygonsRender = React.createClass({
 
 	  	// if still not found, use binary search
     	if (!testObj.found) {
-    		return testObj = this._binarySearch(allpolygons, mapSchema.matchLogic(testData[keyColumn]), testObj, testData, index, keyColumn);
+    		return testObj = (mapSchema.name === 'countiesUS') ?
+    			this._binarySearchCounty(allpolygons, mapSchema.matchLogic(testData[keyColumn]), testObj, testData, index, keyColumn) :
+    			this._binarySearch(allpolygons, mapSchema.matchLogic(testData[keyColumn]), testObj, testData, index, keyColumn);
     	}
     };
     return testObj;
@@ -275,6 +305,7 @@ const PolygonsRender = React.createClass({
         <path
           id={`polygon_${i}`}
           key={`polygon_${i}`}
+          data-id={polygonData.id}
           d= {geoPath(polygonData.geometry)}
           className={this.props.polygonClass}
           style={styles}

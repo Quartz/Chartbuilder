@@ -9,7 +9,7 @@ const counties = {
     translateCartogram: [270, 180],
     precision: 1,
     scale: 710,
-    topojson : require('./../mapfiles/us-counties/us-counties-sorted.json'),
+    topojson : Object.freeze(require('./../mapfiles/us-counties/us-counties-sorted.json')),
     feature: 'counties',
     adjustLabels: function(adjusty=0,adjustx=0, label) {
       return [adjusty,adjustx,label];
@@ -21,7 +21,7 @@ const counties = {
     },
     test: function(column_val, polygon_val) {
     	//console.log(this.matchLogic(polygon_val));
-      return (this.matchLogic(+polygon_val.id) == +column_val);
+      return (this.matchLogic(+polygon_val.id) === +column_val);
     }
   }
 
