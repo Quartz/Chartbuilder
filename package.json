@@ -1,6 +1,6 @@
 {
   "name": "chartbuilder",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Easily create beautiful charts",
   "main": "src/js/index.js",
   "scripts": {
