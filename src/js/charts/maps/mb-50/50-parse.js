@@ -29,8 +29,6 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
   const legends = {};
   const mobileScale = {};
 
-  console.log(parseOpts, 'opts');
-
   parseOpts = parseOpts || {};
 
   let maptype;

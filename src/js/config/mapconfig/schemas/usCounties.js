@@ -1,6 +1,6 @@
 const fipscounties = require('./helpers/counties-fips');
 
-const nyc = {
+const counties = {
     label: 'U.S. Counties',
     name: 'countiesUS',
     values: fipscounties,
@@ -25,4 +25,4 @@ const nyc = {
     }
   }
 
-module.exports = nyc;
+module.exports = counties;

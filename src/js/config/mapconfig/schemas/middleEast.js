@@ -3,7 +3,7 @@ import {toNumber} from 'lodash';
 const countries = require('./helpers/world');
 
 const ME = {
-	label: 'Middle East 1 (Wide)',
+	label: 'Middle East 1 (wide)',
 	name: 'middleeast1',
 	values: countries,
 	proj: 'mercator',
