@@ -393,11 +393,72 @@ body {
 .cb-alert.warning .cb-alert-text {
   background-color: #f59b60;
 }
+.cb-alert-group {
+  overflow: hidden;
+}
 .cb-alert-group .cb-alert {
   margin-bottom: 5px;
 }
 .cb-alert-group .cb-alert:last-child {
   margin-bottom: 0;
+}
+.cb-alert-group .cb-alert-enter {
+  opacity: 0;
+  -webkit-transform: translate(0, -100%);
+  -moz-transform: translate(0, -100%);
+  -ms-transform: translate(0, -100%);
+  -o-transform: translate(0, -100%);
+  transform: translate(0, -100%);
+  -webkit-transform: translate3d(0, -100%, 0);
+  -moz-transform: translate3d(0, -100%, 0);
+  -ms-transform: translate3d(0, -100%, 0);
+  -o-transform: translate3d(0, -100%, 0);
+  transform: translate3d(0, -100%, 0);
+}
+.cb-alert-group .cb-alert-enter.cb-alert-enter-active {
+  opacity: 1;
+  -webkit-transform: translate(0, 0);
+  -moz-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  transform: translate(0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+  -ms-transform: translate3d(0, 0, 0);
+  -o-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  transition-property: transform, opacity;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.175, 0.665, 0.32, 1), linear;
+}
+.cb-alert-group .cb-alert-leave {
+  opacity: 1;
+  -webkit-transform: translate(0, 100%);
+  -moz-transform: translate(0, 100%);
+  -ms-transform: translate(0, 100%);
+  -o-transform: translate(0, 100%);
+  transform: translate(0, 100%);
+  -webkit-transform: translate3d(0, 100%, 0);
+  -moz-transform: translate3d(0, 100%, 0);
+  -ms-transform: translate3d(0, 100%, 0);
+  -o-transform: translate3d(0, 100%, 0);
+  transform: translate3d(0, 100%, 0);
+  transition-property: transform, opacity;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.175, 0.665, 0.32, 1), linear;
+}
+.cb-alert-group .cb-alert-leave.cb-alert-leave-active {
+  opacity: 0;
+  -webkit-transform: translate(0, -100%);
+  -moz-transform: translate(0, -100%);
+  -ms-transform: translate(0, -100%);
+  -o-transform: translate(0, -100%);
+  transform: translate(0, -100%);
+  -webkit-transform: translate3d(0, -100%, 0);
+  -moz-transform: translate3d(0, -100%, 0);
+  -ms-transform: translate3d(0, -100%, 0);
+  -o-transform: translate3d(0, -100%, 0);
+  transform: translate3d(0, -100%, 0);
 }
 .cb-button {
   cursor: pointer;
@@ -574,7 +635,7 @@ body {
   position: absolute;
   top: 1px;
   left: 1px;
-  padding: 10px 0 0 15px;
+  padding: 10px 0 5px 15px;
   background-color: #fff;
   z-index: 1;
   color: #cacaca;
