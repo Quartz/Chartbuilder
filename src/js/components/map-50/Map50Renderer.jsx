@@ -52,23 +52,20 @@ const PolygonsRender = React.createClass({
 		 	const seriesdata = alldata[l].values;
 
     	for (let i = 0; i < seriesdata.length; i++) {
-    		//console.log(seriesdata[i], 'seriesdata');
     		testObj = this._matchValues(testObj, seriesdata[i], keyColumn, allpolygons, mapSchema, indexTest);
 
 	    	if (testObj.found) {
 	    		const valueSet = testObj.thisvalue[0];
 
 	    		svg.select('#polygon_' + testObj.i)
-		      .style('fill', currSettings[valueSet.index].d3scale(valueSet[valueColumn]))
-		      .style('stroke',chartProps.stylings.stroke);
+			      .style('fill', currSettings[valueSet.index].d3scale(valueSet[valueColumn]))
+			      .style('stroke',chartProps.stylings.stroke);
 	    	}
 	    }
     }
   },
   _updateStroke(nextProps) {
   	//update all strokes to new stroke val
-
-
     d3.select('.polygon-group')
     	.selectAll('.' + nextProps.polygonClass)
     	.style('stroke', nextProps.stylings.stroke);
@@ -103,7 +100,6 @@ const PolygonsRender = React.createClass({
   	}
   },
   _topTranslation: function(topTranslation) {
-  	console.log(JSON.stringify(this.props.metadata), 'subtitle',JSON.stringify(this.props.metadata.subtitle));
   	if (this.props.metadata.subtitle) {
     	if (this.props.metadata.subtitle.length > 0) {
     		topTranslation += 20;
@@ -112,7 +108,6 @@ const PolygonsRender = React.createClass({
     return topTranslation;
   },
   _getTranslation: function(chartProps) {
-
     const topTranslation = (Object.keys(chartProps.legend).length === 1) ? this.props.displayConfig.margin.maptop + 50 : this.props.displayConfig.margin.maptop;
     const translation = `translate(0,${this._topTranslation(topTranslation)})`;
 
@@ -205,8 +200,8 @@ const PolygonsRender = React.createClass({
 		}
 		if (!testObj.found) {
 			// first search a sub selection of the array
-	  	const start = (testObj.k - 4 < 0) ? 0 : testObj.k - 4;
-	  	const stop = (testObj.k + 4 > allpolygons.length) ? allpolygons.length : testObj.k + 4;
+	  	const start = (testObj.k - 3 < 0) ? 0 : testObj.k - 3;
+	  	const stop = (testObj.k + 3 > allpolygons.length) ? allpolygons.length : testObj.k + 3;
 
 	  	// first brute search inside the subarray
 	  	testObj = this._bruteSearchForValue(start,stop,mapSchema,testData,keyColumn,allpolygons,testObj,index);
@@ -252,7 +247,7 @@ const PolygonsRender = React.createClass({
     	for (let i = 0; i < alldata[l].values.length; i++) {
     		testObj = this._matchValues(testObj, alldata[l]['values'][i], keyColumn, allpolygons, mapSchema, indexTest);
 
-    		if (!testObj.found) console.log(alldata[l]['values'][i]);
+    		//if (!testObj.found) console.log(alldata[l]['values'][i]);
 	    	if (testObj.found) {
 
 	    		const valueSet = testObj.thisvalue[0];
