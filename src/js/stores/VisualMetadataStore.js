@@ -98,7 +98,8 @@ function registeredCallback(payload) {
 
 		case "update-and-reparse":
 			data = VisualPropertiesStore.get("data");
-			_metadata.title = defaultTitle(data);
+			//_metadata.title = defaultTitle(data);
+			_metadata[action.key] = action.value;
 			VisualMetadataStore.emitChange();
 			break;
 

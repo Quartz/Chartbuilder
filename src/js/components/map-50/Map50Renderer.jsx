@@ -38,7 +38,11 @@ const PolygonsRender = React.createClass({
   	const keyColumn = columnNames[0];
   	const valueColumn = (columnNames.length === 2) ? columnNames[1] : columnNames[2];
 
+    const translation = this._getTranslation(chartProps);
+
     const svg = d3.select('.polygon-group');
+
+    svg.attr('transform', translation);
     // tk
     let testObj = {k:[]};
 
@@ -63,6 +67,8 @@ const PolygonsRender = React.createClass({
   },
   _updateStroke(nextProps) {
   	//update all strokes to new stroke val
+
+
     d3.select('.polygon-group')
     	.selectAll('.' + nextProps.polygonClass)
     	.style('stroke', nextProps.stylings.stroke);
@@ -97,12 +103,20 @@ const PolygonsRender = React.createClass({
   	}
   },
   _topTranslation: function(topTranslation) {
+  	console.log(JSON.stringify(this.props.metadata), 'subtitle',JSON.stringify(this.props.metadata.subtitle));
   	if (this.props.metadata.subtitle) {
     	if (this.props.metadata.subtitle.length > 0) {
     		topTranslation += 20;
     	}
     }
     return topTranslation;
+  },
+  _getTranslation: function(chartProps) {
+
+    const topTranslation = (Object.keys(chartProps.legend).length === 1) ? this.props.displayConfig.margin.maptop + 50 : this.props.displayConfig.margin.maptop;
+    const translation = `translate(0,${this._topTranslation(topTranslation)})`;
+
+    return translation;
   },
   _bruteSearchForValue: function(start,stop,mapSchema,d,keyColumn,polygonData,testObj,index) {
   	for (let j = start; j<stop; j++) {
@@ -221,8 +235,7 @@ const PolygonsRender = React.createClass({
     const adjustLabels = mapSchema.adjustLabels;
 
     // lower the map for the single legend;
-    let topTranslation = (Object.keys(chartProps.legend).length === 1) ? this.props.displayConfig.margin.maptop + 50 : this.props.displayConfig.margin.maptop;
-    const translation = `translate(0,${this._topTranslation(topTranslation)})`;
+    const translation = this._getTranslation(chartProps);
 
     // define extra variables for the needed update
   	const keyColumn = columnNames[0];
@@ -233,7 +246,6 @@ const PolygonsRender = React.createClass({
     const alreadyRenderedPolygons = [];
 
     for (let l = 0; l < alldata.length; l++) {
-
     	testObj.k = allpolygons.length;
     	const indexTest = alldata[l]['index'];
 
@@ -296,9 +308,7 @@ const PolygonsRender = React.createClass({
 		  }
     };
 
-    //console.log(JSON.stringify(alreadyRenderedPolygons), 'hm');
     allpolygons.map((polygonData,i) => {
-
     	// return if already found
     	if (alreadyRenderedPolygons.indexOf(i) > -1) return null;
     	// otherwise just show the defalt path

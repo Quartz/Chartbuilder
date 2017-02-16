@@ -80,6 +80,7 @@ var ChartMetadata = React.createClass({
 
 	// Update metadata store with new settings
 	_handleMetadataUpdate: function(k, v) {
+		console.log(k,v,'hm');
 		VisualViewActions.updateMetadata(k, v);
 	},
 

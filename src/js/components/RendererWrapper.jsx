@@ -210,6 +210,8 @@ const RendererWrapper = React.createClass({
 			}});
 		}
 
+		console.log(JSON.stringify(this.props.model.metadata.subtitle), 'sub render');
+
 		let extraHeight = this.state.extraHeight;
 		// reduce margin if only one legend
 		if (this.props.model.chartProps.legend || this.props.model.metadata.subtitle) {
@@ -319,8 +321,7 @@ const RendererWrapper = React.createClass({
 					translate.legendsOneRow = margin.legendsOneRow + 35;
 					translate.legendsTwoRow = margin.legendsTwoRow + 35;
 				}
-			}
-			else {
+			} else {
 				translate.legendsOneRow = margin.legendsOneRow;
 				translate.legendsTwoRow = margin.legendsTwoRow;
 			}
