@@ -210,8 +210,6 @@ const RendererWrapper = React.createClass({
 			}});
 		}
 
-		console.log(JSON.stringify(this.props.model.metadata.subtitle), 'sub render');
-
 		let extraHeight = this.state.extraHeight;
 		// reduce margin if only one legend
 		if (this.props.model.chartProps.legend || this.props.model.metadata.subtitle) {

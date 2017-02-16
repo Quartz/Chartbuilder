@@ -109,7 +109,7 @@ const Map_ScaleSettings = React.createClass({
     // add threshold field input
     if (currScale.type === 'threshold') {
 
-     //.push(<div className="inline-label">Define thresholds</div>);
+     //.push(<div className="inline-label">Define thresholds</div>)
 
       for (let i = 0; i < currScale.tickValues.length; i++) {
       	let thresholdsLabel = '';
@@ -121,7 +121,7 @@ const Map_ScaleSettings = React.createClass({
         if ((i + 1) === currScale.tickValues.length) {
           max = thisTick + 2;
         } else if (i === 0) {
-          thresholdsLabel = 'Break thresholds';
+          thresholdsLabel = 'Thresholds';
           max = currScale.tickValues[1];
         } else {
           max = currScale.tickValues[i + 1];
@@ -181,18 +181,22 @@ const Map_ScaleSettings = React.createClass({
       <div className={this.props.className}>
         {prefixSuffix}
         <div className="scale-tangle-inputs" key={'tangle-scale'}>
-          <LabelledTangle
-            label="Color breaks"
-            labelClass="editor-label"
-            tangleClass="scale-option tangle-input"
-            onChange={this._handleScaleUpdate.bind(null, "colors")}
-            onInput={this._handleScaleUpdate.bind(null, "colors")}
-            step={tangleStep}
-            min={1}
-            max={6}
-            value={currScale.colors}
-          />
-	        {thresholds}
+        	<div className="scale-tangle-input">
+	          <LabelledTangle
+	            label="Breaks"
+	            labelClass="editor-label"
+	            tangleClass="scale-option tangle-input"
+	            onChange={this._handleScaleUpdate.bind(null, "colors")}
+	            onInput={this._handleScaleUpdate.bind(null, "colors")}
+	            step={tangleStep}
+	            min={1}
+	            max={6}
+	            value={currScale.colors}
+	          />
+	        </div>
+          <div className="scale-tangle-input">
+	        	{thresholds}
+	        </div>
         </div>
         <div className="section typesection"
             key={'type-options'}>
