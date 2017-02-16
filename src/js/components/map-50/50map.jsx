@@ -46,12 +46,15 @@ const MapRenderer = React.createClass({
 
     const data = topojson.feature(schema.topojson, schema.topojson.objects[featname]);
 
-    const projObj = {
+    let projObj = {
       projection: schema.proj,
       scale: schema.scale,
       translate: schema.translate,
       precision: schema.precision
     }
+
+    if (schema.parallels) projObj.parallels = schema.parallels;
+    if (schema.rotate) projObj.rotate = schema.rotate;
 
     const proj = projectionFunc(projObj);
     const geo = geoPath(proj);

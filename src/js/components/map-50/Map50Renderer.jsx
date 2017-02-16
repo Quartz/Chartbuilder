@@ -138,6 +138,7 @@ const PolygonsRender = React.createClass({
         } else {
         	testObj.k = mid;
 	    		testObj.i = mid;
+	    		testObj.id = key;
 	    		testObj.found = true;
 	    		testObj.geometry = polygondata[mid].geometry;
 	    		testObj.thisvalue = [Object.assign({'index':index},d)];
@@ -164,6 +165,7 @@ const PolygonsRender = React.createClass({
         	testObj.k = mid;
 	    		testObj.i = mid;
 	    		testObj.found = true;
+	    		testObj.id = key;
 	    		testObj.geometry = polygondata[mid].geometry;
 	    		testObj.thisvalue = [Object.assign({'index':index},d)];
         	return testObj;
@@ -238,6 +240,7 @@ const PolygonsRender = React.createClass({
     	for (let i = 0; i < alldata[l].values.length; i++) {
     		testObj = this._matchValues(testObj, alldata[l]['values'][i], keyColumn, allpolygons, mapSchema, indexTest);
 
+    		if (!testObj.found) console.log(alldata[l]['values'][i]);
 	    	if (testObj.found) {
 
 	    		const valueSet = testObj.thisvalue[0];
@@ -280,6 +283,7 @@ const PolygonsRender = React.createClass({
 		      else {
 		        polygonCollection.push(
 		          <path
+		          	data-id={testObj.id}
 		            id={`polygon_${testObj.i}`}
 		            key={`polygon_${testObj.i}`}
 		            d= {geoPath(testObj.geometry)}

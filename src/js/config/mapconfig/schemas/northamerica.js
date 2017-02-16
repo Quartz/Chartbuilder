@@ -15,10 +15,7 @@ const NA = {
 	  return [adjusty,adjustx,label];
 	},
 	matchLogic: function(val) {
-
-		if (this.values[val]) { return this.values[val]; }
-		else if (!isNaN(val)) { return +val; }
-		else { return val; }
+		return val;
 	},
 	test: function(column_val, polygon_val) {
 	  return (this.matchLogic(column_val) == polygon_val.id);

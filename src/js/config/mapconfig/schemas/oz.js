@@ -21,7 +21,7 @@ const OZ = {
 		else { return val; }
 	},
 	test: function(column_val, polygon_val) {
-	  return (this.matchLogic(column_val) == polygon_val.id);
+	  return (this.matchLogic(column_val) === polygon_val.id);
 	}
  }
 
