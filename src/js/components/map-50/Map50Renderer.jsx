@@ -5,6 +5,7 @@ import {centroid} from 'turf';
 
 // Flux actions
 const MapViewActions = require("../../actions/VisualViewActions");
+const thisArray = [];
 
 const PolygonsRender = React.createClass({
 
@@ -119,6 +120,7 @@ const PolygonsRender = React.createClass({
   		if (mapSchema.test(d[keyColumn], polygonData[j])) {
     		testObj.k = j;
     		testObj.i = j;
+    		testObj.id = polygonData[j].id;
     		testObj.found = true;
     		testObj.geometry = polygonData[j].geometry;
     		testObj.thisvalue = [Object.assign({'index':index},d)];
@@ -150,7 +152,7 @@ const PolygonsRender = React.createClass({
         } else {
         	testObj.k = mid;
 	    		testObj.i = mid;
-	    		testObj.id = key;
+	    		testObj.id = element;
 	    		testObj.found = true;
 	    		testObj.geometry = polygondata[mid].geometry;
 	    		testObj.thisvalue = [Object.assign({'index':index},d)];
@@ -177,7 +179,7 @@ const PolygonsRender = React.createClass({
         	testObj.k = mid;
 	    		testObj.i = mid;
 	    		testObj.found = true;
-	    		testObj.id = key;
+	    		testObj.id = element;
 	    		testObj.geometry = polygondata[mid].geometry;
 	    		testObj.thisvalue = [Object.assign({'index':index},d)];
         	return testObj;
@@ -185,6 +187,11 @@ const PolygonsRender = React.createClass({
         }
     }
     return testObj;
+  },
+  _logThis: function(thisVal) {
+  	thisArray.push(thisVal);
+  	console.log(JSON.stringify(thisArray));
+  	return;
   },
   _matchValues: function(testObj={}, testData, keyColumn, allpolygons, mapSchema, index) {
 
@@ -198,6 +205,7 @@ const PolygonsRender = React.createClass({
     		testObj.geometry = allpolygons[0].geometry;
     		testObj.found = true;
     		testObj.i = 0;
+    		testObj.id = allpolygons[0].id;
     		return testObj;
     	}
 		}
@@ -294,6 +302,7 @@ const PolygonsRender = React.createClass({
 		        polygonCollection.push(
 		          <path
 		          	data-id={testObj.id}
+          			onMouseEnter={this._logThis.bind(this, testObj.id)}
 		            id={`polygon_${testObj.i}`}
 		            key={`polygon_${testObj.i}`}
 		            d= {geoPath(testObj.geometry)}
@@ -324,6 +333,7 @@ const PolygonsRender = React.createClass({
           id={`polygon_${i}`}
           key={`polygon_${i}`}
           data-id={polygonData.id}
+          onMouseEnter={this._logThis.bind(this, polygonData.id)}
           d= {geoPath(polygonData.geometry)}
           className={this.props.polygonClass}
           style={styles}

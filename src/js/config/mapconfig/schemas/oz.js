@@ -9,7 +9,7 @@ const OZ = {
 	translateCartogram: [-330, 90],
 	precision: 1,
 	scale: 260,
-	topojson : require('./../mapfiles/world/world.topo.json'),
+	topojson : require('./../mapfiles/world/oz.topo.json'),
 	feature: 'lsib_world',
 	adjustLabels: function(adjusty=0,adjustx=0, label) {
 	  return [adjusty,adjustx,label];

@@ -10,7 +10,7 @@ const CA = {
 	translateCartogram: [210, 380],
 	precision: 1,
 	scale: 970,
-	topojson : require('./../mapfiles/world/world.topo.json'),
+	topojson : require('./../mapfiles/world/ca.topo.json'),
 	feature: 'lsib_world',
 	adjustLabels: function(adjusty=0,adjustx=0, label) {
 	  return [adjusty,adjustx,label];

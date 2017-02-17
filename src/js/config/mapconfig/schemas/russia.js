@@ -6,12 +6,12 @@ const ME = {
 	label: 'Russia',
 	name: 'russia',
 	values: countries,
-	proj: 'conicConformal',
+	proj: 'mercator',
 	translate: [-55, 490],
 	translateCartogram: [-55, 490],
 	precision: 1,
 	scale: 190,
-	topojson : require('./../mapfiles/world/world.topo.json'),
+	topojson : require('./../mapfiles/world/russia.topo.json'),
 	feature: 'lsib_world',
 	adjustLabels: function(adjusty=0,adjustx=0, label) {
 	  return [adjusty,adjustx,label];
