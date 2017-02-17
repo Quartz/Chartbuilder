@@ -5,7 +5,6 @@ import {centroid} from 'turf';
 
 // Flux actions
 const MapViewActions = require("../../actions/VisualViewActions");
-const thisArray = [];
 
 const PolygonsRender = React.createClass({
 
@@ -188,11 +187,6 @@ const PolygonsRender = React.createClass({
     }
     return testObj;
   },
-  _logThis: function(thisVal) {
-  	thisArray.push(thisVal);
-  	console.log(JSON.stringify(thisArray));
-  	return;
-  },
   _matchValues: function(testObj={}, testData, keyColumn, allpolygons, mapSchema, index) {
 
     testObj.thisvalue = [];
@@ -302,7 +296,6 @@ const PolygonsRender = React.createClass({
 		        polygonCollection.push(
 		          <path
 		          	data-id={testObj.id}
-          			onMouseEnter={this._logThis.bind(this, testObj.id)}
 		            id={`polygon_${testObj.i}`}
 		            key={`polygon_${testObj.i}`}
 		            d= {geoPath(testObj.geometry)}
@@ -333,7 +326,6 @@ const PolygonsRender = React.createClass({
           id={`polygon_${i}`}
           key={`polygon_${i}`}
           data-id={polygonData.id}
-          onMouseEnter={this._logThis.bind(this, polygonData.id)}
           d= {geoPath(polygonData.geometry)}
           className={this.props.polygonClass}
           style={styles}
