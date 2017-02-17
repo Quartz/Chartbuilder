@@ -4,7 +4,7 @@ const Asia = {
 	label: 'Asia',
 	name: 'asia',
 	values: countries,
-	proj: 'mercator',
+	proj: 'transverseMercator',
 	translate: [-200, 320],
 	translateCartogram: [-200, 320],
 	precision: 1,

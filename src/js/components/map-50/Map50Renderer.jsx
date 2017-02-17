@@ -133,11 +133,14 @@ const PolygonsRender = React.createClass({
     let mid;
     let element;
 
-    key = (typeof key === 'string') ? key.toLowerCase().replace(/\s+/g, '') : key;
+    key = (typeof key === 'string' && isNaN(key)) ? key.toLowerCase().replace(/\s+/g, '') : +key;
 
     while (lo <= hi) {
         mid = (lo + hi) >> 1;
-        element = (typeof polygondata[mid].id === 'string') ? polygondata[mid].id.toLowerCase().replace(/\s+/g, '') : polygondata[mid].id;
+
+        const thisPolygon = polygondata[mid].id;
+        element = (typeof thisPolygon === 'string' && isNaN(thisPolygon)) ? thisPolygon.toLowerCase().replace(/\s+/g, '') : +thisPolygon;
+
        	if (key < element) {
             hi = mid - 1;
             //
@@ -306,10 +309,16 @@ const PolygonsRender = React.createClass({
     allpolygons.map((polygonData,i) => {
     	// return if already found
     	if (alreadyRenderedPolygons.indexOf(i) > -1) return null;
-    	// otherwise just show the defalt path
-  		const styles = {};
+
+    	const styles = {};
   		styles.stroke = chartProps.stylings.stroke;
       styles.fill = '#ddd';
+
+    	//if (alreadyRenderedFips.indexOf(schema.matchLogic(polygondata.id)) > -1)
+
+    	// otherwise just show the defalt path
+    	//console.log(polygonData, 'data')
+
       polygonCollection.push(
         <path
           id={`polygon_${i}`}

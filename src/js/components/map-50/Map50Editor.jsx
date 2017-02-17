@@ -28,7 +28,7 @@ const map_strokes = [
   {
     title: "",
     content: "Dark Grey",
-    value: "#666"
+    value: "#474747"
   },
   {
     title: "",
@@ -231,9 +231,7 @@ const MapChoro_mapStyles = React.createClass({
 		/* */
 		this.props.onUpdateReparse(chartStyles);
 	},
-
 	render: function() {
-
 		const stylings = this.props.chartStyles
 		const steps = String(parseInt(this.props.stepNumber) + 1);
 		let stateNames = false;
@@ -249,7 +247,6 @@ const MapChoro_mapStyles = React.createClass({
           /></div>);
 
 		if (this.props.metadata.chartType === 'map50') {
-
       stateNames = (<div className="toggle">
         <Toggle
           label="State names"

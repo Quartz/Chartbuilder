@@ -1,130 +1,95 @@
 
-  const tealScale = {
-      6: ['#1c7e77', '#2a9992', '#41b5af', '#74cdc7', '#afe3de', '#e4faf5'].reverse(),
-      5: ['#1c7e77', '#2d9f99', '#58c1bc', '#a1ded8', '#e4faf5'].reverse(),
-      4: ['#289a95','#35b8b5','#afe3de','#e4faf5'].reverse(),
-      3: ['#1c7e77', '#58c1bc', '#e4faf5'].reverse(),
-      2: ['#bfede9', '#1c7e77'],
-      /*6 : ['#003c30','#0f6259','#35b8b5','#228c86','#a0ded2','#d0eee8'].reverse(),
-      5 : ['#003c30','#0f6259','#35b8b5','#228c86','#a0ded2'].reverse(),
-      4 : ['#289a95','#31aeaa','#68c5c2','#b0e0dc'].reverse(),
-      3 : ['#003c30','#35b8b5','#a0ded2'].reverse(),
-      2 : ['#0f6259','#228c86'].reverse(),*/
-      1: ['#35b8b5']
-  };
+const tealScale = {
+    6: ['#e3fffc', '#afe7e3', '#78cfcb', '#34b7b3', '#289a94', '#1c7e77'],
+    5: ['#e3fffc', '#a3e1dd', '#59c2bf', '#2ba09c', '#1c7e77'],
+    4: ['#e3fffc', '#8bd7d3', '#30ada9', '#1c7e77'],
+    3: ['#e3fffc', '#59c2bf', '#1c7e77'],
+    2: ['#e3fffc', '#1c7e77'],
+    1: ['#35b8b5']
+};
 
-  const orangeScale = {
-    6: ['#f2d3a9', '#eaba82', '#e0a15c', '#d2893b', '#bf7328', '#ae5c17'],
-    5: ['#f2d3a9', '#e8b379', '#da9549', '#c4792d', '#ae5c17'],
-    4: ['#f2d3a9', '#e3a968', '#cb8134', '#ae5c17'],
-    3: ['#f2d3a9', '#da9549', '#ae5c17'],
-    2: ['#f3b76c', '#a55c1a'],
-    1: ['#e8983a']
-  };
+const orangeScale = {
+  6: ["#feedde","#fdd0a2","#fdae6b","#fd8d3c","#e6550d","#a63603"],
+  5: ["#feedde","#fdbe85","#fd8d3c","#e6550d","#a63603"],
+  4: ["#feedde","#fdbe85","#fd8d3c","#d94701"],
+  3: ["#fee6ce","#fdae6b","#e6550d"],
+  2: ['#fee6ce', '#e6550d'],
+  1: ['#e8983a']
+};
 
-  const partisanScaleD = {
-      /*6: ['#295899', '#4771ad', '#668bbf', '#86a6d0', '#a7c1e0', '#c9dcef'].reverse(),
-      5: ['#295899', '#4f78b2', '#7698c8', '#9ebadc', '#c9dcef'].reverse(),
-      4: ['#295899', '#5c83b9', '#91aed5', '#c9dcef'].reverse(),
-      3: ['#295899', '#7698c8', '#c9dcef'].reverse(),
-      2: ['#c9dcef','#295899'],*/
-      1: ['#3f8ac1']
-  };
-  const partisanScaleR = {
-    6: ['#fee5d9', '#f9c0b1', '#ef9d8b', '#df7b69', '#cb5848', '#b4362b'],
-    5: ['#fee5d9', '#f7b8a8', '#e78b79', '#d06151', '#b4362b'],
-    4: ['#fee5d9', '#f3a997', '#d96f5e', '#b4362b'],
-    3: ['#fee5d9', '#e78b79', '#b4362b'],
-    2: ['#fee5d9', '#b4362b'],
-    1: ['#cf4c49']
+const partisanScaleD = {
+    6: ['#ceeafd', '#a9d0ed', '#84b6de', '#5f9cce', '#3b83bd', '#006aab'],
+    5: ['#ceeafd', '#a0caea', '#71a9d6', '#4489c1', '#006aab'],
+    4: ['#ceeafd', '#90bee3', '#5395c8', '#006aab'],
+    3: ['#ceeafd', '#71a9d6', '#006aab'],
+    2: ['#ceeafd', '#006aab'],
+    1: ['#3f8ac1']
+};
+const partisanScaleR = {
+  6: ['#fbd0d0', '#f5ada9', '#eb8a83', '#dc6761', '#c84643', '#b02029'],
+  5: ['#fbd0d0', '#f3a5a0', '#e57971', '#ce4e4b', '#b02029'],
+  4: ['#fbd0d0', '#ef968f', '#d65d57', '#b02029'],
+  3: ['#fbd0d0', '#e57971', '#b02029'],
+  2: ['#fbd0d0', '#b02029'],
+  1: ['#cf4c49']
+};
 
-  };
+const pinkScale = {
+    1: ['#D5629B'],
+    2: ['#fde0dd', '#c51b8a'],
+    3: ["#fde0dd","#fa9fb5","#c51b8a"],
+    4: ["#feebe2","#fbb4b9","#f768a1","#ae017e"],
+    5: ["#feebe2","#fbb4b9","#f768a1","#c51b8a","#7a0177"],
+    6: ["#feebe2","#fcc5c0","#fa9fb5","#f768a1","#c51b8a","#7a0177"]
+};
 
-  const independentScale = {
-    1: ['#31a354'],
-    2: ['#e5f5e0', '#31a354'],
-    3: ["#e5f5e0","#a1d99b","#31a354"],
-    4: ["#edf8e9","#bae4b3","#74c476","#238b45"],
-    5: ["#edf8e9","#bae4b3","#74c476","#31a354","#006d2c"],
-    6: ["#edf8e9","#c7e9c0","#a1d99b","#74c476","#31a354","#006d2c"]
-  };
+const seaGreen = {
+	1: ['#a1dab4'],
+	2: ['#edf8b1', '#2c7fb8'],
+	3: ["#edf8b1","#7fcdbb","#2c7fb8"],
+	4: ["#ffffcc","#a1dab4","#41b6c4","#225ea8"],
+	5: ["#ffffcc","#a1dab4","#41b6c4","#2c7fb8","#253494"],
+	6: ["#ffffcc","#c7e9b4","#7fcdbb","#41b6c4","#2c7fb8","#253494"]
+}
 
-  const strokeGreyScale = ["#aaa","#bbb","#cccccc","#ddd","#eee"].reverse();
+const independentScale = {
+  1: ['#31a354'],
+  2: ['#e5f5e0', '#31a354'],
+  3: ["#e5f5e0","#a1d99b","#31a354"],
+  4: ["#edf8e9","#bae4b3","#74c476","#238b45"],
+  5: ["#edf8e9","#bae4b3","#74c476","#31a354","#006d2c"],
+  6: ["#edf8e9","#c7e9c0","#a1d99b","#74c476","#31a354","#006d2c"]
+};
 
-  const greyScale = {
-      1: ['#a9aaaa'],
-      2: ['#f7f7f7', '#636363'],
-      3: ['#f7f7f7', '#a9aaaa', '#636363'],
-      4: ["#f7f7f7","#cccccc","#969696","#636363"],
-      5: ["#f7f7f7","#d9d9d9","#bdbdbd","#969696","#636363"],
-      6: ["#f7f7f7","#d9d9d9","#bdbdbd","#969696","#737373","#525252"]
-  };
+const lightGreyScale = {
+    1: ['#a9aaaa'],
+    2: ['#f7f7f7', '#636363'],
+    3: ['#f7f7f7', '#a9aaaa', '#636363'],
+    4: ["#f7f7f7","#cccccc","#969696","#636363"],
+    5: ["#f7f7f7","#d9d9d9","#bdbdbd","#969696","#636363"],
+    6: ["#f7f7f7","#d9d9d9","#bdbdbd","#969696","#737373","#525252"]
+};
 
-  const lightGreyScale = {
-      1: ['#cccccc'],
-      2: ['#f7f7f7', '#969696'],
-      3: ['#f7f7f7', '#a9aaaa', '#636363'],
-      4: ["#f7f7f7","#cccccc","#969696","#636363"],
-      5: ["#f7f7f7","#d9d9d9","#bdbdbd","#969696","#636363"],
-      6: ["#f7f7f7","#d9d9d9","#bdbdbd","#969696","#737373","#525252"]
-  };
+const darkGreyScale = {
+    1: ['#aaaaa'],
+    2: ['#aaaaaa', '#000000'],
+    3: ['#aaaaaa', '#515252', '#000000'],
+    4: ['#aaaaaa', '#6e6e6e', '#383838', '#000000'],
+    5: ['#aaaaaa', '#7c7c7c', '#515252', '#2b2b2b', '#000000'],
+    6: ['#aaaaaa', '#868686', '#626262', '#424242', '#232323', '#000000']
+};
 
-  /*const likelyRScale = { 1: ['#b4362b'] };
-  const leanRScale = {1: ['#df7b69'] };
-  const tossupScale = {1: ['#e39e4f'] };
-  const leanDScale = {1: ['#668bbf'] };
-  const likelyDScale = {1: ['#295899'] };
-
-
-#f0cfd1 \
-  #df9eb6 \
-  #c96f9a \
-  #b03c7b \
-  #8e0152 \
-
-  */
-
-  /*const allcolors = [tealScale['5'],orangeScale['5'],partisanScaleR['5'],
-    partisanScaleD['5'],independentScale['5'],greyScale['5'],likelyRScale['1'],
-    leanRScale['1'],tossupScale['1'],leanDScale['1'],likelyDScale['1']];*/
-
-  const allscales = [tealScale['5'],orangeScale['5'],partisanScaleR['5'],
-    partisanScaleD['5'],independentScale['5'],greyScale['5']];
-
-  const allscaleskey = [tealScale,orangeScale,partisanScaleR,partisanScaleD,independentScale,greyScale]
-
-  /*const hatchtypes = [
-                    {type:'lines',size:'3',stroke:'3'},
-                    {type:'lines',size:'6',stroke:'3'},
-                    {type:'lines',size:'10',stroke:'3'},
-                    {type:'lines',size:'15',stroke:'3'},
-                    {type:'lines',size:'20',stroke:'3'},
-                    {type:'hatch',size:'4', stroke:'3'},
-                    {type:'hatch',size:'7', stroke:'3'},
-                    {type:'hatch',size:'10', stroke:'3'},
-                    {type:'hatch',size:'15', stroke:'3'},
-                    {type:'hatch',size:'20', stroke:'3'},
-                    {type:'hexagons',size:'2', stroke:'3'},
-                    {type:'hexagons',size:'4', stroke:'3'},
-                    {type:'hexagons',size:'7', stroke:'3'},
-                    {type:'hexagons',size:'10', stroke:'3'},
-                    {type:'hexagons',size:'14', stroke:'3'},
-                    {type:'circles',size:'5', radius:'1'},
-                    {type:'circles',size:'5', radius:'2'},
-                    {type:'circles',size:'7', radius:'2'},
-                    {type:'circles',size:'10', radius:'3'},
-                    {type:'circles',size:'14', radius:'3'},
-                    {type : 'none'}];*/
-
- const colors = {
-    0:tealScale,
-    1:orangeScale,
-    2:greyScale,
-    3:partisanScaleD,
-    4:partisanScaleR,
-    5:independentScale,
-    6:lightGreyScale
-  }
+const colors = {
+  0:tealScale,
+  1:orangeScale,
+  2:pinkScale,
+  3:seaGreen,
+  4:partisanScaleD,
+  5:partisanScaleR,
+  6:independentScale,
+  7:lightGreyScale,
+  8:darkGreyScale
+}
 
 function scalesMap(keyval) {
   return colors[keyval];
