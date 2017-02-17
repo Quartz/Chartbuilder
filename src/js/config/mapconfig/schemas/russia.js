@@ -6,7 +6,7 @@ const ME = {
 	label: 'Russia',
 	name: 'russia',
 	values: countries,
-	proj: 'mercator',
+	proj: 'conicConformal',
 	translate: [-55, 490],
 	translateCartogram: [-55, 490],
 	precision: 1,

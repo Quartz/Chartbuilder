@@ -7,7 +7,7 @@ const Africa = {
 	proj: 'conicConformal',
 	rotate: [-20,0],
 	translate: [250, 160],
-	translateCartogram: [210, 190],
+	translateCartogram: [250, 160],
 	precision: 1,
 	scale: 255,
 	topojson : require('./../mapfiles/world/world.topo.json'),
