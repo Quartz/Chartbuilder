@@ -196,10 +196,10 @@ const PolygonsRender = React.createClass({
     if (allpolygons.length === 1) {
 			if (mapSchema.test(testData[keyColumn], allpolygons[0])) {
     		testObj.thisvalue = [Object.assign({'index':index},testData)];
-    		testObj.geometry = allpolygons[0].geometry;
+    		testObj.geometry = allpolygons.geometry || allpolygons[0].geometry;
     		testObj.found = true;
     		testObj.i = 0;
-    		testObj.id = allpolygons[0].id;
+    		testObj.id = allpolygons.id || allpolygons[0].id;
     		return testObj;
     	}
 		}
@@ -219,6 +219,54 @@ const PolygonsRender = React.createClass({
     	}
     };
     return testObj;
+  },
+  _renderPolygons: function(testObj, chartProps, currSettings, showLabels, projection, adjustLabels, valueColumn, geoPath) {
+
+		const valueSet = testObj.thisvalue[0];
+		const styles = {
+							stroke:chartProps.stylings.stroke,
+							fill:currSettings[valueSet.index].d3scale(valueSet[valueColumn])
+						 };
+
+    // at the center labels if required
+    if (showLabels) {
+      const attributes = {x:null, y:null, text:''};
+      testObj.type = "Feature";
+
+      if (projection(centroid(testObj).geometry.coordinates)) {
+      	const centers = projection(centroid(testObj).geometry.coordinates);
+
+        const adjustStateLabels = adjustLabels(-4,-4,valueSet[keyColumn]);
+        attributes.x = centers[0] + adjustStateLabels[1];
+        attributes.y = centers[1] + adjustStateLabels[0] + 6;
+        attributes.text = adjustStateLabels[2];
+      }
+
+      return (
+        <g key= {`polygon_with_${testObj.i}`}>
+          <path
+            id= {`polygon_${testObj.i}`}
+            d= {geoPath(testObj.geometry)}
+            className={this.props.polygonClass}
+            style={styles}
+          />
+          <text
+            x={attributes.x}
+            y={attributes.y}
+            className={'state-labels-show'}
+          >{attributes.text}</text>
+        </g>);
+    } else {
+    	return (
+        <path
+        	data-id={testObj.id}
+          id={`polygon_${testObj.i}`}
+          key={`polygon_${testObj.i}`}
+          d= {geoPath(testObj.geometry)}
+          className={this.props.polygonClass}
+          style={styles}
+        />);
+    }
   },
   render: function() {
   	const chartProps = this.props.chartProps;
@@ -244,66 +292,23 @@ const PolygonsRender = React.createClass({
   	let testObj = {k:[]};
     const polygonCollection = [];
     const alreadyRenderedPolygons = [];
+    const alreadyRenderedFips = [];
 
     for (let l = 0; l < alldata.length; l++) {
     	testObj.k = allpolygons.length;
     	const indexTest = alldata[l]['index'];
 
     	for (let i = 0; i < alldata[l].values.length; i++) {
+
     		testObj = this._matchValues(testObj, alldata[l]['values'][i], keyColumn, allpolygons, mapSchema, indexTest);
 
     		//if (!testObj.found) console.log(alldata[l]['values'][i]);
 	    	if (testObj.found) {
 
-	    		const valueSet = testObj.thisvalue[0];
-	    		alreadyRenderedPolygons.push(testObj.i);
-		  		const styles = {
-		  							stroke:chartProps.stylings.stroke,
-		  							fill:currSettings[valueSet.index].d3scale(valueSet[valueColumn])
-		  						 };
+					alreadyRenderedPolygons.push(testObj.i);
+					alreadyRenderedFips.push(testObj.id);
 
-		      // at the center labels if required
-		      if (showLabels) {
-		        const attributes = {x:null, y:null, text:''};
-		        testObj.type = "Feature";
-
-		        if (projection(centroid(testObj).geometry.coordinates)) {
-		        	const centers = projection(centroid(testObj).geometry.coordinates);
-
-		          const adjustStateLabels = adjustLabels(-4,-4,valueSet[keyColumn]);
-		          attributes.x = centers[0] + adjustStateLabels[1];
-		          attributes.y = centers[1] + adjustStateLabels[0] + 6;
-		          attributes.text = adjustStateLabels[2];
-		        }
-
-		        polygonCollection.push(
-		          <g key= {`polygon_with_${testObj.i}`}>
-		            <path
-		              id= {`polygon_${testObj.i}`}
-		              d= {geoPath(testObj.geometry)}
-		              className={this.props.polygonClass}
-		              style={styles}
-		            />
-		            <text
-		              x={attributes.x}
-		              y={attributes.y}
-		              className={'state-labels-show'}
-		            >{attributes.text}</text>
-		          </g>
-		        );
-		      }
-		      else {
-		        polygonCollection.push(
-		          <path
-		          	data-id={testObj.id}
-		            id={`polygon_${testObj.i}`}
-		            key={`polygon_${testObj.i}`}
-		            d= {geoPath(testObj.geometry)}
-		            className={this.props.polygonClass}
-		            style={styles}
-		          />
-		        );
-		      }
+	    		polygonCollection.push(this._renderPolygons(testObj, chartProps, currSettings, showLabels, projection, adjustLabels, valueColumn, geoPath));
 		    }
 		  }
     };
@@ -316,21 +321,24 @@ const PolygonsRender = React.createClass({
   		styles.stroke = chartProps.stylings.stroke;
       styles.fill = '#ddd';
 
-    	//if (alreadyRenderedFips.indexOf(schema.matchLogic(polygondata.id)) > -1)
-
-    	// otherwise just show the defalt path
-    	//console.log(polygonData, 'data')
-
-      polygonCollection.push(
-        <path
-          id={`polygon_${i}`}
-          key={`polygon_${i}`}
-          data-id={polygonData.id}
-          d= {geoPath(polygonData.geometry)}
-          className={this.props.polygonClass}
-          style={styles}
-        />
-      );
+    	if (alreadyRenderedFips.indexOf(mapSchema.matchLogic(polygonData.id)) > -1) {
+    			// we need a basic way of... getting these things in order such that you can fetch the prior value.. basically just add it to the object.
+    		  //alldata[l]['values'][i]
+    		  //indexTest
+    		  //testObj = this._matchValues(testObj, alldata[l]['values'][i], keyColumn, polygonData, mapSchema, indexTest);
+    			//polygonCollection.push(this._renderPolygons(testObj, chartProps, currSettings, showLabels, projection, adjustLabels, valueColumn, geoPath));
+    	} else {
+    		polygonCollection.push(
+	        <path
+	          id={`polygon_${i}`}
+	          key={`polygon_${i}`}
+	          data-id={polygonData.id}
+	          d= {geoPath(polygonData.geometry)}
+	          className={this.props.polygonClass}
+	          style={styles}
+	        />
+      	);
+    	}
     });
 
     return (
