@@ -1,6 +1,6 @@
 import React from 'react';
 import d3 from 'd3';
-import {filter, find, isEqual, differenceby} from 'lodash';
+import {filter, find, isEqual, differenceby, clone} from 'lodash';
 import {centroid} from 'turf';
 
 // Flux actions
@@ -57,7 +57,7 @@ const PolygonsRender = React.createClass({
 	    	if (testObj.found) {
 	    		const valueSet = testObj.thisvalue[0];
 
-	    		svg.select('#polygon_' + testObj.i)
+	    		svg.selectAll('#polygon_' + testObj.i)
 			      .style('fill', currSettings[valueSet.index].d3scale(valueSet[valueColumn]))
 			      .style('stroke',chartProps.stylings.stroke);
 	    	}
@@ -203,6 +203,7 @@ const PolygonsRender = React.createClass({
     		return testObj;
     	}
 		}
+
 		if (!testObj.found) {
 			// first search a sub selection of the array
 	  	const start = (testObj.k - 3 < 0) ? 0 : testObj.k - 3;
@@ -243,7 +244,7 @@ const PolygonsRender = React.createClass({
       }
 
       return (
-        <g key= {`polygon_with_${testObj.i}`}>
+        <g key={`polygon_with_${testObj.i}_${testObj.id}`}>
           <path
             id= {`polygon_${testObj.i}`}
             d= {geoPath(testObj.geometry)}
@@ -261,7 +262,7 @@ const PolygonsRender = React.createClass({
         <path
         	data-id={testObj.id}
           id={`polygon_${testObj.i}`}
-          key={`polygon_${testObj.i}`}
+          key={`polygon_${testObj.i}_${testObj.id}`}
           d= {geoPath(testObj.geometry)}
           className={this.props.polygonClass}
           style={styles}
@@ -290,6 +291,7 @@ const PolygonsRender = React.createClass({
   	const valueColumn = (columnNames.length === 2) ? columnNames[1] : columnNames[2];
 
   	let testObj = {k:[]};
+  	const testMap = d3.map();
     const polygonCollection = [];
     const alreadyRenderedPolygons = [];
     const alreadyRenderedFips = [];
@@ -307,6 +309,7 @@ const PolygonsRender = React.createClass({
 
 					alreadyRenderedPolygons.push(testObj.i);
 					alreadyRenderedFips.push(testObj.id);
+					testMap.set(testObj.id, clone(testObj));
 
 	    		polygonCollection.push(this._renderPolygons(testObj, chartProps, currSettings, showLabels, projection, adjustLabels, valueColumn, geoPath));
 		    }
@@ -314,24 +317,23 @@ const PolygonsRender = React.createClass({
     };
 
     allpolygons.map((polygonData,i) => {
-    	// return if already found
+    	// return if already rendered this polygon
     	if (alreadyRenderedPolygons.indexOf(i) > -1) return null;
 
     	const styles = {};
   		styles.stroke = chartProps.stylings.stroke;
-      styles.fill = '#ddd';
+      styles.fill = '#eee';
 
-    	if (alreadyRenderedFips.indexOf(mapSchema.matchLogic(polygonData.id)) > -1) {
-    			// we need a basic way of... getting these things in order such that you can fetch the prior value.. basically just add it to the object.
-    		  //alldata[l]['values'][i]
-    		  //indexTest
-    		  //testObj = this._matchValues(testObj, alldata[l]['values'][i], keyColumn, polygonData, mapSchema, indexTest);
-    			//polygonCollection.push(this._renderPolygons(testObj, chartProps, currSettings, showLabels, projection, adjustLabels, valueColumn, geoPath));
+    	if (alreadyRenderedFips.indexOf(polygonData.id) > -1) {
+    		testObj = testMap.get(polygonData.id);
+    		testObj.i = i;
+    		testObj.geometry = polygonData.geometry;
+    		polygonCollection.push(this._renderPolygons(testObj, chartProps, currSettings, showLabels, projection, adjustLabels, valueColumn, geoPath));
     	} else {
     		polygonCollection.push(
 	        <path
 	          id={`polygon_${i}`}
-	          key={`polygon_${i}`}
+	          key={`polygon_${i}_${polygonData.id}`}
 	          data-id={polygonData.id}
 	          d= {geoPath(polygonData.geometry)}
 	          className={this.props.polygonClass}
