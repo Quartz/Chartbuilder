@@ -381,8 +381,8 @@ const Map_Radial_Legend = React.createClass({
 
   	const radius = d3.scale.sqrt().range([0, stylings.dorlingradiusVal || stylings.radiusVal]);
 
-		const dataMax = d3.max(chartProps.alldata, function(d){ return +d.values; } );
-		radius.domain([0, dataMax]);
+		const dataMax = 70;//d3.max(chartProps.alldata, function(d){ return +d.values; } );
+		radius.domain([0, 70]);
 
 		const dataCircleSm = radius(Math.round(dataMax / 10));
 		const dataCirclelabelSm = Math.round(dataMax / 10);

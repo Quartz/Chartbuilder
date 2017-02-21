@@ -102,7 +102,7 @@ const defaultProps = Object.freeze({
         top:0,
         left:0
       },
-      showLegendTicks: true,
+      showLegendTicks: false,
       legendText: 'Write the legend text here'
 	  },
     chartSettings: [

@@ -4,7 +4,7 @@ const convertPostaltoFIPS = require('us-abbreviations')('postal','fips');
 import {centroid} from 'turf';
 
 import d3 from 'd3';
-import {filter, toNumber, assign} from 'lodash';
+import {filter, toNumber, assign, flatten} from 'lodash';
 
 // Flux actions
 const MapViewActions = require("../../actions/VisualViewActions");
@@ -69,6 +69,11 @@ const PolygonCollection = React.createClass({
     for (let l = 0; l < alldata.length; l++ ) {
     	testObj.k.push(alldata[l].values.length);
     }
+
+    console.log(this.props, 'props');
+
+    const dataMax = 100;//d3.max(flatten(this.props.chartProps.data), function(d){ return +d[valueColumn]; } );
+
 
     const polygonCollection = this.props.data.map((polygonData, i) => {
 
@@ -165,8 +170,7 @@ const PolygonCollection = React.createClass({
       if (testObj.thisvalue.length) {
         styles2.stroke = currSettings[testObj.thisvalue[0].index].d3scale(testObj.thisvalue[0][valueColumn]);
         styles2.fill = currSettings[testObj.thisvalue[0].index].d3scale(testObj.thisvalue[0][valueColumn]);
-      }
-      else {
+      } else {
         styles2.stroke = '#999';
         styles2.fill = '#aaa'
       }
@@ -174,7 +178,6 @@ const PolygonCollection = React.createClass({
       assign(styles2, {fillOpacity:0.075},{strokeWidth: '0.75px'});
 
       if (testObj.thisvalue.length) {
-        const dataMax = d3.max(this.props.chartProps.alldata, function(d){ return +d[valueColumn]; } );
         radius.domain([0, dataMax]);
         renderRadius = radius(testObj.thisvalue[0][valueColumn]);
 
