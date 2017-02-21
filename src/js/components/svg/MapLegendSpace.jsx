@@ -126,47 +126,7 @@ const LegendSpace = React.createClass({
 
 			return offsets;
 
-	},/*
-	_construct_legend_domain: function (values, colors) {
-
-	  //if (colors === values.length) return values;
-
-	  return values;
 	},
-	_construct_legend_range: function (colors, scaletype) {
-
-	  let thislegendw;
-
-	  (colors < 2) ? thislegendw = (legendtotal / 3)
-	            : thislegendw = (legendtotal + (colors * legendmargin));
-
-	  const value = [];
-
-	  if (scaletype === 'quantize') return [0,thislegendw];
-	  else if (scaletype === 'cluster') {
-
-	    const thisrect = (colors < 2) ? legendrect * 2 : legendtotal / colors;
-	    const space = thislegendw / colors;
-
-	    for (let i = 0; i < colors; i++) {
-	      value.push((i * (space)) + (thisrect / 2));
-	    }
-
-	    return value;
-	  }
-	  else if (scaletype === 'threshold') {
-
-	    /*let thisrect = (colornumber < 2) ? legendrect * 2 : legendtotal / colors;
-	    let space = width / (colors);
-
-	    for (let i = 0; i < colors; i++) {
-	      value.push((i * space) + (thisrect / 2));
-	    }*//*
-
-	    return value;
-	  }
-	  else return [0,0];
-	},*/
 	_tierAdjustments: function(translate, legendsArray) {
 
 		// defaults legend positions
@@ -299,6 +259,7 @@ const LegendSpace = React.createClass({
 			/*
 				Legend text
 			*/
+			console.log(stylings, 'stylings');
 			if (stylings.showLegendTicks) {
 				const legendText = legendData.tickValues.map((thisTick, j) => {
 

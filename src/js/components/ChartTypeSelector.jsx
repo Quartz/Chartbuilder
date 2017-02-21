@@ -71,6 +71,7 @@ var ChartTypeSelctor = React.createClass({
 		const prevProps = this.props.chartProps;
 		const newDefaultProps = visualConfig.defaultProps.chartProps;
 		const stylings = newDefaultProps.stylings;
+
 		const prevSettings = prevProps.chartSettings;
 		const newDefaultSettings = newDefaultProps.chartSettings[0];
 		const prevKeys = keys(prevSettings[0]);

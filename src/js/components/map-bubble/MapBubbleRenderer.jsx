@@ -29,6 +29,28 @@ const PolygonCollection = React.createClass({
   	}
   	return testObj;
   },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   render: function() {
 
     const mapSchema = this.props.schema;
@@ -168,8 +190,8 @@ const PolygonCollection = React.createClass({
       const styles2 = {};
 
       if (testObj.thisvalue.length) {
-        styles2.stroke = currSettings[testObj.thisvalue[0].index].d3scale(testObj.thisvalue[0][valueColumn]);
-        styles2.fill = currSettings[testObj.thisvalue[0].index].d3scale(testObj.thisvalue[0][valueColumn]);
+        styles2.stroke = currSettings[testObj.thisvalue[0].index].color;
+        styles2.fill = currSettings[testObj.thisvalue[0].index].color;
       } else {
         styles2.stroke = '#999';
         styles2.fill = '#aaa'

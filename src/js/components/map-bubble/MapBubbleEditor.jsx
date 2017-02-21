@@ -256,15 +256,6 @@ const MapBubble_mapStyles = React.createClass({
         value={stylings.radiusVal}
       /></div>);
 
-    const legendTicks = (<div className="toggle">
-          <Toggle
-            key={"legend_ticks_toggle_" + this.props.metadata.chartType}
-            className="button-group-wrapper"
-            label="Legend ticks"
-            onToggle={this._handleStylesUpdate.bind(null, "showLegendTicks")}
-            toggled={stylings.showLegendTicks}
-          /></div>);
-
 		return (
         <div className="editor-options">
 	        <h2>
@@ -284,7 +275,6 @@ const MapBubble_mapStyles = React.createClass({
 	        <div className="stylings-toggle-inputs"
 	          key="stylings_inputs">
 	          {shapeSize}
-	          {legendTicks}
 	        </div>
 	        {legendTextOption}
 	      </div>
