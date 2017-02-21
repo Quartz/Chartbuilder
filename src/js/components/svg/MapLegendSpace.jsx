@@ -259,7 +259,6 @@ const LegendSpace = React.createClass({
 			/*
 				Legend text
 			*/
-			console.log(stylings, 'stylings');
 			if (stylings.showLegendTicks) {
 				const legendText = legendData.tickValues.map((thisTick, j) => {
 

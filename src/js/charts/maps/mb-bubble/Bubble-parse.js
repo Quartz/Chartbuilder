@@ -126,6 +126,7 @@ let parseBubble = (config, _chartProps, callback, parseOpts, priorData = false, 
 
     /*
     */
+    scale.domain = currScale.domain;
     scale[j] = currScale;
     chartSettings[j].scale = currScale;
 

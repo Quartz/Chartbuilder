@@ -1,6 +1,6 @@
 import React from 'react';
 import d3 from 'd3';
-import {filter, find, isEqual, differenceby, clone} from 'lodash';
+import {clone} from 'lodash';
 import {centroid} from 'turf';
 
 // Flux actions
@@ -12,16 +12,6 @@ const PolygonsRender = React.createClass({
     geoPath: React.PropTypes.func,
     polygonClass: React.PropTypes.string,
     chartProps: React.PropTypes.object.isRequired
-  },
-  _filterDifference: function(old, newval, keyColumn, valueColumn) {
-  	const diffArr = [];
-
-		newval.forEach(function(e) {
-		    if(!old.some(s => s[keyColumn] == e[keyColumn] || s[valueColumn] == e[valueColumn])) {
-		        diffArr.push(e);
-		    }
-		});
-		return diffArr;
   },
   _updateStyles: function(nextProps) {
 

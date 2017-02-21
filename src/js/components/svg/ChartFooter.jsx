@@ -187,7 +187,10 @@ var HiddenPixelMeasure = React.createClass({
 		var textLength = ReactDom.findDOMNode(this).getComputedTextLength();
 		this.props.onUpdate(textLength / this.props.sampleString.length);
 	},
-
+	shouldComponentUpdate: function(nextProps) {
+		if (nextProps.sampleString !== this.props.sampleString) return true;
+		return false;
+	},
 	componentDidUpdate: function() {
 		var textLength = ReactDom.findDOMNode(this).getComputedTextLength();
 		var ppc = textLength / this.props.sampleString.length;

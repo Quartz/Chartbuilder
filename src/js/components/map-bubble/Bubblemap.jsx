@@ -27,19 +27,18 @@ let MapRenderer = React.createClass({
     const schema = chartProps.schema.schema;
     const data = topojson.feature(schema.topojson, schema.topojson.objects[schema.feature]);
 
-    const projObj = {
+    let projObj = {
       projection: schema.proj,
       scale: schema.scale,
       translate: schema.translate,
       precision: schema.precision
     }
 
+    if (schema.parallels) projObj.parallels = schema.parallels;
+    if (schema.rotate) projObj.rotate = schema.rotate;
+
     const proj = projectionFunc(projObj);
     const geo = geoPath(proj);
-
-   /* const projection = d3.geo[schema.proj]()
-      .scale(proj.scale)
-      .translate(proj.translate);*/
 
     return (
           <PolygonCollection
