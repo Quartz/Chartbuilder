@@ -96,7 +96,7 @@ const defaultProps = Object.freeze({
     data: [],
     input: {},
 	  stylings: {
-      stroke:'#fff',
+      stroke:'#efefef',
       radiusVal: 25,
       legendMove: {
         top:0,

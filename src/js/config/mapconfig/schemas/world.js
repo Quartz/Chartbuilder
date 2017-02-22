@@ -8,7 +8,7 @@ const world = {
 	values: countries,
 	proj: 'mercator',
 	translate: [290, 240],
-	translateCartogram: [290, 240],
+	translateCartogram: [260, 240],
 	precision: 1,
 	scale: 110,
 	topojson : Object.freeze(require('./../mapfiles/world/world.topo.json')),

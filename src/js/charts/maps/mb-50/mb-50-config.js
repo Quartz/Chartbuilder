@@ -96,7 +96,7 @@ const defaultProps = Object.freeze({
     data: [],
     input: {},
 	  stylings: {
-      stroke:'#474747',
+      stroke:'#aaa',
       showLegendTicks: true,
       showStateLabels: false
 	  },

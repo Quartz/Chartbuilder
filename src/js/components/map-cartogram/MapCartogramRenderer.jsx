@@ -78,7 +78,7 @@ const PolygonCollection = React.createClass({
       force.start();
     }
   },
-  componentWillUpdate: function(nextProps, nextState, tk) {
+  componentWillUpdate: function(nextProps, nextState) {
 
     const stylings = nextProps.chartProps.stylings;
     const typeCast = nextProps.schemaName;
@@ -101,13 +101,15 @@ const PolygonCollection = React.createClass({
 
     	//update the dorling or demers
       (stylings[typeCast] === 'dorling') ?
-                helperCarto.switchDorling (d3Node, stylings) :
-                helperCarto.switchDemers (d3Node, stylings);
+          helperCarto.switchDorling (d3Node, stylings) :
+          helperCarto.switchDemers (d3Node, stylings);
 
       // Only tick if making a large change to the layout
       if (this.props.cartogramType !== nextProps.cartogramType
           || this.props.chartProps.stylings.showDC !== stylings.showDC
-          || nextProps.schemaName !== this.props.schemaName) {
+          || nextProps.schemaName !== this.props.schemaName
+          || nextProps.radiusVal !== this.props.radiusVal
+          || stylings[typeCast] !== this.props.chartProps.stylings[typeCast]) {
 
         force.on("tick", (e, i) => {
           if (i > 200) force.stop();
@@ -116,8 +118,7 @@ const PolygonCollection = React.createClass({
                   helperCarto.updateDemers (e, d3Node, nodes);
         }).resume();
 
-        force.nodes(nodes);
-        force.start();
+        force.nodes(nodes).start();
       } else {
       	force.stop();
       }
@@ -127,24 +128,29 @@ const PolygonCollection = React.createClass({
       helperCarto.switchGrid(d3Node, stylings);
     }
   },
-  render: function() {
-
-  	let topTranslation = this.props.displayConfig.margin.maptop;
-
-    if (this.props.metadata.subtitle) {
+  _topTranslation: function(topTranslation) {
+  	if (this.props.metadata.subtitle) {
     	if (this.props.metadata.subtitle.length > 0) {
     		topTranslation += 20;
     	}
     }
+    return topTranslation;
+  },
+  render: function() {
 
+  	const topTranslation = this._topTranslation(this.props.displayConfig.margin.maptop);
     const translation = `translate(${this.props.displayConfig.margin.left},${topTranslation})`;
+
+    const polygonCollection = this.props.polygonCollection;
+
+
 
     return (
       <g transform={translation}
       	clipPath="url(#ellipse-clip)"
         className='cartogram-map-render'
         ref='graph'
-      />
+      >{polygonCollection}</g>
     );
   }
 });

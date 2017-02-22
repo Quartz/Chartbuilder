@@ -15,20 +15,6 @@ const ShapesCollection = React.createClass({
     onClick: React.PropTypes.func,
     chartProps: React.PropTypes.object.isRequired
   },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   _updateStyles: function(nextProps) {
 
   	const chartProps = nextProps.chartProps;
@@ -276,7 +262,7 @@ const ShapesCollection = React.createClass({
 
 		const valueSet = testObj.thisvalue[0];
 		const styles = {
-						fill:'#E9E9E9',
+						fill:'#ddd',
 						stroke: chartProps.stylings.stroke
 						};
 

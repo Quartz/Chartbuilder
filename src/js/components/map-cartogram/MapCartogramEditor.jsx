@@ -334,15 +334,6 @@ const MapCartogram_mapStyles = React.createClass({
         key="legend_text_extra"
       /></div>);
 
-   const legendTicks = (<div className="toggle">
-          <Toggle
-            key={"legend_ticks_toggle_" + this.props.metadata.chartType}
-            className="button-group-wrapper"
-            label="Legend ticks"
-            onToggle={this._handleStylesUpdate.bind(null, "showLegendTicks")}
-            toggled={stylings.showLegendTicks}
-          /></div>);
-
    console.log(stylings, 'stylings', cartogramType);
 
    const cartType = (cartogramType === 'dorling') ? 'dorlingradiusVal' : 'demerssquareWidth';
@@ -379,7 +370,6 @@ const MapCartogram_mapStyles = React.createClass({
 	        />
 	        <div className="stylings-toggle-inputs"
 	          key="cartogram_stylings_inputs">
-	          {legendTicks}
 	          {valuesOption}
 	          {shapeSize}
 	          {dcOption}

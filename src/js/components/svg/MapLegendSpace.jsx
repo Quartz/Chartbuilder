@@ -68,8 +68,6 @@ const LegendSpace = React.createClass({
 
 				if (!g.datum()) g.data([{x:0,y:0}]).call(drag);
 
-				console.log('update..');
-
 				g.attr('transform', (d) => {
 					const xT = d.x ? d.x : this.props.legendsArray.length > 1 ? 0 : radialTier1;
 					const yT = d.x ? d.x : this.props.legendsArray.length > 1 ? 0 : radialTier1;
@@ -338,8 +336,6 @@ const Map_Radial_Legend = React.createClass({
 
   	const radius = d3.scale.sqrt().range([0, stylings.dorlingradiusVal || stylings.radiusVal]);
 
-  	console.log(this.props.legendsArray.length, 'length');
-
   	const translated = this.props.legendsArray.length === 1 ? radialTier1 : 0;
 
 		const dataMax = 70;//d3.max(chartProps.alldata, function(d){ return +d.values; } );
@@ -377,8 +373,6 @@ const Map_Radial_Legend = React.createClass({
 
 		const legendText1 = s.substr(0, middle);
 		const legendText2 = s.substr(middle + 1);
-
-		console.log(translated)
 
     return (
     	<g
