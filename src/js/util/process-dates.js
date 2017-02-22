@@ -284,7 +284,7 @@ function autoDateFormatAndFrequency(minDate, maxDate, dateFormat, availableWidth
 	var interval;
 
 	var targetPixelGap = 64;
-	var maximum_ticks = Math.floor(availableWidth / targetPixelGap);
+	var maximum_ticks = Math.max(Math.floor(availableWidth / targetPixelGap), 1);
 	var time_gap = timespan / maximum_ticks;
 
 	if (dateFormat == "auto") {

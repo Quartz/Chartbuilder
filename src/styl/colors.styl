@@ -39,14 +39,24 @@ for c, i in $chart-colors
 	.color-index-{i}
 		fill (c)
 
+	rect.color-index-{i}
+		fill (c)
+
+	path.color-index-{i}
+		stroke (c)
+
+	circle.color-index-{i}
+		fill (c)
+
 	rect[data-color-index=\"{i}\"]
 		fill (c)
 
 	text[data-color-index=\"{i}\"]
 		fill (c)
 
-	.d4 .axis .tick text[data-color-index=\"{i}\"]
-		fill (c)
+	g.axis.color-index-{i}
+		text
+			fill (c)
 
 	.cb-colorpicker-color-{i}
 		background-color (c)

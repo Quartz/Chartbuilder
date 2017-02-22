@@ -50,7 +50,7 @@ var ChartExport = React.createClass({
 		// TODO: figure out what exactly is breaking FF
 		var chart = document
 			.getElementsByClassName(this.props.svgWrapperClassName)[0]
-			.getElementsByClassName("renderer-svg")[0];
+			.getElementsByClassName("chartbuilder-svg")[0];
 
 		this.setState({
 			chartNode: chart,
@@ -61,7 +61,7 @@ var ChartExport = React.createClass({
 	componentWillReceiveProps: function(nextProps) {
 		var chart = document
 			.getElementsByClassName(this.props.svgWrapperClassName)[0]
-			.getElementsByClassName("renderer-svg")[0];
+			.getElementsByClassName("chartbuilder-svg")[0];
 
 		this.setState({ chartNode: chart });
 	},

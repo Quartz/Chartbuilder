@@ -82,8 +82,7 @@ function validateDataInput(chartProps) {
 	if(hasDate || chartProps.input.type == "date") {
 		const badDateSeries = somePointTest(
 				series,
-				function(val) { return !val.entry.getTime || isNaN(val.entry.getTime()); },
-				function(bd,vals) { return bd.length > 0;}
+				function(val) { return !val.entry.getTime || isNaN(val.entry.getTime()); }
 			);
 
 		if (badDateSeries) {

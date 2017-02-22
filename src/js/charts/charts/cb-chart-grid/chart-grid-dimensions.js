@@ -8,9 +8,8 @@ var chartSizes = require("../../../config/chartconfig/chart-sizes");
  */
 function chartGridDimensions(width, opts) {
 	var height;
-	var model = opts.model;
-	var metadata = model.metadata;
-	var grid = model.chartProps._grid;
+	var metadata = opts.metadata;
+	var grid = opts.grid;
 
 	if (metadata.size == "auto" || opts.enableResponsive) {
 		// use current width
@@ -19,15 +18,13 @@ function chartGridDimensions(width, opts) {
 	}
 
 	if (grid.type == "bar") {
-		var numDataPoints = model.chartProps.data[0].values.length;
-		height = calculate_bar_height(numDataPoints, grid, opts.displayConfig, opts.extraHeight);
+		var numDataPoints = opts.data[0].values.length;
+		height = calculate_bar_height(numDataPoints, grid, opts.displayConfig);
 	} else {
-		height = calculate_cartesian_height(width, grid, opts.displayConfig, opts.extraHeight);
+		height = calculate_cartesian_height(width, grid, opts.displayConfig);
 	}
 
-	if (model.metadata.title.length > 0 && opts.showMetadata) {
-		height += opts.displayConfig.afterTitle;
-	} else if (!opts.showMetadata) {
+	if (!opts.showMetadata) {
 		height -= opts.displayConfig.padding.bottom;
 	}
 
@@ -37,20 +34,16 @@ function chartGridDimensions(width, opts) {
 	};
 }
 
-function calculate_bar_height(numDataPoints, grid, displayConfig, extraHeight) {
-	var perChart = (displayConfig.afterLegend + displayConfig.padding.top + displayConfig.afterXYBottom);
-	var perBar = (displayConfig.paddingPerBar + displayConfig.barHeight);
-	var singleChart = (perChart + (perBar * numDataPoints));
-	var allBars = singleChart * grid.rows;
-	return extraHeight + allBars;
+function calculate_bar_height(numDataPoints, grid, displayConfig) {
+	return displayConfig.barHeight * numDataPoints * grid.rows;
 }
 
 function calculate_cartesian_height(width, grid, displayConfig, extraHeight) {
-	var height =
-		(grid.rows * (((width / grid.cols) * displayConfig.xy.aspectRatio.wide) + displayConfig.afterLegend)) +
-		(grid.rows - 1) * displayConfig.afterXYBottom +
-		extraHeight + displayConfig.xy.padding.bottom;
-
+	var height = (
+		grid.rows *
+		((width / grid.cols) *
+		displayConfig.xy.aspectRatio.wide)
+	);
 	return height;
 }
 

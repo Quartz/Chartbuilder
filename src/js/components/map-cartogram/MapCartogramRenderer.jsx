@@ -100,7 +100,6 @@ const PolygonCollection = React.createClass({
     d3Nodes = d3.select(ReactDOM.findDOMNode(this.refs.graph));
 
     if (stylings[typeCast] !== 'grid') {
-
     	//update the dorling or demers
       (stylings[typeCast] === 'dorling') ?
           helperCarto.switchDorling (d3Nodes, stylings) :
@@ -111,7 +110,6 @@ const PolygonCollection = React.createClass({
           || this.props.chartProps.stylings.showDC !== stylings.showDC
           || nextProps.schemaType !== this.props.schemaType
           || nextProps.radiusVal !== this.props.radiusVal
-          || stylings[typeCast] !== this.props.chartProps.stylings[typeCast]
           || this._testDataChange(this.props.chartProps.data, nextProps.chartProps.data)) {
 
 
@@ -142,7 +140,7 @@ const PolygonCollection = React.createClass({
     } else {
     	//update or swap out for grid
       force.stop();
-      helperCarto.switchGrid(d3Node, stylings);
+      helperCarto.switchGrid(d3Nodes, stylings);
     }
   },
   _topTranslation: function(topTranslation) {

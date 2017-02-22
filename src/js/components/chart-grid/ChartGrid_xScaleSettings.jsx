@@ -102,17 +102,6 @@ var ChartGrid_xScaleSettings = React.createClass({
 				onInput={this._handleDomainUpdate.bind(null, "max")}
 				value={domain[1]}
 				key="customMax"
-			/>,
-			<LabelledTangle
-				label="Precision"
-				labelClass="editor-label"
-				tangleClass="scale-option tangle-input"
-				onChange={this._handleScaleUpdate.bind(null, "precision")}
-				onInput={this._handleScaleUpdate.bind(null, "precision")}
-				value={currScale.precision}
-				min={0}
-				max={5}
-				key="precision"
 			/>
 		];
 

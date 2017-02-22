@@ -11,7 +11,7 @@ var chartSizes = require("../../../config/chartconfig/chart-sizes");
 function calculate_xy_dimensions(width, opts) {
 	var height;
 	var aspectRatio = opts.displayConfig.aspectRatio;
-	var metadata = opts.model.metadata;
+	var metadata = opts.metadata;
 
 	if (metadata.size == "auto" || opts.enableResponsive) {
 		// use current width
@@ -42,7 +42,7 @@ function calculate_xy_dimensions(width, opts) {
 
 	return {
 		width: width,
-		height: height + opts.extraHeight
+		height: height
 	};
 }
 

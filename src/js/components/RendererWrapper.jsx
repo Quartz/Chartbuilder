@@ -9,22 +9,24 @@ const React = require("react");
 const ReactDOM = require("react-dom");
 const PropTypes = React.PropTypes;
 
-import {assign, clone, isDate, isEqual, throttle, reduce, kes, filter, find} from 'lodash';
+var ChartViewActions = require("../actions/VisualViewActions");
+var convertConfig = require("../util/parse-config-values");
+var SessionStore = require("../stores/SessionStore");
+var breakpoints = require("../config/chartconfig/chart-breakpoints");
+var BackgroundRect = require("./svg/BackgroundRect.jsx");
+var ChartFooter = require("./svg/ChartFooter.jsx");
 
-const update = require("react-addons-update");
+import {assign, clone, isDate, isEqual, throttle, reduce, keys, update, filter, find} from 'lodash';
 
 const SvgText = require("./svg/SvgText.jsx");
 
-const convertConfig = require("../util/parse-config-values");
-const SessionStore = require("../stores/SessionStore");
-const breakpoints = require("../config/chartconfig/chart-breakpoints");
-const ChartFooter = require("./svg/ChartFooter.jsx");
 const LegendSpace = require("./svg/MapLegendSpace.jsx");
 /*
  * `chartConfig` is an object that sets default properties for chart types, and
  * also associates a given chart type with its Editor and Renderer components.
  * Used here to identify the Renderer.
 */
+
 const chartConfigs = require("../charts/charts/chart-config");
 const chartStyle = require("../config/chartconfig/chart-style");
 const chartRenderers = require("../charts/charts/renderers");
@@ -53,6 +55,7 @@ const RendererWrapper = React.createClass({
 		svgClassName: PropTypes.string
 	},
 
+	// don't render incoming chart if there are errors in parsing
 	shouldComponentUpdate: function(nextProps, nextState) {
 		if (!nextProps.model.errors) {
 			return true;
@@ -84,12 +87,15 @@ const RendererWrapper = React.createClass({
 	componentWillMount: function() {
 		var chartType = this.props.model.metadata.chartType;
 		var size_calcs = {};
+		// set chart breakpoints
 		if (this.props.width) {
 			var bp = breakpoints.getBreakpointObj(this.props.enableResponsive, this.props.width);
 			size_calcs = this._resizeUpdate(this.props, bp, this.props.width);
 		}
 
 		var chartProps = null;
+		// process date strings as dates
+		// TODO: why do we need this again?
 		if (this.props.model.chartProps.scale.hasDate && !this.props.editable) {
 			var _chartProps = clone(this.props.model.chartProps, true);
 			var newData = _chartProps.data.map(function(d) {
@@ -108,6 +114,7 @@ const RendererWrapper = React.createClass({
 		this.setState(state);
 	},
 
+	// method for updating configs and breakpoints when width changes
 	_resizeUpdate: function(props, bp, domNodeWidth) {
 		var chartType = props.model.metadata.chartType;
 		return {
@@ -119,11 +126,8 @@ const RendererWrapper = React.createClass({
 		};
 	},
 
-	componentVisibilityChanged: function() {
-		this._updateWidth();
-	},
-
-	_updateWidth: function(force) {
+	// check for a new width and update everything if it has changed
+	_updateWidth: function() {
 		var domNodeWidth = ReactDOM.findDOMNode(this).offsetWidth;
 		var bp = breakpoints.getBreakpointObj(this.props.enableResponsive, domNodeWidth);
 		if (domNodeWidth !== this.state.domNodeWidth) {
@@ -134,6 +138,7 @@ const RendererWrapper = React.createClass({
 		}
 	},
 
+	// add resize listener if chart is responsive
 	componentDidMount: function() {
 		if (this.props.enableResponsive) {
 			this._updateWidth(true);
@@ -142,12 +147,14 @@ const RendererWrapper = React.createClass({
 		}
 	},
 
+	// remove resize listener on unmount
 	componentWillUnmount: function() {
 		if (this.props.enableResponsive) {
 			window.removeEventListener("resize", this._updateWidth);
 		}
 	},
 
+	// TODO: remove this feature? seems never used
 	_getMobileMetadata: function(metadata, mobileSettings) {
 		var setMobile = reduce(keys(metadata), function(obj, key) {
 			if (mobileSettings[key] && mobileSettings[key] !== "") {
@@ -161,22 +168,11 @@ const RendererWrapper = React.createClass({
 		return setMobile;
 	},
 
-	_handleSvgUpdate: function(k, v) {
-		var newSetting = {};
-		newSetting[k] = v;
-		this.setState(update(this.state, { $merge: newSetting }));
-	},
-
-	_calculateDimensions: function(width, displayConfig, extraHeight) {
-		var calculator = this.state.chartConfig.calculateDimensions;
-		return calculator(width, {
-			model: this.props.model,
-			displayConfig: displayConfig,
-			enableResponsive: this.props.enableResponsive,
-			extraHeight: extraHeight,
-			showMetadata: this.props.showMetadata
-		});
-	},
+	//_handleSvgUpdate: function(k, v) {
+		//var newSetting = {};
+		//newSetting[k] = v;
+		//this.setState(update(this.state, { $merge: newSetting }));
+	//},
 
 	render: function() {
 
@@ -191,6 +187,8 @@ const RendererWrapper = React.createClass({
 		}
 
 		// Reduce padding and margin if metadata is not shown
+		// this is used for the embed. should be removable if/once we render
+		// metadata with HTML
 		if (this.props.showMetadata === false) {
 			var _padding = {
 				top: displayConfig.padding.top,
@@ -210,6 +208,8 @@ const RendererWrapper = React.createClass({
 			}});
 		}
 
+/*
+<<<<<<< HEAD
 		let extraHeight = this.state.extraHeight;
 		// reduce margin if only one legend
 		if (this.props.model.chartProps.legend || this.props.model.metadata.subtitle) {
@@ -281,6 +281,12 @@ const RendererWrapper = React.createClass({
 
 		let chartProps;
 		let metadata;
+=======*/
+
+		const Renderer = chartRenderers[chartType] || mapRenderers[chartType];
+		var chartProps;
+		var metadata;
+//>>>>>>> 310aa57e0c9c3c3ece031f916b1b97cc724f4d03
 
 		// If rendered chart is not editable and has a date, we presume data is
 		// being passed in and we need to use the data with processed dates
@@ -292,7 +298,8 @@ const RendererWrapper = React.createClass({
 
 		const isSmall = (this.state.svgSizeClass === "small");
 
-		// override metadats with mobile-specific settings if defined
+		// override metadata with mobile-specific settings if defined
+		// TODO: remove this feature? seems never used
 		if (this.props.enableResponsive && this.props.model.chartProps.mobile && isSmall) {
 			metadata = this._getMobileMetadata(this.props.model.metadata, this.props.model.chartProps.mobile);
 		} else {
@@ -306,8 +313,8 @@ const RendererWrapper = React.createClass({
 
 		const translate = {
 			top: margin.top,
-			right: dimensions.width - margin.right,
-			bottom: dimensions.height - margin.bottom,
+			//right: dimensions.width - margin.right,
+			//bottom: dimensions.height - margin.bottom,
 			left: margin.left
 		};
 
@@ -377,8 +384,6 @@ const RendererWrapper = React.createClass({
 					extraHeight={this.state.extraHeight}
 					key="chartFooter"
 					translate={translate}
-					onUpdate={this._handleSvgUpdate.bind(null, "extraHeight")}
-					chartWidth={dimensions.width - margin.left - margin.right}
 					className="svg-credit-data"
 				/>
 			);
@@ -394,27 +399,12 @@ const RendererWrapper = React.createClass({
 			</clipPath>)
 		return (
 			<div className={["renderer-wrapper", this.state.svgSizeClass, this.props.className].join(" ")}>
-				<svg
-					key={chartType}
-					className={["renderer-svg", svgClassName].join(" ")}
-					width={dimensions.width}
-					height={dimensions.height}
-				>
-					{clippingPath}
-					<g className="svg-background-wrap">
-						<rect
-							className="svg-background"
-							width={dimensions.width}
-							height={dimensions.height}
-							x={0}
-							y={0}
-						/>
-					</g>
+
 					<Renderer
 						width={width}
+						clippingPath={clippingPath}
 						extraHeight={this.state.extraHeight}
 						chartProps={chartProps}
-						dimensions={dimensions}
 						isSmall={isSmall}
 						displayConfig={displayConfig}
 						styleConfig={this.state.styleConfig}
@@ -425,7 +415,6 @@ const RendererWrapper = React.createClass({
 					/>
 					{legends}
 					{metadataSvg}
-				</svg>
 			</div>
 		);
 	}

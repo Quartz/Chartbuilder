@@ -12,13 +12,22 @@
 .color-index-0 {
   fill: #a50026;
 }
+rect.color-index-0 {
+  fill: #a50026;
+}
+path.color-index-0 {
+  stroke: #a50026;
+}
+circle.color-index-0 {
+  fill: #a50026;
+}
 rect[data-color-index="0"] {
   fill: #a50026;
 }
 text[data-color-index="0"] {
   fill: #a50026;
 }
-.d4 .axis .tick text[data-color-index="0"] {
+g.axis.color-index-0 text {
   fill: #a50026;
 }
 .cb-colorpicker-color-0 {
@@ -55,13 +64,22 @@ text[data-color-index="0"] {
 .color-index-1 {
   fill: #fdae61;
 }
+rect.color-index-1 {
+  fill: #fdae61;
+}
+path.color-index-1 {
+  stroke: #fdae61;
+}
+circle.color-index-1 {
+  fill: #fdae61;
+}
 rect[data-color-index="1"] {
   fill: #fdae61;
 }
 text[data-color-index="1"] {
   fill: #fdae61;
 }
-.d4 .axis .tick text[data-color-index="1"] {
+g.axis.color-index-1 text {
   fill: #fdae61;
 }
 .cb-colorpicker-color-1 {
@@ -98,13 +116,22 @@ text[data-color-index="1"] {
 .color-index-2 {
   fill: #d73027;
 }
+rect.color-index-2 {
+  fill: #d73027;
+}
+path.color-index-2 {
+  stroke: #d73027;
+}
+circle.color-index-2 {
+  fill: #d73027;
+}
 rect[data-color-index="2"] {
   fill: #d73027;
 }
 text[data-color-index="2"] {
   fill: #d73027;
 }
-.d4 .axis .tick text[data-color-index="2"] {
+g.axis.color-index-2 text {
   fill: #d73027;
 }
 .cb-colorpicker-color-2 {
@@ -141,13 +168,22 @@ text[data-color-index="2"] {
 .color-index-3 {
   fill: #abd9e9;
 }
+rect.color-index-3 {
+  fill: #abd9e9;
+}
+path.color-index-3 {
+  stroke: #abd9e9;
+}
+circle.color-index-3 {
+  fill: #abd9e9;
+}
 rect[data-color-index="3"] {
   fill: #abd9e9;
 }
 text[data-color-index="3"] {
   fill: #abd9e9;
 }
-.d4 .axis .tick text[data-color-index="3"] {
+g.axis.color-index-3 text {
   fill: #abd9e9;
 }
 .cb-colorpicker-color-3 {
@@ -184,13 +220,22 @@ text[data-color-index="3"] {
 .color-index-4 {
   fill: #f46d43;
 }
+rect.color-index-4 {
+  fill: #f46d43;
+}
+path.color-index-4 {
+  stroke: #f46d43;
+}
+circle.color-index-4 {
+  fill: #f46d43;
+}
 rect[data-color-index="4"] {
   fill: #f46d43;
 }
 text[data-color-index="4"] {
   fill: #f46d43;
 }
-.d4 .axis .tick text[data-color-index="4"] {
+g.axis.color-index-4 text {
   fill: #f46d43;
 }
 .cb-colorpicker-color-4 {
@@ -227,13 +272,22 @@ text[data-color-index="4"] {
 .color-index-5 {
   fill: #74add1;
 }
+rect.color-index-5 {
+  fill: #74add1;
+}
+path.color-index-5 {
+  stroke: #74add1;
+}
+circle.color-index-5 {
+  fill: #74add1;
+}
 rect[data-color-index="5"] {
   fill: #74add1;
 }
 text[data-color-index="5"] {
   fill: #74add1;
 }
-.d4 .axis .tick text[data-color-index="5"] {
+g.axis.color-index-5 text {
   fill: #74add1;
 }
 .cb-colorpicker-color-5 {
@@ -270,13 +324,22 @@ text[data-color-index="5"] {
 .color-index-6 {
   fill: #4575b4;
 }
+rect.color-index-6 {
+  fill: #4575b4;
+}
+path.color-index-6 {
+  stroke: #4575b4;
+}
+circle.color-index-6 {
+  fill: #4575b4;
+}
 rect[data-color-index="6"] {
   fill: #4575b4;
 }
 text[data-color-index="6"] {
   fill: #4575b4;
 }
-.d4 .axis .tick text[data-color-index="6"] {
+g.axis.color-index-6 text {
   fill: #4575b4;
 }
 .cb-colorpicker-color-6 {
@@ -313,13 +376,22 @@ text[data-color-index="6"] {
 .color-index-7 {
   fill: #313695;
 }
+rect.color-index-7 {
+  fill: #313695;
+}
+path.color-index-7 {
+  stroke: #313695;
+}
+circle.color-index-7 {
+  fill: #313695;
+}
 rect[data-color-index="7"] {
   fill: #313695;
 }
 text[data-color-index="7"] {
   fill: #313695;
 }
-.d4 .axis .tick text[data-color-index="7"] {
+g.axis.color-index-7 text {
   fill: #313695;
 }
 .cb-colorpicker-color-7 {
@@ -356,13 +428,22 @@ text[data-color-index="7"] {
 .color-index-8 {
   fill: #999;
 }
+rect.color-index-8 {
+  fill: #999;
+}
+path.color-index-8 {
+  stroke: #999;
+}
+circle.color-index-8 {
+  fill: #999;
+}
 rect[data-color-index="8"] {
   fill: #999;
 }
 text[data-color-index="8"] {
   fill: #999;
 }
-.d4 .axis .tick text[data-color-index="8"] {
+g.axis.color-index-8 text {
   fill: #999;
 }
 .cb-colorpicker-color-8 {
@@ -399,13 +480,22 @@ text[data-color-index="8"] {
 .color-index-9 {
   fill: #666;
 }
+rect.color-index-9 {
+  fill: #666;
+}
+path.color-index-9 {
+  stroke: #666;
+}
+circle.color-index-9 {
+  fill: #666;
+}
 rect[data-color-index="9"] {
   fill: #666;
 }
 text[data-color-index="9"] {
   fill: #666;
 }
-.d4 .axis .tick text[data-color-index="9"] {
+g.axis.color-index-9 text {
   fill: #666;
 }
 .cb-colorpicker-color-9 {
@@ -442,13 +532,22 @@ text[data-color-index="9"] {
 .color-index-10 {
   fill: #ccc;
 }
+rect.color-index-10 {
+  fill: #ccc;
+}
+path.color-index-10 {
+  stroke: #ccc;
+}
+circle.color-index-10 {
+  fill: #ccc;
+}
 rect[data-color-index="10"] {
   fill: #ccc;
 }
 text[data-color-index="10"] {
   fill: #ccc;
 }
-.d4 .axis .tick text[data-color-index="10"] {
+g.axis.color-index-10 text {
   fill: #ccc;
 }
 .cb-colorpicker-color-10 {
@@ -811,10 +910,23 @@ div.renderer-wrapper {
   margin: 0;
   padding: 0;
 }
+svg.renderer-svg {
+  fill: #fff;
+  text-rendering: optimizeLegibility;
+  box-sizing: border-box;
+}
+svg.renderer-svg tspan {
+  height: 1em;
+  line-height: 1em;
+}
+svg .svg-background {
+  fill: #fff;
+}
 .em-size-wrapper {
   width: 100%;
 }
 .em-size {
+  font-size: 20px;
   position: absolute;
   visibility: hidden;
   top: 0;
@@ -824,108 +936,10 @@ div.renderer-wrapper {
   width: 1em;
   height: 1em;
 }
-svg.renderer-svg {
-  fill: #fff;
-  font-family: 'Khula-Light', Arial, Helvetica, sans-serif;
-  text-rendering: optimizeLegibility;
-  box-sizing: border-box;
-}
-svg.renderer-svg .svg-background {
-  fill: #fff;
-}
-svg.renderer-svg tspan {
-  height: 1em;
-  line-height: 1em;
-}
-.d4 {
-  font-size: 20px;
-}
-.d4 .leftAxis path.domain {
-  display: none;
-}
-.d4 .xAxis path.domain {
-  display: none;
-}
-.d4 .axis .tick {
-  font-family: 'Khula-Light', Arial, Helvetica, sans-serif;
-}
-.d4 .axis .tick[data-anchor="middle"] text {
-  text-anchor: middle;
-}
-.d4 .axis .tick text {
-  fill: #666;
-  shape-rendering: crispEdges;
-  text-anchor: middle;
-}
-.d4 .axis .tick:first-child text {
-  text-anchor: middle;
-}
-.d4 .axis .tick line {
-  fill: none;
-  stroke: #ddd;
-  stroke-width: 1px;
-  shape-rendering: crispEdges;
-}
-.d4 .axis .tick.zero line {
-  stroke: #333;
-}
-.d4 .axis .tick rect {
-  fill: #fff;
-  shape-rendering: crispEdges;
-}
-.d4 .axis.leftAxis text {
-  text-anchor: start;
-}
-.d4 .axis.rightAxis text {
-  text-anchor: end;
-}
-.d4 .axis[data-scale="time"] .tick:not([data-anchor="middle"]) text {
-  text-anchor: start;
-}
-.d4 .axis[data-scale="time"] .tick:first-child text {
-  text-anchor: start;
-}
-.d4 .xAxislabel {
-  fill: #666;
-}
-.d4 .concealer-label {
-  font-family: 'Khula-Light', Arial, Helvetica, sans-serif;
-}
-.d4 .concealer-label text {
-  fill: #666;
-}
-.d4 .concealer-label rect {
-  fill: #fff;
-}
-.d4 .connectors line {
-  fill: none;
-  stroke-width: 1px;
-}
-.d4 line.zero {
-  stroke: #333;
-  shape-rendering: crispEdges;
-}
-.d4 .margins .line path,
-.d4 .margins .other-line path {
-  fill: none;
-  stroke-width: 3px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.d4 .margins .label {
-  font-family: 'Khula-Light', Arial, Helvetica, sans-serif;
-}
-.d4 .column-label {
-  fill: #666;
-}
-.d4 line.no-label-tick {
-  fill: none;
-  stroke: #ddd;
-  stroke-width: 1px;
-  shape-rendering: crispEdges;
+.small .em-size {
+  font-size: 14px;
 }
 .svg-text {
-  font-family: 'Khula-Light', Arial, Helvetica, sans-serif;
   font-size: 20px;
 }
 .svg-text tspan.em {
@@ -940,12 +954,10 @@ svg.renderer-svg tspan {
   font-style: italic;
 }
 .svg-text.svg-text-credit {
-  font-size: 12px;
   fill: #ccc;
   text-anchor: start;
 }
 .svg-text.svg-text-source {
-  font-size: 12px;
   fill: #ccc;
 }
 .svg-text.svg-text-source.left {
@@ -956,38 +968,6 @@ svg.renderer-svg tspan {
 }
 .svg-text.svg-text-title {
   fill: #666;
-  font-family: 'Khula-Regular', Arial, Helvetica, sans-serif;
-  font-size: 20px;
-}
-.svg-source-pipe {
-  stroke: #ccc;
-  fill: none;
-  stroke-width: 0.8px;
-}
-.svg-label-text {
-  font-size: 20px;
-  font-family: 'Khula-Light', Arial, Helvetica, sans-serif;
-}
-.svg-label-text.draggable {
-  cursor: move;
-}
-.crosshair line {
-  stroke-width: 1;
-  shape-rendering: crispEdges;
-  stroke: #000;
-}
-.hidden-svg {
-  visibility: hidden;
-}
-.medium .em-size {
-  font-size: 20px;
-}
-.medium .d4 {
-  font-size: 20px;
-}
-.medium .d4 .margins .line path,
-.medium .d4 .margins .other-line path {
-  stroke-width: 3px;
 }
 .medium .svg-text {
   font-size: 20px;
@@ -1000,16 +980,6 @@ svg.renderer-svg tspan {
 }
 .medium .svg-text.svg-text-title {
   font-size: 20px;
-}
-.small .em-size {
-  font-size: 14px;
-}
-.small .d4 {
-  font-size: 14px;
-}
-.small .d4 .margins .line path,
-.small .d4 .margins .other-line path {
-  stroke-width: 2px;
 }
 .small .svg-text {
   font-size: 14px;
@@ -1027,33 +997,78 @@ svg.renderer-svg tspan {
 .small .svg-text.svg-text-title {
   font-size: 14px;
 }
+.svg-label-text.draggable {
+  cursor: move;
+}
 .small .svg-label-text {
   font-size: 14px;
 }
-.large .em-size {
-  font-size: 20px;
+.hidden-svg {
+  visibility: hidden;
 }
-.large .d4 {
-  font-size: 20px;
+.series-line-path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
-.large .d4 .margins .line path,
-.large .d4 .margins .other-line path {
+.large .series-line-path {
   stroke-width: 4px;
 }
-.large .svg-text {
+.medium .series-line-path {
+  stroke-width: 3px;
+}
+.small .series-line-path {
+  stroke-width: 2px;
+}
+.axis text.tick {
+  fill: #666;
+  shape-rendering: crispEdges;
+}
+.axis text.tick[data-anchor="middle"] text {
+  text-anchor: middle;
+}
+.axis text.tick.orient-left {
+  text-anchor: start;
+}
+.axis text.tick.orient-right {
+  text-anchor: end;
+}
+.axis text.tick.hidden-svg {
+  visibility: hidden;
+}
+.grid-lines line.tick {
+  stroke: #ddd;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
+}
+.grid-lines line.zero {
+  stroke: #333;
+  shape-rendering: crispEdges;
+}
+.concealer-label text {
+  fill: #666;
+}
+.concealer-label rect {
+  fill: #fff;
+}
+.blocker-rect {
+  fill: #fff;
+}
+.series-label {
   font-size: 20px;
 }
-.large .svg-text.svg-text-credit {
-  font-size: 12px;
+.small .series-label {
+  font-size: 14px;
 }
-.large .svg-text.svg-text-source {
-  font-size: 12px;
+.svg-source-pipe {
+  stroke: #ccc;
+  fill: none;
+  stroke-width: 0.8px;
 }
-.large .svg-text.svg-text-title {
-  font-size: 20px;
-}
-.large .svg-label-text {
-  font-size: 20px;
+.crosshair line {
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+  stroke: #000;
 }
 .cb-credit-logo {
   fill: #ccc;

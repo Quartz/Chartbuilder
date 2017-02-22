@@ -3,7 +3,7 @@ Chartbuilder :chart_with_upwards_trend:
 
 Chartbuilder is a front-end charting application that facilitates easy creation of simple beautiful charts.
 
-Chartbuilder is the user and export interface. [D4](https://github.com/heavysixer/d4) is the default charting framework.
+Chartbuilder is the user and export interface.
 Chartbuilder powers all chart creation on [Atlas](http://atlas.qz.com), a
 charting platform developed by Quartz.
 
@@ -11,7 +11,7 @@ What's new in Chartbuilder 2.0
 -------------------------
 * The Chart Grid type. Use it to create small multiples of bars, lines, dots, or columns.
 * The app has been rewritten in React.js, making it easier to add new chart types or use
-third-party rendering libraries, like we are with D4.
+third-party rendering libraries.
 * Chart edits are automatically saved to localStorage, and a chart can be
 recovered by clicking the "load previous chart" button on loading the page.
 * Data input now accepts csv formatted data as well as tsv formated data
@@ -79,6 +79,5 @@ document most of the React components, classes, and utilities in the code base.
 
 ##### Documentation for Chartbuilder's dependencies:
 * [D3](https://github.com/mbostock/d3/wiki)
-* [D4](http://visible.io/docs.html)
 * [React](https://facebook.github.io/react/docs/getting-started.html)
 

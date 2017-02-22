@@ -25,7 +25,6 @@ let MapRenderer = React.createClass({
 		const metadata = this.props.metadata;
 
     const schema = chartProps.schema.schema;
-    const data = topojson.feature(schema.topojson, schema.topojson.objects[schema.feature]);
 
     let projObj = {
       projection: schema.proj,
@@ -39,6 +38,7 @@ let MapRenderer = React.createClass({
 
     const proj = projectionFunc(projObj);
     const geo = geoPath(proj);
+    const data = topojson.feature(schema.topojson, schema.topojson.objects[schema.feature]);
 
     return (
           <PolygonCollection

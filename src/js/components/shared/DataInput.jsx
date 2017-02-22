@@ -104,8 +104,7 @@ var DataInput = React.createClass({
 	// Render the data input text area and indicator
 	_renderDataInput: function() {
 
-		const errors = this._renderErrors();
-		const isValid = this.props.errors.length === 0;
+		var errors = this._renderErrors();
 
 		return (
 			<div className={this.props.className}
@@ -118,7 +117,6 @@ var DataInput = React.createClass({
 					defaultValue={this.props.chartProps.input.raw}
 					placeholder="If you have a json file to load, drop that here"
 					isRequired={true}
-					isValid={isValid}
 				/>
 				{errors}
 				<DataSeriesTypeSettings

@@ -12,13 +12,15 @@ var chartSizes = require("../../config/chartconfig/chart-sizes");
 var clone = require("lodash/clone");
 var assign = require("lodash/assign");
 var each = require("lodash/each");
+var gridDimensions = require("../../charts/charts/cb-chart-grid/chart-grid-dimensions");
 
 /* Chart grid types */
 var ChartGridBars = require("./ChartGridBars.jsx");
 var ChartGridXY = require("./ChartGridXY.jsx");
 
 /**
- * ### Component that renders bar (row) charts in a chart grid
+ * ### Component that decides which grid (small multiples) type to render and
+ * passes props to that renderer
  * @property {boolean} editable - Allow the rendered component to interacted with and edited
  * @property {object} displayConfig - Parsed visual display configuration for chart grid
  * @property {object} chartProps - Properties used to draw this chart
@@ -55,9 +57,17 @@ var ChartGridRenderer = React.createClass({
 	},
 
 	render: function() {
+		var props = this.props;
 		var _chartProps = this.props.chartProps;
 		var gridTypeRenderer;
-		var dimensions;
+		var dimensions = gridDimensions(props.width, {
+			metadata: props.metadata,
+			grid: _chartProps._grid,
+			data: _chartProps.data,
+			displayConfig: props.displayConfig,
+			showMetadata: props.showMetadata
+		});
+
 		var scale;
 		if (this.props.enableResponsive && _chartProps.hasOwnProperty("mobile") && this.props.isSmall) {
 			if (_chartProps.mobile.scale) {
@@ -81,6 +91,7 @@ var ChartGridRenderer = React.createClass({
 			gridTypeRenderer = (
 				<ChartGridBars
 					{...this.props}
+					dimensions={dimensions}
 					scale={scale}
 					hasTitle={hasTitle}
 				/>
@@ -89,6 +100,7 @@ var ChartGridRenderer = React.createClass({
 			gridTypeRenderer = (
 				<ChartGridXY
 					{...this.props}
+					dimensions={dimensions}
 					scale={scale}
 					hasTitle={hasTitle}
 				/>

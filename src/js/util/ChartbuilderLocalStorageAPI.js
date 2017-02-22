@@ -1,5 +1,4 @@
 // Get data from and save to local storage
-
 var VisualServerActions = require("../actions/VisualServerActions");
 var defaultInput = require("../config/chartconfig/default-input");
 var chartConfig = require("../charts/charts/chart-config");
@@ -9,6 +8,7 @@ module.exports = {
 	defaultChart: function() {
 		var default_model = chartConfig.xy.defaultProps;
 		default_model.chartProps.input = {
+			//raw: testInput.init_data_time
 			raw: defaultInput
 		};
 

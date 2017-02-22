@@ -89,15 +89,11 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 	});
 
 	labels.values = map(bySeries.series, function(dataSeries, i) {
-
 		if (labels.values[i]) {
 			return assign({}, { name: chartSettings[i].label}, labels.values[i]);
 		} else {
-			return {
-				name: dataSeries.name
-			};
+			return { name: dataSeries.name };
 		}
-
 	});
 
 	var maxPrecision = 5;

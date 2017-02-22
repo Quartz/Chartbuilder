@@ -9,10 +9,19 @@ other settings can be configured in one of two places in JavaScript:
 1. The global config files in the `src/js/config` directory
 2. The configuration file for each chart type, for example `xy-config.js` in `src/js/charts/cb-xy`.
 
-### Colors and CSS
+### chart-style.js
+
+Style configuration that is global to all chart types is defined in
+`src/js/config/chart-style.js`. In order for your chart to render correctly, you
+will need to set `fontFamilies` and `fontSizes` in this file. Some aspects of
+the chart require measuring the size of rendered text, and defining it in
+javascript here allows us to calculate that size before drawing the text, much
+faster than drawing it first then checking and drawing again.
+
+### Colors and other CSS
 
 CSS will be able to cover most of the prominent aesthetic features of your
-charts: the color palette, typography, size of lines and dots, and more. Let's
+charts: the color palette, typography, appearance of lines and dots, and more. Let's
 look at editing the colors.
 
 Nearly all the colors used anywhere in Chartbuilder are defined in
@@ -58,10 +67,6 @@ Here is further explanation of these properties (a sample is shown below):
 
 `input`: An object containing the `raw` input as well as a status code
 indicating whether there have been any parse errors.
-
-`extraPadding`: Space around the chart area that may be dynamic. In
-XY charts, for example, `extraPadding` changes based on the width of the
-longest axis tick.
 
 `scale`: Settings related to the chart's scales. The `primaryScale` should be
 used for the main linear scale in order for settings to carry over from one

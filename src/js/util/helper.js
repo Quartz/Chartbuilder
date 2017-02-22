@@ -241,10 +241,8 @@ function compute_map_scale_domain(scaleObj, data, opts, type, ticks, number_colo
  * @return {number} Rounded number
  */
 function round_to_precision(num, precision, supress_thou_sep) {
-	if (num === 0) {
-		//zero should always be "0"
-		return "0";
-	}
+	//zero should always be "0"
+	if (num === 0) return "0";
 
 	var s = Math.round(num * Math.pow(10,precision)) / Math.pow(10,precision);
 	s = s + "";
@@ -430,7 +428,6 @@ function tz_offset_to_minutes(offset) {
 	return (offset[0]*60) + (sign * offset[1])
 }
 
-
 /* Map helpers */
 
 
@@ -476,54 +473,6 @@ const construct_legend_transform = (i, legendspacings, thislegend) => {
 
   return [skipx,(movey * -120)];
 }
-
-
-/*
-const construct_legend_spacings = () => {
-  const maxl = 0;
-
-  const legendspacings = [];
-  let maxspace = 0;
-  let i = 0;
-
-  while (i < (scales.length)) {
-
-     if (!(i % 2) && !!i) {
-      legendspacings.push({
-        max: maxspace
-      });
-      maxspace = 0;
-    }
-
-    let numcolors = scales[i].values.colors.length;
-    let totalcolorw;
-
-    if (numcolors < 2) {
-      numcolors = 2;
-      totalcolorw = (legendrect * 2) + groupmargin + legendmargin;
-    } else {
-      totalcolorw = legendtotal + (legendmargin * 5) + groupmargin;
-    }
-
-    let test = d3.select('#hidden-div').html(keyConversion(scales[i].key));
-    let testw = (2 * document.getElementById('hidden-div').offsetWidth);
-
-    if (testw > wrapmax) testw = wrapmax;
-
-    testw = testw + groupmargin;
-
-    if (i > 1) {
-
-      totalcolorw = totalcolorw + legendspacings[legendspacings.length - 1].max;
-      testw = testw + legendspacings[legendspacings.length - 1].max;
-    }
-
-    if (testw > totalcolorw && testw > maxspace) { maxspace = testw; }
-    else if (totalcolorw > testw && totalcolorw > maxspace) { maxspace = totalcolorw; }
-
-    i++;
-  }
-}*/
 
 const convert_title_case = (str) => {
 
@@ -574,6 +523,23 @@ const return_D3_scale = (colorIndex, number_colors, domain, type, allvalues, tic
   }
 }
 
+function compute_text_width(text, font) {
+	// re-use canvas object for better performance
+	var canvas = compute_text_width.canvas || (compute_text_width.canvas = document.createElement("canvas"));
+	var context = canvas.getContext("2d");
+	context.font = font;
+	var metrics = context.measureText(text);
+	return (Math.round(metrics.width * 100) / 100);
+};
+
+function add_pref_suf(tickText, renderPrefSuf, prefix, suffix) {
+	if (renderPrefSuf) {
+		return [prefix, tickText, suffix].join("");
+	} else {
+		return tickText;
+	}
+}
+
 /**
  * Helper functions!
  * @name helper
@@ -593,7 +559,9 @@ var helper = {
 	mergeOrApply: merge_or_apply,
 	suggestTickNum: suggest_tick_num,
   returnD3Scale: return_D3_scale,
-	TZOffsetToMinutes: tz_offset_to_minutes
+	TZOffsetToMinutes: tz_offset_to_minutes,
+	computeTextWidth: compute_text_width,
+	addPrefSuf: add_pref_suf
 };
 
 module.exports = helper;

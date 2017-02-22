@@ -103,7 +103,7 @@ function parseChartgrid(config, _chartProps, callback, parseOpts) {
 			}
 		});
 
-		scale.numericSettings = currScale;
+		chartProps.scale.numericSettings = currScale;
 
 		if (chartProps.mobile) {
 			if (chartProps.mobile.scale) {
@@ -149,8 +149,16 @@ function parseChartgrid(config, _chartProps, callback, parseOpts) {
 	}
 
 	if (gridSettings.type != "bar") {
+		// TODO: this function is used in several places and should be factored out
 		primaryScale.ticks = primaryScale.ticks || 5;
 		primaryScale.precision = primaryScale.precision || 0;
+		primaryScale.tickValues = help.exactTicks(primaryScale.domain, primaryScale.ticks);
+		each(primaryScale.tickValues, function(v) {
+			var tickPrecision = help.precision(Math.round(v*factor)/factor);
+			if (tickPrecision > primaryScale.precision) {
+				primaryScale.precision = tickPrecision;
+			}
+		});
 	}
 
 	var newChartProps = assign(chartProps, {
