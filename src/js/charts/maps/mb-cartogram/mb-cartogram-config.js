@@ -96,7 +96,7 @@ const defaultProps = Object.freeze({
     input: {},
 	  stylings: {
 	    corners: '9',
-	    legendText: 'Write the legend text here',
+	    legendText: 'Write the legend text to go here',
 	    legendMove: {
 	      top:0,
 	      left:0

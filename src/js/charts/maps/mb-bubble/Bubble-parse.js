@@ -124,6 +124,9 @@ let parseBubble = (config, _chartProps, callback, parseOpts, priorData = false, 
     currScale.colorIndex = chartSettings[j].colorIndex;
     currScale.color = colorScales.scalesMap(currScale.colorIndex)[totalcolors];
 
+	  currScale.tickValues = help.exactTicks(currScale.domain, currScale.ticks, currScale.type, currScale.tickValues, _computed[j].data);
+
+
     /*
     */
     scale.domain = currScale.domain;
@@ -140,8 +143,7 @@ let parseBubble = (config, _chartProps, callback, parseOpts, priorData = false, 
     	colorValues:colorScales.scalesMap(currScale.colorIndex)[totalcolors],
     	type:currScale.type,
     	label:chartSettings[j].label,
-    	prefix:currScale.prefix,
-    	suffix:currScale.suffix
+    	tickValues:help.constructLegendTicks(currScale.tickValues, currScale.ticks, currScale.type)
     }
 
     legends[j] = currLegend;

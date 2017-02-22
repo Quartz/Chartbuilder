@@ -324,6 +324,8 @@ const RendererWrapper = React.createClass({
 				translate.legendsTwoRow = margin.legendsTwoRow;
 			}
 
+			const legendsArray = Object.keys(chartProps.legend).map((k) => chartProps.legend[k]);
+
 			legends.push(
 					<LegendSpace
 						key="legend"
@@ -332,6 +334,7 @@ const RendererWrapper = React.createClass({
 						chartProps={chartProps}
 						stylings={stylings}
 						metadata={metadata}
+						legendsArray={legendsArray}
 						dimensions={dimensions}
 						displayConfig={displayConfig}
 						chartWidth={dimensions.width - margin.left - margin.right}

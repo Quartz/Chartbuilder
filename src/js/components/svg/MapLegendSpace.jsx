@@ -20,6 +20,7 @@ const legendHeight = 8;
 const legendyAdjustment = 15;
 const yOffsetText = legendHeight + legendyAdjustment;
 const legendSecondRowwOffset = 56;
+const radialTier1 = 60;
 
 const legendTotalPercents = {
 	1: 60,
@@ -67,8 +68,12 @@ const LegendSpace = React.createClass({
 
 				if (!g.datum()) g.data([{x:0,y:0}]).call(drag);
 
+				console.log('update..');
+
 				g.attr('transform', (d) => {
-					return 'translate('+ (d.x || 0) +','+ (d.y || 0) +')';
+					const xT = d.x ? d.x : this.props.legendsArray.length > 1 ? 0 : radialTier1;
+					const yT = d.x ? d.x : this.props.legendsArray.length > 1 ? 0 : radialTier1;
+					return 'translate('+ (xT) +','+ (yT) +')';
 				});
 			}
 		}
@@ -182,17 +187,10 @@ const LegendSpace = React.createClass({
 		const translate = this.props.translate;
 		const dimensions = this.props.dimensions;
 		const chartWidth = this.props.chartWidth;
-
-		const legendsArray = Object.keys(chartProps.legend).map((k) => chartProps.legend[k]);
+		const legendsArray = this.props.legendsArray;
 
 		const legendAdjustments = this._tierAdjustments(translate, legendsArray);
 
-		//currLegend.range = help.constructLegendRange(currScale.ticks, currScale.type);
-    //currLegend.domain = help.constructLegendDomain(currScale.tickValues, currScale.ticks);
-
-		/*
-
-		*/
 
 		const legendRender = legendsArray.map((legendData, i) => {
 		/* Offsets
@@ -302,14 +300,13 @@ const LegendSpace = React.createClass({
 
 		if (radialTest) {
 
-			const demersdorlingRender = (<Map_Radial_Legend
+			legendRender.push(<Map_Radial_Legend
 																			metadata={metadata}
 																			chartProps={chartProps}
 																			stylings={stylings}
 																			translate={translate}
-																		/>);
-
-			legendRender.push(demersdorlingRender)
+																			legendsArray={legendsArray}
+																		/>)
 		}
 
 		return (
@@ -341,11 +338,16 @@ const Map_Radial_Legend = React.createClass({
 
   	const radius = d3.scale.sqrt().range([0, stylings.dorlingradiusVal || stylings.radiusVal]);
 
+  	console.log(this.props.legendsArray.length, 'length');
+
+  	const translated = this.props.legendsArray.length === 1 ? radialTier1 : 0;
+
 		const dataMax = 70;//d3.max(chartProps.alldata, function(d){ return +d.values; } );
 		radius.domain([0, 70]);
 
 		const dataCircleSm = radius(Math.round(dataMax / 10));
-		const dataCirclelabelSm = Math.round(dataMax / 10);
+		// Don't show a label if the circle is tiny. The labels will overlap
+		const dataCirclelabelSm = radius(Math.round(dataMax / 10)) < 5 ? '' : Math.round(dataMax / 10);
 
 		const dataCircleLg = radius(Math.round(dataMax / 2.2));
 		const dataCirclelabelLg = Math.round(dataMax / 2.2);
@@ -376,10 +378,13 @@ const Map_Radial_Legend = React.createClass({
 		const legendText1 = s.substr(0, middle);
 		const legendText2 = s.substr(middle + 1);
 
+		console.log(translated)
+
     return (
     	<g
 				className="legendsGroup"
 				key={"legendsGroup_" + metadata.chartType}
+				transform={"translate(0," + translated + ")"}
 					>
 					<g transform={demersTransform}
 					className='demersdorlingLegend'>

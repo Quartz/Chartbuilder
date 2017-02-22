@@ -56,7 +56,7 @@ const display = Object.freeze({
     maptop: "2.5em",
     subtitle: "2em",
     legendleft: "0.8em",
-    legendsOneRow: "22.5em",
+    legendsOneRow: "3.85em",
     legendsTwoRow: "22.5em"
   },
   padding: {
@@ -103,7 +103,7 @@ const defaultProps = Object.freeze({
         left:0
       },
       showLegendTicks: false,
-      legendText: 'Write the legend text here'
+      legendText: 'Write the legend text to go here'
 	  },
     chartSettings: [
       {
