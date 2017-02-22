@@ -59,6 +59,44 @@ class MapRenderer extends React.Component{
 
   	return grid;
   }
+  constructUnderlyingMap(schema, cartoTranslate, cartogramType) {
+
+  	const polygonCollection = [];
+
+  	let projObj = {
+      projection: schema.proj,
+      scale: schema.scale,
+      translate: cartoTranslate,
+      precision: schema.precision
+    }
+
+    if (schema.parallels) projObj.parallels = schema.parallels;
+    if (schema.rotate) projObj.rotate = schema.rotate;
+
+    const geo = geoPath(projectionFunc(projObj));
+
+    if (cartogramType !== 'grid') {
+
+    	topojson.feature(schema.topojson, schema.topojson.objects[schema.feature]).features
+    	.map((polygonData,i) => {
+
+	    	const styles = {};
+	  		styles.stroke = '#E3E3E3';
+	      styles.fill = '#F6F6F6';
+
+	  		polygonCollection.push(
+	        <path
+	          key={`polygon_${i}_${polygonData.id}`}
+	          d= {geo(polygonData.geometry)}
+	          className={'polygon-render'}
+	          style={styles}
+	        />
+	    	);
+	    });
+	  }
+
+	  return polygonCollection;
+  }
   render() {
 
     const chartProps = this.props.chartProps;
@@ -88,10 +126,8 @@ class MapRenderer extends React.Component{
     if (schema.parallels) projojection.parallels = schema.parallels;
     if (schema.rotate) projection.rotate = schema.rotate;
 
-    const centroids = this.constructCentroids(this.props, projection);
-    const dataById = d3.map(chartProps.alldata, function(d) {
-    	return schema.matchLogic(d[keyColumn]); });
 
+    const dataById = d3.map(chartProps.alldata, function(d) { return schema.matchLogic(d[keyColumn]); });
     const radiusVal = (cartogramType === 'dorling') ? +stylings.dorlingradiusVal : +stylings.demerssquareWidth;
 
     // for dorling and demers calculations
@@ -99,40 +135,8 @@ class MapRenderer extends React.Component{
     	.range([0, radiusVal])
     	.domain(dataDomain);
 
-    const polygonCollection = [];
-
-    let projObj = {
-      projection: schema.proj,
-      scale: schema.scale,
-      translate: cartoTranslate,
-      precision: schema.precision
-    }
-
-    if (schema.parallels) projObj.parallels = schema.parallels;
-    if (schema.rotate) projObj.rotate = schema.rotate;
-
-    const proj = projectionFunc(projObj);
-    const geo = geoPath(proj);
-
-    if (cartogramType !== 'grid') {
-
-    		topojson.feature(schema.topojson, schema.topojson.objects[schema.feature]).features
-    			.map((polygonData,i) => {
-
-	    	const styles = {};
-	  		styles.stroke = '#E3E3E3';
-	      styles.fill = '#F6F6F6';
-
-	  		polygonCollection.push(
-	        <path
-	          key={`polygon_${i}_${polygonData.id}`}
-	          d= {geo(polygonData.geometry)}
-	          className={'polygon-render'}
-	          style={styles}
-	        />
-	    	);
-	    });
-	  }
+    const polygonCollection = this.constructUnderlyingMap(schema, cartoTranslate, cartogramType);
+    const centroids = this.constructCentroids(this.props, projection);
 
     const nodes = centroids.filter(function(d) {
 
