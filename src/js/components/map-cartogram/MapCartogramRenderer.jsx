@@ -109,7 +109,7 @@ const PolygonCollection = React.createClass({
       // Only tick if making a large change to the layout
       if (this.props.cartogramType !== nextProps.cartogramType
           || this.props.chartProps.stylings.showDC !== stylings.showDC
-          || nextProps.schemaName !== this.props.schemaName
+          || nextProps.schemaType !== this.props.schemaType
           || nextProps.radiusVal !== this.props.radiusVal
           || stylings[typeCast] !== this.props.chartProps.stylings[typeCast]
           || this._testDataChange(this.props.chartProps.data, nextProps.chartProps.data)) {
@@ -126,7 +126,6 @@ const PolygonCollection = React.createClass({
 		    const d3Node = d3.select(ReactDOM.findDOMNode(this.refs.graph)).selectAll('.node');
 
 		    enterNode(d3Node, stylings, nodes, typeCast);
-
 
         force.on("tick", (e, i) => {
           if (i > 200) force.stop();

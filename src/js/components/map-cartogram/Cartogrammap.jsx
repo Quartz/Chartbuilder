@@ -185,6 +185,7 @@ class MapRenderer extends React.Component{
             displayConfig={displayConfig}
             polygonClass={cartogramClass}
             nodes={nodes}
+            schemaType={schema.name}
             schemaName={schemaName}
             radiusVal={radiusVal}
             metadata={metadata}
