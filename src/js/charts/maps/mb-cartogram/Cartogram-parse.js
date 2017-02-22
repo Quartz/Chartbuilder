@@ -47,6 +47,8 @@ let parseCartogram = (config, _chartProps, callback, parseOpts, priorData = fals
   	maptype = chartProps.input.type;
   }
 
+  console.log(parseOpts, 'opts');
+
   if (parseOpts === 'input' || parseOpts === 'receive-model' || parseOpts.updateData) {
   	bySeries = dataBySeries(chartProps.input.raw, chartProps, {
 	    type: maptype

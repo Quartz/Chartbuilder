@@ -78,6 +78,19 @@ const PolygonCollection = React.createClass({
       force.start();
     }
   },
+  _testDataChange(pastDataset, newDataset) {
+  	let testDatasetChange = false;
+
+  	pastDataset.forEach(function(d, i) {
+  		if (!newDataset[i]) {
+  			testDatasetChange = true;
+  		} else {
+  			if (d.values.length !== newDataset[i].values.length) testDatasetChange = true;
+  		}
+  	});
+
+  	return testDatasetChange;
+  },
   componentWillUpdate: function(nextProps, nextState) {
 
     const stylings = nextProps.chartProps.stylings;
@@ -86,30 +99,34 @@ const PolygonCollection = React.createClass({
 
     d3Nodes = d3.select(ReactDOM.findDOMNode(this.refs.graph));
 
-    let theseNodes = d3Nodes.selectAll('.node')
-      .data(nodes, function (node) { return node.shp; });
-
-    theseNodes.enter().append('g')
-      .attr('class','node');
-
-    theseNodes.exit().remove();
-
-    const d3Node = d3.select(ReactDOM.findDOMNode(this.refs.graph)).selectAll('.node');
-    enterNode(d3Node, stylings, nodes, typeCast);
-
     if (stylings[typeCast] !== 'grid') {
 
     	//update the dorling or demers
       (stylings[typeCast] === 'dorling') ?
-          helperCarto.switchDorling (d3Node, stylings) :
-          helperCarto.switchDemers (d3Node, stylings);
+          helperCarto.switchDorling (d3Nodes, stylings) :
+          helperCarto.switchDemers (d3Nodes, stylings);
 
       // Only tick if making a large change to the layout
       if (this.props.cartogramType !== nextProps.cartogramType
           || this.props.chartProps.stylings.showDC !== stylings.showDC
           || nextProps.schemaName !== this.props.schemaName
           || nextProps.radiusVal !== this.props.radiusVal
-          || stylings[typeCast] !== this.props.chartProps.stylings[typeCast]) {
+          || stylings[typeCast] !== this.props.chartProps.stylings[typeCast]
+          || this._testDataChange(this.props.chartProps.data, nextProps.chartProps.data)) {
+
+
+      	let theseNodes = d3Nodes.selectAll('.node')
+		      .data(nodes, function (node) { return node.shp; });
+
+		    theseNodes.enter().append('g')
+		      .attr('class','node');
+
+		    theseNodes.exit().remove();
+
+		    const d3Node = d3.select(ReactDOM.findDOMNode(this.refs.graph)).selectAll('.node');
+
+		    enterNode(d3Node, stylings, nodes, typeCast);
+
 
         force.on("tick", (e, i) => {
           if (i > 200) force.stop();
@@ -118,7 +135,8 @@ const PolygonCollection = React.createClass({
                   helperCarto.updateDemers (e, d3Node, nodes);
         }).resume();
 
-        force.nodes(nodes).start();
+        force.nodes(nodes);
+        force.start();
       } else {
       	force.stop();
       }

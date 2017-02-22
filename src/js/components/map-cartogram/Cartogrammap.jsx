@@ -126,8 +126,8 @@ class MapRenderer extends React.Component{
     if (schema.parallels) projojection.parallels = schema.parallels;
     if (schema.rotate) projection.rotate = schema.rotate;
 
-
-    const dataById = d3.map(chartProps.alldata, function(d) { return schema.matchLogic(d[keyColumn]); });
+    const dataById = d3.map(chartProps.alldata, function(d) {
+    	return schema.matchLogic(d[keyColumn]); });
     const radiusVal = (cartogramType === 'dorling') ? +stylings.dorlingradiusVal : +stylings.demerssquareWidth;
 
     // for dorling and demers calculations
