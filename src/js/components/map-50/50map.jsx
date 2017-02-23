@@ -53,12 +53,16 @@ const MapRenderer = React.createClass({
 		const displayConfig = props.displayConfig;
     const metadata = props.metadata;
 
+    console.log(this.props, 'props');
+
     const data = topojson.feature(schema.topojson, schema.topojson.objects[featname]);
+
+    const updatedTranslate = [schema.translate[0] + (40 - (this.props.width * 40/320)), schema.translate[1]];
 
     let projObj = {
       projection: schema.proj,
       scale: schema.scale,
-      translate: schema.translate,
+      translate: updatedTranslate,
       precision: schema.precision
     }
 
@@ -68,13 +72,10 @@ const MapRenderer = React.createClass({
     const proj = projectionFunc(projObj);
     const geo = geoPath(proj);
 
-
     const stylings = chartProps.stylings;
 
 		const styleConfig = props.styleConfig;
 		const margin = displayConfig.margin;
-
-		console.log(this.props, 'enable');
 
 
     // set the dimensions of inner and outer. much of this will be unnecessary
@@ -96,10 +97,6 @@ const MapRenderer = React.createClass({
 				displayConfig.padding.top - displayConfig.padding.bottom
 			)
 		};
-
-		console.log(displayConfig, 'display');
-		console.log(margin, 'margin');
-		console.log(base_dimensions, 'base')
 
 		// height needed to account for legends
 		const extraHeight = 0; //(chartAreaDimensions.height * 1);
