@@ -85,7 +85,7 @@ const RendererWrapper = React.createClass({
 	},
 
 	componentWillMount: function() {
-		var chartType = this.props.model.metadata.chartType;
+		//var chartType = this.props.model.metadata.chartType;
 		var size_calcs = {};
 		// set chart breakpoints
 		if (this.props.width) {
@@ -116,13 +116,17 @@ const RendererWrapper = React.createClass({
 
 	// method for updating configs and breakpoints when width changes
 	_resizeUpdate: function(props, bp, domNodeWidth) {
-		var chartType = props.model.metadata.chartType;
+		const chartType = props.model.metadata.chartType;
+		const visualType = this.props.model.chartType;
+		const visualConfig = chartConfigs[chartType] || mapConfigs[chartType];
+		const visualStyle = (visualType === 'map') ? mapStyle : chartStyle;
+
 		return {
 			domNodeWidth: domNodeWidth,
 			emSize: bp.em_size,
 			svgSizeClass: bp.class_name,
-			chartConfig: convertConfig(chartConfigs[chartType] || mapConfigs[newtype], null, bp.em_size, domNodeWidth),
-			styleConfig: convertConfig(chartStyle, null, bp.em_size, domNodeWidth)
+			chartConfig: convertConfig(visualConfig, null, bp.em_size, domNodeWidth),
+			styleConfig: convertConfig(visualStyle, null, bp.em_size, domNodeWidth)
 		};
 	},
 
@@ -130,8 +134,11 @@ const RendererWrapper = React.createClass({
 	_updateWidth: function() {
 		var domNodeWidth = ReactDOM.findDOMNode(this).offsetWidth;
 		var bp = breakpoints.getBreakpointObj(this.props.enableResponsive, domNodeWidth);
+		console.log(domNodeWidth, 'dom',this.state.domNodeWidth)
 		if (domNodeWidth !== this.state.domNodeWidth) {
+			console.log('set state resized');
 			var resized = this._resizeUpdate(this.props, bp, domNodeWidth);
+			console.log(resized, 'resized');
 			if (resized) {
 				this.setState(resized);
 			}
@@ -141,6 +148,7 @@ const RendererWrapper = React.createClass({
 	// add resize listener if chart is responsive
 	componentDidMount: function() {
 		if (this.props.enableResponsive) {
+			console.log('update');
 			this._updateWidth(true);
 			this._updateWidth = throttle(this._updateWidth, 50);
 			window.addEventListener("resize", this._updateWidth);
@@ -168,12 +176,6 @@ const RendererWrapper = React.createClass({
 		return setMobile;
 	},
 
-	//_handleSvgUpdate: function(k, v) {
-		//var newSetting = {};
-		//newSetting[k] = v;
-		//this.setState(update(this.state, { $merge: newSetting }));
-	//},
-
 	render: function() {
 
 		const chartType = this.props.model.metadata.chartType;
@@ -182,7 +184,10 @@ const RendererWrapper = React.createClass({
 		let displayConfig = this.state.chartConfig.display;
 		const svgClassName = this.props.svgClassName || '';
 
+		console.log(width, 'width?');
+
 		if (!width) {
+			console.log('return new')
 			return <div style={{ width: "100%" }}></div>;
 		}
 
@@ -306,10 +311,12 @@ const RendererWrapper = React.createClass({
 			metadata = this.props.model.metadata;
 		}
 
-		const margin = this.state.chartConfig.display.margin;
-		const stylings = chartProps.stylings;
 		const metadataSvg = [];
 		const legends = [];
+
+		/*const margin = this.state.chartConfig.display.margin;
+		const stylings = chartProps.stylings;
+
 
 		const translate = {
 			top: margin.top,
@@ -349,19 +356,7 @@ const RendererWrapper = React.createClass({
 				)
 		}
 
-		if (this.props.showMetadata) {
-			if (metadata.title && metadata.title !== "") {
-				const title = (
-					<SvgText
-						text={metadata.title}
-						key="title"
-						translate={[translate.left, translate.top]}
-						align="top"
-						className="svg-text-title"
-					/>
-				);
-				metadataSvg.push(title);
-			}
+
 
 			if (chartProps.visualType === 'map') {
 				translate.subtitle = margin.subtitle;
@@ -378,16 +373,6 @@ const RendererWrapper = React.createClass({
 				metadataSvg.push(subtitle);
 			}
 
-			metadataSvg.push(
-				<ChartFooter
-					metadata={metadata}
-					extraHeight={this.state.extraHeight}
-					key="chartFooter"
-					translate={translate}
-					className="svg-credit-data"
-				/>
-			);
-		}
 		const clippingPath = (
 			<clipPath id="ellipse-clip">
 				<rect
@@ -396,13 +381,13 @@ const RendererWrapper = React.createClass({
 					width={620}
 					height={360}
 				/>
-			</clipPath>)
+			</clipPath>)*/
 		return (
 			<div className={["renderer-wrapper", this.state.svgSizeClass, this.props.className].join(" ")}>
 
 					<Renderer
 						width={width}
-						clippingPath={clippingPath}
+						//clippingPath={clippingPath}
 						extraHeight={this.state.extraHeight}
 						chartProps={chartProps}
 						isSmall={isSmall}
