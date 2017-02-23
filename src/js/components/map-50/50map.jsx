@@ -128,6 +128,7 @@ const MapRenderer = React.createClass({
 				outerDimensions={outerDimensions}
 				metadata={props.metadata}
 				displayConfig={displayConfig}
+	      isSmall={props.isSmall}
 				styleConfig={props.styleConfig}
 			>
 				<ClippingPath

@@ -43,12 +43,17 @@ var SvgWrapper = React.createClass({
 		);
 	},
 
-	_getYOffset: function(props) {
+	_getYOffset: function(props, forSVG) {
+		let afterTitle = 0;
 		if (props.metadata.title.length > 0) {
-			return props.displayConfig.afterTitle;
-		} else {
-			return 0;
+			afterTitle = props.displayConfig.afterTitle + afterTitle;
+			if (props.metadata.subtitle && props.isSmall && !forSVG) {
+				if (props.metadata.subtitle.length > 0) {
+					afterTitle = afterTitle + props.displayConfig.margin.subtitle;
+				}
+			}
 		}
+		return afterTitle
 	},
 
 	render: function() {
@@ -76,7 +81,7 @@ var SvgWrapper = React.createClass({
 				{this._createSubTitle(props)}
 				<g
 					className="chart-margin"
-					transform={"translate(" + [translate.left, translate.top + this._getYOffset(props)] + ")"} >
+					transform={"translate(" + [translate.left, translate.top + this._getYOffset(props, true)] + ")"} >
 					{props.children}
 				</g>
 				<ChartFooter
