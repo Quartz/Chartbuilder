@@ -32,7 +32,7 @@ const MapConfig = require("../MapConfig");
 
 
 
-const display = Object.freeze({
+const display = {
   labelRectSize: "0.6em",
   labelXMargin: "0.6em",
   labelTextMargin: "0.3em",
@@ -65,14 +65,14 @@ const display = Object.freeze({
     bottom: "4em",
     left: 0
   }
-});
+};
 
 /**
 * @name xy_defaultProps
 * @static
 * @memberof xy_config
 */
-const defaultProps = Object.freeze({
+const defaultProps = {
   /**
    * @name chartProps
    * @property {object} scale - Default settings for date and primary scales
@@ -142,7 +142,7 @@ const defaultProps = Object.freeze({
     credit: "",
     size: "auto"
   }
-});
+};
 
 const map_config = new MapConfig({
   displayName: "Choropleth",

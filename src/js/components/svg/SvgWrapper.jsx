@@ -56,6 +56,8 @@ var SvgWrapper = React.createClass({
 		var margin = props.displayConfig.margin;
 		var yOffset = this._getYOffset(props);
 		// Add to the chart margin if title is present
+
+		console.log(props, 'props wrapper');
 		var outerDimensions = {
 			width: props.outerDimensions.width,
 			height: props.outerDimensions.height + yOffset

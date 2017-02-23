@@ -299,6 +299,8 @@ const RendererWrapper = React.createClass({
 
 		const legends = [];
 
+		console.log('enable res', this.props.enableResponsive)
+
 		/*const margin = this.state.chartConfig.display.margin;
 		const stylings = chartProps.stylings;
 
@@ -346,7 +348,6 @@ const RendererWrapper = React.createClass({
 
 					<Renderer
 						width={width}
-						//clippingPath={clippingPath}
 						extraHeight={this.state.extraHeight}
 						chartProps={chartProps}
 						isSmall={isSmall}

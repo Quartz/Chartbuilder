@@ -11,7 +11,7 @@ const chartSizes = require("../../../config/mapconfig/map-sizes");
 function calculate_map_dimensions(width, opts) {
   let height;
   let aspectRatio = opts.displayConfig.aspectRatio;
-  let metadata = opts.model.metadata;
+  let metadata = opts.metadata;
 
   if (metadata.size == "auto" || opts.enableResponsive) {
     // use current width
@@ -30,7 +30,7 @@ function calculate_map_dimensions(width, opts) {
 
   return {
     width: width,
-    height: height + opts.extraHeight
+    height: height
   };
 }
 

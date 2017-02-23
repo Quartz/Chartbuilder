@@ -9,6 +9,14 @@ import ChartRendererMixin from "./../mixins/MapRendererMixin.js";
 const projectionFunc = require('react-d3-map-core').projection;
 const geoPath = require('react-d3-map-core').geoPath;
 
+const SvgWrapper = require("../svg/SvgWrapper.jsx");
+
+const ClippingPath = require("../../components/shared/ClippingPath.jsx");
+const LegendSpace = require("../../components/svg/MapLegendSpace.jsx");
+
+const choroplethDimensions = require("../../charts/maps/mb-50/mb-50-dimensions.js");
+
+
 // move into config?
 const polygonClass = 'polygon-render';
 
@@ -36,13 +44,14 @@ const MapRenderer = React.createClass({
 	},
   render: function() {
 
-    const chartProps = this.props.chartProps;
+  	const props = this.props;
+    const chartProps = props.chartProps;
     const schema = chartProps.schema.schema;
     const featname = schema.feature;
-    const shouldSearch = this.props.shouldSearch;
+    const shouldSearch = props.shouldSearch;
 
-		const displayConfig = this.props.displayConfig;
-    const metadata = this.props.metadata;
+		const displayConfig = props.displayConfig;
+    const metadata = props.metadata;
 
     const data = topojson.feature(schema.topojson, schema.topojson.objects[featname]);
 
@@ -59,19 +68,92 @@ const MapRenderer = React.createClass({
     const proj = projectionFunc(projObj);
     const geo = geoPath(proj);
 
+
+    const stylings = chartProps.stylings;
+
+		const styleConfig = props.styleConfig;
+		const margin = displayConfig.margin;
+
+		console.log(this.props, 'enable');
+
+
+    // set the dimensions of inner and outer. much of this will be unnecessary
+		// if we draw stuff in HTML
+		const base_dimensions = choroplethDimensions(props.width, {
+			displayConfig: displayConfig,
+			enableResponsive: props.enableResponsive,
+			metadata: props.metadata
+		});
+
+		// Dimensions of the chart area
+		const chartAreaDimensions = {
+			width: (
+				base_dimensions.width - margin.left - margin.right -
+				displayConfig.padding.left - displayConfig.padding.right
+			),
+			height: (
+				base_dimensions.height - margin.top - margin.bottom -
+				displayConfig.padding.top - displayConfig.padding.bottom
+			)
+		};
+
+		console.log(displayConfig, 'display');
+		console.log(margin, 'margin');
+		console.log(base_dimensions, 'base')
+
+		// height needed to account for legends
+		const extraHeight = (chartAreaDimensions.height * 1);
+
+		// dimensions of entire canvas, base + label height
+		const outerDimensions = {
+			width: base_dimensions.width,
+			height: base_dimensions.height + extraHeight
+		};
+
+		const translate = [0,0];
+
+
+
+    const legendsArray = Object.keys(chartProps.legend).map((k) => chartProps.legend[k]);
+
     return (
-          <PolygonCollection
-            chartProps= {chartProps}
-            stylings = {chartProps.stylings}
-            data= {data.features}
-            geoPath= {geo}
-            metadata ={metadata}
-            schema={schema}
-            proj={proj}
-            shouldSearch={shouldSearch}
-            displayConfig={displayConfig}
-            polygonClass={polygonClass}
-          />
+
+			<SvgWrapper
+				outerDimensions={outerDimensions}
+				metadata={props.metadata}
+				displayConfig={displayConfig}
+				styleConfig={props.styleConfig}
+			>
+				<ClippingPath
+					outerDimensions={outerDimensions}
+					metadata={props.metadata}
+					displayConfig={displayConfig}
+				/>
+				{/* main map area */}
+	      <PolygonCollection
+	        chartProps= {chartProps}
+	        stylings = {chartProps.stylings}
+	        data= {data.features}
+	        geoPath= {geo}
+	        metadata ={metadata}
+	        schema={schema}
+	        proj={proj}
+	        displayConfig={displayConfig}
+	        polygonClass={polygonClass}
+	      />
+	      <LegendSpace
+					key="legend"
+					translate={translate}
+					className="svg-legend-space"
+					chartProps={chartProps}
+					stylings={stylings}
+					metadata={props.metadata}
+					legendsArray={legendsArray}
+					dimensions={outerDimensions}
+					displayConfig={displayConfig}
+					chartWidth={outerDimensions.width - margin.left - margin.right}
+				/>
+	    </SvgWrapper>
     );
   }
 });

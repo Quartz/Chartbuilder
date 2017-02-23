@@ -6,12 +6,6 @@ import {centroid} from 'turf';
 // Flux actions
 const MapViewActions = require("../../actions/VisualViewActions");
 //
-const ClippingPath = require("../../components/shared/ClippingPath.jsx");
-const LegendSpace = require("../../components/svg/MapLegendSpace.jsx");
-const SvgWrapper = require("../svg/SvgWrapper.jsx");
-
-const choroplethDimensions = require("../../charts/maps/mb-50/mb-50-dimensions.js");
-
 const PolygonsRender = React.createClass({
 
   propTypes: {
@@ -273,44 +267,6 @@ const PolygonsRender = React.createClass({
     const geoPath = props.geoPath;
     const projection = props.proj;
     const currSettings = chartProps.scale;
-    const stylings = chartProps.stylings;
-
-		const displayConfig = props.displayConfig;
-		const styleConfig = props.styleConfig;
-		const margin = displayConfig.margin;
-
-
-    // set the dimensions of inner and outer. much of this will be unnecessary
-		// if we draw stuff in HTML
-		const base_dimensions = choroplethDimensions(props.width, {
-			displayConfig: displayConfig,
-			enableResponsive: props.enableResponsive,
-			metadata: props.metadata
-		});
-
-		// Dimensions of the chart area
-		const chartAreaDimensions = {
-			width: (
-				base_dimensions.width - margin.left - margin.right -
-				displayConfig.padding.left - displayConfig.padding.right
-			),
-			height: (
-				base_dimensions.height - margin.top - margin.bottom -
-				displayConfig.padding.top - displayConfig.padding.bottom
-			)
-		};
-
-		// height needed to account for legends
-		const extraHeight = (chartAreaDimensions.height * 1);
-
-		// dimensions of entire canvas, base + label height
-		const outerDimensions = {
-			width: base_dimensions.width,
-			height: base_dimensions.height + extraHeight
-		};
-
-		const translate = [0,0];
-
 
 
     const alldata = chartProps.data;
@@ -380,40 +336,14 @@ const PolygonsRender = React.createClass({
     	}
     });
 
-    const legendsArray = Object.keys(chartProps.legend).map((k) => chartProps.legend[k]);
 
     return (
 
-			<SvgWrapper
-				outerDimensions={outerDimensions}
-				metadata={props.metadata}
-				displayConfig={displayConfig}
-				styleConfig={props.styleConfig}
-			>
-				<ClippingPath
-					outerDimensions={outerDimensions}
-					metadata={props.metadata}
-					displayConfig={displayConfig}
-				/>
-				{/* main map area */}
 	      <g transform={translation}
 	      	 className="polygon-group"
 	      	 clipPath="url(#ellipse-clip)">
 	      	{polygonCollection}
 	      </g>
-	      <LegendSpace
-						key="legend"
-						translate={translate}
-						className="svg-legend-space"
-						chartProps={chartProps}
-						stylings={stylings}
-						metadata={props.metadata}
-						legendsArray={legendsArray}
-						dimensions={outerDimensions}
-						displayConfig={displayConfig}
-						chartWidth={outerDimensions.width - margin.left - margin.right}
-					/>
-	    </SvgWrapper>
     );
   }
 });
