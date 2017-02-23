@@ -30,7 +30,9 @@ const PolygonsRender = React.createClass({
 
     const translation = this._getTranslation(chartProps);
 
-    const svg = d3.select('.polygon-group');
+    console.log(nextProps.isSmall, 'hm');
+
+    const svg = d3.select('.polygon-group' + '.' + nextProps.isSmall);
 
     svg.attr('transform', translation);
     // tk
@@ -56,7 +58,8 @@ const PolygonsRender = React.createClass({
   },
   _updateStroke(nextProps) {
   	//update all strokes to new stroke val
-    d3.select('.polygon-group')
+  	console.log(nextProps,'next');
+    d3.select('.polygon-group'  + '.' + nextProps.isSmall)
     	.selectAll('.' + nextProps.polygonClass)
     	.style('stroke', nextProps.stylings.stroke);
   },
@@ -340,7 +343,7 @@ const PolygonsRender = React.createClass({
     return (
 
 	      <g transform={translation}
-	      	 className="polygon-group"
+	      	 className={"polygon-group " +  props.isSmall}
 	      	 clipPath="url(#ellipse-clip)">
 	      	{polygonCollection}
 	      </g>

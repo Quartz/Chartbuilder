@@ -9,7 +9,7 @@ const us = {
 		label: 'U.S. 50 State',
 		name: 'states50',
 		proj: 'albersUsa',
-		translate: [270, 180],
+		translate: [310, 180],
 		translateCartogram: [270, 180],
 		precision: 1,
 		scale: 710,

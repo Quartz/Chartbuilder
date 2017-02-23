@@ -53,15 +53,14 @@ const MapRenderer = React.createClass({
 		const displayConfig = props.displayConfig;
     const metadata = props.metadata;
 
-    console.log(this.props, 'props');
-
     const data = topojson.feature(schema.topojson, schema.topojson.objects[featname]);
 
-    const updatedTranslate = [schema.translate[0] + (40 - (this.props.width * 40/320)), schema.translate[1]];
+    const updatedTranslate = [schema.translate[0] * (this.props.width / 700), schema.translate[1]  * (this.props.width / 700)];
+    const updatedScale = schema.scale * (this.props.width / 700);
 
     let projObj = {
       projection: schema.proj,
-      scale: schema.scale,
+      scale: updatedScale,
       translate: updatedTranslate,
       precision: schema.precision
     }
@@ -76,6 +75,8 @@ const MapRenderer = React.createClass({
 
 		const styleConfig = props.styleConfig;
 		const margin = displayConfig.margin;
+
+		console.log(this.props, 'hmmm');
 
 
     // set the dimensions of inner and outer. much of this will be unnecessary
@@ -147,6 +148,7 @@ const MapRenderer = React.createClass({
 	        metadata ={metadata}
 	        schema={schema}
 	        proj={proj}
+	        isSmall={props.isSmall}
 	        displayConfig={displayConfig}
 	        polygonClass={polygonClass}
 	      />

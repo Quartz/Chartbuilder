@@ -53,10 +53,10 @@ const display = {
     right: "0.8em",
     bottom: "1.2em",
     left: "0.8em",
-    maptop: "0.7em",
+    maptop: "0.3em",
     subtitle: "2em",
     legendleft: "0.8em",
-    legendsOneRow: "1em",
+    legendsOneRow: "0.9em",
     legendsTwoRow: "22.5em"
   },
   padding: {
