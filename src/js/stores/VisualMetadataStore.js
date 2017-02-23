@@ -8,7 +8,7 @@ var EventEmitter = require("events").EventEmitter;
 /* Flux dispatcher */
 var Dispatcher = require("../dispatcher/dispatcher");
 
-/* Require the `ChartProptiesStore so that we can wait for it to update */
+/* Require the `VisualProptiesStore so that we can wait for it to update */
 var VisualPropertiesStore = require("./VisualPropertiesStore");
 
 /* Singleton that houses metadata */
@@ -105,7 +105,7 @@ function registeredCallback(payload) {
 
 		case "update-data-input":
 			if (!titleDirty) {
-				data = ChartPropertiesStore.get("data");
+				data = VisualPropertiesStore.get("data");
 				_metadata.title = defaultTitle(data);
 				ChartMetadataStore.emitChange();
 			}

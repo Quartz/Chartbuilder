@@ -11,11 +11,11 @@ const parseDelimInput = require("./parse-delimited-input").parser;
 // Parse data by series. Options:
 function dataBySeries(input, chartProps, opts) {
 
-		opts = opts || {};
+	opts = opts || {};
 
-		const parsedInput = parseDelimInput(input, {
-				type: opts.type
-		});
+	const parsedInput = parseDelimInput(input, {
+			type: opts.type
+	});
 
 	const columnNames = parsedInput.columnNames;
 	const columnNamesSaved = clone(columnNames);
@@ -68,8 +68,8 @@ function dataBySeries(input, chartProps, opts) {
 											name: 'Legend group',
 											entry: d[keyColumn],
 											value: d[valueColumn]
-									};
-					})
+						};
+				})
 		});
 	}
 
@@ -83,10 +83,10 @@ function dataBySeries(input, chartProps, opts) {
 											name: q,
 											entry: d[keyColumn],
 											value: d[valueColumn]
-									};
-							}
+							};
+						}
 					})
-			});
+		});
 	});
 
 

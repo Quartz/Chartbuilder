@@ -272,12 +272,6 @@ const RendererWrapper = React.createClass({
 		} catch (e) {
 			console.error(e.name, e.message);
 		}
-
-		const Renderer = chartRenderers[chartType] || mapRenderers[chartType];
-		//const Config = chartConfigs[chartType] || mapConfigs[chartType];
-
-		let chartProps;
-		let metadata;
 =======*/
 
 		const Renderer = chartRenderers[chartType] || mapRenderers[chartType];
@@ -303,7 +297,6 @@ const RendererWrapper = React.createClass({
 			metadata = this.props.model.metadata;
 		}
 
-		const metadataSvg = [];
 		const legends = [];
 
 		/*const margin = this.state.chartConfig.display.margin;
@@ -346,23 +339,8 @@ const RendererWrapper = React.createClass({
 						chartWidth={dimensions.width - margin.left - margin.right}
 					/>
 				)
-		}
+		}*/
 
-
-
-			if (chartProps.visualType === 'map') {
-
-			}
-
-		const clippingPath = (
-			<clipPath id="ellipse-clip">
-				<rect
-					x='0.8em'
-					y='0.6em'
-					width={620}
-					height={360}
-				/>
-			</clipPath>)*/
 		return (
 			<div className={["renderer-wrapper", this.state.svgSizeClass, this.props.className].join(" ")}>
 
@@ -379,8 +357,6 @@ const RendererWrapper = React.createClass({
 						editable={this.props.editable}
 						enableResponsive={this.props.enableResponsive}
 					/>
-					{legends}
-					{metadataSvg}
 			</div>
 		);
 	}

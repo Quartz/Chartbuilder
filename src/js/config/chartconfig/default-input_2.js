@@ -188,7 +188,7 @@ const default_input = [
 	"AL	Athletes	1",
 	"AR	Athletes	6",
 	"AZ	Athletes	10",
-	"CA	Athlete	20",
+	"CA	Athletes	20",
 	"CO	Athletes	18",
 	"CT	Athletes	8",
 	"DC	Athletes	3",

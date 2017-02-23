@@ -8,6 +8,7 @@ const MapViewActions = require("../../actions/VisualViewActions");
 //
 const ClippingPath = require("../../components/shared/ClippingPath.jsx");
 const LegendSpace = require("../../components/svg/MapLegendSpace.jsx");
+const SvgWrapper = require("../svg/SvgWrapper.jsx");
 
 const choroplethDimensions = require("../../charts/maps/mb-50/mb-50-dimensions.js");
 
@@ -272,18 +273,23 @@ const PolygonsRender = React.createClass({
     const geoPath = props.geoPath;
     const projection = props.proj;
     const currSettings = chartProps.scale;
+    const stylings = chartProps.stylings;
+
+		const displayConfig = props.displayConfig;
+		const styleConfig = props.styleConfig;
+		const margin = displayConfig.margin;
 
 
     // set the dimensions of inner and outer. much of this will be unnecessary
 		// if we draw stuff in HTML
-		var base_dimensions = choroplethDimensions(props.width, {
+		const base_dimensions = choroplethDimensions(props.width, {
 			displayConfig: displayConfig,
 			enableResponsive: props.enableResponsive,
 			metadata: props.metadata
 		});
 
 		// Dimensions of the chart area
-		var chartAreaDimensions = {
+		const chartAreaDimensions = {
 			width: (
 				base_dimensions.width - margin.left - margin.right -
 				displayConfig.padding.left - displayConfig.padding.right
@@ -294,21 +300,16 @@ const PolygonsRender = React.createClass({
 			)
 		};
 
-		// height needed to account for legend labels
-		var extraHeight = (chartAreaDimensions.height * this.state.labelYMax)
-		var chartAreaTranslateY = extraHeight;
+		// height needed to account for legends
+		const extraHeight = (chartAreaDimensions.height * 1);
 
 		// dimensions of entire canvas, base + label height
-		var outerDimensions = {
+		const outerDimensions = {
 			width: base_dimensions.width,
 			height: base_dimensions.height + extraHeight
 		};
 
-		// account for legend label offset
-		if (needsLabelOffset && props.chartProps.data.length > 1) {
-			chartAreaTranslateY += displayConfig.afterLegend;
-			chartAreaDimensions.height -= displayConfig.afterLegend;
-		}
+		const translate = [0,0];
 
 
 
@@ -379,6 +380,8 @@ const PolygonsRender = React.createClass({
     	}
     });
 
+    const legendsArray = Object.keys(chartProps.legend).map((k) => chartProps.legend[k]);
+
     return (
 
 			<SvgWrapper
@@ -387,13 +390,29 @@ const PolygonsRender = React.createClass({
 				displayConfig={displayConfig}
 				styleConfig={props.styleConfig}
 			>
-				<ClippingPath />
-
+				<ClippingPath
+					outerDimensions={outerDimensions}
+					metadata={props.metadata}
+					displayConfig={displayConfig}
+				/>
+				{/* main map area */}
 	      <g transform={translation}
 	      	 className="polygon-group"
 	      	 clipPath="url(#ellipse-clip)">
 	      	{polygonCollection}
 	      </g>
+	      <LegendSpace
+						key="legend"
+						translate={translate}
+						className="svg-legend-space"
+						chartProps={chartProps}
+						stylings={stylings}
+						metadata={props.metadata}
+						legendsArray={legendsArray}
+						dimensions={outerDimensions}
+						displayConfig={displayConfig}
+						chartWidth={outerDimensions.width - margin.left - margin.right}
+					/>
 	    </SvgWrapper>
     );
   }
