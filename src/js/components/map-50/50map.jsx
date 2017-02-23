@@ -102,7 +102,7 @@ const MapRenderer = React.createClass({
 		console.log(base_dimensions, 'base')
 
 		// height needed to account for legends
-		const extraHeight = (chartAreaDimensions.height * 1);
+		const extraHeight = 0; //(chartAreaDimensions.height * 1);
 
 		// dimensions of entire canvas, base + label height
 		const outerDimensions = {
@@ -110,9 +110,21 @@ const MapRenderer = React.createClass({
 			height: base_dimensions.height + extraHeight
 		};
 
-		const translate = [0,0];
+		const translate = {
+			top: margin.top,
+			left: margin.left,
+			legendleft:margin.legendleft
+		};
 
-
+		if (metadata.subtitle) {
+			if (metadata.subtitle.length > 0) {
+				translate.legendsOneRow = margin.legendsOneRow + 35;
+				translate.legendsTwoRow = margin.legendsTwoRow + 35;
+			}
+		} else {
+			translate.legendsOneRow = margin.legendsOneRow;
+			translate.legendsTwoRow = margin.legendsTwoRow;
+		}
 
     const legendsArray = Object.keys(chartProps.legend).map((k) => chartProps.legend[k]);
 

@@ -206,7 +206,6 @@ const RendererWrapper = React.createClass({
 		}
 
 /*
-<<<<<<< HEAD
 		let extraHeight = this.state.extraHeight;
 		// reduce margin if only one legend
 		if (this.props.model.chartProps.legend || this.props.model.metadata.subtitle) {
@@ -272,12 +271,11 @@ const RendererWrapper = React.createClass({
 		} catch (e) {
 			console.error(e.name, e.message);
 		}
-=======*/
+*/
 
 		const Renderer = chartRenderers[chartType] || mapRenderers[chartType];
 		var chartProps;
 		var metadata;
-//>>>>>>> 310aa57e0c9c3c3ece031f916b1b97cc724f4d03
 
 		// If rendered chart is not editable and has a date, we presume data is
 		// being passed in and we need to use the data with processed dates
@@ -296,52 +294,6 @@ const RendererWrapper = React.createClass({
 		} else {
 			metadata = this.props.model.metadata;
 		}
-
-		const legends = [];
-
-		console.log('enable res', this.props.enableResponsive)
-
-		/*const margin = this.state.chartConfig.display.margin;
-		const stylings = chartProps.stylings;
-
-
-		const translate = {
-			top: margin.top,
-			//right: dimensions.width - margin.right,
-			//bottom: dimensions.height - margin.bottom,
-			left: margin.left
-		};
-
-		if (this.props.showLegenddata) {
-			translate.legendleft = margin.legendleft;
-
-			if (this.props.model.metadata.subtitle) {
-				if (this.props.model.metadata.subtitle.length > 0) {
-					translate.legendsOneRow = margin.legendsOneRow + 35;
-					translate.legendsTwoRow = margin.legendsTwoRow + 35;
-				}
-			} else {
-				translate.legendsOneRow = margin.legendsOneRow;
-				translate.legendsTwoRow = margin.legendsTwoRow;
-			}
-
-			const legendsArray = Object.keys(chartProps.legend).map((k) => chartProps.legend[k]);
-
-			legends.push(
-					<LegendSpace
-						key="legend"
-						translate={translate}
-						className="svg-legend-space"
-						chartProps={chartProps}
-						stylings={stylings}
-						metadata={metadata}
-						legendsArray={legendsArray}
-						dimensions={dimensions}
-						displayConfig={displayConfig}
-						chartWidth={dimensions.width - margin.left - margin.right}
-					/>
-				)
-		}*/
 
 		return (
 			<div className={["renderer-wrapper", this.state.svgSizeClass, this.props.className].join(" ")}>

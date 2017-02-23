@@ -98,7 +98,7 @@ const PolygonsRender = React.createClass({
     return topTranslation;
   },
   _getTranslation: function(chartProps) {
-    const topTranslation = (Object.keys(chartProps.legend).length === 1) ? this.props.displayConfig.margin.maptop + 50 : this.props.displayConfig.margin.maptop;
+    const topTranslation = (Object.keys(chartProps.legend).length === 1) ? this.props.displayConfig.margin.maptop + 30 : this.props.displayConfig.margin.maptop;
     const translation = `translate(0,${this._topTranslation(topTranslation)})`;
 
     return translation;

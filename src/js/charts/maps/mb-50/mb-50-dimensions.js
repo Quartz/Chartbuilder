@@ -13,15 +13,11 @@ function calculate_map_dimensions(width, opts) {
   let aspectRatio = opts.displayConfig.aspectRatio;
   const metadata = opts.metadata;
 
-  console.log(JSON.stringify(opts), 'opts', width, 'width');
-
   if (metadata.size == "auto" || opts.enableResponsive) {
     // use current width
   } else {
     width = chartSizes[metadata.size].width;
   }
-
-  console.log(width)
 
   switch (metadata.size) {
     case "auto":

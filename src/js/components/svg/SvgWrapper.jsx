@@ -70,6 +70,8 @@ var SvgWrapper = React.createClass({
 			left: margin.left
 		};
 
+		console.log(outerDimensions, 'outer d');
+
 		return (
 			<svg className="chartbuilder-svg" width={outerDimensions.width} height={outerDimensions.height}>
 				<BackgroundRect dimensions={outerDimensions} />

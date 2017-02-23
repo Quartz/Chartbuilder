@@ -196,6 +196,7 @@ var XYRenderer = React.createClass({
 		var margin = displayConfig.margin;
 		var scale = _chartProps.scale;
 
+
 		// bools that affect how chart will render
 		var hasColumn = this._chartHasColumn(_chartProps.chartSettings);
 		var needsLabelOffset = this._needsLabelOffset(_chartProps._annotations.labels, _chartProps.data)
@@ -213,6 +214,13 @@ var XYRenderer = React.createClass({
 			metadata: props.metadata
 		});
 
+
+
+		console.log(displayConfig, 'display');
+		console.log(margin, 'margin');
+		console.log(base_dimensions, 'base')
+
+
 		// Dimensions of the chart area
 		var chartAreaDimensions = {
 			width: (
@@ -229,6 +237,8 @@ var XYRenderer = React.createClass({
 		// height needed to account for legend labels
 		var extraHeight = (chartAreaDimensions.height * this.state.labelYMax)
 		var chartAreaTranslateY = extraHeight;
+
+		console.log(this.state.labelYMax, 'hm', extraHeight);
 
 		// dimensions of entire canvas, base + label height
 		var outerDimensions = {

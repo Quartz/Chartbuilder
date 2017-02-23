@@ -37,26 +37,26 @@ const display = {
   labelXMargin: "0.6em",
   labelTextMargin: "0.3em",
   labelRowHeight: "1.2em",
-  afterTitle: "1.6em",
+  afterTitle: "1.4em",
   afterLegend: "1.6em",
   blockerRectOffset: "0.3em",
   columnPaddingCoefficient: 0.3,
   minPaddingOuter: "1em",
   bottomPaddingWithoutFooter: "3em",
-  aspectRatio: {
-    wide: (6 / 7),
-    longSpot: (4 / 3),
-    smallSpot: (3 / 4)
-  },
+	aspectRatio: {
+		wide: (11 / 16),
+		longSpot: (4 / 3),
+		smallSpot: (3 / 4)
+	},
   margin: {
-    top: "1.2em",
+    top: "0.9em",
     right: "0.8em",
     bottom: "1.2em",
     left: "0.8em",
-    maptop: "2.7em",
+    maptop: "0.7em",
     subtitle: "2em",
     legendleft: "0.8em",
-    legendsOneRow: "3.85em",
+    legendsOneRow: "1em",
     legendsTwoRow: "22.5em"
   },
   padding: {
