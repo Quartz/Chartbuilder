@@ -134,11 +134,8 @@ const RendererWrapper = React.createClass({
 	_updateWidth: function() {
 		var domNodeWidth = ReactDOM.findDOMNode(this).offsetWidth;
 		var bp = breakpoints.getBreakpointObj(this.props.enableResponsive, domNodeWidth);
-		console.log(domNodeWidth, 'dom',this.state.domNodeWidth)
 		if (domNodeWidth !== this.state.domNodeWidth) {
-			console.log('set state resized');
 			var resized = this._resizeUpdate(this.props, bp, domNodeWidth);
-			console.log(resized, 'resized');
 			if (resized) {
 				this.setState(resized);
 			}
@@ -148,7 +145,6 @@ const RendererWrapper = React.createClass({
 	// add resize listener if chart is responsive
 	componentDidMount: function() {
 		if (this.props.enableResponsive) {
-			console.log('update');
 			this._updateWidth(true);
 			this._updateWidth = throttle(this._updateWidth, 50);
 			window.addEventListener("resize", this._updateWidth);
@@ -184,10 +180,7 @@ const RendererWrapper = React.createClass({
 		let displayConfig = this.state.chartConfig.display;
 		const svgClassName = this.props.svgClassName || '';
 
-		console.log(width, 'width?');
-
 		if (!width) {
-			console.log('return new')
 			return <div style={{ width: "100%" }}></div>;
 		}
 

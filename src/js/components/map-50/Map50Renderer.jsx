@@ -260,14 +260,73 @@ const PolygonsRender = React.createClass({
     }
   },
   render: function() {
-  	const chartProps = this.props.chartProps;
-    const mapSchema = this.props.schema;
-    const geoPath = this.props.geoPath;
-    const projection = this.props.proj;
+  	//grab some props for convienience
+  	const props = this.props;
+  	const chartProps = props.chartProps;
+    const mapSchema = props.schema;
+    const geoPath = props.geoPath;
+    const projection = props.proj;
     const currSettings = chartProps.scale;
 
+
+
+		var hasTitle = (props.metadata.title.length > 0 && props.showMetadata);
+
+
+    // set the dimensions of inner and outer. much of this will be unnecessary
+		// if we draw stuff in HTML
+		var base_dimensions = xyDimensions(props.width, {
+			displayConfig: displayConfig,
+			enableResponsive: props.enableResponsive,
+			metadata: props.metadata
+		});
+
+		// Dimensions of the chart area
+		var chartAreaDimensions = {
+			width: (
+				base_dimensions.width - margin.left - margin.right -
+				displayConfig.padding.left - displayConfig.padding.right -
+				tickWidths.primaryScale.max - tickWidths.secondaryScale.max
+			),
+			height: (
+				base_dimensions.height - margin.top - margin.bottom -
+				displayConfig.padding.top - displayConfig.padding.bottom
+			)
+		};
+
+		// height needed to account for legend labels
+		var extraHeight = (chartAreaDimensions.height * this.state.labelYMax)
+		var chartAreaTranslateY = extraHeight;
+
+		// dimensions of entire canvas, base + label height
+		var outerDimensions = {
+			width: base_dimensions.width,
+			height: base_dimensions.height + extraHeight
+		};
+
+		// account for legend label offset
+		if (needsLabelOffset && props.chartProps.data.length > 1) {
+			chartAreaTranslateY += displayConfig.afterLegend;
+			chartAreaDimensions.height -= displayConfig.afterLegend;
+		}
+
+		// y axis and scales
+		var yRange = [chartAreaDimensions.height, props.styleConfig.overtick_top];
+		var yAxes = {
+			primaryScale: scaleUtils.generateScale("linear", scale.primaryScale, null, yRange),
+			secondaryScale: scaleUtils.generateScale("linear", scale.secondaryScale, null, yRange)
+		}
+
+		// x axis and scales
+		var xPadding = (
+			chartAreaDimensions.width * this._getXOuterPadding(hasColumn) +
+			props.styleConfig.xOverTick
+		);
+
+
+
     const alldata = chartProps.data;
-    const allpolygons = this.props.data;
+    const allpolygons = props.data;
     const columnNames = chartProps.columns;
 
     const showLabels = chartProps.stylings.showStateLabels;
@@ -334,11 +393,27 @@ const PolygonsRender = React.createClass({
     });
 
     return (
-      <g transform={translation}
-      	 className="polygon-group"
-      	 clipPath="url(#ellipse-clip)">
-      	{polygonCollection}
-      </g>
+
+			<SvgWrapper
+				outerDimensions={outerDimensions}
+				metadata={props.metadata}
+				displayConfig={displayConfig}
+				styleConfig={props.styleConfig}
+			>
+				<clipPath id="ellipse-clip">
+					<rect
+						x='0.8em'
+						y='0.6em'
+						width={620}
+						height={360}
+					/>
+				</clipPath>
+	      <g transform={translation}
+	      	 className="polygon-group"
+	      	 clipPath="url(#ellipse-clip)">
+	      	{polygonCollection}
+	      </g>
+	    </SvgWrapper>
     );
   }
 });
