@@ -25,16 +25,25 @@ class ClippingPath extends React.Component {
   }
 
 	render () {
+		//
+		const props = this.props;
+		const margin = props.displayConfig.margin;
+		const chartAreaDimensions = props.chartAreaDimensions;
+
+		const translate = {
+			top: margin.top,
+			left: margin.left
+		};
 
 		return (
-			<clippPath>
-			<rect
-						x='0.8em'
-						y='0.6em'
-						width={620}
-						height={360}
-					/>
-				</clippPath>
+			<clipPath id="clip">
+				<rect
+					x={translate.left}
+					y={translate.top}
+					width={chartAreaDimensions.width}
+					height={chartAreaDimensions.height}
+				/>
+			</clipPath>
 
 		);
 	}

@@ -55,7 +55,7 @@ const MapRenderer = React.createClass({
 
     const data = topojson.feature(schema.topojson, schema.topojson.objects[featname]);
 
-    const updatedTranslate = [schema.translate[0] * (this.props.width / 700), schema.translate[1]  * (this.props.width / 700)];
+    const updatedTranslate = [schema.translate[0] * (this.props.width / 640), schema.translate[1]  * (this.props.width / 640)];
     const updatedScale = schema.scale * (this.props.width / 700);
 
     let projObj = {
@@ -75,9 +75,6 @@ const MapRenderer = React.createClass({
 
 		const styleConfig = props.styleConfig;
 		const margin = displayConfig.margin;
-
-		console.log(this.props, 'hmmm');
-
 
     // set the dimensions of inner and outer. much of this will be unnecessary
 		// if we draw stuff in HTML
@@ -135,7 +132,7 @@ const MapRenderer = React.createClass({
 				styleConfig={props.styleConfig}
 			>
 				<ClippingPath
-					outerDimensions={outerDimensions}
+					chartAreaDimensions={chartAreaDimensions}
 					metadata={props.metadata}
 					displayConfig={displayConfig}
 				/>

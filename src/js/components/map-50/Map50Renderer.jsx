@@ -343,7 +343,7 @@ const PolygonsRender = React.createClass({
     return (
 	      <g transform={translation}
 	      	 className={"polygon-group " +  props.isSmall}
-	      	 clipPath="url(#ellipse-clip)">
+	      	 clipPath="url(#clip)">
 	      	{polygonCollection}
 	      </g>
     );
