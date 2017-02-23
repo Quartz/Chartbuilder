@@ -113,8 +113,8 @@ const MapRenderer = React.createClass({
 
 		if (metadata.subtitle) {
 			if (metadata.subtitle.length > 0) {
-				translate.legendsOneRow = margin.legendsOneRow + 35;
-				translate.legendsTwoRow = margin.legendsTwoRow + 35;
+				translate.legendsOneRow = margin.legendsOneRow + margin.subtitle;
+				translate.legendsTwoRow = margin.legendsTwoRow + margin.subtitle;
 			}
 		} else {
 			translate.legendsOneRow = margin.legendsOneRow;
@@ -124,7 +124,6 @@ const MapRenderer = React.createClass({
     const legendsArray = Object.keys(chartProps.legend).map((k) => chartProps.legend[k]);
 
     return (
-
 			<SvgWrapper
 				outerDimensions={outerDimensions}
 				metadata={props.metadata}

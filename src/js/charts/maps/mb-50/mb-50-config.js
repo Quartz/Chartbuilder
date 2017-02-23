@@ -52,7 +52,7 @@ const display = {
     bottom: "1.2em",
     left: "0.8em",
     maptop: "0.3em",
-    subtitle: "2em",
+    subtitle: "1.5em",
     legendleft: "0.8em",
     legendsOneRow: "0.9em",
     legendsTwoRow: "22.5em"

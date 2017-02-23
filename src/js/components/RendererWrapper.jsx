@@ -287,7 +287,6 @@ const RendererWrapper = React.createClass({
 
 		return (
 			<div className={["renderer-wrapper", this.state.svgSizeClass, this.props.className].join(" ")}>
-
 					<Renderer
 						width={width}
 						extraHeight={this.state.extraHeight}

@@ -20,7 +20,7 @@ const colorScales = require('./../../util/colorscales').scalesMap;
 
 class MapRenderer extends React.Component{
 
-  constructCentroids(props, projection) {
+  constructCentroids (props, projection) {
 
     const centroidsConst = [];
 
@@ -41,7 +41,7 @@ class MapRenderer extends React.Component{
 
   	return centroidsConst;
   }
- 	constructGrid(cartogramType) {
+ 	constructGrid (cartogramType) {
 
 	  const grid = {};
 
@@ -59,7 +59,7 @@ class MapRenderer extends React.Component{
 
   	return grid;
   }
-  constructUnderlyingMap(schema, cartoTranslate, cartogramType) {
+  constructUnderlyingMap (schema, cartoTranslate, cartogramType) {
 
   	const polygonCollection = [];
 

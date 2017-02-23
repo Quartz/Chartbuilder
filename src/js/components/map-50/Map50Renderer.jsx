@@ -91,7 +91,6 @@ const PolygonsRender = React.createClass({
   	}
   },
   _topTranslation: function(topTranslation) {
-  	console.log(this.props, 'props topTranslation');
   	if (this.props.metadata.subtitle) {
     	if (this.props.metadata.subtitle.length > 0) {
     		topTranslation += 20;

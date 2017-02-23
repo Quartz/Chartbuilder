@@ -158,8 +158,6 @@ const PolygonCollection = React.createClass({
 
     const polygonCollection = this.props.polygonCollection;
 
-
-
     return (
       <g transform={translation}
       	clipPath="url(#clip)"
