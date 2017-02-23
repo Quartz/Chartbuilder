@@ -197,7 +197,6 @@ var XYRenderer = React.createClass({
 		var scale = _chartProps.scale;
 
 		// bools that affect how chart will render
-		var hasTitle = (props.metadata.title.length > 0 && props.showMetadata);
 		var hasColumn = this._chartHasColumn(_chartProps.chartSettings);
 		var needsLabelOffset = this._needsLabelOffset(_chartProps._annotations.labels, _chartProps.data)
 

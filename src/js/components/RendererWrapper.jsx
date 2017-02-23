@@ -20,7 +20,6 @@ import {assign, clone, isDate, isEqual, throttle, reduce, keys, update, filter, 
 
 const SvgText = require("./svg/SvgText.jsx");
 
-const LegendSpace = require("./svg/MapLegendSpace.jsx");
 /*
  * `chartConfig` is an object that sets default properties for chart types, and
  * also associates a given chart type with its Editor and Renderer components.
@@ -352,18 +351,7 @@ const RendererWrapper = React.createClass({
 
 
 			if (chartProps.visualType === 'map') {
-				translate.subtitle = margin.subtitle;
 
-				const subtitle = (
-					<SvgText
-						text={metadata.subtitle}
-						key="subtitle"
-						translate={[translate.left, translate.top + translate.subtitle]}
-						align="top"
-						className="svg-text-subtitle"
-					/>
-				);
-				metadataSvg.push(subtitle);
 			}
 
 		const clippingPath = (

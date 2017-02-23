@@ -38,12 +38,14 @@ const chart_sizes = [
 
 
 const text_input_values_sub = [
-	{ name: "title", content: "Title", isRequired: true }
-];
-var text_input_values = [
-	{ name: "title", content: "Title" },
+	{ name: "title", content: "Title", isRequired: true },
 	{ name: "credit", content: "Credit" },
 	{ name: "subtitle", content: "Subtitle" },
+	{ name: "source", content: "Source" }
+];
+const text_input_values = [
+	{ name: "title", content: "Title", isRequired: true  },
+	{ name: "credit", content: "Credit" },
 	{ name: "source", content: "Source" }
 ];
 

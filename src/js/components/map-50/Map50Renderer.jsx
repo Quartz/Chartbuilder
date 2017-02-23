@@ -5,6 +5,11 @@ import {centroid} from 'turf';
 
 // Flux actions
 const MapViewActions = require("../../actions/VisualViewActions");
+//
+const ClippingPath = require("../../components/shared/ClippingPath.jsx");
+const LegendSpace = require("../../components/svg/MapLegendSpace.jsx");
+
+const choroplethDimensions = require("../../charts/maps/mb-50/mb-50-dimensions.js");
 
 const PolygonsRender = React.createClass({
 
@@ -269,13 +274,9 @@ const PolygonsRender = React.createClass({
     const currSettings = chartProps.scale;
 
 
-
-		var hasTitle = (props.metadata.title.length > 0 && props.showMetadata);
-
-
     // set the dimensions of inner and outer. much of this will be unnecessary
 		// if we draw stuff in HTML
-		var base_dimensions = xyDimensions(props.width, {
+		var base_dimensions = choroplethDimensions(props.width, {
 			displayConfig: displayConfig,
 			enableResponsive: props.enableResponsive,
 			metadata: props.metadata
@@ -285,8 +286,7 @@ const PolygonsRender = React.createClass({
 		var chartAreaDimensions = {
 			width: (
 				base_dimensions.width - margin.left - margin.right -
-				displayConfig.padding.left - displayConfig.padding.right -
-				tickWidths.primaryScale.max - tickWidths.secondaryScale.max
+				displayConfig.padding.left - displayConfig.padding.right
 			),
 			height: (
 				base_dimensions.height - margin.top - margin.bottom -
@@ -309,19 +309,6 @@ const PolygonsRender = React.createClass({
 			chartAreaTranslateY += displayConfig.afterLegend;
 			chartAreaDimensions.height -= displayConfig.afterLegend;
 		}
-
-		// y axis and scales
-		var yRange = [chartAreaDimensions.height, props.styleConfig.overtick_top];
-		var yAxes = {
-			primaryScale: scaleUtils.generateScale("linear", scale.primaryScale, null, yRange),
-			secondaryScale: scaleUtils.generateScale("linear", scale.secondaryScale, null, yRange)
-		}
-
-		// x axis and scales
-		var xPadding = (
-			chartAreaDimensions.width * this._getXOuterPadding(hasColumn) +
-			props.styleConfig.xOverTick
-		);
 
 
 
@@ -400,14 +387,8 @@ const PolygonsRender = React.createClass({
 				displayConfig={displayConfig}
 				styleConfig={props.styleConfig}
 			>
-				<clipPath id="ellipse-clip">
-					<rect
-						x='0.8em'
-						y='0.6em'
-						width={620}
-						height={360}
-					/>
-				</clipPath>
+				<ClippingPath />
+
 	      <g transform={translation}
 	      	 className="polygon-group"
 	      	 clipPath="url(#ellipse-clip)">
