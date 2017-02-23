@@ -44,9 +44,7 @@ const display = {
   minPaddingOuter: "1em",
   bottomPaddingWithoutFooter: "3em",
 	aspectRatio: {
-		wide: (11 / 16),
-		longSpot: (4 / 3),
-		smallSpot: (3 / 4)
+		wide: (11 / 16)
 	},
   margin: {
     top: "0.9em",

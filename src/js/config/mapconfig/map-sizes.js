@@ -5,10 +5,6 @@
  * @static
  */
 const chart_sizes = {
-	card: {
-		width: 640,
-		height: 390
-	},
   auto: {
     width: 640,
     height: 390

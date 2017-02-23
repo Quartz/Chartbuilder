@@ -35,6 +35,14 @@ const chart_sizes = [
 	}
 ];
 
+const map_sizes = [
+	{
+		title: "Auto",
+		content: "Auto",
+		value: "auto"
+	}
+];
+
 
 
 const text_input_values_sub = [
@@ -81,7 +89,6 @@ var ChartMetadata = React.createClass({
 
 	// Update metadata store with new settings
 	_handleMetadataUpdate: function(k, v) {
-		console.log(k,v,'hm');
 		VisualViewActions.updateMetadata(k, v);
 	},
 
@@ -96,6 +103,7 @@ var ChartMetadata = React.createClass({
 		}
 		// Create text input field for each metadata textInput
 		const _text_input_values = (this.props.chartProps.visualType === 'map') ? text_input_values_sub : text_input_values;
+		const visual_sizes = (this.props.chartProps.visualType === 'map') ? map_sizes : chart_sizes;
 
 		const textInputs = _text_input_values.map(function(textInput) {
 			return <ChartMetadataText
@@ -116,7 +124,7 @@ var ChartMetadata = React.createClass({
 				{textInputs}
 				{this.props.additionalComponents}
 				<ButtonGroup
-					buttons={chart_sizes}
+					buttons={visual_sizes}
 					onClick={this._handleMetadataUpdate.bind(null, "size")}
 					value={metadata.size}
 				/>

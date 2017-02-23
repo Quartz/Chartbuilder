@@ -30,8 +30,6 @@ const PolygonsRender = React.createClass({
 
     const translation = this._getTranslation(chartProps);
 
-    console.log(nextProps.isSmall, 'hm');
-
     const svg = d3.select('.polygon-group' + '.' + nextProps.isSmall);
 
     svg.attr('transform', translation);
@@ -58,7 +56,6 @@ const PolygonsRender = React.createClass({
   },
   _updateStroke(nextProps) {
   	//update all strokes to new stroke val
-  	console.log(nextProps,'next');
     d3.select('.polygon-group'  + '.' + nextProps.isSmall)
     	.selectAll('.' + nextProps.polygonClass)
     	.style('stroke', nextProps.stylings.stroke);
@@ -101,7 +98,9 @@ const PolygonsRender = React.createClass({
     return topTranslation;
   },
   _getTranslation: function(chartProps) {
-    const topTranslation = (Object.keys(chartProps.legend).length === 1) ? this.props.displayConfig.margin.maptop + 30 : this.props.displayConfig.margin.maptop;
+    const topTranslation = (Object.keys(chartProps.legend).length === 1) ?
+    				this.props.displayConfig.margin.maptop + 30
+    			: this.props.displayConfig.margin.maptop;
     const translation = `translate(0,${this._topTranslation(topTranslation)})`;
 
     return translation;
@@ -214,7 +213,7 @@ const PolygonsRender = React.createClass({
     };
     return testObj;
   },
-  _renderPolygons: function(testObj, chartProps, currSettings, showLabels, projection, adjustLabels, valueColumn, geoPath) {
+  _renderPolygons: function(testObj, chartProps, currSettings, showLabels, projection, adjustLabels, valueColumn, keyColumn, geoPath) {
 
 		const valueSet = testObj.thisvalue[0];
 		const styles = {
@@ -279,6 +278,8 @@ const PolygonsRender = React.createClass({
     const showLabels = chartProps.stylings.showStateLabels;
     const adjustLabels = mapSchema.adjustLabels;
 
+    console.log(showLabels, 'show');
+
     // lower the map for the single legend;
     const translation = this._getTranslation(chartProps);
 
@@ -307,7 +308,7 @@ const PolygonsRender = React.createClass({
 					alreadyRenderedFips.push(testObj.id);
 					testMap.set(testObj.id, clone(testObj));
 
-	    		polygonCollection.push(this._renderPolygons(testObj, chartProps, currSettings, showLabels, projection, adjustLabels, valueColumn, geoPath));
+	    		polygonCollection.push(this._renderPolygons(testObj, chartProps, currSettings, showLabels, projection, adjustLabels, valueColumn, keyColumn, geoPath));
 		    }
 		  }
     };
@@ -324,7 +325,7 @@ const PolygonsRender = React.createClass({
     		testObj = testMap.get(polygonData.id);
     		testObj.i = i;
     		testObj.geometry = polygonData.geometry;
-    		polygonCollection.push(this._renderPolygons(testObj, chartProps, currSettings, showLabels, projection, adjustLabels, valueColumn, geoPath));
+    		polygonCollection.push(this._renderPolygons(testObj, chartProps, currSettings, showLabels, projection, adjustLabels, valueColumn, keyColumn, geoPath));
     	} else {
     		polygonCollection.push(
 	        <path
@@ -339,9 +340,7 @@ const PolygonsRender = React.createClass({
     	}
     });
 
-
     return (
-
 	      <g transform={translation}
 	      	 className={"polygon-group " +  props.isSmall}
 	      	 clipPath="url(#ellipse-clip)">
