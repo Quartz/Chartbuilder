@@ -13,6 +13,7 @@ const PolygonsRender = React.createClass({
     polygonClass: React.PropTypes.string,
     chartProps: React.PropTypes.object.isRequired
   },
+
   _updateStyles: function(nextProps) {
 
   	const chartProps = nextProps.chartProps;
@@ -49,7 +50,7 @@ const PolygonsRender = React.createClass({
 
 	    		svg.selectAll('#polygon_' + testObj.i)
 			      .style('fill', currSettings[valueSet.index].d3scale(valueSet[valueColumn]))
-			      .style('stroke',chartProps.stylings.stroke);
+			      .style('stroke', chartProps.stylings.stroke);
 	    	}
 	    }
     }
@@ -90,6 +91,7 @@ const PolygonsRender = React.createClass({
   	}
   },
   _topTranslation: function(topTranslation) {
+  	console.log(this.props, 'props topTranslation');
   	if (this.props.metadata.subtitle) {
     	if (this.props.metadata.subtitle.length > 0) {
     		topTranslation += 20;
@@ -277,8 +279,6 @@ const PolygonsRender = React.createClass({
 
     const showLabels = chartProps.stylings.showStateLabels;
     const adjustLabels = mapSchema.adjustLabels;
-
-    console.log(showLabels, 'show');
 
     // lower the map for the single legend;
     const translation = this._getTranslation(chartProps);

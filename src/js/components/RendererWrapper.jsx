@@ -259,18 +259,6 @@ const RendererWrapper = React.createClass({
 			}
 		}
 
-		const dimensions = this._calculateDimensions(width, displayConfig, extraHeight);
-
-		try {
-			if (isNaN(dimensions.width)) {
-				throw new TypeError("In RendererWrapper, `dimensions.height` must be a number");
-			}
-			if (isNaN(dimensions.height)) {
-				throw new TypeError("In RendererWrapper, `dimensions.width` must be a number");
-			}
-		} catch (e) {
-			console.error(e.name, e.message);
-		}
 */
 
 		const Renderer = chartRenderers[chartType] || mapRenderers[chartType];
@@ -289,11 +277,13 @@ const RendererWrapper = React.createClass({
 
 		// override metadata with mobile-specific settings if defined
 		// TODO: remove this feature? seems never used
-		if (this.props.enableResponsive && this.props.model.chartProps.mobile && isSmall) {
+		/*if (this.props.enableResponsive && this.props.model.chartProps.mobile && isSmall) {
 			metadata = this._getMobileMetadata(this.props.model.metadata, this.props.model.chartProps.mobile);
 		} else {
 			metadata = this.props.model.metadata;
-		}
+		}*/
+
+		metadata = this.props.model.metadata;
 
 		return (
 			<div className={["renderer-wrapper", this.state.svgSizeClass, this.props.className].join(" ")}>

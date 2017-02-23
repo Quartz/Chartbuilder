@@ -89,11 +89,9 @@ const MapEditor = React.createClass({
 
 		const mapProps = this.props.chartProps;
     const stylings = mapProps.stylings;
-    console.log(mapProps.chartSettings, 'hm');
 		/* Create a settings component for each data series (column) */
 		const mapSettings = map(mapProps.chartSettings, bind(function(chartSetting, i) {
 			const typeOption = this._getTypeOptions(chartSetting.scale.colors);
-			console.log(chartSetting, 'setting');
 			return (
 				<div key={i + '-div'}>
 					<Map50_mapSettings
