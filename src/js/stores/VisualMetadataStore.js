@@ -107,7 +107,7 @@ function registeredCallback(payload) {
 			if (!titleDirty) {
 				data = VisualPropertiesStore.get("data");
 				_metadata.title = defaultTitle(data);
-				ChartMetadataStore.emitChange();
+				VisualMetadataStore.emitChange();
 			}
 			break;
 

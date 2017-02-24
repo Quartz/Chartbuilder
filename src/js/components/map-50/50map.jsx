@@ -26,8 +26,7 @@ const MapRenderer = React.createClass({
 		displayConfig: React.PropTypes.shape({
 			margin: React.PropTypes.object.isRequired,
 			padding: React.PropTypes.object.isRequired,
-			labelRectSize: React.PropTypes.number.isRequired,
-			afterLegend: React.PropTypes.number.isRequired
+			labelRectSize: React.PropTypes.number.isRequired
 		}).isRequired,
 		chartProps: React.PropTypes.shape({
 			chartSettings: React.PropTypes.array.isRequired,
@@ -129,7 +128,8 @@ const MapRenderer = React.createClass({
 				metadata={props.metadata}
 				displayConfig={displayConfig}
 	      isSmall={props.isSmall}
-				styleConfig={props.styleConfig}
+				isMap={true}
+	      chartProps= {chartProps}
 			>
 				<ClippingPath
 					chartAreaDimensions={chartAreaDimensions}

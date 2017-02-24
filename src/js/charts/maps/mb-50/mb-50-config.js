@@ -38,13 +38,12 @@ const display = {
   labelTextMargin: "0.3em",
   labelRowHeight: "1.2em",
   afterTitle: "1.4em",
-  afterLegend: "1.6em",
   blockerRectOffset: "0.3em",
   columnPaddingCoefficient: 0.3,
   minPaddingOuter: "1em",
   bottomPaddingWithoutFooter: "3em",
 	aspectRatio: {
-		wide: (11 / 16)
+		wide: (10.5 / 16)
 	},
   margin: {
     top: "0.9em",
@@ -55,12 +54,16 @@ const display = {
     subtitle: "1.5em",
     legendleft: "0.8em",
     legendsOneRow: "0.9em",
-    legendsTwoRow: "22.5em"
+    legendsTwoRow: "17.1em",
+    mobile: {
+    	extraMapMarginTop: '1em',
+    	extraHeight: '1.5em'
+    }
   },
   padding: {
     top: 0,
     right: 0,
-    bottom: "4em",
+    bottom: "3.5em",
     left: 0
   }
 };
@@ -123,7 +126,8 @@ const defaultProps = {
         values: []
       }
     },
-    mobile: {}
+    mobile: {
+    }
   },
   /**
    * @name metadata

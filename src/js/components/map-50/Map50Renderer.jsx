@@ -93,18 +93,18 @@ const PolygonsRender = React.createClass({
   _topTranslation: function(topTranslation) {
   	if (this.props.metadata.subtitle) {
     	if (this.props.metadata.subtitle.length > 0) {
-    		topTranslation += 20;
+    		topTranslation += this.props.displayConfig.margin.subtitle;
     	}
     }
     return topTranslation;
   },
   _getTranslation: function(chartProps) {
+  	const withMobile = (this.props.isSmall) ? this.props.displayConfig.margin.mobile.extraMapMarginTop : 0;
     const topTranslation = (Object.keys(chartProps.legend).length === 1) ?
-    				this.props.displayConfig.margin.maptop + 30
-    			: this.props.displayConfig.margin.maptop;
-    const translation = `translate(0,${this._topTranslation(topTranslation)})`;
+    				withMobile + this.props.displayConfig.margin.maptop + this.props.displayConfig.margin.legendsOneRow
+    			: -10;
 
-    return translation;
+    return `translate(0,${this._topTranslation(topTranslation)})`;
   },
   _bruteSearchForValue: function(start,stop,mapSchema,d,keyColumn,polygonData,testObj,index) {
   	for (let j = start; j<stop; j++) {

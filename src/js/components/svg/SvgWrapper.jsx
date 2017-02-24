@@ -53,6 +53,9 @@ var SvgWrapper = React.createClass({
 				}
 			}
 		}
+		if (props.isSmall && !forSVG && props.isMap) {
+			afterTitle = afterTitle + props.displayConfig.margin.mobile.extraHeight;
+		}
 		return afterTitle
 	},
 
