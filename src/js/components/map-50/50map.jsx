@@ -45,15 +45,16 @@ const MapRenderer = React.createClass({
 
   	const props = this.props;
     const chartProps = props.chartProps;
+    const stylings = chartProps.stylings;
     const schema = chartProps.schema.schema;
     const featname = schema.feature;
-    const shouldSearch = props.shouldSearch;
 
 		const displayConfig = props.displayConfig;
     const metadata = props.metadata;
 
     const data = topojson.feature(schema.topojson, schema.topojson.objects[featname]);
 
+    // replace these hardcoded values with proper numbers from outerDimensions
     const updatedTranslate = [schema.translate[0] * (this.props.width / 640), schema.translate[1]  * (this.props.width / 640)];
     const updatedScale = schema.scale * (this.props.width / 700);
 
@@ -70,7 +71,6 @@ const MapRenderer = React.createClass({
     const proj = projectionFunc(projObj);
     const geo = geoPath(proj);
 
-    const stylings = chartProps.stylings;
 
 		const styleConfig = props.styleConfig;
 		const margin = displayConfig.margin;

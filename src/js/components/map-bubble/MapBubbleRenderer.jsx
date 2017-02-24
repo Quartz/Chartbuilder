@@ -15,6 +15,12 @@ const ShapesCollection = React.createClass({
     onClick: React.PropTypes.func,
     chartProps: React.PropTypes.object.isRequired
   },
+  _returnRadius: function(props, dataDomain) {
+  	const radiusComputed = (props.isSmall) ? props.stylings.radiusVal / 2 : props.stylings.radiusVal;
+
+  	return d3.scale.sqrt().range([0, radiusComputed])
+                  .domain(dataDomain);
+  },
   _updateStyles: function(nextProps) {
 
   	const chartProps = nextProps.chartProps;
@@ -32,12 +38,10 @@ const ShapesCollection = React.createClass({
 
     const translation = this._getTranslation(chartProps);
 
-    const svg = d3.select('.polygon-group');
+    const svg = d3.select('.polygon-group' + '.' + nextProps.isSmall);
 
     const dataDomain = currSettings.domain;
-    const radius = d3.scale.sqrt()
-                  .range([0, nextProps.stylings.radiusVal])
-                  .domain(dataDomain);
+    const radius = this._returnRadius(nextProps, dataDomain);
 
     svg.attr('transform', translation);
     // tk
@@ -67,7 +71,7 @@ const ShapesCollection = React.createClass({
   },
   _updateStroke(nextProps) {
   	//update all strokes to new stroke val
-    d3.select('.polygon-group')
+    d3.select('.polygon-group'  + '.' + nextProps.isSmall)
     	.selectAll('.' + nextProps.polygonClass)
     	.style('stroke', nextProps.stylings.stroke);
   },
@@ -85,13 +89,14 @@ const ShapesCollection = React.createClass({
   	return testDatasetChange;
   },
   shouldComponentUpdate: function(nextProps) {
+  	const props = this.props;
   	/* only update if the schema type changes or the dataset length or groupings change
   	otherwise just update the styles. */
-  	if (this.props.schema.name !== nextProps.schema.name
-  		 || this.props.chartProps.data.length !== nextProps.chartProps.data.length
-  		 || this._testDataChange(this.props.chartProps.data, nextProps.chartProps.data)) {
+  	if (props.schema.name !== nextProps.schema.name
+  		 || props.chartProps.data.length !== nextProps.chartProps.data.length
+  		 || this._testDataChange(props.chartProps.data, nextProps.chartProps.data)) {
   		return true;
-  	} else if (this.props.stylings.stroke !== nextProps.stylings.stroke) {
+  	} else if (props.stylings.stroke !== nextProps.stylings.stroke) {
   		this._updateStroke(nextProps);
   		return false;
   	} else {
@@ -279,14 +284,16 @@ const ShapesCollection = React.createClass({
   },
   render: function() {
 
-  	const chartProps = this.props.chartProps;
-    const mapSchema = this.props.schema;
-    const geoPath = this.props.geoPath;
-    const projection = this.props.proj;
+  	const props = this.props;
+
+  	const chartProps = props.chartProps;
+    const mapSchema = props.schema;
+    const geoPath = props.geoPath;
+    const projection = props.proj;
     const currSettings = chartProps.scale;
 
     const alldata = chartProps.data;
-    const allpolygons = this.props.data;
+    const allpolygons = props.data;
     const columnNames = chartProps.columns;
 
     // lower the map for the single legend;
@@ -302,9 +309,7 @@ const ShapesCollection = React.createClass({
     const alreadyRenderedPolygons = [];
 
     const dataDomain = currSettings.domain;
-    const radius = d3.scale.sqrt()
-                  .range([0, this.props.stylings.radiusVal])
-                  .domain(dataDomain);
+    const radius = this._returnRadius(props, dataDomain);
 
     for (let l = 0; l < alldata.length; l++) {
     	testObj.k = allpolygons.length;
@@ -340,7 +345,7 @@ const ShapesCollection = React.createClass({
           key={`polygon_${i}_${polygonData.id}`}
           data-id={polygonData.id}
           d= {geoPath(polygonData.geometry)}
-          className={this.props.polygonClass}
+          className={props.polygonClass}
           style={styles}
         />
     	);
@@ -348,7 +353,7 @@ const ShapesCollection = React.createClass({
 
     return (
       <g transform={translation}
-      	 className="polygon-group"
+      	 className={"polygon-group " +  props.isSmall}
       	 clipPath="url(#clip)">
       	 	{polygonCollection}{circleReturn}
       </g>

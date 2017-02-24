@@ -32,47 +32,50 @@ const MapConfig = require("./../MapConfig");
 
 
 
-const display = Object.freeze({
+const display = {
   labelRectSize: "0.6em",
   labelXMargin: "0.6em",
   labelTextMargin: "0.3em",
   labelRowHeight: "1.2em",
-  afterTitle: "1.6em",
-  afterLegend: "1.6em",
+  afterTitle: "1.4em",
   blockerRectOffset: "0.3em",
   columnPaddingCoefficient: 0.3,
   minPaddingOuter: "1em",
   bottomPaddingWithoutFooter: "3em",
-  aspectRatio: {
-    wide: (6 / 7),
-    longSpot: (4 / 3),
-    smallSpot: (3 / 4)
-  },
+	aspectRatio: {
+		wide: (10.5 / 16)
+	},
   margin: {
-    top: "1.2em",
+    top: "0.9em",
     right: "0.8em",
     bottom: "1.2em",
     left: "0.8em",
-    maptop: "2.5em",
-    subtitle: "2em",
+    cliptop: "1em",
+    maptop: "0.9em",
+    maptopMultiple: "-0.75em",
+    subtitle: "1.5em",
     legendleft: "0.8em",
-    legendsOneRow: "3.85em",
-    legendsTwoRow: "22.5em"
+    legendsOneRow: "0.9em",
+    legendsTwoRow: "17.1em",
+    mobile: {
+    	extraMapMarginTop: '1em',
+    	extraHeight: '1.5em'
+    }
   },
   padding: {
     top: 0,
     right: 0,
-    bottom: "2em",
+    bottom: "3.5em",
     left: 0
   }
-});
+};
 
 /**
 * @name xy_defaultProps
 * @static
 * @memberof xy_config
 */
-const defaultProps = Object.freeze({
+const defaultProps = {
   /**
    * @name chartProps
    * @property {object} scale - Default settings for date and primary scales
@@ -147,7 +150,7 @@ const defaultProps = Object.freeze({
     credit: "",
     size: "auto"
   }
-});
+};
 
 const map_config = new MapConfig({
   displayName: "Bubble",
