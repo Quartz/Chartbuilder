@@ -17,7 +17,7 @@ const nyc = {
     values: boroughs,
     proj: 'mercator',
     translate: [37500, 22600],
-    translateCartogram: [41800, 25140],
+    translateCartogram: [37500, 22600],
     precision: 1,
     scale: [31500],
     topojson: require('./../mapfiles/nyc/nyc.json'),

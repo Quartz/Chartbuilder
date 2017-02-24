@@ -1,4 +1,4 @@
-import {toNumber} from 'lodash';
+
 
 const countries = require('./helpers/world');
 
@@ -7,8 +7,8 @@ const ME = {
 	name: 'middleeast4',
 	values: countries,
 	proj: 'mercator',
-	translate: [-880, 1280],
-	translateCartogram: [-880, 1280],
+	translate: [-880, 1250],
+	translateCartogram: [-880, 1250],
 	precision: 1,
 	scale: 1740,
 	topojson : require('./../mapfiles/world/me4.topo.json'),

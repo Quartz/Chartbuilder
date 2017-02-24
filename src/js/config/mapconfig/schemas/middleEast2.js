@@ -1,4 +1,4 @@
-import {toNumber} from 'lodash';
+
 
 const countries = require('./helpers/world');
 
@@ -7,10 +7,10 @@ const ME = {
 	name: 'middleeast2',
 	values: countries,
 	proj: 'mercator',
-	translate: [-300, 345],
-	translateCartogram: [-300, 345],
+	translate: [-260, 310],
+	translateCartogram: [-260, 310],
 	precision: 1,
-	scale: 700,
+	scale: 640,
 	topojson : require('./../mapfiles/world/me2.topo.json'),
 	feature: 'lsib_world',
 	adjustLabels: function(adjusty=0,adjustx=0, label) {

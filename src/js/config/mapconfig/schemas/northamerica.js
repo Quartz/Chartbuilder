@@ -6,10 +6,10 @@ const NA = {
 	values: countries,
 	proj: 'conicConformal',
 	rotate: [100,0],
-	translate: [350, 410],
-	translateCartogram: [350, 410],
+	translate: [350, 370],
+	translateCartogram: [350, 370],
 	precision: 1,
-	scale: 320,
+	scale: 300,
 	topojson : require('./../mapfiles/world/na.topo.json'),
 	feature: 'lsib_world',
 	adjustLabels: function(adjusty=0,adjustx=0, label) {
