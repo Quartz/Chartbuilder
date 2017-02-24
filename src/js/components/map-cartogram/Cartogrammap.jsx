@@ -172,7 +172,7 @@ class MapRenderer extends React.Component{
     const keyColumn = columnNames[0];
     const valueColumn = columnNames.length === 2 ? columnNames[1] : columnNames[2];
 
-    const cellSize = (props.isSmall) ? stylings.gridcellSize / 2 : stylings.gridcellSize;
+    const cellSize = (props.isSmall) ? stylings.gridcellSize / 1.75 : stylings.gridcellSize;
     const dataDomain = chartProps.scale.domain;
     const showDC = (!stylings.showDC) ? false : true;
     const cartoTranslate = (cartogramType === 'grid') ? schema.translate : schema.translateCartogram;

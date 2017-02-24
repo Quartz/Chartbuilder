@@ -50,7 +50,7 @@ const display = {
     bottom: "1.2em",
     left: "0.8em",
     cliptop: "1em",
-    maptop: "0.2em",
+    maptop: "0.1em",
     maptopMultiple: "-0.75em",
     gridMarginLeft: '1.9em',
     subtitle: "1.5em",
@@ -58,7 +58,7 @@ const display = {
     legendsOneRow: "0.9em",
     legendsTwoRow: "17.1em",
     mobile: {
-    	extraMapMarginTop: '1em'
+    	extraMapMarginTop: '0.25em'
     }
   },
   padding: {
