@@ -3,27 +3,22 @@ import d3 from 'd3';
 import React, {PropTypes} from 'react';
 import ReactDom from 'react-dom';
 
-
 /*
 
+should probably move this to a config file
 
-should probably move this to a common file
-also present in helper.js
 */
-
-
 // set number of legends to position on a row, max
 const legendsPerRow = 4;
 //this should match the stroke-width of .legend-ticks in chart-renderer.styl
 const legendMargin = 1.5;
-//set thickness of legend
-const legendHeight = 8;
-// set offset of text to legend bars
-const legendyAdjustment = 15;
-const yOffsetText = legendHeight + legendyAdjustment;
+//legend thickness
+const legendDefaultHeight = 8;
 // set how far below the second row fits
 const legendSecondRowwOffset = 56;
 const radialTier1 = 60;
+// line height for radial / demers legend
+const legendLineHeight = 14;
 
 // set percent of the width for each legend, given a number of legends
 const legendTotalPercents = {
@@ -57,24 +52,27 @@ const LegendSpace = React.createClass({
 		if (stylings.type === 'dorling' || stylings.type === 'demers'
 				|| this.props.metadata.chartType === 'mapbubble') {
 
-			const g = d3.select('.legendsGroup');
+			const g = d3.select('.legendsGroup.' + this.props.isSmall);
 
 			if (g.size()) {
 
 				const drag = d3.behavior.drag()
 					.on('drag', function (d) {
+							d.x = (+d.x || 0) + (d3.event.dx || 0);
+							d.y = (+d.y || 0) + (d3.event.dy || 0);
 
-							d.x = (d.x || 0) + (d3.event.dx || 0);
-							d.y = (d.y || 0) + (d3.event.dy || 0);
-
-							d3.select(this).datum([{x:d.x,y:d.y}]).attr('transform', 'translate('+d.x +','+d.y+')');
+							d3.select(this).datum([{x:+d.x,y:+d.y}])
+								.attr('transform', 'translate('+d.x +','+d.y+')');
 					});
 
-				if (!g.datum()) g.data([{x:0,y:0}]).call(drag);
+				if (!g.datum()) {
+					const initY = this.props.legendsArray.length > 1 ? 0 : radialTier1;
+					g.data([{x:0,y:initY}]).call(drag);
+				}
 
 				g.attr('transform', (d) => {
-					const xT = d.x ? d.x : this.props.legendsArray.length > 1 ? 0 : radialTier1;
-					const yT = d.x ? d.x : this.props.legendsArray.length > 1 ? 0 : radialTier1;
+					const xT = +d.x ? +d.x : this.props.legendsArray.length > 1 ? 0 : 0;
+					const yT = +d.y ? +d.y : this.props.legendsArray.length > 1 ? 0 : radialTier1;
 					return 'translate('+ (xT) +','+ (yT) +')';
 				});
 			}
@@ -107,7 +105,6 @@ const LegendSpace = React.createClass({
 		// two rows
 		if (legendsArray.length > legendsPerRow && (i > legendsPerRow - 1)) {
 			offsets.yOffsetAdjusted = legendSecondRowwOffset;
-
 			// we add the + 1 to move the second row over one position, so as not to occlude
 			// logos etc..
 			const offsetPositions = this._offsetPositions(chartWidth, legendsArray);
@@ -115,16 +112,14 @@ const LegendSpace = React.createClass({
 			offsets.xOffset = ((i - legendsPerRow + 1) * offsetPositions.legendTotalSize) + (offsetPositions.groupMargin * (i - legendsPerRow + 1));
 		} // one row
 		else {
-
 			const offsetPositions = this._offsetPositions(chartWidth, legendsArray);
-
 			offsets.xOffset = (i * offsetPositions.legendTotalSize) + (offsetPositions.groupMargin * i);
 			// by default do not offset the y
 			offsets.yOffsetAdjusted = 0;
 		}
 		return offsets;
 	},
-	_tierAdjustments: function(translate, legendsArray) {
+	_tierAdjustments: function(translate, legendsArray, legendHeight) {
 		// defaults legend positions
 		// Assume two rows. Margins are from config
 		let translateLegendsAdjusted = translate.legendsTwoRow;
@@ -180,7 +175,14 @@ const LegendSpace = React.createClass({
 		const chartWidth = props.chartWidth;
 		const legendsArray = props.legendsArray;
 
-		const legendAdjustments = this._tierAdjustments(translate, legendsArray);
+
+		//set thickness of legend
+		const legendHeight = props.isSmall ? legendDefaultHeight / 2 : legendDefaultHeight;
+		// set offset of text to legend bars
+		const legendyAdjustment = 15;
+		const yOffsetText = legendHeight + legendyAdjustment;
+
+		const legendAdjustments = this._tierAdjustments(translate, legendsArray, legendHeight);
 
 		const legendRender = legendsArray.map((legendData, i) => {
 		/* Offsets
@@ -343,8 +345,6 @@ const Map_Radial_Legend = React.createClass({
 		const demersYOffset = offsetbase - (dataCircleLg * 2);
 		const demersYTextOffset = offsetbase - 2;
 
-		console.log(translate.keyXOffset, chartWidth, translate);
-
 		const rxLg = (stylings.type === 'dorling' || metadata.chartType === 'mapbubble') ? dataCircleLg : 0;
 		const rxSm = (stylings.type === 'dorling' || metadata.chartType === 'mapbubble') ? dataCircleSm : 0;
 
@@ -353,7 +353,7 @@ const Map_Radial_Legend = React.createClass({
 
 		const demersTransform = 'translate(' + (chartWidth - translate.keyXOffset) + ','+ demersYOffset +')';
 		// the 4 is to offset the text from the legend just slightly
-		const demersTransformText1 = 'translate(' + (chartWidth - translate.legendleft - translate.keyXOffset - 4) + ','+ (demersYTextOffset - 18) +')';
+		const demersTransformText1 = 'translate(' + (chartWidth - translate.legendleft - translate.keyXOffset - 4) + ','+ (demersYTextOffset - legendLineHeight) +')';
 		const demersTransformText2 = 'translate(' + (chartWidth - translate.legendleft - translate.keyXOffset - 4) + ','+ demersYTextOffset +')';
 
 		const s = stylings.legendText || ' ';
@@ -370,8 +370,8 @@ const Map_Radial_Legend = React.createClass({
 
     return (
     	<g
-				className="legendsGroup"
-				key={"legendsGroup_" + metadata.chartType}
+				className={"legendsGroup " + props.isSmall}
+				key={"legendsGroup_" + metadata.chartType + '_' + props.isSmall}
 				transform={"translate(0," + translated + ")"}
 			>
 				<g transform={demersTransform} className='demersdorlingLegend'>
@@ -413,6 +413,5 @@ const Map_Radial_Legend = React.createClass({
     );
   }
 });
-
 
 module.exports = LegendSpace;

@@ -106,7 +106,7 @@ const defaultProps = {
         left:0
       },
       showLegendTicks: false,
-      legendText: 'Write the legend text to go here'
+      legendText: 'Write the legend text for here. Then drag.'
 	  },
     chartSettings: [
       {

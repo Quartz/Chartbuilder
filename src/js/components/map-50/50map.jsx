@@ -157,6 +157,7 @@ const MapRenderer = React.createClass({
 					stylings={stylings}
 					metadata={props.metadata}
 					legendsArray={legendsArray}
+					isSmall={props.isSmall}
 					dimensions={outerDimensions}
 					displayConfig={displayConfig}
 					chartWidth={outerDimensions.width - margin.left - margin.right}
