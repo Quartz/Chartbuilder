@@ -152,17 +152,14 @@ class MapRenderer extends React.Component{
 			left: margin.left,
 			right: margin.right,
 			keyXOffset: margin.keyXOffset,
-			legendleft:margin.legendleft
+			legendleft:margin.legendleft,
+			legendsOneRow: margin.legendsOneRow,
+			legendsTwoRow: margin.legendsTwoRow
 		};
 
 		if (metadata.subtitle) {
-			if (metadata.subtitle.length > 0) {
-				translate.legendsOneRow = margin.legendsOneRow + margin.subtitle;
-				translate.legendsTwoRow = margin.legendsTwoRow + margin.subtitle;
-			}
-		} else {
-			translate.legendsOneRow = margin.legendsOneRow;
-			translate.legendsTwoRow = margin.legendsTwoRow;
+			translate.legendsOneRow += margin.subtitle;
+			translate.legendsTwoRow += margin.subtitle;
 		}
 
     const legendsArray = Object.keys(chartProps.legend).map((k) => chartProps.legend[k]);

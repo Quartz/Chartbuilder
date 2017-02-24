@@ -52,7 +52,7 @@ const display = {
     cliptop: "1em",
     maptop: "0.1em",
     maptopMultiple: "-0.75em",
-    gridMarginLeft: '1.9em',
+    gridMarginLeft: '2em',
     subtitle: "1.5em",
     keyXOffset: "6.1em",
     legendsOneRow: "0.9em",
