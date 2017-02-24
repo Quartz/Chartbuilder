@@ -77,10 +77,12 @@ const PolygonsRender = React.createClass({
   shouldComponentUpdate: function(nextProps) {
   	/* only update if the schema type changes or the dataset length or groupings change
   	otherwise just update the styles. */
-  	if (this.props.schema.name !== nextProps.schema.name
-  		 || this.props.stylings.showStateLabels !== nextProps.stylings.showStateLabels
-  		 || this.props.chartProps.data.length !== nextProps.chartProps.data.length
-  		 || this._testDataChange(this.props.chartProps.data, nextProps.chartProps.data)) {
+  	const props = this.props;
+
+  	if (props.schema.name !== nextProps.schema.name
+  		 || props.stylings.showStateLabels !== nextProps.stylings.showStateLabels
+  		 || props.chartProps.data.length !== nextProps.chartProps.data.length
+  		 || this._testDataChange(props.chartProps.data, nextProps.chartProps.data)) {
   		return true;
   	} else if (this.props.stylings.stroke !== nextProps.stylings.stroke) {
   		this._updateStroke(nextProps);
@@ -97,10 +99,11 @@ const PolygonsRender = React.createClass({
     return topTranslation;
   },
   _getTranslation: function(chartProps) {
-  	const withMobile = (this.props.isSmall) ? this.props.displayConfig.margin.mobile.extraMapMarginTop : 0;
+  	const props = this.props;
+  	const withMobile = (props.isSmall) ? props.displayConfig.margin.mobile.extraMapMarginTop : 0;
     const topTranslation = (Object.keys(chartProps.legend).length === 1) ?
-    				withMobile + this.props.displayConfig.margin.maptop + this.props.displayConfig.margin.legendsOneRow
-    			: this.props.displayConfig.margin.maptopMultiple;
+    				withMobile + props.displayConfig.margin.maptop + props.displayConfig.margin.legendsOneRow
+    			: props.displayConfig.margin.maptopMultiple;
 
     return `translate(0,${this._topTranslation(topTranslation)})`;
   },
@@ -140,6 +143,7 @@ const PolygonsRender = React.createClass({
             lo = mid + 1;
             //
         } else {
+        	if (key !== element) return testObj;
         	testObj.k = mid;
 	    		testObj.i = mid;
 	    		testObj.id = element;
@@ -166,6 +170,7 @@ const PolygonsRender = React.createClass({
         } else if (key > element) {
             lo = mid + 1;
         } else {
+        	if (key !== element) return testObj;
         	testObj.k = mid;
 	    		testObj.i = mid;
 	    		testObj.found = true;

@@ -3,8 +3,8 @@ const statePlane = require('./helpers/state-plane.js');
 const statesArray = ["AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"];
 
 //used for calculating the map bounds
-const width = 600;
-const height = 350;
+const width = 608;
+const height = 308;
 
 //function to build an object for each state
 function newStateObject(stateName) {

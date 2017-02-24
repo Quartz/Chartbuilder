@@ -29,13 +29,14 @@ var SvgWrapper = React.createClass({
 	},
 
 	_createSubTitle: function(props) {
+		const subtitleTrans = props.displayConfig.margin.subtitle || 0;
 		return (
 			<SvgText
 				text={props.metadata.subtitle}
 				key="subtitle"
 				translate={[
 					props.displayConfig.margin.left,
-					props.displayConfig.margin.subtitle + props.displayConfig.margin.top
+					subtitleTrans + props.displayConfig.margin.top
 				]}
 				align="top"
 				className="svg-text-subtitle"

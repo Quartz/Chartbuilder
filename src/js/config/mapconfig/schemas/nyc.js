@@ -16,10 +16,10 @@ const nyc = {
     name: 'NYC',
     values: boroughs,
     proj: 'mercator',
-    translate: [46400, 28000],
-    translateCartogram: [46400, 28000],
+    translate: [37500, 22600],
+    translateCartogram: [41800, 25140],
     precision: 1,
-    scale: [35700],
+    scale: [31500],
     topojson: require('./../mapfiles/nyc/nyc.json'),
     feature: 'nyc',
     adjustLabels: function(adjusty=0,adjustx=0, label) {

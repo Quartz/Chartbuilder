@@ -124,8 +124,8 @@ module.exports = function (state, width, height) {
     if (def.parallels) proj.parallels = def.parallels;
     if (def.bounds) {
       var b = def.bounds,
-        s = 0.9 / Math.max((b[1][0] - b[0][0]) / width, (b[1][1] - b[0][1]) / height),
-        t = [(width - s * (b[1][0] + b[0][0])) / 2, 25 + (height - s * (b[1][1] + b[0][1])) / 2];
+        s = 0.925 / Math.max((b[1][0] - b[0][0]) / width, (b[1][1] - b[0][1]) / height),
+        t = [(width - s * (b[1][0] + b[0][0])) / 2, 5 + (height - s * (b[1][1] + b[0][1])) / 2];
       proj.scale = s;
       proj.translate = t;
     }

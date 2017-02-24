@@ -149,6 +149,7 @@ const ShapesCollection = React.createClass({
             lo = mid + 1;
             //
         } else {
+        	if (key !== element) return testObj;
         	testObj.k = mid;
 	    		testObj.i = mid;
 	    		testObj.id = element;
@@ -175,6 +176,7 @@ const ShapesCollection = React.createClass({
         } else if (key > element) {
             lo = mid + 1;
         } else {
+        	if (key !== element) return testObj;
         	testObj.k = mid;
 	    		testObj.i = mid;
 	    		testObj.found = true;
