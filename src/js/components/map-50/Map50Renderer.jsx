@@ -91,18 +91,16 @@ const PolygonsRender = React.createClass({
   	}
   },
   _topTranslation: function(topTranslation) {
-  	if (this.props.metadata.subtitle) {
-    	if (this.props.metadata.subtitle.length > 0) {
-    		topTranslation += this.props.displayConfig.margin.subtitle;
-    	}
-    }
+  	if (this.props.metadata.subtitle.length > 0) {
+  		topTranslation += this.props.displayConfig.margin.subtitle;
+  	}
     return topTranslation;
   },
   _getTranslation: function(chartProps) {
   	const withMobile = (this.props.isSmall) ? this.props.displayConfig.margin.mobile.extraMapMarginTop : 0;
     const topTranslation = (Object.keys(chartProps.legend).length === 1) ?
     				withMobile + this.props.displayConfig.margin.maptop + this.props.displayConfig.margin.legendsOneRow
-    			: -10;
+    			: this.props.displayConfig.margin.maptopMultiple;
 
     return `translate(0,${this._topTranslation(topTranslation)})`;
   },

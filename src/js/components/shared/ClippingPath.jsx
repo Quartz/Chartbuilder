@@ -31,14 +31,13 @@ class ClippingPath extends React.Component {
 		const chartAreaDimensions = props.chartAreaDimensions;
 
 		const translate = {
-			top: margin.top,
-			left: margin.left
+			top: margin.cliptop,
 		};
 
 		return (
 			<clipPath id="clip">
 				<rect
-					x={translate.left}
+					x={0}
 					y={translate.top}
 					width={chartAreaDimensions.width}
 					height={chartAreaDimensions.height}
