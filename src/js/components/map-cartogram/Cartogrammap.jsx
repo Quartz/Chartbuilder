@@ -21,7 +21,7 @@ const colorScales = require('./../../util/colorscales').scalesMap;
 const SvgWrapper = require("../svg/SvgWrapper.jsx");
 
 const ClippingPath = require("../../components/shared/ClippingPath.jsx");
-
+const LegendSpace = require("../../components/svg/MapLegendSpace.jsx");
 const cartoDimensions = require("../../charts/maps/mb-cartogram/mb-cartogram-dimensions.js");
 
 
@@ -153,8 +153,24 @@ class MapRenderer extends React.Component{
 		const translate = {
 			top: margin.top,
 			left: margin.left,
-			right: margin.right
+			right: margin.right,
+			keyXOffset: margin.keyXOffset,
+			legendleft:margin.legendleft
 		};
+
+
+		if (metadata.subtitle) {
+			if (metadata.subtitle.length > 0) {
+				translate.legendsOneRow = margin.legendsOneRow + margin.subtitle;
+				translate.legendsTwoRow = margin.legendsTwoRow + margin.subtitle;
+			}
+		} else {
+			translate.legendsOneRow = margin.legendsOneRow;
+			translate.legendsTwoRow = margin.legendsTwoRow;
+		}
+
+    const legendsArray = Object.keys(chartProps.legend).map((k) => chartProps.legend[k]);
+
 
     const columnNames = chartProps.columns;
     const keyColumn = columnNames[0];
@@ -255,6 +271,19 @@ class MapRenderer extends React.Component{
           cartogramType={cartogramType}
           polygonCollection={polygonCollection}
         />
+	      <LegendSpace
+					key="legend"
+					translate={translate}
+					className="svg-legend-space"
+					chartProps={chartProps}
+					stylings={stylings}
+					isSmall={props.isSmall}
+					metadata={props.metadata}
+					legendsArray={legendsArray}
+					dimensions={outerDimensions}
+					displayConfig={displayConfig}
+					chartWidth={outerDimensions.width - margin.left - margin.right}
+				/>
 	    </SvgWrapper>
     );
   }
