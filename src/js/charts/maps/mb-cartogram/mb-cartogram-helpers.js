@@ -107,10 +107,10 @@ const enter_grid = (selection, stylings, force, data, isMobile) => {
 	});
 
 	selection.append('rect')
-		.attr("width", stylings.gridsquareWidth)
-		.attr("height", stylings.gridsquareWidth)
-		.attr('rx',stylings.corners)
-		.attr('ry',stylings.corners)
+		.attr("width", (isMobile) ? stylings.gridsquareWidth / 2 : stylings.gridsquareWidth)
+		.attr("height", (isMobile) ? stylings.gridsquareWidth / 2 : stylings.gridsquareWidth)
+		.attr('rx', (isMobile) ? stylings.corners / 2 : stylings.corners)
+		.attr('ry', (isMobile) ? stylings.corners / 2 : stylings.corners)
 		.style('fill',function(d) { return d.color; })
 		.style('stroke',stylings.stroke)
 		.attr('class','carto-rects carto-shapes ' + isMobile);
@@ -121,18 +121,44 @@ const enter_grid = (selection, stylings, force, data, isMobile) => {
 			adjustment = -2;
 
 		selection.append('text')
-			.attr("x", (stylings.gridsquareWidth / 2))
-			.attr("y", 12 + (stylings.gridsquareWidth / 2))
+			.attr("x", (isMobile) ? stylings.gridsquareWidth / 4 : stylings.gridsquareWidth / 2)
+			.attr("y", (isMobile) ? adjustment + (stylings.gridsquareWidth / 4) : adjustment + (stylings.gridsquareWidth / 2))
 			.attr('dy','0.3em')
+			.style('font-size', (isMobile) ? '0.6em' : '1.2em')
 			.attr('class','state-values carto-shapes ' + isMobile)
 			.text((d) => d.value);
 	}
 
 	selection.append('text')
-		.attr("x", (stylings.gridsquareWidth / 2))
-		.attr("y", adjustment + (stylings.gridsquareWidth / 2))
+		.attr("x", (isMobile) ? stylings.gridsquareWidth / 4 : stylings.gridsquareWidth / 2)
+		.attr("y", (isMobile) ? adjustment + (stylings.gridsquareWidth / 4) : adjustment + (stylings.gridsquareWidth / 2))
 		.attr('dy','0.3em')
+		.style('font-size', (isMobile) ? '0.6em' : '1.2em')
 		.attr('class','state-name carto-shapes ' + isMobile)
+		.text((d) => d.shp);
+}
+
+
+const switch_grid = (selection, stylings, isMobile) => {
+
+	selection.attr('transform', (d,i) => {
+			return 'translate('+ (d.xx || 0) + ',' + (d.yy || 0) +')'
+		});
+
+	selection.selectAll('rect')
+		.attr("width", (isMobile) ? stylings.gridsquareWidth / 2 : stylings.gridsquareWidth)
+		.attr("height", (isMobile) ? stylings.gridsquareWidth / 2 : stylings.gridsquareWidth)
+		.style('fill', function(d) { return d.color; })
+		.style('stroke', stylings.stroke)
+		.attr('rx', (isMobile) ? stylings.corners / 2 : stylings.corners)
+		.attr('ry', (isMobile) ? stylings.corners / 2 : stylings.corners);
+
+	const adjustment = (stylings.showValuesLabels) ? -2 : 0;
+
+	selection.selectAll('text.state-name')
+		.style('font-size', (isMobile) ? '0.6em' : '1.2em')
+		.attr("x", (isMobile) ? stylings.gridsquareWidth / 4 : stylings.gridsquareWidth / 2)
+		.attr("y", (isMobile) ? adjustment + (stylings.gridsquareWidth / 4) : adjustment + (stylings.gridsquareWidth / 2))
 		.text((d) => d.shp);
 }
 
@@ -190,29 +216,6 @@ const update_dorling = (e, selection, nodes) => {
 				});
 }
 
-const switch_grid = (selection, stylings, isMobile) => {
-
-	selection.attr('transform', (d,i) => {
-		console.log(d,'d');
-			return 'translate('+ (d.xx || 0) + ',' + (d.yy || 0) +')'
-		});
-
-	selection.selectAll('rect')
-		.attr("width", stylings.gridsquareWidth)
-		.attr("height", stylings.gridsquareWidth)
-		.style('fill', function(d) { return d.color; })
-		.style('stroke', stylings.stroke)
-		.attr('rx', stylings.corners)
-		.attr('ry', stylings.corners);
-
-	const adjustment = (stylings.showValuesLabels) ? -2 : 0;
-
-	selection.selectAll('text.state-name')
-		.style('font-size','1.2em')
-		.attr("x", (stylings.gridsquareWidth / 2))
-		.attr("y", adjustment + (stylings.gridsquareWidth / 2))
-		.text((d) => d.shp);
-}
 // May not be needed
 /*
 const switch_dorling = (selection, stylings, isMobile) => {

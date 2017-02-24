@@ -172,7 +172,7 @@ class MapRenderer extends React.Component{
     const keyColumn = columnNames[0];
     const valueColumn = columnNames.length === 2 ? columnNames[1] : columnNames[2];
 
-    const cellSize = stylings.gridcellSize;
+    const cellSize = (props.isSmall) ? stylings.gridcellSize / 2 : stylings.gridcellSize;
     const dataDomain = chartProps.scale.domain;
     const showDC = (!stylings.showDC) ? false : true;
     const cartoTranslate = (cartogramType === 'grid') ? schema.translate : schema.translateCartogram;
@@ -222,7 +222,7 @@ class MapRenderer extends React.Component{
         let cell1 = 0;
 
         if (cell) {
-        	cell0 = 17 + (cell[0] * cellSize);
+        	cell0 = margin.gridMarginLeft + (cell[0] * cellSize);
         	cell1 = cell[1] * cellSize - (cellSize / 2)
         }
 
