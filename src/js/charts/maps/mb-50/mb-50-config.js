@@ -57,7 +57,7 @@ const display = {
     legendsOneRow: "0.9em",
     legendsTwoRow: "17.1em",
     mobile: {
-    	extraMapMarginTop: '1em'
+    	extraMapMarginTop: '0.7em'
     }
   },
   padding: {

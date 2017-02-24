@@ -182,6 +182,12 @@ svg
 	font-size 0.8em
 	text-anchor middle
 
+.small .state-labels-show
+	fill #000
+	font-family $font-sans
+	font-size 0.6em
+	text-anchor middle
+
 .state-name
 	font-family $font-sans
 
@@ -189,6 +195,12 @@ svg
 	fill #000
 	font-family $font-sans
 	font-size 1.2em
+	text-anchor start
+
+.small .legend-label
+	fill #000
+	font-family $font-sans
+	font-size 0.8em
 	text-anchor start
 
 .demersdorlingLegend
@@ -199,6 +211,11 @@ svg
 	text
 		fill #000
 		font-size 0.8em
+		font-family $font-sans
+		text-anchor middle
+	.small text
+		fill #000
+		font-size 0.6em
 		font-family $font-sans
 		text-anchor middle
 
@@ -216,11 +233,24 @@ svg
 	font-size 0.9em
 	text-anchor middle
 
+.small .legend-text
+	fill #000
+	font-family $font-sans
+	font-size 0.6em
+	text-anchor middle
+
 .extra-legend
 	.extra-legend-text
 		fill #000
 		font-family $font-sans
 		font-size 1.1em
+		text-anchor end
+
+.small .extra-legend
+	.extra-legend-text
+		fill #000
+		font-family $font-sans
+		font-size 0.8em
 		text-anchor end
 
 .cartogram-map-render
@@ -232,6 +262,12 @@ svg
 				font-size 1.25em
 			&.state-values
 				font-size 1em
+				fill #000
+			&.state-name.small
+				fill #fff
+				font-size 1em
+			&.state-values.small
+				font-size 0.8em
 				fill #000
 		rect
 			&.carto-rects
