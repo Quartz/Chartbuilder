@@ -285,47 +285,51 @@ const MapCartogram_mapStyles = React.createClass({
     let valuesOption = false;
 
     cartogramOption.push(<h3>Cartogram Type</h3>);
-
     // provide more options for the 50-state US map
     // note that it alters a different styling prop
     if (this.props.schemaName === 'states50') {
 	    cartogramOption.push(<ButtonGroup
-	        className="button-group-wrapper"
-	        buttons={map_type_50}
-	        key="cartogram_type"
-	        onClick={this._handleStylesUpdate.bind(null, "type")}
-	        value={stylings.type}
-	      />);
+        className="button-group-wrapper"
+        buttons={map_type_50}
+        key="cartogram_type"
+        onClick={this._handleStylesUpdate.bind(null, "type")}
+        value={stylings.type}
+	     />);
   	} else {
   		cartogramOption.push(<ButtonGroup
-	        className="button-group-wrapper"
-	        buttons={map_type}
-	        key="cartogram_type"
-	        onClick={this._handleStylesUpdate.bind(null, "typeOther")}
-	        value={stylings.typeOther}
-	      />);
+        className="button-group-wrapper"
+        buttons={map_type}
+        key="cartogram_type"
+        onClick={this._handleStylesUpdate.bind(null, "typeOther")}
+        value={stylings.typeOther}
+	     />);
   	}
 
     if (stylings.type === 'grid') {
-      valuesOption = (<div className="toggle">
-        <Toggle
-          className="button-group-wrapper"
-          key="show_values"
-          label="Show Values"
-          onToggle={this._handleStylesUpdate.bind(null, "showValuesLabels")}
-          toggled={stylings.showValuesLabels}
-        /></div>);
+      valuesOption = (
+      <div className="toggle">
+	      <Toggle
+	        className="button-group-wrapper"
+	        key="show_values"
+	        label="Show Values"
+	        onToggle={this._handleStylesUpdate.bind(null, "showValuesLabels")}
+	        toggled={stylings.showValuesLabels}
+	      />
+      </div>);
     }
 
-   const dcOption = (<div className="toggle"><Toggle
-          className="button-group-wrapper"
-          label="DC Y/N"
-          onToggle={this._handleStylesUpdate.bind(null, "showDC")}
-          toggled={stylings.showDC}
-          key="show_hide_dc"
-        /></div>);
+   	const dcOption = (
+			<div className="toggle">
+				<Toggle
+		      className="button-group-wrapper"
+		      label="DC Y/N"
+		      onToggle={this._handleStylesUpdate.bind(null, "showDC")}
+		      toggled={stylings.showDC}
+		      key="show_hide_dc"
+	    	/>
+	   	</div>);
 
-   const legendTextOption = (<div className="legend-text"><h3>Extra legend text</h3>
+   	const legendTextOption = (<div className="legend-text"><h3>Extra legend text</h3>
       <TextArea
         label="Extra legend text"
         onChange={this._handleStylesUpdate.bind(null, "legendText")}
@@ -334,9 +338,7 @@ const MapCartogram_mapStyles = React.createClass({
         key="legend_text_extra"
       /></div>);
 
-   console.log(stylings, 'stylings', cartogramType);
-
-   const cartType = (cartogramType === 'dorling') ? 'dorlingradiusVal' : 'demerssquareWidth';
+   	const cartType = (cartogramType === 'dorling') ? 'dorlingradiusVal' : 'demerssquareWidth';
 
     const shapeSize = (<div className="toggle">
               <LabelledTangle
@@ -350,32 +352,31 @@ const MapCartogram_mapStyles = React.createClass({
                 key="radius_val"
                 value={stylings[cartType]}
               /></div>);
-
 		return (
-	      <div className="editor-options">
-	        <h2>
-	          <span className="step-number">{steps}</span>
-	          <span>Make additional stylings</span>
-	        </h2>
-	        	{cartogramOption}
-	        <h3>
-	          Color shape outlines
-	        </h3>
-	        <ButtonGroup
-	          className="button-group-wrapper"
-	          buttons={map_strokes}
-	          onClick={this._handleStylesUpdate.bind(null, "stroke")}
-	          value={stylings.stroke}
-	          key="cartogram_strokes"
-	        />
-	        <div className="stylings-toggle-inputs"
-	          key="cartogram_stylings_inputs">
-	          {valuesOption}
-	          {shapeSize}
-	          {dcOption}
-	        </div>
-	        {legendTextOption}
-	      </div>
+      <div className="editor-options">
+        <h2>
+          <span className="step-number">{steps}</span>
+          <span>Make additional stylings</span>
+        </h2>
+        	{cartogramOption}
+        <h3>
+          Color shape outlines
+        </h3>
+        <ButtonGroup
+          className="button-group-wrapper"
+          buttons={map_strokes}
+          onClick={this._handleStylesUpdate.bind(null, "stroke")}
+          value={stylings.stroke}
+          key="cartogram_strokes"
+        />
+        <div className="stylings-toggle-inputs"
+          key="cartogram_stylings_inputs">
+          {valuesOption}
+          {shapeSize}
+          {dcOption}
+        </div>
+        {legendTextOption}
+      </div>
 		);
 	}
 });

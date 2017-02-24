@@ -15,8 +15,15 @@ const ChartRendererMixin = require("../mixins/MapRendererMixin");
 
 const radius = d3.scale.sqrt();
 const cartogramClass = 'cartogram-Polygons';
-const convertFipstoPostal = require('us-abbreviations')('fips','postal');
 const colorScales = require('./../../util/colorscales').scalesMap;
+
+
+const SvgWrapper = require("../svg/SvgWrapper.jsx");
+
+const ClippingPath = require("../../components/shared/ClippingPath.jsx");
+
+const cartoDimensions = require("../../charts/maps/mb-cartogram/mb-cartogram-dimensions.js");
+
 
 class MapRenderer extends React.Component{
 
@@ -56,17 +63,17 @@ class MapRenderer extends React.Component{
 	      }
 	    });
   	}
-
+  	console.log(grid, 'grid');
   	return grid;
   }
-  constructUnderlyingMap (schema, cartoTranslate, cartogramType) {
+  constructUnderlyingMap (schema, updatedTranslate, updatedScale, cartogramType) {
 
   	const polygonCollection = [];
 
-  	let projObj = {
+    const projObj = {
       projection: schema.proj,
-      scale: schema.scale,
-      translate: cartoTranslate,
+      scale: updatedScale,
+      translate: updatedTranslate,
       precision: schema.precision
     }
 
@@ -94,12 +101,12 @@ class MapRenderer extends React.Component{
 	    	);
 	    });
 	  }
-
 	  return polygonCollection;
   }
   render() {
-
-    const chartProps = this.props.chartProps;
+  	//
+  	const props = this.props;
+    const chartProps = props.chartProps;
     const stylings = chartProps.stylings;
 
     const schema = chartProps.schema.schema;
@@ -107,8 +114,47 @@ class MapRenderer extends React.Component{
     const cartogramType = stylings[schemaName];
     const grid = this.constructGrid(schema.name);
 
-    const metadata = this.props.metadata;
-		const displayConfig = this.props.displayConfig;
+    const metadata = props.metadata;
+		const displayConfig = props.displayConfig;
+
+		const styleConfig = props.styleConfig;
+		const margin = displayConfig.margin;
+
+    // set the dimensions of inner and outer. much of this will be unnecessary
+		// if we draw stuff in HTML
+		const base_dimensions = cartoDimensions(props.width, {
+			displayConfig: displayConfig,
+			enableResponsive: props.enableResponsive,
+			metadata: props.metadata
+		});
+
+		// Dimensions of the chart area
+		const chartAreaDimensions = {
+			width: (
+				base_dimensions.width - margin.left - margin.right -
+				displayConfig.padding.left - displayConfig.padding.right
+			),
+			height: (
+				base_dimensions.height - margin.top - margin.bottom -
+				displayConfig.padding.top - displayConfig.padding.bottom
+			)
+		};
+		// height needed to account for legends
+		const extraHeight = 0; //(chartAreaDimensions.height * 1);
+
+		// dimensions of entire canvas, base + label height
+		const outerDimensions = {
+			width: base_dimensions.width,
+			height: base_dimensions.height + extraHeight
+		};
+
+		console.log(outerDimensions, 'outer');
+
+		const translate = {
+			top: margin.top,
+			left: margin.left,
+			right: margin.right
+		};
 
     const columnNames = chartProps.columns;
     const keyColumn = columnNames[0];
@@ -119,15 +165,18 @@ class MapRenderer extends React.Component{
     const showDC = (!stylings.showDC) ? false : true;
     const cartoTranslate = (cartogramType === 'grid') ? schema.translate : schema.translateCartogram;
 
+  	const updatedTranslate = [cartoTranslate[0] * (props.width / 640), cartoTranslate[1]  * (props.width / 640)];
+    const updatedScale = schema.scale * (props.width / 700);
+
     let projection = d3.geo[schema.proj]()
-      .translate(cartoTranslate)
-      .scale(schema.scale);
+      .translate(updatedTranslate)
+      .scale(updatedScale);
 
     if (schema.parallels) projojection.parallels = schema.parallels;
     if (schema.rotate) projection.rotate = schema.rotate;
 
-    const dataById = d3.map(chartProps.alldata, function(d) {
-    	return schema.matchLogic(d[keyColumn]); });
+    const dataById = d3.map(chartProps.alldata, function(d) { return schema.matchLogic(d[keyColumn]); });
+
     const radiusVal = (cartogramType === 'dorling') ? +stylings.dorlingradiusVal : +stylings.demerssquareWidth;
 
     // for dorling and demers calculations
@@ -135,8 +184,8 @@ class MapRenderer extends React.Component{
     	.range([0, radiusVal])
     	.domain(dataDomain);
 
-    const polygonCollection = this.constructUnderlyingMap(schema, cartoTranslate, cartogramType);
-    const centroids = this.constructCentroids(this.props, projection);
+    const polygonCollection = this.constructUnderlyingMap(schema, updatedTranslate, updatedScale, cartogramType);
+    const centroids = this.constructCentroids(props, projection);
 
     const nodes = centroids.filter(function(d) {
 
@@ -179,19 +228,34 @@ class MapRenderer extends React.Component{
     	});
 
     return (
-          <CartogramCollection
-            chartProps= {chartProps}
-            stylings={stylings}
-            displayConfig={displayConfig}
-            polygonClass={cartogramClass}
-            nodes={nodes}
-            schemaType={schema.name}
-            schemaName={schemaName}
-            radiusVal={radiusVal}
-            metadata={metadata}
-            cartogramType={cartogramType}
-            polygonCollection={polygonCollection}
-          />
+			<SvgWrapper
+				outerDimensions={outerDimensions}
+				metadata={props.metadata}
+				displayConfig={displayConfig}
+	      isSmall={props.isSmall}
+				isMap={true}
+	      chartProps= {chartProps}
+			>
+				<ClippingPath
+					chartAreaDimensions={chartAreaDimensions}
+					metadata={props.metadata}
+					displayConfig={displayConfig}
+				/>
+        <CartogramCollection
+          chartProps= {chartProps}
+          stylings={stylings}
+          displayConfig={displayConfig}
+          polygonClass={cartogramClass}
+          nodes={nodes}
+        	isSmall={props.isSmall}
+          schemaType={schema.name}
+          schemaName={schemaName}
+          radiusVal={radiusVal}
+          metadata={metadata}
+          cartogramType={cartogramType}
+          polygonCollection={polygonCollection}
+        />
+	    </SvgWrapper>
     );
   }
 };

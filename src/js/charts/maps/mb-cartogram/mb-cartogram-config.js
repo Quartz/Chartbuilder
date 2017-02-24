@@ -30,7 +30,7 @@ const MapConfig = require("../MapConfig");
 * @property {object} padding - Distances btwn inner chart elements and container
 */
 
-const display = Object.freeze({
+const display = {
   labelRectSize: "0.6em",
   labelXMargin: "0.6em",
   labelTextMargin: "0.3em",
@@ -42,28 +42,32 @@ const display = Object.freeze({
   minPaddingOuter: "1em",
   bottomPaddingWithoutFooter: "3em",
   aspectRatio: {
-    wide: (6 / 7),
-    longSpot: (4 / 3),
-    smallSpot: (3 / 4)
-  },
+		wide: (10.5 / 16)
+	},
   margin: {
-    top: "1.4em",
+    top: "0.9em",
     right: "0.8em",
     bottom: "1.2em",
-    left: "0.7em",
-    maptop: "2.2em",
-    subtitle: "2em",
+    left: "0.8em",
+    cliptop: "1em",
+    maptop: "0.9em",
+    maptopMultiple: "-0.75em",
+    subtitle: "1.5em",
+    keyXOffset: "6.1em",
     legendleft: "0.8em",
-    legendsOneRow: "22.5em",
-    legendsTwoRow: "22.5em"
+    legendsOneRow: "0.9em",
+    legendsTwoRow: "17.1em",
+    mobile: {
+    	extraMapMarginTop: '1em'
+    }
   },
   padding: {
     top: 0,
     right: 0,
-    bottom: "4em",
+    bottom: "2em",
     left: 0
   }
-});
+};
 
 /**
 * @name xy_defaultProps
@@ -106,8 +110,8 @@ const defaultProps = Object.freeze({
 	    typeOther: "demers",
 	    dorlingradiusVal: 15,
 	    demerssquareWidth: 13,
-	    gridsquareWidth: '43',
-	    gridcellSize: 50,
+	    gridsquareWidth: '40',
+	    gridcellSize: 46,
 	    showDC: false,
 	    showLegendTicks: false,
 	    showStateLabels: true,

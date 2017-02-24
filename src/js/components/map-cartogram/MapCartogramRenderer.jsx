@@ -12,26 +12,31 @@ const helperCarto = require('../../charts/maps/mb-cartogram/mb-cartogram-helpers
 
 import {filter, toNumber} from 'lodash';
 
-const force = d3.layout.force()
+const forceDesktop = d3.layout.force()
     .charge(0)
     .gravity(0)
-    .size([650, 425]);
+    .size([608, 308]);
+
+const forceMobile = d3.layout.force()
+    .charge(0)
+    .gravity(0)
+    .size([372, 244]);
 
 let d3Nodes;
 
-const enterNode = (selection, stylings, data, typeCast) => {
+const enterNode = (selection, stylings, data, typeCast, isMobile, force) => {
 
   selection.classed('node', true);
 
   switch(stylings[typeCast]) {
     case('grid'):
-      helperCarto.enterGrid(selection, stylings, force, data);
+      helperCarto.enterGrid(selection, stylings, force, data, isMobile);
       break;
     case('dorling'):
-      helperCarto.enterDorling(selection, stylings, force, data);
+      helperCarto.enterDorling(selection, stylings, force, data, isMobile);
       break;
     case('demers'):
-      helperCarto.enterDemers(selection, stylings, force, data);
+      helperCarto.enterDemers(selection, stylings, force, data, isMobile);
       break;
   }
 };
@@ -46,17 +51,20 @@ const PolygonCollection = React.createClass({
   },
   componentDidMount: function() {
 
-    const stylings = this.props.chartProps.stylings;
-    const typeCast = this.props.schemaName;
+  	const props = this.props;
+    const stylings = props.chartProps.stylings;
+    const typeCast = props.schemaName;
 
     d3Nodes = d3.select(ReactDOM.findDOMNode(this.refs.graph));
 
     const theseNodes = d3Nodes.selectAll('.node')
-      .data(this.props.nodes, function (node) { return node.shp; })
+      .data(props.nodes, function (node) { return node.shp; })
 
     theseNodes.enter().append('g').attr('class','node');
 
-    enterNode(theseNodes, stylings, this.props.nodes, typeCast);
+    const force = (props.isSmall) ? forceMobile : forceDesktop;
+
+    enterNode(theseNodes, stylings, props.nodes, typeCast, props.isSmall, force);
 
     theseNodes.exit().remove();
 
@@ -67,8 +75,8 @@ const PolygonCollection = React.createClass({
       force.on("tick", (e, i) => {
         if (i > 200) force.stop();
         return (stylings[typeCast] === 'dorling') ?
-                helperCarto.updateDorling (e, d3Node, this.props.nodes) :
-                helperCarto.updateDemers (e, d3Node, this.props.nodes);
+                helperCarto.updateDorling (e, d3Node, props.nodes) :
+                helperCarto.updateDemers (e, d3Node, props.nodes);
       })
       .resume();
 
@@ -93,11 +101,15 @@ const PolygonCollection = React.createClass({
   },
   componentWillUpdate: function(nextProps, nextState) {
 
+  	const props = this.props;
+
     const stylings = nextProps.chartProps.stylings;
     const typeCast = nextProps.schemaName;
     const nodes = nextProps.nodes;
 
     d3Nodes = d3.select(ReactDOM.findDOMNode(this.refs.graph));
+
+    const force = (nextProps.isSmall) ? forceMobile : forceDesktop;
 
     if (stylings[typeCast] !== 'grid') {
     	//update the dorling or demers
@@ -106,11 +118,11 @@ const PolygonCollection = React.createClass({
           helperCarto.switchDemers (d3Nodes, stylings);
 
       // Only tick if making a large change to the layout
-      if (this.props.cartogramType !== nextProps.cartogramType
-          || this.props.chartProps.stylings.showDC !== stylings.showDC
-          || nextProps.schemaType !== this.props.schemaType
-          || nextProps.radiusVal !== this.props.radiusVal
-          || this._testDataChange(this.props.chartProps.data, nextProps.chartProps.data)) {
+      if (props.cartogramType !== nextProps.cartogramType
+          || props.chartProps.stylings.showDC !== stylings.showDC
+          || nextProps.schemaType !== props.schemaType
+          || nextProps.radiusVal !== props.radiusVal
+          || this._testDataChange(props.chartProps.data, nextProps.chartProps.data)) {
 
 
       	let theseNodes = d3Nodes.selectAll('.node')
@@ -123,7 +135,7 @@ const PolygonCollection = React.createClass({
 
 		    const d3Node = d3.select(ReactDOM.findDOMNode(this.refs.graph)).selectAll('.node');
 
-		    enterNode(d3Node, stylings, nodes, typeCast);
+		    enterNode(d3Node, stylings, nodes, typeCast, nextProps.isMobile, force);
 
         force.on("tick", (e, i) => {
           if (i > 200) force.stop();
@@ -144,24 +156,32 @@ const PolygonCollection = React.createClass({
     }
   },
   _topTranslation: function(topTranslation) {
-  	if (this.props.metadata.subtitle) {
-    	if (this.props.metadata.subtitle.length > 0) {
-    		topTranslation += 20;
-    	}
-    }
+  	if (this.props.metadata.subtitle.length > 0) {
+  		topTranslation += this.props.displayConfig.margin.subtitle;
+  	}
     return topTranslation;
+  },
+  _getTranslation: function(chartProps) {
+  	const props = this.props;
+  	const withMobile = (props.isSmall) ? props.displayConfig.margin.mobile.extraMapMarginTop : 0;
+    const topTranslation = (Object.keys(chartProps.legend).length === 1) ?
+    				withMobile + props.displayConfig.margin.maptop + props.displayConfig.margin.legendsOneRow
+    			: props.displayConfig.margin.maptopMultiple;
+
+    return `translate(0,${this._topTranslation(topTranslation)})`;
   },
   render: function() {
 
-  	const topTranslation = this._topTranslation(this.props.displayConfig.margin.maptop);
-    const translation = `translate(${this.props.displayConfig.margin.left},${topTranslation})`;
+  	const props = this.props;
+  	//const topTranslation = this._topTranslation(props.displayConfig.margin.maptop);
+    const translation = this._getTranslation(props.chartProps);
 
-    const polygonCollection = this.props.polygonCollection;
+    const polygonCollection = props.polygonCollection;
 
     return (
       <g transform={translation}
       	clipPath="url(#clip)"
-        className='cartogram-map-render'
+        className={'cartogram-map-render ' + props.isSmall}
         ref='graph'
       >{polygonCollection}</g>
     );

@@ -10,7 +10,7 @@ const us = {
 		name: 'states50',
 		proj: 'albersUsa',
 		translate: [310, 165],
-		translateCartogram: [270, 165],
+		translateCartogram: [310, 165],
 		precision: 1,
 		scale: 710,
 		topojson : require('./../mapfiles/us-50/us-states-sorted.json'),

@@ -16,6 +16,7 @@ const legendMargin = 1.5;
 const legendDefaultHeight = 8;
 // set how far below the second row fits
 const legendSecondRowwOffset = 56;
+// distance from the top for radial
 const radialTier1 = 65;
 // line height for radial / demers legend
 const legendLineHeight = 14;

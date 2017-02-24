@@ -69,9 +69,9 @@ const _collideDemers = (k, nodes) => {
 	};
 }
 
-const enter_demers = (selection, stylings, force, data) => {
+const enter_demers = (selection, stylings, force, data, isMobile) => {
 
-	d3.selectAll('.carto-shapes').remove();
+	d3.selectAll('.carto-shapes.' + isMobile).remove();
 
 	selection
 		.append('rect')
@@ -81,7 +81,7 @@ const enter_demers = (selection, stylings, force, data) => {
 		.attr('ry',0)
 		.style('fill',function(d) { return d.color; })
 		.style('stroke',stylings.stroke)
-		.attr('class','carto-rects carto-shapes')
+		.attr('class','carto-rects carto-shapes ' + isMobile)
 		.call(force.drag);
 
 	selection.selectAll('.state-values').remove();
@@ -90,16 +90,16 @@ const enter_demers = (selection, stylings, force, data) => {
 		.attr("x", function(d) { return (+d.r); })
 		.attr("y", function(d) { return (+d.r); })
 		.attr('dy','0.3em')
-		.attr('class','state-name carto-shapes')
+		.attr('class','state-name carto-shapes ' + isMobile)
 		.style('font-size',function(d) {
 			return ((+d.r - 2) < 10) ? 10 : (+d.r - 2);
 		})
 		.text(function(d) { return (d.r > 0) ?  d.shp : ''; });
 }
 
-const enter_grid = (selection, stylings, force, data) => {
+const enter_grid = (selection, stylings, force, data, isMobile) => {
 
-  d3.selectAll('.carto-shapes').remove();
+  d3.selectAll('.carto-shapes.' + isMobile).remove();
 
   selection.attr('transform',(d,i) => {
 		return 'translate('+ d.xx + ',' + d.yy +')'
@@ -112,7 +112,7 @@ const enter_grid = (selection, stylings, force, data) => {
 		.attr('ry',stylings.corners)
 		.style('fill',function(d) { return d.color; })
 		.style('stroke',stylings.stroke)
-		.attr('class','carto-rects carto-shapes');
+		.attr('class','carto-rects carto-shapes ' + isMobile);
 
 	let adjustment = 0;
 
@@ -123,7 +123,7 @@ const enter_grid = (selection, stylings, force, data) => {
 			.attr("x", (stylings.gridsquareWidth / 2))
 			.attr("y", 12 + (stylings.gridsquareWidth / 2))
 			.attr('dy','0.3em')
-			.attr('class','state-values carto-shapes')
+			.attr('class','state-values carto-shapes ' + isMobile)
 			.text((d) => d.value);
 	}
 
@@ -131,13 +131,13 @@ const enter_grid = (selection, stylings, force, data) => {
 		.attr("x", (stylings.gridsquareWidth / 2))
 		.attr("y", adjustment + (stylings.gridsquareWidth / 2))
 		.attr('dy','0.3em')
-		.attr('class','state-name carto-shapes')
+		.attr('class','state-name carto-shapes ' + isMobile)
 		.text((d) => d.shp);
 }
 
-const enter_dorling = (selection, stylings, force, data) => {
+const enter_dorling = (selection, stylings, force, data, isMobile) => {
 
-	d3.selectAll('.carto-shapes').remove();
+	d3.selectAll('.carto-shapes.' + isMobile).remove();
 
 	selection.append('rect')
 		.attr("height", function(d) { return +d.r * 2; })
@@ -146,7 +146,7 @@ const enter_dorling = (selection, stylings, force, data) => {
 		.attr('ry', function(d) { return +d.r; })
 		.style('fill',function(d) { return d.color; })
 		.style('stroke',stylings.stroke)
-		.attr('class','carto-rects carto-shapes')
+		.attr('class','carto-rects carto-shapes ' + isMobile)
 		.call(force.drag);
 
 	let adjustment = 0;
@@ -157,7 +157,7 @@ const enter_dorling = (selection, stylings, force, data) => {
 		.attr("x", function(d) { return (+d.r); })
 		.attr("y", function(d) { return (+d.r); })
 		.attr('dy','0.3em')
-		.attr('class','state-name carto-shapes')
+		.attr('class','state-name carto-shapes ' + isMobile)
 		.style('font-size',function(d) {
 			return ((+d.r - 2) < 10) ? 10 : (+d.r - 2);
 		})
