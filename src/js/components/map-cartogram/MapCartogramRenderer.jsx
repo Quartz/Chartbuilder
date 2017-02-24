@@ -99,6 +99,8 @@ const PolygonCollection = React.createClass({
 
   	return testDatasetChange;
   },
+  componentDidUpdate: function() {
+  },
   componentWillUpdate: function(nextProps, nextState) {
 
   	const props = this.props;
@@ -107,15 +109,27 @@ const PolygonCollection = React.createClass({
     const typeCast = nextProps.schemaName;
     const nodes = nextProps.nodes;
 
+    const force = (nextProps.isSmall) ? forceMobile : forceDesktop;
+
     d3Nodes = d3.select(ReactDOM.findDOMNode(this.refs.graph));
 
-    const force = (nextProps.isSmall) ? forceMobile : forceDesktop;
+    let theseNodes = d3Nodes.selectAll('.node')
+	      .data(nodes, function (node) { return node.shp; });
+
+    theseNodes.enter().append('g')
+      .attr('class','node');
+
+    theseNodes.exit().remove();
+
+    const d3Node = d3.select(ReactDOM.findDOMNode(this.refs.graph)).selectAll('.node');
+
+    enterNode(d3Node, stylings, nodes, typeCast, nextProps.isSmall, force);
 
     if (stylings[typeCast] !== 'grid') {
     	//update the dorling or demers
-      (stylings[typeCast] === 'dorling') ?
-          helperCarto.switchDorling (d3Nodes, stylings) :
-          helperCarto.switchDemers (d3Nodes, stylings);
+      /*(stylings[typeCast] === 'dorling') ?
+          helperCarto.switchDorling (d3Node, stylings, nextProps.isSmall) :
+          helperCarto.switchDemers (d3Node, stylings, nextProps.isSmall);*/
 
       // Only tick if making a large change to the layout
       if (props.cartogramType !== nextProps.cartogramType
@@ -123,19 +137,6 @@ const PolygonCollection = React.createClass({
           || nextProps.schemaType !== props.schemaType
           || nextProps.radiusVal !== props.radiusVal
           || this._testDataChange(props.chartProps.data, nextProps.chartProps.data)) {
-
-
-      	let theseNodes = d3Nodes.selectAll('.node')
-		      .data(nodes, function (node) { return node.shp; });
-
-		    theseNodes.enter().append('g')
-		      .attr('class','node');
-
-		    theseNodes.exit().remove();
-
-		    const d3Node = d3.select(ReactDOM.findDOMNode(this.refs.graph)).selectAll('.node');
-
-		    enterNode(d3Node, stylings, nodes, typeCast, nextProps.isMobile, force);
 
         force.on("tick", (e, i) => {
           if (i > 200) force.stop();
@@ -151,8 +152,8 @@ const PolygonCollection = React.createClass({
       }
     } else {
     	//update or swap out for grid
-      force.stop();
-      helperCarto.switchGrid(d3Nodes, stylings);
+	  	 force.stop();
+	     helperCarto.switchGrid(d3Node, stylings, nextProps.isSmall);
     }
   },
   _topTranslation: function(topTranslation) {
@@ -177,6 +178,8 @@ const PolygonCollection = React.createClass({
     const translation = this._getTranslation(props.chartProps);
 
     const polygonCollection = props.polygonCollection;
+
+    console.log(polygonCollection, 'polygonCollection');
 
     return (
       <g transform={translation}

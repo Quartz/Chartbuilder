@@ -63,7 +63,6 @@ class MapRenderer extends React.Component{
 	      }
 	    });
   	}
-  	console.log(grid, 'grid');
   	return grid;
   }
   constructUnderlyingMap (schema, updatedTranslate, updatedScale, cartogramType) {
@@ -148,8 +147,6 @@ class MapRenderer extends React.Component{
 			height: base_dimensions.height + extraHeight
 		};
 
-		console.log(outerDimensions, 'outer');
-
 		const translate = {
 			top: margin.top,
 			left: margin.left,
@@ -157,7 +154,6 @@ class MapRenderer extends React.Component{
 			keyXOffset: margin.keyXOffset,
 			legendleft:margin.legendleft
 		};
-
 
 		if (metadata.subtitle) {
 			if (metadata.subtitle.length > 0) {
@@ -193,7 +189,8 @@ class MapRenderer extends React.Component{
 
     const dataById = d3.map(chartProps.alldata, function(d) { return schema.matchLogic(d[keyColumn]); });
 
-    const radiusVal = (cartogramType === 'dorling') ? +stylings.dorlingradiusVal : +stylings.demerssquareWidth;
+    let radiusVal = (cartogramType === 'dorling') ? +stylings.dorlingradiusVal : +stylings.demerssquareWidth;
+    radiusVal = (props.isSmall) ? radiusVal / 2 : radiusVal;
 
     // for dorling and demers calculations
     radius

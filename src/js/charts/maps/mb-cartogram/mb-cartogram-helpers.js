@@ -92,7 +92,8 @@ const enter_demers = (selection, stylings, force, data, isMobile) => {
 		.attr('dy','0.3em')
 		.attr('class','state-name carto-shapes ' + isMobile)
 		.style('font-size',function(d) {
-			return ((+d.r - 2) < 10) ? 10 : (+d.r - 2);
+			const r = (isMobile) ? +d.r / 2 : +d.r;
+			return ((r - 2) < 10) ? 10 : (r - 2);
 		})
 		.text(function(d) { return (d.r > 0) ?  d.shp : ''; });
 }
@@ -159,7 +160,8 @@ const enter_dorling = (selection, stylings, force, data, isMobile) => {
 		.attr('dy','0.3em')
 		.attr('class','state-name carto-shapes ' + isMobile)
 		.style('font-size',function(d) {
-			return ((+d.r - 2) < 10) ? 10 : (+d.r - 2);
+			const r = (isMobile) ? +d.r / 2 : +d.r;
+			return ((+r - 2) < 10) ? 10 : (+r - 2);
 		})
 		.text(function(d) { return (d.r > 0) ?  d.shp : ''; });
 }
@@ -188,25 +190,22 @@ const update_dorling = (e, selection, nodes) => {
 				});
 }
 
-const switch_grid = (selection, stylings) => {
+const switch_grid = (selection, stylings, isMobile) => {
 
-	selection.attr('transform',(d,i) => {
-			return 'translate('+ d.xx + ',' + d.yy +')'
+	selection.attr('transform', (d,i) => {
+		console.log(d,'d');
+			return 'translate('+ (d.xx || 0) + ',' + (d.yy || 0) +')'
 		});
 
 	selection.selectAll('rect')
 		.attr("width", stylings.gridsquareWidth)
 		.attr("height", stylings.gridsquareWidth)
 		.style('fill', function(d) { return d.color; })
-		.style('stroke',stylings.stroke)
-		.attr('rx',stylings.corners)
-		.attr('ry',stylings.corners);
+		.style('stroke', stylings.stroke)
+		.attr('rx', stylings.corners)
+		.attr('ry', stylings.corners);
 
-	let adjustment = 0;
-
-	if (stylings.showValuesLabels) {
-		adjustment = -2;
-	}
+	const adjustment = (stylings.showValuesLabels) ? -2 : 0;
 
 	selection.selectAll('text.state-name')
 		.style('font-size','1.2em')
@@ -214,15 +213,15 @@ const switch_grid = (selection, stylings) => {
 		.attr("y", adjustment + (stylings.gridsquareWidth / 2))
 		.text((d) => d.shp);
 }
-
-
-const switch_dorling = (selection, stylings) => {
+// May not be needed
+/*
+const switch_dorling = (selection, stylings, isMobile) => {
 
 	selection.selectAll('rect')
-		.style('stroke',stylings.stroke)
+		.style('stroke', stylings.stroke)
 		.attr("height", function(d) { return +d.r * 2; })
 		.attr("width", function(d) { return +d.r * 2; })
-		.style('fill',function(d) { return d.color; })
+		//.style('fill',function(d) { return d.color; })
 		.attr('rx', function(d) { return +d.r; })
 		.attr('ry', function(d) { return +d.r; })
 
@@ -231,18 +230,19 @@ const switch_dorling = (selection, stylings) => {
 		.attr("y", function(d) { return (+d.r); })
 		.attr('dy','0.3em')
 		.style('font-size',function(d) {
-			return ((+d.r - 2) < 10) ? 10 : (+d.r - 2);
+			const r = (isMobile) ? +d.r / 2 : +d.r;
+			return ((r - 2) < 10) ? 10 : (r - 2);
 		})
 		.text(function(d) { return (d.r > 0) ?  d.shp : ''; });
 }
 
-const switch_demers = (selection, stylings) => {
+const switch_demers = (selection, stylings, isMobile) => {
 
 	selection.selectAll('rect')
 		.style('stroke',stylings.stroke)
 		.attr("height", function(d) { return +d.r * 2; })
 		.attr("width", function(d) { return +d.r * 2; })
-		.style('fill', function(d) { return d.color; })
+		//.style('fill', function(d) { return d.color; })
 		.attr('rx',0)
 		.attr('ry',0);
 
@@ -250,10 +250,11 @@ const switch_demers = (selection, stylings) => {
 		.attr("x", function(d) { return (+d.r); })
 		.attr("y", function(d) { return (+d.r); })
 		.style('font-size',function(d) {
-			return ((+d.r - 2) < 10) ? 10 : (+d.r - 2);
+			const r = (isMobile) ? +d.r / 2 : +d.r;
+			return ((r - 2) < 10) ? 10 : (r - 2);
 		})
 		.text(function(d) { return (d.r > 0) ?  d.shp : ''; });
-}
+}*/
 
 
 /**
@@ -264,9 +265,9 @@ const cartogram_helpers = Object.freeze({
 	enterDemers: enter_demers,
 	enterDorling: enter_dorling,
 	enterGrid: enter_grid,
-	switchGrid: switch_grid,
+	switchGrid: switch_grid,/*
 	switchDemers: switch_demers,
-	switchDorling: switch_dorling,
+	switchDorling: switch_dorling,*/
 	updateDemers: update_demers,
 	updateDorling: update_dorling,
 	updateNode: update_node
