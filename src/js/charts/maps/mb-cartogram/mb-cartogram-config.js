@@ -55,7 +55,6 @@ const display = {
     gridMarginLeft: '1.9em',
     subtitle: "1.5em",
     keyXOffset: "6.1em",
-    legendleft: "0.8em",
     legendsOneRow: "0.9em",
     legendsTwoRow: "17.1em",
     mobile: {

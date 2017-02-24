@@ -54,7 +54,6 @@ const display = {
     maptop: "0.9em",
     maptopMultiple: "-0.75em",
     subtitle: "1.5em",
-    legendleft: "0.8em",
     legendsOneRow: "0.9em",
     legendsTwoRow: "17.1em",
     mobile: {

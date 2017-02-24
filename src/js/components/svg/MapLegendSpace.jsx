@@ -298,7 +298,7 @@ const LegendSpace = React.createClass({
 
 		return (
 			<g className={this.props.className}
-				transform={`translate(${translate.legendleft},${legendAdjustments.legendTranslateAdjusted})`}
+				transform={`translate(0,${legendAdjustments.legendTranslateAdjusted})`}
 			>
 				{legendRender}
 			</g>
@@ -354,8 +354,8 @@ const Map_Radial_Legend = React.createClass({
 
 		const demersTransform = 'translate(' + (chartWidth - translate.keyXOffset) + ','+ demersYOffset +')';
 		// the 4 is to offset the text from the legend just slightly
-		const demersTransformText1 = 'translate(' + (chartWidth - translate.legendleft - translate.keyXOffset - 4) + ','+ (demersYTextOffset - legendLineHeight) +')';
-		const demersTransformText2 = 'translate(' + (chartWidth - translate.legendleft - translate.keyXOffset - 4) + ','+ demersYTextOffset +')';
+		const demersTransformText1 = 'translate(' + (chartWidth - translate.keyXOffset - 4) + ','+ (demersYTextOffset - legendLineHeight) +')';
+		const demersTransformText2 = 'translate(' + (chartWidth - translate.keyXOffset - 4) + ','+ demersYTextOffset +')';
 
 		const s = stylings.legendText || ' ';
 
