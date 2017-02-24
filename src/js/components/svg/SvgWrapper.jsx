@@ -49,13 +49,11 @@ var SvgWrapper = React.createClass({
 		if (props.metadata.title.length > 0) {
 			afterTitle = props.displayConfig.afterTitle + afterTitle;
 			if (props.metadata.subtitle && props.isSmall && !forSVG) {
-				if (props.metadata.subtitle.length > 0) {
-					afterTitle = afterTitle + props.displayConfig.margin.subtitle;
-				}
+				afterTitle = afterTitle + props.displayConfig.margin.subtitle;
 			}
 		}
-		if (props.isSmall && !forSVG && props.isMap) {
-			afterTitle = afterTitle + props.displayConfig.margin.mobile.extraHeight;
+		if (!forSVG && props.isMap && props.metadata.subtitle) {
+			afterTitle = afterTitle + props.displayConfig.margin.subtitle;
 		}
 		return afterTitle
 	},

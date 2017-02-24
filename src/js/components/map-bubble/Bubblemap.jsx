@@ -90,6 +90,8 @@ let MapRenderer = React.createClass({
 		const translate = {
 			top: margin.top,
 			left: margin.left,
+			right: margin.right,
+			keyXOffset: margin.keyXOffset,
 			legendleft:margin.legendleft
 		};
 
@@ -137,6 +139,7 @@ let MapRenderer = React.createClass({
 					className="svg-legend-space"
 					chartProps={chartProps}
 					stylings={stylings}
+					isSmall={props.isSmall}
 					metadata={props.metadata}
 					legendsArray={legendsArray}
 					dimensions={outerDimensions}

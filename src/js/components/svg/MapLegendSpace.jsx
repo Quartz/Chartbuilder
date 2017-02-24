@@ -16,12 +16,16 @@ also present in helper.js
 const legendsPerRow = 4;
 //this should match the stroke-width of .legend-ticks in chart-renderer.styl
 const legendMargin = 1.5;
+//set thickness of legend
 const legendHeight = 8;
+// set offset of text to legend bars
 const legendyAdjustment = 15;
 const yOffsetText = legendHeight + legendyAdjustment;
+// set how far below the second row fits
 const legendSecondRowwOffset = 56;
 const radialTier1 = 60;
 
+// set percent of the width for each legend, given a number of legends
 const legendTotalPercents = {
 	1: 60,
 	2: 35,
@@ -83,10 +87,6 @@ const LegendSpace = React.createClass({
 	componentDidMount: function() {
 		this.mountDraggyLegend();
 	},
-	_translatePositions: function(chartWidth, n) {
-
-		return;
-	},
 	_offsetPositions: function(chartWidth, legendsArray) {
 
 		const positions = {};
@@ -103,35 +103,28 @@ const LegendSpace = React.createClass({
 		return positions;
 	},
 	_offsetAdjustments: function(legendsArray, i, chartWidth) {
+		const offsets = {};
+		// two rows
+		if (legendsArray.length > legendsPerRow && (i > legendsPerRow - 1)) {
+			offsets.yOffsetAdjusted = legendSecondRowwOffset;
 
-			const offsets = {};
+			// we add the + 1 to move the second row over one position, so as not to occlude
+			// logos etc..
+			const offsetPositions = this._offsetPositions(chartWidth, legendsArray);
 
-			// two rows
-			if (legendsArray.length > legendsPerRow && (i > legendsPerRow - 1)) {
-				offsets.yOffsetAdjusted = legendSecondRowwOffset;
+			offsets.xOffset = ((i - legendsPerRow + 1) * offsetPositions.legendTotalSize) + (offsetPositions.groupMargin * (i - legendsPerRow + 1));
+		} // one row
+		else {
 
-				// we add the + 1 to move the second row over one position, so as not to occlude
-				// logos etc..
-				const offsetPositions = this._offsetPositions(chartWidth, legendsArray);
+			const offsetPositions = this._offsetPositions(chartWidth, legendsArray);
 
-				offsets.xOffset = ((i - legendsPerRow + 1) * offsetPositions.legendTotalSize) + (offsetPositions.groupMargin * (i - legendsPerRow + 1));
-			}
-			// one row
-			else {
-
-				const offsetPositions = this._offsetPositions(chartWidth, legendsArray);
-
-				offsets.xOffset = (i * offsetPositions.legendTotalSize) + (offsetPositions.groupMargin * i);
-
-				// by default do not offset the y
-				offsets.yOffsetAdjusted = 0;
-			}
-
-			return offsets;
-
+			offsets.xOffset = (i * offsetPositions.legendTotalSize) + (offsetPositions.groupMargin * i);
+			// by default do not offset the y
+			offsets.yOffsetAdjusted = 0;
+		}
+		return offsets;
 	},
 	_tierAdjustments: function(translate, legendsArray) {
-
 		// defaults legend positions
 		// Assume two rows. Margins are from config
 		let translateLegendsAdjusted = translate.legendsTwoRow;
@@ -152,7 +145,7 @@ const LegendSpace = React.createClass({
 		}
 	},
 	_tickOffsets: function (j, thisTick, legendData, legendRectWidth) {
-
+		//
 		const tickOffsets = {};
 
 		tickOffsets.thisTick = thisTick;
@@ -175,20 +168,19 @@ const LegendSpace = React.createClass({
 			tickOffsets.x = tickOffsets.x + (legendRectWidth/2);
 			if (j) tickOffsets.thisTick = false;
 		}
-
 		return tickOffsets;
 	},
 	render: function() {
-		const chartProps = this.props.chartProps;
+		const props = this.props;
+		const chartProps = props.chartProps;
 		const stylings = chartProps.stylings;
-		const metadata = this.props.metadata;
-		const translate = this.props.translate;
-		const dimensions = this.props.dimensions;
-		const chartWidth = this.props.chartWidth;
-		const legendsArray = this.props.legendsArray;
+		const metadata = props.metadata;
+		const translate = props.translate;
+		const dimensions = props.dimensions;
+		const chartWidth = props.chartWidth;
+		const legendsArray = props.legendsArray;
 
 		const legendAdjustments = this._tierAdjustments(translate, legendsArray);
-
 
 		const legendRender = legendsArray.map((legendData, i) => {
 		/* Offsets
@@ -207,51 +199,43 @@ const LegendSpace = React.createClass({
 			const legendBlocks = legendData.colorValues.map((thisColor, j) => {
 				// shapes = size of each shape in the legend
 				// legendMargin = margin between shapes
-
 				const legendRectWidth = legendTotalRectWidth / legendData.colorValues.length;
-
 				const xOffsetEachBlock = (j === 0) ? 0 : (legendRectWidth * j) + (legendMargin * j);
-
 					// return blocks and the tick difference markers
-					return (
-									<rect
-										key= {`legend_block_${j}`}
-										transform={`translate(${xOffsetEachBlock},0)`}
-										style={{fill: thisColor || '#999'}}
-										height={legendAdjustments.legendHeightAdjusted}
-										width={legendRectWidth + 'px'}
-									/>);
+				return (
+					<rect
+						key= {`legend_block_${j}`}
+						transform={`translate(${xOffsetEachBlock},0)`}
+						style={{fill: thisColor || '#999'}}
+						height={legendAdjustments.legendHeightAdjusted}
+						width={legendRectWidth + 'px'}
+					/>);
 			});
 
 			/*
 				Legend ticks
 			*/
 			const legendTicks = legendData.colorValues.map((thisColor, j) => {
-
 				// only perform if not last and not first
 				if (j !== 0) {
 					//
-				const legendRectWidth = legendTotalRectWidth / legendData.colorValues.length;
-
-				const xOffsetEachBlock = (j === 0) ? 0 : (legendRectWidth * j) + (legendMargin * j)
-
+					const legendRectWidth = legendTotalRectWidth / legendData.colorValues.length;
+					const xOffsetEachBlock = (j === 0) ? 0 : (legendRectWidth * j) + (legendMargin * j)
 					const adjustmentTick = 1;
 
-					return (
-										<line
-											key= {`legend_tick_${j}`}
-											y1={0}
-											y2={legendAdjustments.legendHeightAdjusted + 4}
-											x1={xOffsetEachBlock - adjustmentTick}
-											x2={xOffsetEachBlock - adjustmentTick}
-											className='legend-ticks'
-										/>);
-				}
-				else return;
+					return (<line
+							key= {`legend_tick_${j}`}
+							y1={0}
+							y2={legendAdjustments.legendHeightAdjusted + 4}
+							x1={xOffsetEachBlock - adjustmentTick}
+							x2={xOffsetEachBlock - adjustmentTick}
+							className='legend-ticks'
+						/>);
+					}
+					else return;
 			});
 
 			legendBlocks.push(legendTicks)
-
 			/*
 				Legend text
 			*/
@@ -260,15 +244,16 @@ const LegendSpace = React.createClass({
 
 					const legendRectWidth = legendTotalRectWidth / legendData.colorValues.length;
 					//const legendTickWidth = legendTotalRectWidth / (legendData.tickValues.length - 1);
-
 					const tickOffsets = this._tickOffsets(j, thisTick, legendData, legendRectWidth);
 
-					return (<text
-											key= {`legend_text_${j}`}
-											transform={`translate(${tickOffsets.x},${yOffsetText})`}
-											className='legend-text'
-										>{tickOffsets.thisTick}</text>);
+					return (
+						<text
+							key= {`legend_text_${j}`}
+							transform={`translate(${tickOffsets.x},${yOffsetText})`}
+							className='legend-text'
+						>{tickOffsets.thisTick}</text>);
 				});
+
 				legendBlocks.push(legendText);
 			}
 		/* Add label
@@ -285,7 +270,6 @@ const LegendSpace = React.createClass({
 		const legendOffset = (chartWidth - (groupTotal * (numPerRow - 1)) - (legendTotalRectWidth * numPerRow)) / 2;
 
 		return (
-
 				<g key={`legend_${i}`}
 					transform={`translate(${offsets.xOffset + legendOffset},${offsets.yOffsetAdjusted})`}>
 					{legendLabels}
@@ -297,14 +281,16 @@ const LegendSpace = React.createClass({
 		const radialTest = stylings.type === 'dorling' || stylings.type === 'demers' || metadata.chartType === 'mapbubble';
 
 		if (radialTest) {
-
-			legendRender.push(<Map_Radial_Legend
-																			metadata={metadata}
-																			chartProps={chartProps}
-																			stylings={stylings}
-																			translate={translate}
-																			legendsArray={legendsArray}
-																		/>)
+			legendRender
+				.push(<Map_Radial_Legend
+								metadata={metadata}
+								chartProps={chartProps}
+								stylings={stylings}
+								translate={translate}
+								chartWidth={chartWidth}
+								isSmall={props.isSmall}
+								legendsArray={legendsArray}
+							/>)
 		}
 
 		return (
@@ -328,19 +314,24 @@ const Map_Radial_Legend = React.createClass({
   },
 
   render: function() {
+  	const props = this.props;
+  	const stylings = props.stylings;
+  	const chartProps = props.chartProps;
+  	const metadata = props.metadata;
+		const translate = props.translate;
+		const currSettings = chartProps.scale;
+		const chartWidth = props.chartWidth;
 
-  	const stylings = this.props.stylings;
-  	const chartProps = this.props.chartProps;
-  	const metadata = this.props.metadata;
-		const translate = this.props.translate;
+		const radiusVal = stylings.dorlingradiusVal || stylings.radiusVal
+		const radiusComputed = (props.isSmall) ? radiusVal / 2 : radiusVal;
 
-  	const radius = d3.scale.sqrt().range([0, stylings.dorlingradiusVal || stylings.radiusVal]);
+  	const radius = d3.scale.sqrt()
+  			.range([0, radiusComputed])
+  			.domain(currSettings.domain);
 
-  	const translated = this.props.legendsArray.length === 1 ? radialTier1 : 0;
+  	const translated = props.legendsArray.length === 1 ? radialTier1 : 0;
 
-		const dataMax = 70;//d3.max(chartProps.alldata, function(d){ return +d.values; } );
-		radius.domain([0, 70]);
-
+		const dataMax = currSettings.domain[1];
 		const dataCircleSm = radius(Math.round(dataMax / 10));
 		// Don't show a label if the circle is tiny. The labels will overlap
 		const dataCirclelabelSm = radius(Math.round(dataMax / 10)) < 5 ? '' : Math.round(dataMax / 10);
@@ -352,15 +343,18 @@ const Map_Radial_Legend = React.createClass({
 		const demersYOffset = offsetbase - (dataCircleLg * 2);
 		const demersYTextOffset = offsetbase - 2;
 
+		console.log(translate.keyXOffset, chartWidth, translate);
+
 		const rxLg = (stylings.type === 'dorling' || metadata.chartType === 'mapbubble') ? dataCircleLg : 0;
 		const rxSm = (stylings.type === 'dorling' || metadata.chartType === 'mapbubble') ? dataCircleSm : 0;
 
 		const smX = dataCircleLg - dataCircleSm; //(dataCircleLg / 2) - dataCircleSm;
 		const smY = (dataCircleLg * 2) - (dataCircleSm * 2); //(rxLg) - (rxSm * 2);
 
-		const demersTransform = 'translate(' + (translate.right - 120) + ','+ demersYOffset +')';
-		const demersTransformText1 = 'translate(' + (translate.right - 130) + ','+ (demersYTextOffset - 18) +')';
-		const demersTransformText2 = 'translate(' + (translate.right - 130) + ','+ demersYTextOffset +')';
+		const demersTransform = 'translate(' + (chartWidth - translate.keyXOffset) + ','+ demersYOffset +')';
+		// the 4 is to offset the text from the legend just slightly
+		const demersTransformText1 = 'translate(' + (chartWidth - translate.legendleft - translate.keyXOffset - 4) + ','+ (demersYTextOffset - 18) +')';
+		const demersTransformText2 = 'translate(' + (chartWidth - translate.legendleft - translate.keyXOffset - 4) + ','+ demersYTextOffset +')';
 
 		const s = stylings.legendText || ' ';
 
@@ -379,18 +373,12 @@ const Map_Radial_Legend = React.createClass({
 				className="legendsGroup"
 				key={"legendsGroup_" + metadata.chartType}
 				transform={"translate(0," + translated + ")"}
-					>
-					<g transform={demersTransform}
-					className='demersdorlingLegend'>
-					<text
-					x={dataCircleLg}
-					y='-4'>
+			>
+				<g transform={demersTransform} className='demersdorlingLegend'>
+					<text x={dataCircleLg} y='-4'>
 						{dataCirclelabelLg}
 					</text>
-					 <text
-					 x={dataCircleLg}
-					 y={smY - 2}
-					 >
+					 <text x={dataCircleLg} y={smY - 2}>
 						{dataCirclelabelSm}
 					</text>
 					<rect
@@ -416,8 +404,7 @@ const Map_Radial_Legend = React.createClass({
 						{legendText1}
 					</text>
 				</g>
-				<g className="extra-legend"
-					transform={demersTransformText2}>
+				<g className="extra-legend" transform={demersTransformText2}>
 					<text className="extra-legend-text">
 						{legendText2}
 					</text>

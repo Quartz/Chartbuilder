@@ -105,18 +105,19 @@ const ShapesCollection = React.createClass({
   	}
   },
   _topTranslation: function(topTranslation) {
-  	if (this.props.metadata.subtitle) {
-    	if (this.props.metadata.subtitle.length > 0) {
-    		topTranslation += 20;
-    	}
-    }
+  	if (this.props.metadata.subtitle.length > 0) {
+  		topTranslation += this.props.displayConfig.margin.subtitle;
+  	}
     return topTranslation;
   },
   _getTranslation: function(chartProps) {
-    const topTranslation = (Object.keys(chartProps.legend).length === 1) ? this.props.displayConfig.margin.maptop + 50 : this.props.displayConfig.margin.maptop;
-    const translation = `translate(0,${this._topTranslation(topTranslation)})`;
+  	const props = this.props;
+  	const withMobile = (props.isSmall) ? props.displayConfig.margin.mobile.extraMapMarginTop : 0;
+    const topTranslation = (Object.keys(chartProps.legend).length === 1) ?
+    				withMobile + props.displayConfig.margin.maptop + props.displayConfig.margin.legendsOneRow
+    			: props.displayConfig.margin.maptopMultiple;
 
-    return translation;
+    return `translate(0,${this._topTranslation(topTranslation)})`;
   },
   _bruteSearchForValue: function(start,stop,mapSchema,d,keyColumn,polygonData,testObj,index) {
   	for (let j = start; j<stop; j++) {
@@ -234,36 +235,36 @@ const ShapesCollection = React.createClass({
 
   	const valueSet = testObj.thisvalue[0];
 		const styles = {
-							fillOpacity:0.15,
+							fillOpacity: 0.15,
 							strokeWidth: '0.75px',
 							stroke:currSettings[valueSet.index].color,
 							fill:currSettings[valueSet.index].color
 						 };
 
     // at the center labels if required
-      const attributes = {x:null, y:null, text:''};
-      testObj.type = "Feature";
+    const attributes = {x:null, y:null, text:''};
+    testObj.type = "Feature";
 
-      if (projection(centroid(testObj).geometry.coordinates)) {
-      	const centers = projection(centroid(testObj).geometry.coordinates);
+    if (projection(centroid(testObj).geometry.coordinates)) {
+    	const centers = projection(centroid(testObj).geometry.coordinates);
 
-        attributes.x = centers[0];
-        attributes.y = centers[1];
-      }
+      attributes.x = centers[0];
+      attributes.y = centers[1];
+    }
 
-     const renderRadius = radius(testObj.thisvalue[0][valueColumn]);
+    const renderRadius = radius(testObj.thisvalue[0][valueColumn]);
 
   	return (
-          <circle
-            key= {`circle_with_${testObj.i}`}
-            style={styles}
-            r={renderRadius}
-            cx={attributes.x}
-            cy={attributes.y}
-            id= {`circle_${testObj.i}`}
-            className={'state-labels-show'}
-          >
-          </circle>);
+      <circle
+        key= {`circle_with_${testObj.i}`}
+        style={styles}
+        r={renderRadius}
+        cx={attributes.x}
+        cy={attributes.y}
+        id= {`circle_${testObj.i}`}
+        className={'state-labels-show'}
+      />
+    );
   },
   _renderPolygons: function(testObj, chartProps, currSettings, projection, geoPath) {
 

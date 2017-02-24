@@ -54,12 +54,12 @@ const display = {
     maptop: "0.9em",
     maptopMultiple: "-0.75em",
     subtitle: "1.5em",
+    keyXOffset: "6.1em",
     legendleft: "0.8em",
     legendsOneRow: "0.9em",
     legendsTwoRow: "17.1em",
     mobile: {
-    	extraMapMarginTop: '1em',
-    	extraHeight: '1.5em'
+    	extraMapMarginTop: '1em'
     }
   },
   padding: {
