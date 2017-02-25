@@ -48,7 +48,7 @@ const display = {
   margin: {
     top: "0.9em",
     right: "0.8em",
-    bottom: "1.2em",
+    bottom: "0.8em",
     left: "0.8em",
     cliptop: "1em",
     maptop: "0.9em",
@@ -58,13 +58,13 @@ const display = {
     legendsOneRow: "0.9em",
     legendsTwoRow: "17.1em",
     mobile: {
-    	extraMapMarginTop: '1em'
+    	extraMapMarginTop: '0.25em'
     }
   },
   padding: {
     top: 0,
     right: 0,
-    bottom: "3.5em",
+    bottom: '3em',
     left: 0
   }
 };

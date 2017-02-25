@@ -2,22 +2,15 @@
 // combining any of these types, as well as time series
 
 // React
-var React               = require("react");
-var ReactDOM            = require("react-dom");
-var PureRenderMixin     = require("react-addons-pure-render-mixin");
-var PropTypes           = React.PropTypes;
-var update              = require("react-addons-update");
+import React, {PropTypes} from 'react';
+import ReactDom from 'react-dom';
+
+import PureRenderMixin from 'react-addons-pure-render-mixin';
+import update from 'react-addons-update';
 
 // Node modules
-var d3                  = require("d3");
-var assign              = require("lodash/assign");
-var bind                = require("lodash/bind");
-var clone               = require("lodash/clone");
-var each                = require("lodash/each");
-var flatten             = require("lodash/flatten");
-var map                 = require("lodash/map");
-var reduce              = require("lodash/reduce");
-var some                = require("lodash/some");
+import d3 from 'd3';
+import {flatten, each, clone, map, reduce, some, assign, bind} from 'lodash';
 
 // chart elements
 var Chart               = require("../shared/Chart.jsx");

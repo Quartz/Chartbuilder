@@ -47,10 +47,10 @@ const display = {
   margin: {
     top: "0.9em",
     right: "0.8em",
-    bottom: "1.2em",
+    bottom: "0.8em",
     left: "0.8em",
     cliptop: "1em",
-    maptop: "0.1em",
+    maptop: '0.2em',
     maptopMultiple: "-0.75em",
     gridMarginLeft: '2em',
     subtitle: "1.5em",
@@ -64,7 +64,7 @@ const display = {
   padding: {
     top: 0,
     right: 0,
-    bottom: "2em",
+    bottom: "3em",
     left: 0
   }
 };

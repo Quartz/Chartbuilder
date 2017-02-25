@@ -7,11 +7,9 @@ const topojson = require('topojson');
 const PolygonCollection = require('./MapBubbleRenderer.jsx');
 const projectionFunc = require('react-d3-map-core').projection;
 const geoPath = require('react-d3-map-core').geoPath;
-
 const ChartRendererMixin = require("../mixins/MapRendererMixin.js");
 
 const SvgWrapper = require("../svg/SvgWrapper.jsx");
-
 const ClippingPath = require("../../components/shared/ClippingPath.jsx");
 const LegendSpace = require("../../components/svg/MapLegendSpace.jsx");
 
