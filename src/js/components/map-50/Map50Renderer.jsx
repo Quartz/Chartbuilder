@@ -37,12 +37,12 @@ const PolygonsRender = React.createClass({
     // tk
     let testObj = {k:[]};
 
-    for (let l = 0; l < alldata.length; l++) {
+    for (var l = 0; l < alldata.length; l++) {
     	testObj.k = allpolygons.length;
     	const indexTest = alldata[l]['index'];
 		 	const seriesdata = alldata[l].values;
 
-    	for (let i = 0; i < seriesdata.length; i++) {
+    	for (var i = 0; i < seriesdata.length; i++) {
     		testObj = this._matchValues(testObj, seriesdata[i], keyColumn, allpolygons, mapSchema, indexTest);
 
 	    	if (testObj.found) {
@@ -108,7 +108,7 @@ const PolygonsRender = React.createClass({
     return `translate(0,${this._topTranslation(topTranslation)})`;
   },
   _bruteSearchForValue: function(start,stop,mapSchema,d,keyColumn,polygonData,testObj,index) {
-  	for (let j = start; j<stop; j++) {
+  	for (var j = start; j<stop; j++) {
   		if (testObj.found) break;
   		if (mapSchema.test(d[keyColumn], polygonData[j])) {
     		testObj.k = j;
@@ -123,9 +123,9 @@ const PolygonsRender = React.createClass({
   	return testObj;
   },
   _binarySearch: function(polygondata, key, testObj, d, index, keyColumn) {
-    let lo = 0;
-    let hi = polygondata.length - 1;
-    let mid;
+    var lo = 0;
+    var hi = polygondata.length - 1;
+    var mid;
     let element;
 
     key = (typeof key === 'string' && isNaN(key)) ? key.toLowerCase().replace(/\s+/g, '') : +key;
@@ -157,9 +157,9 @@ const PolygonsRender = React.createClass({
     return testObj;
   },
   _binarySearchCounty: function(polygondata, key, testObj, d, index, keyColumn) {
-    let lo = 0;
-    let hi = polygondata.length - 1;
-    let mid;
+    var lo = 0;
+    var hi = polygondata.length - 1;
+    var mid;
     let element;
 
     while (lo <= hi) {
@@ -295,11 +295,11 @@ const PolygonsRender = React.createClass({
     const alreadyRenderedPolygons = [];
     const alreadyRenderedFips = [];
 
-    for (let l = 0; l < alldata.length; l++) {
+    for (var l = 0; l < alldata.length; l++) {
     	testObj.k = allpolygons.length;
     	const indexTest = alldata[l]['index'];
 
-    	for (let i = 0; i < alldata[l].values.length; i++) {
+    	for (var i = 0; i < alldata[l].values.length; i++) {
 
     		testObj = this._matchValues(testObj, alldata[l]['values'][i], keyColumn, allpolygons, mapSchema, indexTest);
 
@@ -315,7 +315,7 @@ const PolygonsRender = React.createClass({
 		  }
     };
 
-    allpolygons.map((polygonData,i) => {
+    allpolygons.map((polygonData, i) => {
     	// return if already rendered this polygon
     	if (alreadyRenderedPolygons.indexOf(i) > -1) return null;
 

@@ -1,45 +1,41 @@
-var React = require("react");
-var PropTypes = React.PropTypes;
-var update = require("react-addons-update");
-var clone = require("lodash/clone");
+import React, {PropTypes} from 'react';
+import update from 'react-addons-update';
+import {clone} from 'lodash';
 
-var ChartEditorMixin = require("../mixins/ChartEditorMixin");
-var XY_yScaleSettings = require("../shared/XY_yScaleSettings.jsx");
+const ChartEditorMixin = require("../mixins/ChartEditorMixin");
+const XY_yScaleSettings = require("../shared/XY_yScaleSettings.jsx");
 
 // Chartbuilder UI components
-var chartbuilderUI = require("chartbuilder-ui");
-var ButtonGroup = chartbuilderUI.ButtonGroup;
-var LabelledTangle = chartbuilderUI.LabelledTangle;
-var TextInput = chartbuilderUI.TextInput;
+import {ButtonGroup, TextInput, LabelledTangle} from 'chartbuilder-ui';
 
-var XYMobile = React.createClass({
+const XYMobile = React.createClass({
 
 	mixins: [ChartEditorMixin],
 
 	_handleUpdate: function(k, v) {
-		var newSetting = {};
+		const newSetting = {};
 		newSetting[k] = v;
-		var newMobile = update(this.props.chartProps.mobile, { $merge: newSetting });
+		const newMobile = update(this.props.chartProps.mobile, { $merge: newSetting });
 		this._handlePropUpdate("mobile", newMobile);
 	},
 
 	_handleScaleUpdate: function(k, v) {
-		var newSetting = {};
+		const newSetting = {};
 		newSetting[k] = v;
-		var newMobile = update(this.props.chartProps.mobile, { $merge: newSetting });
+		const newMobile = update(this.props.chartProps.mobile, { $merge: newSetting });
 		this._handlePropAndReparse("mobile", newMobile);
 	},
 
 	_handleScaleReset: function() {
-		var mobile = clone(this.props.chartProps.mobile);
+		let mobile = clone(this.props.chartProps.mobile);
 		delete mobile.scale;
 		this._handlePropAndReparse("mobile", mobile);
 	},
 
 	render: function() {
-		var chartProps = this.props.chartProps;
-		var scaleSettings = [];
-		var scale = chartProps.mobile.scale || chartProps.scale;
+		const chartProps = this.props.chartProps;
+		const scaleSettings = [];
+		const scale = chartProps.mobile.scale || chartProps.scale;
 
 		/* Y scale settings */
 		scaleSettings.push(

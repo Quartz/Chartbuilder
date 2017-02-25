@@ -1,38 +1,26 @@
 /*
  * ### Editor interface for XY chart type
  */
+import React, {PropTypes} from 'react';
 
-var React = require("react");
-var PropTypes = React.PropTypes;
-var PureRenderMixin = require("react-addons-pure-render-mixin");
-var update = require("react-addons-update");
-var cx = require("classnames");
+import PureRenderMixin from 'react-addons-pure-render-mixin';
+import update from 'react-addons-update';
+const cx = require("classnames");
 
-var bind = require("lodash/bind");
-var clone = require("lodash/clone");
-var each = require("lodash/each");
-var keys = require("lodash/keys");
-var map = require("lodash/map");
+import {each, clone, map, keys, bind} from 'lodash';
 
 const dateParsers = require("../../util/process-dates").dateParsers;
 
 /* Shared Chartbuilder components */
-var DataInput = require("../shared/DataInput.jsx");
-var DateScaleSettings = require("../shared/DateScaleSettings.jsx");
-var NumericScaleSettings = require("../shared/NumericScaleSettings.jsx");
-var XY_yScaleSettings = require("../shared/XY_yScaleSettings.jsx");
+const DataInput = require("../shared/DataInput.jsx");
+const DateScaleSettings = require("../shared/DateScaleSettings.jsx");
+const NumericScaleSettings = require("../shared/NumericScaleSettings.jsx");
+const XY_yScaleSettings = require("../shared/XY_yScaleSettings.jsx");
 
 /* Chartbuilder UI components */
-var chartbuilderUI = require("chartbuilder-ui");
-var Button = chartbuilderUI.Button;
-var ButtonGroup = chartbuilderUI.ButtonGroup;
-var ColorPicker = chartbuilderUI.ColorPicker;
-var Dropdown = chartbuilderUI.Dropdown;
-var LabelledTangle = chartbuilderUI.LabelledTangle;
-var TextInput = chartbuilderUI.TextInput;
-var Toggle = chartbuilderUI.Toggle;
+import {Button, ButtonGroup, ColorPicker, Dropdown, TextInput, LabelledTangle, Toggle} from 'chartbuilder-ui';
 
-var ChartEditorMixin = require("../mixins/ChartEditorMixin.js");
+const ChartEditorMixin = require("../mixins/ChartEditorMixin.js");
 
 /* Available XY chart type options */
 const typeOptions = [
@@ -216,10 +204,10 @@ var XY_resetLabels = React.createClass({
 		 * We will keep the width cached as it is used to calculate distance from a
 		 * previous label
 		*/
-		var labels = clone(this.props.annotations.labels, true);
+		const labels = clone(this.props.annotations.labels, true);
 		each(keys(labels.values), function(labelKey, i) {
 			if (labelKey !== "hasDragged") {
-				var currLabel = labels.values[i];
+				const currLabel = labels.values[i];
 				if (currLabel.dragged == true) {
 					labels.values[i] = {
 						dragged: false,
@@ -231,14 +219,14 @@ var XY_resetLabels = React.createClass({
 		});
 		/* Tell the app that the labels are no longer dragged */
 		labels.hasDragged = false;
-		var annotations = update(this.props.annotations, { $merge: {
+		const annotations = update(this.props.annotations, { $merge: {
 			labels: labels
 		}});
 		this.props.onUpdate(annotations);
 	},
 
 	render: function() {
-		var className = cx({
+		const className = cx({
 			"label-reset": true,
 			"active": this.props.annotations.labels.hasDragged // only show if we've dragged
 		});
