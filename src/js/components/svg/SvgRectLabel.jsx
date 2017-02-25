@@ -439,7 +439,7 @@ var SvgRectLabel = React.createClass({
 			textOffsetX = this.props.labelConfig.rectSize + this.props.labelConfig.textMargin;
 			textOffsetY = 0;
 		} else {
-			textXOffset = 0;
+			textOffsetX = 0;
 			textOffsetY = 0;
 			dy = 0
 		}

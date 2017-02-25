@@ -13,26 +13,26 @@ import d3 from 'd3';
 import {flatten, each, clone, map, reduce, some, assign, bind} from 'lodash';
 
 // chart elements
-var Chart               = require("../shared/Chart.jsx");
-var HorizontalAxis      = require("../shared/HorizontalAxis.jsx");
-var HorizontalGridLines = require("../shared/HorizontalGridLines.jsx");
-var SvgWrapper          = require("../svg/SvgWrapper.jsx");
-var VerticalAxis        = require("../shared/VerticalAxis.jsx");
-var VerticalGridLines   = require("../shared/VerticalGridLines.jsx");
+const Chart               = require("../shared/Chart.jsx");
+const HorizontalAxis      = require("../shared/HorizontalAxis.jsx");
+const HorizontalGridLines = require("../shared/HorizontalGridLines.jsx");
+const SvgWrapper          = require("../svg/SvgWrapper.jsx");
+const VerticalAxis        = require("../shared/VerticalAxis.jsx");
+const VerticalGridLines   = require("../shared/VerticalGridLines.jsx");
 
 // Flux actions
-var VisualViewActions = require("../../actions/VisualViewActions");
+const VisualViewActions = require("../../actions/VisualViewActions");
 
 // Svg components
-var SvgRectLabel        = require("../svg/SvgRectLabel.jsx");
+const SvgRectLabel        = require("../svg/SvgRectLabel.jsx");
 
 // Utilities
-var help                = require("../../util/helper.js");
-var scaleUtils          = require("../../util/scale-utils.js");
-var seriesUtils         = require("../../util/series-utils.js");
-var xyDimensions        = require("../../charts/charts/cb-xy/xy-dimensions.js");
+const help                = require("../../util/helper.js");
+const scaleUtils          = require("../../util/scale-utils.js");
+const seriesUtils         = require("../../util/series-utils.js");
+const xyDimensions        = require("../../charts/charts/cb-xy/xy-dimensions.js");
 
-var scaleNames = ["primaryScale", "secondaryScale"];
+const scaleNames = ["primaryScale", "secondaryScale"];
 
 /**
  * ### Component that renders XY (line, column, dot) charts
@@ -43,7 +43,7 @@ var scaleNames = ["primaryScale", "secondaryScale"];
  * @instance
  * @memberof renderers
  */
-var XYRenderer = React.createClass({
+const XYRenderer = React.createClass({
 
 	propTypes: {
 		displayConfig: PropTypes.object.isRequired,
@@ -129,24 +129,24 @@ var XYRenderer = React.createClass({
 
 	// create flat array of series components based on data and scales
 	_generateSeries: function(yAxes) {
-		var props = this.props;
-		var primaryScale = yAxes.primaryScale.scale;
-		var secondaryScale = yAxes.secondaryScale.scale;
-		var chartProps = props.chartProps;
+		const props = this.props;
+		const primaryScale = yAxes.primaryScale.scale;
+		const secondaryScale = yAxes.secondaryScale.scale;
+		const chartProps = props.chartProps;
 
 		// should lines contain dots
-		var lineMarkThreshold = props.displayConfig.lineMarkThreshold;
-		var pointsPerSeries = chartProps.data[0].values.length;
-		var renderLinePoints = (pointsPerSeries < lineMarkThreshold);
+		const lineMarkThreshold = props.displayConfig.lineMarkThreshold;
+		const pointsPerSeries = chartProps.data[0].values.length;
+		const renderLinePoints = (pointsPerSeries < lineMarkThreshold);
 
 		// create hash of { type: [ components ] }
 		// by passing type and props to seriesUtils.createSeries
-		var series = reduce(chartProps.data, function(seriesByType, d, i) {
-			var setting = chartProps.chartSettings[i];
-			var type = setting.type;
+		const series = reduce(chartProps.data, function(seriesByType, d, i) {
+			const setting = chartProps.chartSettings[i];
+			const type = setting.type;
 			seriesByType[type] = seriesByType[type] || [];
 
-			var seriesProps = {
+			const seriesProps = {
 				key: i,
 				data: d.values,
 				dotRadiusFactor: props.styleConfig.dotRadiusFactor,
@@ -165,7 +165,7 @@ var XYRenderer = React.createClass({
 		}, {});
 
 		// parse column separately because its data passed to a group
-		var columnGroup = null;
+		let columnGroup = null;
 		if (series.column) {
 			columnGroup = seriesUtils.createSeries("column", {
 				key: "bar", bars: series.column
@@ -182,32 +182,31 @@ var XYRenderer = React.createClass({
 
 	render: function() {
 		// grab some props for convenience
-		var props = this.props;
-		var _chartProps = this.props.chartProps;
-		var displayConfig = this.props.displayConfig;
-		var styleConfig = this.props.styleConfig;
-		var margin = displayConfig.margin;
-		var scale = _chartProps.scale;
-
+		const props = this.props;
+		const _chartProps = props.chartProps;
+		const displayConfig = props.displayConfig;
+		const styleConfig = props.styleConfig;
+		const margin = displayConfig.margin;
+		let scale = _chartProps.scale;
 
 		// bools that affect how chart will render
-		var hasColumn = this._chartHasColumn(_chartProps.chartSettings);
-		var needsLabelOffset = this._needsLabelOffset(_chartProps._annotations.labels, _chartProps.data)
+		const hasColumn = this._chartHasColumn(_chartProps.chartSettings);
+		const needsLabelOffset = this._needsLabelOffset(_chartProps._annotations.labels, _chartProps.data)
 
 		// set the tick font and figure out how wide ticks will be before rendering
-		var tickFont = styleConfig.fontSizes.medium + "px " + styleConfig.fontFamilies.axes;
-		var tickWidths = this._getTickWidths(_chartProps.scale, tickFont);
-		var tickTextHeight = help.computeTextWidth("M", tickFont);
+		const tickFont = styleConfig.fontSizes.medium + "px " + styleConfig.fontFamilies.axes;
+		const tickWidths = this._getTickWidths(_chartProps.scale, tickFont);
+		const tickTextHeight = help.computeTextWidth("M", tickFont);
 
 		// set the dimensions of inner and outer. much of this will be unnecessary
 		// if we draw stuff in HTML
-		var base_dimensions = xyDimensions(props.width, {
+		const base_dimensions = xyDimensions(props.width, {
 			displayConfig: displayConfig,
 			enableResponsive: props.enableResponsive,
 			metadata: props.metadata
 		});
 		// Dimensions of the chart area
-		var chartAreaDimensions = {
+		const chartAreaDimensions = {
 			width: (
 				base_dimensions.width - margin.left - margin.right -
 				displayConfig.padding.left - displayConfig.padding.right -
@@ -220,11 +219,11 @@ var XYRenderer = React.createClass({
 		};
 
 		// height needed to account for legend labels
-		var extraHeight = (chartAreaDimensions.height * this.state.labelYMax)
-		var chartAreaTranslateY = extraHeight;
+		const extraHeight = (chartAreaDimensions.height * this.state.labelYMax)
+		let chartAreaTranslateY = extraHeight;
 
 		// dimensions of entire canvas, base + label height
-		var outerDimensions = {
+		const outerDimensions = {
 			width: base_dimensions.width,
 			height: base_dimensions.height + extraHeight
 		};
@@ -236,33 +235,33 @@ var XYRenderer = React.createClass({
 		}
 
 		// y axis and scales
-		var yRange = [chartAreaDimensions.height, props.styleConfig.overtick_top];
-		var yAxes = {
+		const yRange = [chartAreaDimensions.height, props.styleConfig.overtick_top];
+		const yAxes = {
 			primaryScale: scaleUtils.generateScale("linear", scale.primaryScale, null, yRange),
 			secondaryScale: scaleUtils.generateScale("linear", scale.secondaryScale, null, yRange)
 		}
 
 		// x axis and scales
-		var xPadding = (
+		const xPadding = (
 			chartAreaDimensions.width * this._getXOuterPadding(hasColumn) +
 			props.styleConfig.xOverTick
 		);
-		var xRange = [xPadding, chartAreaDimensions.width - xPadding];
-		var xAxis = this._generateXAxis(scale, _chartProps.data, xRange);
+		const xRange = [xPadding, chartAreaDimensions.width - xPadding];
+		const xAxis = this._generateXAxis(scale, _chartProps.data, xRange);
 
 		// linear x axis used for placing annotations based on scale
-		var xAxisLinear = scaleUtils.generateScale("linear",
+		const xAxisLinear = scaleUtils.generateScale("linear",
 			{ domain: xAxis.scale.domain() }, null, xRange);
 
 		// create 1 or 2 vertical axes
-		var verticalAxes = map(scaleNames, function(key, i) {
+		const verticalAxes = map(scaleNames, function(key, i) {
 			if (!scale[key]) return null;
 
-			var scaleOptions = scale[key];
-			var axis = yAxes[key];
-			var orient = displayConfig.yAxisOrient[key];
-			var maxTickWidth = tickWidths[key].max;
-			var offsetX = (orient === "left") ? maxTickWidth * -1 : maxTickWidth;
+			const scaleOptions = scale[key];
+			const axis = yAxes[key];
+			const orient = displayConfig.yAxisOrient[key];
+			const maxTickWidth = tickWidths[key].max;
+			const offsetX = (orient === "left") ? maxTickWidth * -1 : maxTickWidth;
 			return (
 				<VerticalAxis
 					key={i}
@@ -282,7 +281,7 @@ var XYRenderer = React.createClass({
 		});
 
 		// mobile overrides TODO: do we actually need this?
-		if (this.props.enableResponsive && _chartProps.hasOwnProperty("mobile") && this.props.isSmall) {
+		if (props.enableResponsive && _chartProps.hasOwnProperty("mobile") && this.props.isSmall) {
 			if (_chartProps.mobile.scale) {
 				scale = assign({}, _chartProps.scale, _chartProps.mobile.scale);
 			} else {
@@ -294,62 +293,62 @@ var XYRenderer = React.createClass({
 
 		// draw the chart
 		return (
-		<SvgWrapper
-			outerDimensions={outerDimensions}
-			metadata={this.props.metadata}
-			displayConfig={displayConfig}
-			styleConfig={this.props.styleConfig}
-		>
-			{/* main chart area */}
-			<Chart
-				chartType="xy"
-				dimensions={chartAreaDimensions}
-				styleConfig={this.props.styleConfig}
+			<SvgWrapper
+				outerDimensions={outerDimensions}
+				metadata={props.metadata}
 				displayConfig={displayConfig}
-				editable={this.props.editable}
-				xScale={xAxis.scale}
-				yScale={yAxes.primaryScale.scale}
-				translate={[tickWidths.primaryScale.max, chartAreaTranslateY]}
-				tickTextHeight={tickTextHeight}
-				tickFont={tickFont}
+				styleConfig={props.styleConfig}
 			>
-				<VerticalGridLines
-					tickValues={xAxis.tickValues}
-					y1={chartAreaDimensions.height}
-					y2={chartAreaDimensions.height + styleConfig.overtick_bottom}
+				{/* main chart area */}
+				<Chart
+					chartType="xy"
+					dimensions={chartAreaDimensions}
+					styleConfig={props.styleConfig}
+					displayConfig={displayConfig}
+					editable={props.editable}
+					xScale={xAxis.scale}
+					yScale={yAxes.primaryScale.scale}
+					translate={[tickWidths.primaryScale.max, chartAreaTranslateY]}
+					tickTextHeight={tickTextHeight}
+					tickFont={tickFont}
+				>
+					<VerticalGridLines
+						tickValues={xAxis.tickValues}
+						y1={chartAreaDimensions.height}
+						y2={chartAreaDimensions.height + styleConfig.overtick_bottom}
+					/>
+					<HorizontalGridLines
+						tickValues={scale.primaryScale.tickValues}
+						x2={chartAreaDimensions.width + tickWidths.secondaryScale.max}
+					/>
+					{verticalAxes}
+					{this._generateSeries(yAxes)}
+					<HorizontalAxis
+						prefix={(scale.numericSettings) ? scale.numericSettings.prefix : ""}
+						suffix={(scale.numericSettings) ? scale.numericSettings.suffix : ""}
+						tickFormat={xAxis.tickFormat}
+						tickValues={xAxis.tickValues}
+						textAnchor={this._xAxisTextAnchor(_chartProps, scale.hasDate, hasColumn)}
+						orient="bottom"
+					/>
+				</Chart>
+				{/* chart legend */}
+				<XYLabels
+					key="xy-labels"
+					chartProps={_chartProps}
+					font={tickFont}
+					needsLabelOffset={needsLabelOffset}
+					dimensions={chartAreaDimensions}
+					editable={props.editable}
+					displayConfig={displayConfig}
+					styleConfig={props.styleConfig}
+					tickWidths={tickWidths}
+					xScale={xAxisLinear.scale}
+					yScale={yAxes.primaryScale.scale}
+					updateLabelYMax={this._updateLabelYMax}
+					labelYMax={this.state.labelYMax}
 				/>
-				<HorizontalGridLines
-					tickValues={scale.primaryScale.tickValues}
-					x2={chartAreaDimensions.width + tickWidths.secondaryScale.max}
-				/>
-				{verticalAxes}
-				{this._generateSeries(yAxes)}
-				<HorizontalAxis
-					prefix={(scale.numericSettings) ? scale.numericSettings.prefix : ""}
-					suffix={(scale.numericSettings) ? scale.numericSettings.suffix : ""}
-					tickFormat={xAxis.tickFormat}
-					tickValues={xAxis.tickValues}
-					textAnchor={this._xAxisTextAnchor(_chartProps, scale.hasDate, hasColumn)}
-					orient="bottom"
-				/>
-			</Chart>
-			{/* chart legend */}
-			<XYLabels
-				key="xy-labels"
-				chartProps={_chartProps}
-				font={tickFont}
-				needsLabelOffset={needsLabelOffset}
-				dimensions={chartAreaDimensions}
-				editable={this.props.editable}
-				displayConfig={displayConfig}
-				styleConfig={this.props.styleConfig}
-				tickWidths={tickWidths}
-				xScale={xAxisLinear.scale}
-				yScale={yAxes.primaryScale.scale}
-				updateLabelYMax={this._updateLabelYMax}
-				labelYMax={this.state.labelYMax}
-			/>
-		</SvgWrapper>
+			</SvgWrapper>
 		);
 	}
 });
@@ -372,7 +371,7 @@ var XYRenderer = React.createClass({
  * @instance
  * @memberof XYRenderer
  */
-var XYLabels = React.createClass({
+const XYLabels = React.createClass({
 
 	propTypes: {
 		chartProps: PropTypes.object.isRequired,
@@ -397,7 +396,7 @@ var XYLabels = React.createClass({
 		* reloaded later.
 		*/
 		/* Make sure only undragged labels exist in XYLabels state, removing others */
-		var updateUndragged = reduce(nextProps.chartProps._annotations.labels.values, bind(function(obj, v, i) {
+		const updateUndragged = reduce(nextProps.chartProps._annotations.labels.values, bind(function(obj, v, i) {
 			if (!v.dragged) {
 				if (this.state.undraggedLabels[i]) {
 					obj[i] = this.state.undraggedLabels[i];
@@ -416,7 +415,7 @@ var XYLabels = React.createClass({
 	},
 
 	_getLabelYMax: function(labels, height) {
-		var labelYMax = 0;
+		let labelYMax = 0;
 
 		// Find out how much vertical space the labels are taking up
 		// by identifying the one with the largest `y` value
@@ -436,7 +435,7 @@ var XYLabels = React.createClass({
 
 	_enableDrag: function() {
 		// tell the parent app that dragging has been enabled
-		var annotations = this.props.chartProps._annotations;
+		const annotations = this.props.chartProps._annotations;
 		annotations.labels.hasDragged = true;
 		VisualViewActions.updateChartProp("_annotations", annotations);
 	},
@@ -444,9 +443,9 @@ var XYLabels = React.createClass({
 	_handleLabelPositionUpdate: function(ix, pos) {
 		// If a label is dragged, update its position in the parent app
 		if (pos.dragged) {
-			var values = clone(this.props.chartProps._annotations.labels.values);
+			const values = clone(this.props.chartProps._annotations.labels.values);
 			values[ix] = pos;
-			var annotations = update(this.props.chartProps._annotations, { $merge: {
+			const annotations = update(this.props.chartProps._annotations, { $merge: {
 				labels: {
 					values: values,
 					hasDragged: this.props.chartProps._annotations.labels.hasDragged
@@ -455,12 +454,12 @@ var XYLabels = React.createClass({
 			VisualViewActions.updateChartProp("_annotations", annotations);
 		/* Otherwise if undragged, update in XYLabls state */
 		} else {
-			var undragged = this.state.undraggedLabels;
+			const undragged = this.state.undraggedLabels;
 			undragged[ix] = pos;
 			this.setState(update(this.state, { $merge: {
 				undraggedLabels: undragged
 			}}));
-			var labelYMax = this._getLabelYMax(undragged, this.props.dimensions.height);
+			const labelYMax = this._getLabelYMax(undragged, this.props.dimensions.height);
 			if (labelYMax !== this.props.labelYMax) {
 				this.props.updateLabelYMax(labelYMax);
 			}
@@ -490,27 +489,27 @@ var XYLabels = React.createClass({
 	// create array of SvgRectLabel components
 	render: function() {
 		// get props for convenience
-		var props = this.props;
-		var labels = props.chartProps._annotations.labels;
-		var styleConfig = props.styleConfig;
-		var displayConfig = props.displayConfig;
-		var dimensions = props.dimensions;
-		var labelComponents = [];
-		var labelFont = styleConfig.fontSizes.medium + "px " + styleConfig.fontFamilies.labels;
+		const props = this.props;
+		const labels = props.chartProps._annotations.labels;
+		const styleConfig = props.styleConfig;
+		const displayConfig = props.displayConfig;
+		const dimensions = props.dimensions;
+		let labelComponents = [];
+		const labelFont = styleConfig.fontSizes.medium + "px " + styleConfig.fontFamilies.labels;
 
-		var labelConfig = {
+		const labelConfig = {
 			xMargin: displayConfig.labelXMargin,
 			textMargin: displayConfig.labelTextMargin,
 			rowHeight: displayConfig.labelRowHeight,
 			rectSize: displayConfig.labelRectSize
 		};
 
-		if (this.props.chartProps.data.length > 1) {
-			labelComponents = map(this.props.chartProps.data, bind(function(d, i) {
-				var prevNode = null;
-				var labelSettings = {};
-				var chartSetting = this.props.chartProps.chartSettings[i];
-				var scale = { yScale: props.yScale, xScale: props.xScale, };
+		if (props.chartProps.data.length > 1) {
+			labelComponents = map(props.chartProps.data, bind(function(d, i) {
+				let prevNode = null;
+				let labelSettings = {};
+				const chartSetting = props.chartProps.chartSettings[i];
+				const scale = { yScale: props.yScale, xScale: props.xScale, };
 
 				// Use existing positions if possible
 				if (labels.values[i].dragged) {
@@ -525,7 +524,7 @@ var XYLabels = React.createClass({
 						key={i} index={i}
 						text={chartSetting.label}
 						labelConfig={labelConfig}
-						dimensions={this.props.dimensions}
+						dimensions={props.dimensions}
 						enableDrag={this._enableDrag}
 						editable={props.editable}
 						onPositionUpdate={this._handleLabelPositionUpdate}
@@ -540,10 +539,7 @@ var XYLabels = React.createClass({
 		}
 
 		// account for chart being moved up on all labels dragged
-		var translateY = 0;
-		if (!props.needsLabelOffset) {
-			translateY = 0 - displayConfig.afterLegend;
-		}
+		const translateY = (!props.needsLabelOffset) ? 0 - displayConfig.afterLegend : 0;
 
 		return (
 			<g
