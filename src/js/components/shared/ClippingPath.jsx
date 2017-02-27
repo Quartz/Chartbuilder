@@ -1,28 +1,9 @@
-
-import React, {PropTypes} from 'react';
-import ReactDom from 'react-dom';
-import update from 'react-addons-update';
-
 /**
  * Render a
  * @instance
  * @memberof RendererWrapper
  */
-class ClippingPath extends React.Component {
-
-	constructor(props) {
-    super(props);
-
-    this._config = {
-		}
-
-    this.state = {
-		};
-  }
-
-	render () {
-		//
-		const props = this.props;
+function ClippingPath (props) {
 		const margin = props.displayConfig.margin;
 		const chartAreaDimensions = props.chartAreaDimensions;
 
@@ -39,9 +20,7 @@ class ClippingPath extends React.Component {
 					height={chartAreaDimensions.height}
 				/>
 			</clipPath>
-
 		);
-	}
 };
 
 

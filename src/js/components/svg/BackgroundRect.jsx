@@ -1,24 +1,7 @@
 import React, {PropTypes} from 'react';
 
-const BackgroundRect = React.createClass({
-
-	propTypes: {
-		dimensions: PropTypes.shape({
-			width: PropTypes.number,
-			height: PropTypes.number
-		}),
-		x: PropTypes.number,
-		y: PropTypes.number
-	},
-
-	getDefaultProps: function() {
-		return {
-			x: 0,
-			y: 0
-		}
-	},
-
-	render: function() {
+class BackgroundRect extends React.Component{
+	render () {
 		const props = this.props;
 		return (
 			<g className="svg-background-wrap">
@@ -32,7 +15,19 @@ const BackgroundRect = React.createClass({
 			</g>
 		);
 	}
+};
 
-});
+BackgroundRect.propTypes = {
+	dimensions: PropTypes.shape({
+		width: PropTypes.number,
+		height: PropTypes.number
+	}),
+	x: PropTypes.number,
+	y: PropTypes.number
+}
+BackgroundRect.defaultProps = {
+	x: 0,
+	y: 0
+}
 
 module.exports = BackgroundRect;

@@ -111,15 +111,15 @@ MapFooter.propTypes = {
 }
 
 // Credit text
-const ChartCreditText = React.createClass({
+class ChartCreditText extends React.Component {
 
-	componentDidMount: function() {
+	componentDidMount () => {
 		let node = ReactDom.findDOMNode(this);
 		let bbox = node.getBBox();
 		this.props.updateState(bbox.width);
-	},
+	}
 
-	render: function() {
+	render () {
 		return (
 			<SvgText
 				text={this.props.text}
@@ -128,7 +128,7 @@ const ChartCreditText = React.createClass({
 			/>
 		);
 	}
-});
+};
 
 // Source text
 class ChartSourceText extends React.Component{
@@ -179,28 +179,28 @@ class ChartSourceText extends React.Component{
 
 // Hidden element that renders the text of parent's `sampleString` and sets in
 // parent state the sample string's width per character.
-const HiddenPixelMeasure = React.createClass({
+class HiddenPixelMeasure  extends React.Component {
 
-	componentDidMount: function() {
+	componentDidMount () => {
 		let textLength = ReactDom.findDOMNode(this).getComputedTextLength();
 		this.props.onUpdate(textLength / this.props.sampleString.length);
-	},
+	}
 
-	componentDidUpdate: function() {
+	componentDidUpdate () => {
 		let textLength = ReactDom.findDOMNode(this).getComputedTextLength();
 		let ppc = textLength / this.props.sampleString.length;
 		if (ppc !== this.props.pixelsPerCharacter) {
 			this.props.onUpdate(ppc);
 		}
-	},
+	}
 
-	render: function() {
+	render () {
 		return (
 			<text className="hidden-svg svg-text svg-text-source">
 				{this.props.sampleString}
 			</text>
 		);
 	}
-});
+};
 
 module.exports = MapFooter;

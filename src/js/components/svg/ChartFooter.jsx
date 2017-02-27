@@ -11,15 +11,10 @@ const SvgText = require("./SvgText.jsx");
  * @instance
  * @memberof RendererWrapper
  */
-const ChartFooter = React.createClass({
 
-	propTypes: {
-		metadata: PropTypes.object,
-		translate: PropTypes.object,
-		chartWidth: PropTypes.number
-	},
+class ChartFooter extends React.Component {
 
-	_createSourceLine: function() {
+	_createSourceLine () {
 		var sourceLine;
 		if (this.props.metadata.source && this.props.metadata.source !== "") {
 			sourceLine = "Data: " + this.props.metadata.source;
@@ -32,9 +27,9 @@ const ChartFooter = React.createClass({
 		}
 
 		return sourceLine;
-	},
+	}
 
-	render: function() {
+	render () {
 		var sourceLineText = this._createSourceLine();
 		return (
 			<g className={this.props.className}>
@@ -51,8 +46,13 @@ const ChartFooter = React.createClass({
 			</g>
 		);
 	}
+};
 
-});
+ChartFooter.propTypes = {
+	metadata: PropTypes.object,
+	translate: PropTypes.object,
+	chartWidth: PropTypes.number
+}
 /*
 // Credit text
 var ChartCreditText = React.createClass({
