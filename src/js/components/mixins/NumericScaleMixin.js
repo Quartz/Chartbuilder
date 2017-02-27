@@ -1,14 +1,13 @@
-var clone = require("lodash/clone");
-var map = require("lodash/map");
-var reduce = require("lodash/reduce");
-var help = require("../../util/helper.js");
+
+import {clone,map,reduce} from 'lodash';
+const help = require("../../util/helper.js");
 
 /**
  * ### Mixin for renderers that require construction of a numeric scale
  * @instance
  * @memberof renderers
  */
-var NumericScaleMixin = {
+const NumericScaleMixin = {
 
 	/**
 	 * generateNumericScale
@@ -19,7 +18,7 @@ var NumericScaleMixin = {
 	generateNumericScale: function(props) {
 		// TODO: auto-generate some kind of "good" numeric scale? For now just
 		// return the settings
-		var cur = props.chartProps.scale.numericSettings;
+		const cur = props.chartProps.scale.numericSettings;
 
 		return {
 			custom: cur.custom,

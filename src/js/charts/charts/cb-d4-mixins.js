@@ -1,5 +1,5 @@
-var SessionStore = require("../../stores/SessionStore");
-var separators = SessionStore.get("separators");
+const SessionStore = require("../../stores/SessionStore");
+const separators = SessionStore.get("separators");
 
 /**
  * @name cb_d4_mixins
@@ -16,29 +16,29 @@ const mixins = {
 		"feature": d4.feature('concealer-label', function(name) {
 
 			// FIXME: We should not need to sniff this out.
-			var dataInColumns = function(d) {
+			const dataInColumns = function(d) {
 				if (d4.isDefined(d.y0)) {
 					return true;
 				}
 				return d4.isContinuousScale(this.y);
 			};
 
-			var anchorText = function(d) {
+			const anchorText = function(d) {
 				return dataInColumns.bind(this)(d) ? 'middle' : 'start';
 			};
 
-			var useDiscretePosition = function(dimension, d) {
-				var axis = this[dimension];
+			const useDiscretePosition = function(dimension, d) {
+				const axis = this[dimension];
 				return axis(d[axis.$key]) + (axis.rangeBand() / 2);
 			};
 
-			var useContinuousPosition = function(dimension, d) {
-				var axis = this[dimension];
-				var offset = Math.abs(axis(d.y0) - axis(d.y0 + d.y)) / 2;
+			const useContinuousPosition = function(dimension, d) {
+				const axis = this[dimension];
+				let offset = Math.abs(axis(d.y0) - axis(d.y0 + d.y)) / 2;
 
 				// FIXME: Remove this hardcoding.
-				var padding = 10;
-				var val;
+				let padding = 10;
+				let val;
 				if (dimension === 'x') {
 					offset *= -1;
 					padding *= -1;

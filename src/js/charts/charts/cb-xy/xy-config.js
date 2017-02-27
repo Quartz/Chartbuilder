@@ -1,5 +1,5 @@
-var ChartConfig = require("../ChartConfig");
-var now = new Date();
+const ChartConfig = require("../ChartConfig");
+const now = new Date();
 
 /**
  * ### Configuration of an XY chart
@@ -31,7 +31,7 @@ var now = new Date();
 * @property {object} padding - Distances btwn inner chart elements and container
 */
 
-var display = {
+const display = {
 	labelRectSize: "0.6em",
 	labelXMargin: "0.6em",
 	labelTextMargin: "0.3em",
@@ -72,7 +72,7 @@ var display = {
 * @static
 * @memberof xy_config
 */
-var defaultProps = {
+const defaultProps = {
 	/**
 	 * @name chartProps
 	 * @property {object} scale - Default settings for date and primary scales
@@ -152,7 +152,7 @@ var defaultProps = {
 	}
 };
 
-var xy_config = new ChartConfig({
+const xy_config = new ChartConfig({
 	displayName: "XY Chart",
 	parser: require("./parse-xy"),
 	calculateDimensions: require("./xy-dimensions"),

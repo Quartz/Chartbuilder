@@ -1,4 +1,4 @@
-var chartSizes = require("../../../config/chartconfig/chart-sizes");
+const chartSizes = require("../../../config/chartconfig/chart-sizes");
 
 /**
  * see [ChartConfig#calculateDimensions](#chartconfig/calculatedimensions)
@@ -7,9 +7,9 @@ var chartSizes = require("../../../config/chartconfig/chart-sizes");
  * @memberof chart_grid_config
  */
 function chartGridDimensions(width, opts) {
-	var height;
-	var metadata = opts.metadata;
-	var grid = opts.grid;
+	let height;
+	const metadata = opts.metadata;
+	const grid = opts.grid;
 
 	if (metadata.size == "auto" || opts.enableResponsive) {
 		// use current width
@@ -18,7 +18,7 @@ function chartGridDimensions(width, opts) {
 	}
 
 	if (grid.type == "bar") {
-		var numDataPoints = opts.data[0].values.length;
+		const numDataPoints = opts.data[0].values.length;
 		height = calculate_bar_height(numDataPoints, grid, opts.displayConfig);
 	} else {
 		height = calculate_cartesian_height(width, grid, opts.displayConfig);
@@ -39,7 +39,7 @@ function calculate_bar_height(numDataPoints, grid, displayConfig) {
 }
 
 function calculate_cartesian_height(width, grid, displayConfig, extraHeight) {
-	var height = (
+	const height = (
 		grid.rows *
 		((width / grid.cols) *
 		displayConfig.xy.aspectRatio.wide)

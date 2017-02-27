@@ -1,11 +1,9 @@
-var clone = require("lodash/clone");
-var map = require("lodash/map");
-var assign = require("lodash/assign");
-var each = require("lodash/each");
 
-var SessionStore = require("../../../stores/SessionStore");
-var dataBySeries = require("../../../util/parse-data-by-series");
-var help = require("../../../util/helper");
+import {clone, map, assign, each} from 'lodash';
+
+const SessionStore = require("../../../stores/SessionStore");
+const dataBySeries = require("../../../util/parse-data-by-series");
+const help = require("../../../util/helper");
 
 /**
  * see [ChartConfig#parser](#chartconfig/parser)

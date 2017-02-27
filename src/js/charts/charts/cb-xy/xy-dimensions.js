@@ -1,4 +1,4 @@
-var chartSizes = require("../../../config/chartconfig/chart-sizes");
+const chartSizes = require("../../../config/chartconfig/chart-sizes");
 
 // TODO: jsDocify this if it works
 
@@ -9,9 +9,9 @@ var chartSizes = require("../../../config/chartconfig/chart-sizes");
  * @memberof xy_config
  */
 function calculate_xy_dimensions(width, opts) {
-	var height;
-	var aspectRatio = opts.displayConfig.aspectRatio;
-	var metadata = opts.metadata;
+	let height;
+	const aspectRatio = opts.displayConfig.aspectRatio;
+	const metadata = opts.metadata;
 
 	if (metadata.size == "auto" || opts.enableResponsive) {
 		// use current width

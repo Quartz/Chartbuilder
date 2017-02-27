@@ -1,19 +1,17 @@
-var React = require("react");
-var PropTypes = React.PropTypes;
-var clone = require("lodash/clone");
-var update = require("react-addons-update");
 
-var ChartEditorMixin = require("../mixins/ChartEditorMixin");
-var XY_yScaleSettings = require("../shared/XY_yScaleSettings.jsx");
-var ChartGrid_xScaleSettings = require("./ChartGrid_xScaleSettings.jsx");
+import React, {PropTypes} from 'react';
+import update from 'react-addons-update';
+
+import {clone} from 'lodash';
+
+const ChartEditorMixin = require("../mixins/ChartEditorMixin");
+const XY_yScaleSettings = require("../shared/XY_yScaleSettings.jsx");
+const ChartGrid_xScaleSettings = require("./ChartGrid_xScaleSettings.jsx");
 
 // Chartbuilder UI components
-var chartbuilderUI = require("chartbuilder-ui");
-var ButtonGroup = chartbuilderUI.ButtonGroup;
-var LabelledTangle = chartbuilderUI.LabelledTangle;
-var TextInput = chartbuilderUI.TextInput;
+import {ButtonGroup, LabelledTangle, TextInput} from 'chartbuilder-ui';
 
-var ChartGridMobile = React.createClass({
+const ChartGridMobile = React.createClass({
 
 	mixins: [ ChartEditorMixin ],
 
@@ -24,36 +22,36 @@ var ChartGridMobile = React.createClass({
 	},
 
 	_handleUpdate: function(k, v) {
-		var newSetting = {};
+		const newSetting = {};
 		newSetting[k] = v;
-		var newMobile = update(this.props.chartProps.mobile, { $merge: newSetting });
+		const newMobile = update(this.props.chartProps.mobile, { $merge: newSetting });
 		this._handlePropAndReparse("mobile", newMobile);
 	},
 
 	_handleScaleUpdate: function(k, v) {
-		var scale = clone(this.state.scale, true);
+		const scale = clone(this.state.scale, true);
 		scale.primaryScale[k] = v;
-		var newMobile = update(this.props.chartProps.mobile, {
+		const newMobile = update(this.props.chartProps.mobile, {
 			$merge: { scale: scale }
 		});
 		this._handlePropAndReparse("mobile", newMobile);
 	},
 
 	_handleScaleReset: function() {
-		var mobile = clone(this.props.chartProps.mobile);
+		let mobile = clone(this.props.chartProps.mobile);
 		delete mobile.scale;
 		this._handlePropAndReparse("mobile", mobile);
 	},
 
 	componentWillReceiveProps: function(nextProps) {
-		var scale = nextProps.chartProps.mobile.scale || nextProps.chartProps.scale;
+		const scale = nextProps.chartProps.mobile.scale || nextProps.chartProps.scale;
 		this.setState({ scale: scale });
 	},
 
 	render: function() {
-		var chartProps = this.props.chartProps;
+		const chartProps = this.props.chartProps;
 
-		var scaleSettings = [];
+		const scaleSettings = [];
 		scaleSettings.push(
 			<TextInput
 				className="scale-option"

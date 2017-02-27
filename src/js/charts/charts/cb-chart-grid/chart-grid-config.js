@@ -1,4 +1,4 @@
-var ChartConfig = require("../ChartConfig");
+const ChartConfig = require("../ChartConfig");
 
 /**
  * ### Configuration of a Chart grid
@@ -23,7 +23,7 @@ var ChartConfig = require("../ChartConfig");
 * @property {object} margin - Distances btwn outer chart elements and container
 * @property {object} padding - Distances btwn inner chart elements and container
 */
-var display = {
+const display = {
 	afterTitle: "1.6em", // distance between top of title and top of legend or chart
 	afterLegend: "0.8em", // distance between top of legend and top of chart
 	blockerRectOffset: "0.25em", // distance between text and background blocker rect
@@ -57,7 +57,7 @@ var display = {
 * @static
 * @memberof chart_grid_config
 */
-var defaultProps = {
+const defaultProps = {
 	/**
 	 * @name chartProps
 	 * @property {object} scale - Default settings for date and primary scales
@@ -132,7 +132,7 @@ var defaultProps = {
 	}
 };
 
-var chart_grid_config = new ChartConfig({
+const chart_grid_config = new ChartConfig({
 	displayName: "Chart grid",
 	parser: require("./parse-chart-grid"),
 	calculateDimensions: require("./chart-grid-dimensions"),

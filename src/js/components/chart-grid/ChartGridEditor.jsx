@@ -2,33 +2,24 @@
  * Editor interface for ChartGrid chart type
  */
 
-var React = require("react");
-var PropTypes = React.PropTypes;
-var update = require("react-addons-update");
-var cx = require("classnames");
+import React, {PropTypes} from 'react';
+import update from 'react-addons-update';
+const cx = require("classnames");
 
-var bind = require("lodash/bind");
-var clone = require("lodash/clone");
-var each = require("lodash/each");
-var map = require("lodash/map");
-var range = require("lodash/range");
+import {bind,clone,each,map,range} from 'lodash';
 
 /* Shared Chartbuilder components */
-var DataInput = require("../shared/DataInput.jsx");
-var DateScaleSettings = require("../shared/DateScaleSettings.jsx");
-var NumericScaleSettings = require("../shared/NumericScaleSettings.jsx");
-var XY_yScaleSettings = require("../shared/XY_yScaleSettings.jsx");
-var ChartGrid_xScaleSettings = require("./ChartGrid_xScaleSettings.jsx");
+const DataInput = require("../shared/DataInput.jsx");
+const DateScaleSettings = require("../shared/DateScaleSettings.jsx");
+const NumericScaleSettings = require("../shared/NumericScaleSettings.jsx");
+const XY_yScaleSettings = require("../shared/XY_yScaleSettings.jsx");
+const ChartGrid_xScaleSettings = require("./ChartGrid_xScaleSettings.jsx");
 
 /* Chartbuilder UI components */
-var chartbuilderUI = require("chartbuilder-ui");
-var Button = chartbuilderUI.Button;
-var ButtonGroup = chartbuilderUI.ButtonGroup;
-var ColorPicker = chartbuilderUI.ColorPicker;
-var TextInput = chartbuilderUI.TextInput;
-var help = require("../../util/helper.js");
+import {Button, ButtonGroup, ColorPicker, TextInput} from 'chartbuilder-ui';
+const help = require("../../util/helper.js");
 
-var ChartEditorMixin = require("../mixins/ChartEditorMixin.js");
+const ChartEditorMixin = require("../mixins/ChartEditorMixin.js");
 
 /**
  * ### Editor interface for a Chart grid
@@ -37,7 +28,7 @@ var ChartEditorMixin = require("../mixins/ChartEditorMixin.js");
  * @instance
  * @memberof editors
  */
-var ChartGridEditor = React.createClass({
+const ChartGridEditor = React.createClass({
 
 	propTypes: {
 		chartProps: PropTypes.shape({
@@ -68,11 +59,9 @@ var ChartGridEditor = React.createClass({
 	},
 
 	render: function() {
-		var chartProps = this.props.chartProps;
-		var chartSettings;
-
+		const chartProps = this.props.chartProps;
 		/* Create a settings component for each data series (column) */
-		chartSettings = map(chartProps.chartSettings, bind(function(seriesSetting, i) {
+		const chartSettings = map(chartProps.chartSettings, bind(function(seriesSetting, i) {
 			return (
 				<ChartGrid_chartSettings
 					chartSettings={chartProps.chartSettings}
@@ -87,11 +76,11 @@ var ChartGridEditor = React.createClass({
 			);
 		}, this));
 
-		var inputErrors = this.props.errors.messages.filter(function(e) {
+		const inputErrors = this.props.errors.messages.filter(function(e) {
 			return e.location === "input";
 		});
 
-		var axisErrors = this.props.errors.messages.filter(function(e) {
+		const axisErrors = this.props.errors.messages.filter(function(e) {
 			return e.location === "axis";
 		});
 
@@ -99,7 +88,7 @@ var ChartGridEditor = React.createClass({
 		 * Settings to control the numerical scale. It will be different for bar
 		 * than for XY
 		* */
-		var scaleSettings = [];
+		const scaleSettings = [];
 		if (chartProps._grid.type == "bar") {
 			scaleSettings.push(
 				<ChartGrid_xScaleSettings
@@ -203,7 +192,7 @@ var ChartGridEditor = React.createClass({
  * @instance
  * @memberof ChartGridEditor
  */
-var ChartGrid_universalToggle = React.createClass({
+const ChartGrid_universalToggle = React.createClass({
 
 	propTypes: {
 		text: PropTypes.string,
@@ -213,7 +202,7 @@ var ChartGrid_universalToggle = React.createClass({
 	},
 
 	_handleUniversal: function(k, v) {
-		var chartSettings = map(this.props.chartSettings, clone);
+		const chartSettings = map(this.props.chartSettings, clone);
 		if (v === true) {
 			each(chartSettings, function(setting, i) {
 				setting.colorIndex = chartSettings[0].colorIndex;
@@ -246,7 +235,7 @@ var ChartGrid_universalToggle = React.createClass({
  * @instance
  * @memberof ChartGridEditor
  */
-var ChartGrid_chartSettings = React.createClass({
+const ChartGrid_chartSettings = React.createClass({
 
 	propTypes: {
 		name: PropTypes.string.isRequired,
@@ -257,7 +246,7 @@ var ChartGrid_chartSettings = React.createClass({
 
 	_getNewSettings: function(ix, k, v) {
 		/* Clone the array of objects so that we dont mutate existing state */
-		var chartSettings = map(this.props.chartSettings, clone);
+		const chartSettings = map(this.props.chartSettings, clone);
 		/* Apply a setting to every series if universal is checked */
 		if (this.props.universalSettings) {
 			each(chartSettings, function(setting, i) {
@@ -280,7 +269,7 @@ var ChartGrid_chartSettings = React.createClass({
 	},
 
 	render: function() {
-		var seriesSetting = this.props.chartSettings[this.props.index];
+		const seriesSetting = this.props.chartSettings[this.props.index];
 		return (
 			<div className="series-control">
 				<div className="section colorsection">
@@ -311,7 +300,7 @@ var ChartGrid_chartSettings = React.createClass({
  * @instance
  * @memberof ChartGridEditor
  */
-var ChartGrid_gridSettings = React.createClass({
+const ChartGrid_gridSettings = React.createClass({
 
 	propTypes: {
 		grid: PropTypes.shape({
@@ -362,9 +351,9 @@ var ChartGrid_gridSettings = React.createClass({
 	},
 
 	_handleGridUpdate: function(k, v) {
-		var gridSetting = {};
+		const gridSetting = {};
 		gridSetting[k] = v;
-		var grid = update(this.props.grid, { $merge: gridSetting });
+		const grid = update(this.props.grid, { $merge: gridSetting });
 		this.props.onUpdate(grid);
 	},
 

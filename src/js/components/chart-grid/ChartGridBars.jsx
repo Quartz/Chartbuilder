@@ -3,41 +3,34 @@
  * Render a grid of N columns by N rows of bar (row) charts
 */
 
-var React           = require("react");
-var PropTypes       = React.PropTypes;
-var update          = require("react-addons-update");
+import React, {PropTypes} from 'react';
+import update from 'react-addons-update';
 
-var bind            = require("lodash/bind");
-var clone           = require("lodash/clone");
-var each            = require("lodash/each");
-var map             = require("lodash/map");
-var max             = require("lodash/max");
-var maxBy           = require("lodash/maxBy");
-var reduce          = require("lodash/reduce");
+import {bind,clone,each,map,max,maxBy,reduce} from 'lodash';
 
-var SessionStore    = require("../../stores/SessionStore");
-var separators      = SessionStore.get("separators");
-var d3 = require("d3");
-var formatThousands = d3.format(separators.thousands);
+const SessionStore    = require("../../stores/SessionStore");
+const separators      = SessionStore.get("separators");
+const d3 = require("d3");
+const formatThousands = d3.format(separators.thousands);
 
 /* Helper functions */
-var help = require("../../util/helper.js");
+const help = require("../../util/helper.js");
 
 /* Renderer mixins */
-var ChartRendererMixin = require("../mixins/ChartRendererMixin.js");
+const ChartRendererMixin = require("../mixins/ChartRendererMixin.js");
 
-var HorizontalGridLines = require("../shared/HorizontalGridLines.jsx");
-var VerticalGridLines   = require("../shared/VerticalGridLines.jsx");
-var BarGroup            = require("../series/BarGroup.jsx");
-var SvgWrapper          = require("../svg/SvgWrapper.jsx");
-var scaleUtils          = require("../../util/scale-utils.js");
-var seriesUtils         = require("../../util/series-utils.js");
-var gridUtils           = require("../../util/grid-utils.js");
-var Chart               = require("../shared/Chart.jsx");
-var VerticalAxis        = require("../shared/VerticalAxis.jsx");
-var BarLabels           = require("../shared/BarLabels.jsx");
-var BlockerRects        = require("../shared/BlockerRects.jsx");
-var SeriesLabel         = require("../shared/SeriesLabel.jsx");
+const HorizontalGridLines = require("../shared/HorizontalGridLines.jsx");
+const VerticalGridLines   = require("../shared/VerticalGridLines.jsx");
+const BarGroup            = require("../series/BarGroup.jsx");
+const SvgWrapper          = require("../svg/SvgWrapper.jsx");
+const scaleUtils          = require("../../util/scale-utils.js");
+const seriesUtils         = require("../../util/series-utils.js");
+const gridUtils           = require("../../util/grid-utils.js");
+const Chart               = require("../shared/Chart.jsx");
+const VerticalAxis        = require("../shared/VerticalAxis.jsx");
+const BarLabels           = require("../shared/BarLabels.jsx");
+const BlockerRects        = require("../shared/BlockerRects.jsx");
+const SeriesLabel         = require("../shared/SeriesLabel.jsx");
 
 /**
  * ### Component that renders bar (row) charts in a chart grid
@@ -47,7 +40,7 @@ var SeriesLabel         = require("../shared/SeriesLabel.jsx");
  * @instance
  * @memberof ChartGridRenderer
  */
-var ChartGridBars = React.createClass({
+const ChartGridBars = React.createClass({
 
 	propTypes: {
 		editable: PropTypes.bool.isRequired,
@@ -76,9 +69,9 @@ var ChartGridBars = React.createClass({
 	// render one for each column of data
 	// TODO: have in mind a maybe better way to do this
 	_barGridBlock: function(d, i) {
-		var props = this.props;
+		const props = this.props;
 
-		var barProps = {
+		const barProps = {
 			key: "bar",
 			bars: [{
 				data: d.values,
@@ -87,7 +80,7 @@ var ChartGridBars = React.createClass({
 			orientation: "horizontal"
 		};
 
-		var bar = seriesUtils.createSeries("column", barProps);
+		const bar = seriesUtils.createSeries("column", barProps);
 
 		return [
 			<SeriesLabel
@@ -117,31 +110,31 @@ var ChartGridBars = React.createClass({
 	},
 
 	render: function() {
-		var props = this.props;
-		var displayConfig = props.displayConfig;
-		var margin = displayConfig.margin;
-		var styleConfig = props.styleConfig;
-		var chartProps = props.chartProps;
-		var dimensions = props.dimensions;
-		var primaryScale = chartProps.scale.primaryScale;
-		var tickFont = styleConfig.fontSizes.medium + "px " + styleConfig.fontFamilies.axes;
-		var tickTextHeight = help.computeTextWidth("M", tickFont);
+		const props = this.props;
+		const displayConfig = props.displayConfig;
+		const margin = displayConfig.margin;
+		const styleConfig = props.styleConfig;
+		const chartProps = props.chartProps;
+		const dimensions = props.dimensions;
+		const primaryScale = chartProps.scale.primaryScale;
+		const tickFont = styleConfig.fontSizes.medium + "px " + styleConfig.fontFamilies.axes;
+		const tickTextHeight = help.computeTextWidth("M", tickFont);
 
 		/* Get the text values used for the labels */
-		var tickLabels = map(chartProps.data[0].values, function(d) {
+		const tickLabels = map(chartProps.data[0].values, function(d) {
 			return d.entry;
 		});
 
-		var widthPerTick = map(tickLabels, function(t) {
+		const widthPerTick = map(tickLabels, function(t) {
 			return help.computeTextWidth(t, tickFont);
 		});
 
-		var tickWidths = {
+		const tickWidths = {
 			widths: widthPerTick,
 			max: max(widthPerTick)
 		};
 
-		var chartAreaDimensions = {
+		const chartAreaDimensions = {
 			width: (
 				dimensions.width - margin.left - margin.right -
 				displayConfig.padding.left - displayConfig.padding.right -
@@ -153,7 +146,7 @@ var ChartGridBars = React.createClass({
 			)
 		};
 
-		var outerDimensions = {
+		const outerDimensions = {
 			width: dimensions.width,
 			height: dimensions.height +
 			(displayConfig.margin.top + displayConfig.margin.bottom) +
@@ -162,11 +155,11 @@ var ChartGridBars = React.createClass({
 		}
 
 		// range for all charts in grid (outer)
-		var xRangeOuter = [props.styleConfig.xOverTick, chartAreaDimensions.width - props.styleConfig.xOverTick];
-		var yRangeOuter = [chartAreaDimensions.height, 0];
+		const xRangeOuter = [props.styleConfig.xOverTick, chartAreaDimensions.width - props.styleConfig.xOverTick];
+		const yRangeOuter = [chartAreaDimensions.height, 0];
 
 		// place grid elements using gridScales generated by d3
-		var gridScales = gridUtils.createGridScales(chartProps._grid, {
+		const gridScales = gridUtils.createGridScales(chartProps._grid, {
 			x: xRangeOuter,
 			y: yRangeOuter
 		}, {
@@ -178,37 +171,37 @@ var ChartGridBars = React.createClass({
 
 		// Create temporary x axis to figure out where the furthest bar label is, so
 		// that we can offset it
-		var _tmpXAxis = scaleUtils.generateScale("linear", primaryScale, chartProps.data, [0, gridScales.cols.rangeBand()]);
+		const _tmpXAxis = scaleUtils.generateScale("linear", primaryScale, chartProps.data, [0, gridScales.cols.rangeBand()]);
 
 		// TODO: this is ugly
-		var barLabels = { widths: [], xVals: []};
+		const barLabels = { widths: [], xVals: []};
 		each(chartProps.data, function(series, i) {
 			barLabels.widths[i] = [];
 			each(series.values, function(val, ix) {
-				var renderPrefSuf = (ix === 0);
-				var formatted = help.addPrefSuf(val.value, renderPrefSuf, primaryScale.prefix, primaryScale.suffix);
-				var txtWidth = help.computeTextWidth(formatted, tickFont);
+				const renderPrefSuf = (ix === 0);
+				const formatted = help.addPrefSuf(val.value, renderPrefSuf, primaryScale.prefix, primaryScale.suffix);
+				const txtWidth = help.computeTextWidth(formatted, tickFont);
 				barLabels.widths[i].push(txtWidth);
 				barLabels.xVals.push(txtWidth + _tmpXAxis.scale(val.value) + props.displayConfig.blockerRectOffset);
 			});
 		});
 
-		var barLabelsMaxX = max(barLabels.xVals);
-		var barLabelOverlap = Math.max(0, barLabelsMaxX - gridScales.cols.rangeBand());
+		const barLabelsMaxX = max(barLabels.xVals);
+		const barLabelOverlap = Math.max(0, barLabelsMaxX - gridScales.cols.rangeBand());
 
 		// range and axes for each individual small chart in the grid (inner)
-		var xRangeInner = [0, gridScales.cols.rangeBand() - barLabelOverlap];
-		var yRangeInner = [displayConfig.afterLegend, gridScales.rows.rangeBand() - displayConfig.afterLegend];
-		var xAxis = scaleUtils.generateScale("linear", primaryScale, chartProps.data, xRangeInner);
-		var yAxis = scaleUtils.generateScale("ordinal", primaryScale, chartProps.data, yRangeInner, {
+		const xRangeInner = [0, gridScales.cols.rangeBand() - barLabelOverlap];
+		const yRangeInner = [displayConfig.afterLegend, gridScales.rows.rangeBand() - displayConfig.afterLegend];
+		const xAxis = scaleUtils.generateScale("linear", primaryScale, chartProps.data, xRangeInner);
+		const yAxis = scaleUtils.generateScale("ordinal", primaryScale, chartProps.data, yRangeInner, {
 			inner: displayConfig.barInnerPadding,
 			outer: displayConfig.barOuterPadding
 		});
 
 		// `Outer` is the common wrapper component that will be used for each chart
 		// in the grid
-		var Outer = React.createFactory(Chart);
-		var outerProps = {
+		const Outer = React.createFactory(Chart);
+		const outerProps = {
 			chartType: "bar",
 			styleConfig: props.styleConfig,
 			displayConfig: displayConfig,
@@ -221,13 +214,13 @@ var ChartGridBars = React.createClass({
 			tickWidths: tickWidths
 		};
 
-		var grid = gridUtils.makeMults(Outer, outerProps, chartProps.data, gridScales, this._barGridBlock);
+		const grid = gridUtils.makeMults(Outer, outerProps, chartProps.data, gridScales, this._barGridBlock);
 
 		// create vertical axis and grid lines for each row.
 		// this should possibly be part of the grid generation
 		// and could be its own wrapper component
-		var verticalAxes = map(gridScales.rows.domain(), function(row, i) {
-			var yPos = gridScales.rows(i);
+		const verticalAxes = map(gridScales.rows.domain(), function(row, i) {
+			const yPos = gridScales.rows(i);
 			return (
 				<g
 					className="axis grid-row-axis"

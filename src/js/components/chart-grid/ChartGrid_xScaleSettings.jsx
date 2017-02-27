@@ -1,13 +1,10 @@
-var React = require("react");
-var PropTypes = React.PropTypes;
-var update = require("react-addons-update");
+import React, {PropTypes} from 'react';
+import update from 'react-addons-update';
 
-var clone = require("lodash/clone");
+import {clone} from 'lodash';
+import {LabelledTangle, TextInput} from 'chartbuilder-ui';
 
-var chartbuilderUI = require("chartbuilder-ui");
-var LabelledTangle = chartbuilderUI.LabelledTangle;
-var TextInput = chartbuilderUI.TextInput;
-var ScaleReset = require("../shared/ScaleReset.jsx");
+const ScaleReset = require("../shared/ScaleReset.jsx");
 
 /**
  * ### Chart grid xScale settings parent component
@@ -27,7 +24,7 @@ var ScaleReset = require("../shared/ScaleReset.jsx");
  *  stepNumber="4"
  * />
 */
-var ChartGrid_xScaleSettings = React.createClass({
+const ChartGrid_xScaleSettings = React.createClass({
 
 	propTypes: {
 		scale: PropTypes.shape({
@@ -51,9 +48,9 @@ var ChartGrid_xScaleSettings = React.createClass({
 	 * @memberof ChartGrid_xScaleSettings
 	 */
 	_handleScaleUpdate: function(k, v) {
-		var primaryScale = clone(this.props.scale.primaryScale);
+		const primaryScale = clone(this.props.scale.primaryScale);
 		primaryScale[k] = v;
-		var scale = update(this.props.scale, {
+		const scale = update(this.props.scale, {
 			$merge: { primaryScale: primaryScale }
 		});
 		this.props.onUpdate(scale);
@@ -70,7 +67,7 @@ var ChartGrid_xScaleSettings = React.createClass({
 	 * @memberof ChartGrid_xScaleSettings
 	 */
 	_handleDomainUpdate: function(k, v) {
-		var scale = clone(this.props.scale, true);
+		const scale = clone(this.props.scale, true);
 		scale.primaryScale.custom = true;
 		if (k == "min") {
 			scale.primaryScale.domain[0] = v;
@@ -81,10 +78,10 @@ var ChartGrid_xScaleSettings = React.createClass({
 	},
 
 	render: function() {
-		var currScale = this.props.scale.primaryScale;
-		var domain = currScale.domain;
+		const currScale = this.props.scale.primaryScale;
+		const domain = currScale.domain;
 
-		var tangleInputs = [
+		const tangleInputs = [
 			<LabelledTangle
 				label="Minimum"
 				labelClass="editor-label"
@@ -105,7 +102,7 @@ var ChartGrid_xScaleSettings = React.createClass({
 			/>
 		];
 
-		var title_block = (
+		let title_block = (
 				<h2 className="scale-option-title">
 					<span className="step-number">{this.props.stepNumber}</span>
 					Set the units, max, and min of the {this.props.axis} axis

@@ -1,11 +1,9 @@
-var React = require("react");
-var PropTypes = React.PropTypes;
-var map = require("lodash/map");
-var reduce = require("lodash/reduce");
-var isArray = require("lodash/isArray");
-var ordinal = require("d3").scale.ordinal;
+import React, {PropTypes} from 'react';
+const d3scale = require("d3-scale");
+import {map, reduce, isArray} from 'lodash';
+const ordinal = require("d3").scale.ordinal;
 
-var BarSeries = React.createClass({
+const BarSeries = React.createClass({
 
 	propTypes: {
 		data: PropTypes.array,
@@ -29,20 +27,20 @@ var BarSeries = React.createClass({
 	},
 
 	render: function() {
-		var props = this.props;
-		var data = this._createDataArray(props.data);
-		var numDataPoints = data[0].length;
-		var innerWidth = props.dimensions.width / numDataPoints;
-		var groupOuterPadding = Math.max(0.1, (1.6 / numDataPoints));
+		const props = this.props;
+		const data = this._createDataArray(props.data);
+		const numDataPoints = data[0].length;
+		const innerWidth = props.dimensions.width / numDataPoints;
+		const groupOuterPadding = Math.max(0.1, (1.6 / numDataPoints));
 
-		var innerScale = ordinal().domain(Object.keys(data))
+		const innerScale = ordinal().domain(Object.keys(data))
 		.rangeRoundBands([0, innerWidth], 0, groupOuterPadding);
 
-		var rectWidth = innerScale.rangeBand();
+		const rectWidth = innerScale.rangeBand();
 
-		var rects = map(bars, function(bar, ix) {
+		const rects = map(bars, function(bar, ix) {
 			return map(series, function(d, i) {
-				var yVal = props.yScale[ix](d.value);
+				const yVal = props.yScale[ix](d.value);
 				return (
 					<rect
 						key={i}

@@ -1,11 +1,11 @@
 /* Flux dispatcher */
-var Dispatcher = require("../dispatcher/dispatcher");
+const Dispatcher = require("../dispatcher/dispatcher");
 
 /**
  * ### ChartViewActions
  * Send data from React views to Flux dispatcher, and on to the stores
 */
-var ChartViewActions = {
+const ChartViewActions = {
 
 	/**
 	* Update all chart props

@@ -1,10 +1,10 @@
-var Dispatcher = require("../dispatcher/dispatcher");
+const Dispatcher = require("../dispatcher/dispatcher");
 
 /**
  * ### VisualServerActions
  * Send data from some external API, usually localStorage in our case
 */
-var VisualServerActions = {
+const VisualServerActions = {
 
 	/**
 	* Update the whole chart model

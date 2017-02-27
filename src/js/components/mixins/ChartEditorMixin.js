@@ -1,15 +1,14 @@
-var React = require("react");
-var update = require("react-addons-update");
-
+import React from 'react';
+import update from 'react-addons-update';
 // Flux actions
-var VisualViewActions = require("../../actions/VisualViewActions");
+const VisualViewActions = require("../../actions/VisualViewActions");
 
 /**
  * ### Functions common to chart editors
  * @instance
  * @memberof editors
  */
-var ChartEditorMixin = {
+const ChartEditorMixin = {
 
 	/**
 	 * _handlePropUpdate
@@ -38,7 +37,7 @@ var ChartEditorMixin = {
 	 * @param v - `this.state` value
 	 */
 	_handleStateUpdate: function(k, v) {
-		var newValue = {};
+		const newValue = {};
 		newValue[k] = v;
 		this.setState(update(this.state, { $merge: newValue }));
 	},

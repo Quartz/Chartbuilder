@@ -1,10 +1,9 @@
 // Svg text elements used to describe chart
-var React = require("react");
-var PropTypes = React.PropTypes;
-var line = require("d3").svg.line();
-var ordinalAdjust = require("../../util/scale-utils").ordinalAdjust;
+import React, {PropTypes} from 'react';
+const line = require("d3").svg.line();
+const ordinalAdjust = require("../../util/scale-utils").ordinalAdjust;
 
-var LineSeries = React.createClass({
+const LineSeries = React.createClass({
 
 	propTypes: {
 		data: PropTypes.array,
@@ -13,9 +12,9 @@ var LineSeries = React.createClass({
 	},
 
 	render: function() {
-		var props = this.props;
+		const props = this.props;
 
-		var lineFunc = line
+		const lineFunc = line
 			.x(function(d) { return ordinalAdjust(props.xScale, d.entry); })
 			.y(function(d) { return props.yScale(d.value); });
 

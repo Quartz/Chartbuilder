@@ -1,14 +1,10 @@
-var clone = require("lodash/clone");
-var map = require("lodash/map");
-var assign = require("lodash/assign");
-var each = require("lodash/each");
-var filter = require("lodash/filter");
+import {clone, map, assign, each, filter} from 'lodash';
 
-var dataBySeries = require("../../../util/parse-data-by-series");
-var help = require("../../../util/helper");
-var SessionStore = require("../../../stores/SessionStore");
+const dataBySeries = require("../../../util/parse-data-by-series");
+const help = require("../../../util/helper");
+const SessionStore = require("../../../stores/SessionStore");
 
-var scaleNames = ["primaryScale", "secondaryScale"];
+const scaleNames = ["primaryScale", "secondaryScale"];
 
 /**
  * see [ChartConfig#parser](#chartconfig/parser)
@@ -22,18 +18,18 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 	parseOpts = parseOpts || {};
 	// clone so that we aren't modifying original
 	// this can probably be avoided by applying new settings differently
-	var chartProps = JSON.parse(JSON.stringify(_chartProps));
-	var bySeries = dataBySeries(chartProps.input.raw, {
+	const chartProps = JSON.parse(JSON.stringify(_chartProps));
+	const bySeries = dataBySeries(chartProps.input.raw, {
 		checkForDate: true,
 		type: chartProps.input.type
 	});
 
-	var labels = chartProps._annotations.labels;
-	var allColumn = true;
+	const labels = chartProps._annotations.labels;
+	//let allColumn = true;
 	// check if either scale contains columns, as we'll need to zero the axis
-	var _primaryColumn = false;
-	var _secondaryColumn = false;
-	var _scaleComputed = {};
+	//const _primaryColumn = false;
+	//const _secondaryColumn = false;
+	const _scaleComputed = {};
 
 	each(scaleNames, function(name) {
 		_scaleComputed[name] = {
@@ -43,8 +39,8 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 		};
 	});
 
-	var chartSettings = map(bySeries.series, function(dataSeries, i) {
-		var settings;
+	let chartSettings = map(bySeries.series, function(dataSeries, i) {
+		let settings;
 
 		if (chartProps.chartSettings[i]) {
 			settings = chartProps.chartSettings[i];
@@ -59,14 +55,16 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 			settings.label = settings.label || dataSeries.name;
 		}
 
-		var values = map(dataSeries.values, function(d) {
+		const values = map(dataSeries.values, function(d) {
 			return +d.value;
 		});
+
+		let _computed;
 
 		// add data points to relevant scale
 		if (settings.altAxis === false) {
 
-			var _computed = _scaleComputed.primaryScale;
+			_computed = _scaleComputed.primaryScale;
 			_computed.data = _computed.data.concat(values);
 			_computed.count += 1;
 			if (settings.type == "column") {
@@ -75,7 +73,7 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 
 		} else {
 
-			var _computed = _scaleComputed.secondaryScale;
+			_computed = _scaleComputed.secondaryScale;
 			_computed.data = _computed.data.concat(values);
 			_computed.count += 1;
 			if (settings.type == "column") {
@@ -96,24 +94,24 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 		}
 	});
 
-	var maxPrecision = 5;
-	var factor = Math.pow(10, maxPrecision);
+	const maxPrecision = 5;
+	const factor = Math.pow(10, maxPrecision);
 
-	var scale = {};
-	var mobileScale = {};
+	const scale = {};
+	const mobileScale = {};
 
 	// Calculate domain and tick values for any scales that exist
 	each(scaleNames, function(name) {
-		var _computed = _scaleComputed[name];
+		let _computed = _scaleComputed[name];
 		if (_computed.count > 0) {
-			var currScale = chartProps.scale[name] || clone(config.defaultProps.chartProps.scale.primaryScale);
-			var domain = help.computeScaleDomain(currScale, _computed.data, {
+			let currScale = chartProps.scale[name] || clone(config.defaultProps.chartProps.scale.primaryScale);
+			let domain = help.computeScaleDomain(currScale, _computed.data, {
 				nice: true,
 				minZero: _computed.hasColumn
 			});
 			assign(currScale, domain);
 
-			var ticks;
+			let ticks;
 			if (name === "primaryScale") {
 				ticks = currScale.ticks;
 			} else {
@@ -122,7 +120,7 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 
 			currScale.tickValues = help.exactTicks(currScale.domain, ticks);
 			each(currScale.tickValues, function(v) {
-				var tickPrecision = help.precision(Math.round(v*factor)/factor);
+				const tickPrecision = help.precision(Math.round(v*factor)/factor);
 				if (tickPrecision > currScale.precision) {
 					currScale.precision = tickPrecision;
 				}
@@ -132,18 +130,18 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 
 			if (chartProps.mobile) {
 				if (chartProps.mobile.scale) {
-					var currMobile = chartProps.mobile.scale[name];
+					const currMobile = chartProps.mobile.scale[name];
 					if (currMobile) {
-						var domain = help.computeScaleDomain(currMobile, _computed.data, {
+						domain = help.computeScaleDomain(currMobile, _computed.data, {
 							nice: true,
 							minZero: _computed.hasColumn
 						});
 						assign(currMobile, domain);
 
-						var ticks = (name == "primaryScale") ? currMobile.ticks : scale.primaryScale.ticks;
+						const ticks = (name == "primaryScale") ? currMobile.ticks : scale.primaryScale.ticks;
 						currMobile.tickValues = help.exactTicks(currMobile.domain, ticks);
 						each(currMobile.tickValues, function(v) {
-							var tickPrecision = help.precision(Math.round(v*factor)/factor);
+							const tickPrecision = help.precision(Math.round(v*factor)/factor);
 							if (tickPrecision > currMobile.precision) {
 								currMobile.precision = tickPrecision;
 							}
@@ -189,8 +187,8 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 			count: 0
 		};
 
-		var currScale = chartProps.scale.numericSettings || clone(config.defaultProps.chartProps.scale.numericSettings);
-		var domain = help.computeScaleDomain(currScale, _computed.data, {
+		let currScale = chartProps.scale.numericSettings || clone(config.defaultProps.chartProps.scale.numericSettings);
+		let domain = help.computeScaleDomain(currScale, _computed.data, {
 			nice: true,
 			minZero: false
 		});
@@ -199,11 +197,11 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 
 		currScale.ticks = currScale.ticks || help.suggestTickNum(currScale.domain);
 
-		var ticks = currScale.ticks;
+		const ticks = currScale.ticks;
 		currScale.tickValues = help.exactTicks(currScale.domain, ticks);
 
 		each(currScale.tickValues, function(v) {
-			var tickPrecision = help.precision(Math.round(v*factor)/factor);
+			const tickPrecision = help.precision(Math.round(v*factor)/factor);
 			if (tickPrecision > currScale.precision) {
 				currScale.precision = tickPrecision;
 			}
@@ -213,18 +211,18 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 
 		if (chartProps.mobile) {
 			if (chartProps.mobile.scale) {
-				var currMobile = chartProps.mobile.scale.numericSettings;
+				const currMobile = chartProps.mobile.scale.numericSettings;
 				if (currMobile) {
-					var domain = help.computeScaleDomain(currMobile, _computed.data, {
+					let domain = help.computeScaleDomain(currMobile, _computed.data, {
 						nice: true,
 						minZero: false
 					});
 					assign(currMobile, domain);
 
-					var ticks = currMobile.ticks;
+					const ticks = currMobile.ticks;
 					currMobile.tickValues = help.exactTicks(currMobile.domain, ticks);
 					each(currMobile.tickValues, function(v) {
-						var tickPrecision = help.precision(Math.round(v*factor)/factor);
+						const tickPrecision = help.precision(Math.round(v*factor)/factor);
 						if (tickPrecision > currMobile.precision) {
 							currMobile.precision = tickPrecision;
 						}
@@ -235,11 +233,9 @@ function parseXY(config, _chartProps, callback, parseOpts) {
 		} else {
 			chartProps.mobile = {};
 		}
-
-
 	}
 
-	var newChartProps = assign(chartProps, {
+	const newChartProps = assign(chartProps, {
 		chartSettings: chartSettings,
 		scale: scale,
 		input: bySeries.input,
