@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 
-class BackgroundRect extends React.Component{
+class BackgroundRect extends React.Component {
 	render () {
 		const props = this.props;
 		return (

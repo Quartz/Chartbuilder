@@ -25,17 +25,9 @@ const PureRenderMixin = require("react-addons-pure-render-mixin");
  * @instance
  * @memberof RendererWrapper
  */
-const HiddenSvgAxis = React.createClass({
+class HiddenSvgAxis extends React.Component {
 
-	propTypes: {
-		className: PropTypes.string,
-		onUpdate: PropTypes.func.isRequired,
-		formattedText: PropTypes.array.isRequired,
-		blockerRectOffset: PropTypes.number.isRequired,
-		maxTickWidth: PropTypes.number
-	},
-
-	shouldComponentUpdate: function(nextProps, nextState) {
+	shouldComponentUpdate (nextProps, nextState) {
 		const isTextNew = !isEqual(this.props.formattedText, nextProps.formattedText);
 		if (isTextNew) {
 			return true;
@@ -49,9 +41,9 @@ const HiddenSvgAxis = React.createClass({
 			return true;
 		}
 		return false;
-	},
+	}
 
-	_getMaxTickWidth: function(el) {
+	_getMaxTickWidth (el) {
 		const text = el.getElementsByTagName("text");
 
 		const newMaxTickWidth = reduce(text, function(prevWidth, currNode) {
@@ -63,23 +55,23 @@ const HiddenSvgAxis = React.createClass({
 		// add the size of the offset of the background blocker rect
 		newMaxTickWidth = newMaxTickWidth + this.props.blockerRectOffset;
 		return newMaxTickWidth;
-	},
+	}
 
-	componentDidMount: function(prevProps, prevState) {
+	componentDidMount (prevProps, prevState) {
 		const newMaxTickWidth = this._getMaxTickWidth(ReactDOM.findDOMNode(this));
 		this.props.onUpdate(newMaxTickWidth);
-	},
+	}
 
-	componentDidUpdate: function(prevProps, prevState) {
+	componentDidUpdate (prevProps, prevState) {
 		const newMaxTickWidth = this._getMaxTickWidth(ReactDOM.findDOMNode(this));
 		if (newMaxTickWidth !== this.props.maxTickWidth) {
 			// update `maxTickWidth` object in parent component, as it gets passed to
 			// `XYChart`, a sibling of this component.
 			this.props.onUpdate(newMaxTickWidth);
 		}
-	},
+	}
 
-	render: function() {
+	render () {
 		const tickText = this.props.formattedText.map(function(tick, i) {
 			// FYI: these classNames must match the classNames used to render your
 			// actual ticks in order for this to work
@@ -96,8 +88,15 @@ const HiddenSvgAxis = React.createClass({
 			</g>
 		);
 	}
+};
 
-});
+HiddenSvgBarLabels.propTypes = propTypes: {
+	className: PropTypes.string,
+	onUpdate: PropTypes.func.isRequired,
+	formattedText: PropTypes.array.isRequired,
+	blockerRectOffset: PropTypes.number.isRequired,
+	maxTickWidth: PropTypes.number
+}
 
 /**
  * Given a scale, render hidden bar grid labels to find which is furthest right.
@@ -106,33 +105,26 @@ const HiddenSvgAxis = React.createClass({
  * @instance
  * @memberof RendererWrapper
  */
-const HiddenSvgBarLabels = React.createClass({
+class HiddenSvgBarLabels extends React.Component {
 
-	propTypes: {
-		onUpdate: PropTypes.func.isRequired,
-		scale: PropTypes.object.isRequired,
-		blockerRectOffset: PropTypes.number.isRequired,
-		chartWidth: PropTypes.number.isRequired,
-		labelOverlap: PropTypes.number.isRequired
-	},
-
-	getInitialState: function() {
-		return {
+	constructor(props) {
+    super(props);
+    this.state = {
 			effectiveWidth: 0, // width of the chart accounting for margin/padding
 			parentSVG: null
-		}
-	},
+		};
+  }
 
-	_getSVGParent: function(el) {
+	_getSVGParent (el) {
 		// we need the parent SVG to compute mouse position
 		if (el.parentNode.tagName == "svg") {
 			return el.parentNode;
 		} else {
 			return this._getSVGParent(el.parentNode);
 		}
-	},
+	}
 
-	shouldComponentUpdate: function(nextProps, nextState) {
+	shouldComponentUpdate (nextProps, nextState) {
 		const prevScale = this.props.scale;
 		const newScale = nextProps.scale;
 		const newPrefix = (prevScale.prefix !== newScale.prefix);
@@ -147,9 +139,9 @@ const HiddenSvgBarLabels = React.createClass({
 			return true;
 		}
 		return false;
-	},
+	}
 
-	_getLabelOverlap: function(chartWidth) {
+	_getLabelOverlap (chartWidth) {
 		const el = ReactDOM.findDOMNode(this);
 		const text = el.querySelectorAll("text");
 		// Find the top bar grid label that is furthest to the right
@@ -168,45 +160,46 @@ const HiddenSvgBarLabels = React.createClass({
 		} else {
 			return 0;
 		}
-	},
+	}
 
-	_createScale: function(props) {
+	_createScale (props) {
 		// Create a d3 scale based on our chart properties, so that we can "place"
 		// the hidden label and see if it is too far to the right
 		return d3.scale.linear()
 			.range([props.offset.left, props.chartWidth - props.offset.right])
 			.domain(props.scale.domain);
-	},
+	}
 
-	componentWillReceiveProps: function(nextProps) {
+	componentWillReceiveProps (nextProps) {
 		// Find the effective width of the chart area and set this in current
 		// component's state
 		this.setState({
 			effectiveWidth: nextProps.chartWidth - nextProps.margin.right - nextProps.margin.left
 		});
-	},
+	}
 
-	componentDidMount: function(prevProps, prevState) {
+	componentDidMount (prevProps, prevState) {
 		// Set the initial labelOverlap on mount
 		this.setState({ parentSVG: this._getSVGParent(ReactDOM.findDOMNode(this))}, function() {
 			const labelOverlap = this._getLabelOverlap(this.props.chartWidth);
 			this.props.onUpdate(labelOverlap);
 		})
-	},
+	}
 
-	componentDidUpdate: function(prevProps, prevState) {
+	componentDidUpdate (prevProps, prevState) {
 		const labelOverlap = this._getLabelOverlap(this.props.chartWidth);
 		if (labelOverlap !== this.props.labelOverlap) {
 			// Update new `labelOverlap` if it has changed
 			this.props.onUpdate(labelOverlap);
 		}
-	},
+	}
 
-	render: function() {
-		const scale = this.props.scale;
-		const d3scale = this._createScale(this.props);
+	render () {
+		const props = this.props;
+		const scale = props.scale;
+		const d3scale = this._createScale(props);
 
-		const labelText = this.props.formattedText.map(function(label, i) {
+		const labelText = props.formattedText.map(function(label, i) {
 			const translateX = (label == "no data") ? d3scale(scale.domain[0]) : d3scale(label.value);
 			const translate = [ translateX, -100 ];
 			// ATTN: these classNames must match the classNames used to render your
@@ -214,7 +207,7 @@ const HiddenSvgBarLabels = React.createClass({
 			return (
 				<g
 					key={i}
-					className={this.props.className}
+					className={props.className}
 					transform={"translate(" + translate + ")"}
 				>
 					<text>{label.formatted}</text>
@@ -229,8 +222,15 @@ const HiddenSvgBarLabels = React.createClass({
 			</g>
 		);
 	}
+};
 
-});
+HiddenSvgBarLabels.propTypes = {
+	onUpdate: PropTypes.func.isRequired,
+	scale: PropTypes.object.isRequired,
+	blockerRectOffset: PropTypes.number.isRequired,
+	chartWidth: PropTypes.number.isRequired,
+	labelOverlap: PropTypes.number.isRequired
+}
 
 module.exports = {
 	HiddenSvgAxis: HiddenSvgAxis,
