@@ -39,7 +39,6 @@ const legendTotalPercents = {
  * @memberof RendererWrapper
  */
 class LegendSpace extends React.Component {
-
 	mountDraggyLegend () {
 
 		const stylings = this.props.chartProps.stylings;
@@ -297,12 +296,9 @@ LegendSpace.propTypes = {
 
  * @memberof XYEditor
  */
-const Map_Radial_Legend = React.createClass({
+class Map_Radial_Legend extends React.Component {
 
-  propTypes: {
-  },
-
-  render: function() {
+  render () {
   	const props = this.props;
   	const stylings = props.stylings;
   	const chartProps = props.chartProps;
@@ -355,8 +351,7 @@ const Map_Radial_Legend = React.createClass({
 		const legendText2 = s.substr(middle + 1);
 
     return (
-    	<g
-				className={"legendsGroup " + props.isSmall}
+    	<g className={"legendsGroup " + props.isSmall}
 				key={"legendsGroup_" + metadata.chartType + '_' + props.isSmall}
 				transform={demersTransform}
 			>
@@ -398,6 +393,6 @@ const Map_Radial_Legend = React.createClass({
 			</g>
     );
   }
-});
+};
 
 module.exports = LegendSpace;

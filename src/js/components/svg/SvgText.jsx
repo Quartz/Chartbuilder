@@ -13,19 +13,17 @@ const config = {
  * @instance
  * @memberof RendererWrapper
  */
-const SvgText = React.createClass({
+class SvgText extends React.Component {
 
-	propTypes: {
-		className: PropTypes.string,
-		heightPerLine: PropTypes.number,
-		onUpdate: PropTypes.func,
-		translate: PropTypes.array.isRequired,
-		text: PropTypes.string.isRequired,
-		wrap: PropTypes.bool,
-		maxCharacters: PropTypes.number
-	},
+	constructor(props) {
+    super(props);
 
-	shouldComponentUpdate: function(nextProps, nextState) {
+    this.state = {
+			lines: [ props.text ]
+		};
+  }
+
+	shouldComponentUpdate (nextProps, nextState) {
 		if ((nextState.lines.length !== this.state.lines.length) && nextProps.onUpdate && nextProps.wrap) {
 			if (nextState.lines.length === 1) {
 				this.props.onUpdate(0);
@@ -48,22 +46,9 @@ const SvgText = React.createClass({
 		}
 
 		return true;
-	},
+	}
 
-	getDefaultProps: function() {
-		return {
-			wrap: false,
-			maxCharacters: 100
-		};
-	},
-
-	getInitialState: function() {
-		return {
-			lines: [ this.props.text ]
-		};
-	},
-
-	_wrapLines: function(props) {
+	_wrapLines (props) {
 		let lines = [];
 
 		if (props.wrap) {
@@ -123,16 +108,16 @@ const SvgText = React.createClass({
 		return {
 			lines: lines
 		};
-	},
+	}
 
-	componentWillMount: function() {
+	componentWillMount () {
 		if (this.props.text && this.props.wrap) {
 			const lineSettings = this._wrapLines(this.props, this.state);
 			this.setState(lineSettings);
 		}
-	},
+	}
 
-	componentDidMount: function() {
+	componentDidMount () {
 		if (this.props.onUpdate && this.props.wrap) {
 			if (this.state.lines.length === 1) {
 				this.props.onUpdate(0);
@@ -140,16 +125,16 @@ const SvgText = React.createClass({
 				this.props.onUpdate((this.state.lines.length) * this.props.heightPerLine);
 			}
 		}
-	},
+	}
 
-	componentWillReceiveProps: function(nextProps) {
+	componentWillReceiveProps (nextProps) {
 		if (this.props.wrap) {
 			const lineSettings = this._wrapLines(nextProps);
 			this.setState(lineSettings);
 		}
-	},
+	}
 
-	_markdownToTspans: function(token) {
+	_markdownToTspans (token) {
 		if (!token) return null;
 		const children = token[0].children;
 
@@ -177,10 +162,9 @@ const SvgText = React.createClass({
 				</tspan>
 			);
 		});
+	}
 
-	},
-
-	render: function() {
+	render () {
 		let textNodes;
 		let parsed_text;
 		const mdToSpans = this._markdownToTspans;
@@ -222,7 +206,21 @@ const SvgText = React.createClass({
 			</g>
 		);
 	}
+};
 
-});
+SvgText.propTypes = {
+	className: PropTypes.string,
+	heightPerLine: PropTypes.number,
+	onUpdate: PropTypes.func,
+	translate: PropTypes.array.isRequired,
+	text: PropTypes.string.isRequired,
+	wrap: PropTypes.bool,
+	maxCharacters: PropTypes.number
+}
+
+SvgText.defaultProps = {
+	wrap: false,
+	maxCharacters: 100
+};
 
 module.exports = SvgText;

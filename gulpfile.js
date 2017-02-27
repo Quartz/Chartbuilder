@@ -66,7 +66,11 @@ gulp.task("browserify:dev", function () {
     	transform: [[babelify, {presets: ['es2015', 'react']}]]
 	};
 
-	var bundler = watchify(browserify(props)
+	var bundler = watchify(browserify(props).on('error', function (err) {
+			console.log(err.toString());
+			this.emit('end');
+			process.exit(0);
+		})
 		.transform("babelify", {presets: ["react"]})
 		.transform(envify({ NODE_ENV: "dev" })
 		));

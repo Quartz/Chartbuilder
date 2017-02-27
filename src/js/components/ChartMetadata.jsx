@@ -34,7 +34,6 @@ const chart_sizes = [
 		value: "spotSmall"
 	}
 ];
-
 const map_sizes = [
 	{
 		title: "Auto",
@@ -42,9 +41,6 @@ const map_sizes = [
 		value: "auto"
 	}
 ];
-
-
-
 const text_input_values_sub = [
 	{ name: "title", content: "Title", isRequired: true },
 	{ name: "credit", content: "Credit" },
@@ -67,32 +63,19 @@ const text_input_values = [
  * @instance
  * @memberof editors
  */
-var ChartMetadata = React.createClass({
-
-	propTypes: {
-		metadata: PropTypes.shape({
-			chartType: PropTypes.string.isRequired,
-			size: PropTypes.string.isRequired,
-			source: PropTypes.string,
-			credit: PropTypes.string,
-			title: PropTypes.string
-		}),
-		stepNumber: PropTypes.string,
-		additionalComponents: PropTypes.array
-	},
-
+class ChartMetadata extends React.Component {
 	// Get text input types from state
-	getInitialState: function() {
-		return {
-		};
-	},
+
+	constructor(props) {
+    super(props);
+  }
 
 	// Update metadata store with new settings
-	_handleMetadataUpdate: function(k, v) {
+	_handleMetadataUpdate (k, v) {
 		VisualViewActions.updateMetadata(k, v);
-	},
+	}
 
-	render: function() {
+	render () {
 		const metadata = this.props.metadata;
 
 		if (this.props.additionalComponents.length > 0) {
@@ -131,7 +114,19 @@ var ChartMetadata = React.createClass({
 			</div>
 		);
 	}
-});
+};
+
+ChartMetadata.propTypes = {
+	metadata: PropTypes.shape({
+		chartType: PropTypes.string.isRequired,
+		size: PropTypes.string.isRequired,
+		source: PropTypes.string,
+		credit: PropTypes.string,
+		title: PropTypes.string
+	}),
+	stepNumber: PropTypes.string,
+	additionalComponents: PropTypes.array
+}
 
 // Small wrapper arount TextInput component specific to metadata
 const ChartMetadataText = React.createClass({

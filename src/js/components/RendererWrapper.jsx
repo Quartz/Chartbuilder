@@ -18,7 +18,7 @@ const ChartFooter = require("./svg/ChartFooter.jsx");
 
 import {assign, clone, isDate, isEqual, throttle, reduce, keys, update, filter, find} from 'lodash';
 
-const SvgText = require("./svg/SvgText.jsx");
+//const SvgText = require("./svg/SvgText.jsx");
 
 /*
  * `chartConfig` is an object that sets default properties for chart types, and

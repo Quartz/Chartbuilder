@@ -67,7 +67,7 @@ const BarGroup = React.createClass({
 		const outerScale = props[mapping.ordinalScale];
 		const isOrdinal = outerScale.hasOwnProperty("bandwidth");
 		let offset = 0;
-		let innserSize;
+		let innerSize;
 
 		if (isOrdinal) {
 			innerSize = outerScale.bandwidth();

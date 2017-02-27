@@ -22,46 +22,46 @@ const mapConfig = require("../charts/maps/map-config");
  * @instance
  * @memberof editors
  */
-var ChartTypeSelctor = React.createClass({
+class ChartTypeSelctor extends React.Component{
 
-	/* Generate values for each chart type that can be used to create buttons */
-	getInitialState: function() {
-		//var typesConfig =
-		var chartTypeButtons = map(keys(chartConfig), function(chartTypeKey) {
+	constructor(props) {
+    super(props);
+
+    /* Generate values for each chart type that can be used to create buttons */
+    const chartTypeButtons = map(keys(chartConfig), function(chartTypeKey) {
 			return {
 				title: chartConfig[chartTypeKey].displayName,
 				content: chartConfig[chartTypeKey].displayName,
 				value: chartTypeKey
 			};
 		});
-		var mapTypeButtons = map(keys(mapConfig), function(mapTypeKey) {
+		const mapTypeButtons = map(keys(mapConfig), function(mapTypeKey) {
 			return {
 				title: mapConfig[mapTypeKey].displayName,
 				content: mapConfig[mapTypeKey].displayName,
 				value: mapTypeKey
 			};
 		});
-		var allTypeButtons = concat(chartTypeButtons, mapTypeButtons);
-		return { chartConfig: allTypeButtons };
-	},
+		const allTypeButtons = concat(chartTypeButtons, mapTypeButtons);
+
+    this.state = { chartConfig: allTypeButtons };
+    this._handleChartTypeChange = this._handleChartTypeChange.bind(this);
+  }
 
 	/*
 	 * Change the chart type
 	 * @param {string} chartType - the new chart type
 	*/
-	_handleChartTypeChange: function(chartType) {
+	_handleChartTypeChange (chartType) {
 		/* Dont rerender if the chart type is the same */
 
 		if (chartType === this.props.metadata.chartType) {
 			return;
 		}
-
 		/* If switching from chart to map or vice versa, help the ..
 			 user out with a default dataset
 		*/
-
 		const visualConfig = chartConfig[chartType] || mapConfig[chartType];
-
 		const metadata = clone(this.props.metadata);
 		/* Set the new chart type in metadata */
 		metadata.chartType = chartType;
@@ -95,8 +95,8 @@ var ChartTypeSelctor = React.createClass({
 			chartProps: newProps,
 			metadata: metadata
 		});
-	},
-	render: function() {
+	}
+	render () {
 
 		return (
 		<div className="editor-options">
@@ -113,7 +113,6 @@ var ChartTypeSelctor = React.createClass({
 		 </div>
 		);
 	}
-
-});
+};
 
 module.exports = ChartTypeSelctor;

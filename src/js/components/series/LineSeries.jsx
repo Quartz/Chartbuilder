@@ -3,20 +3,12 @@ import React, {PropTypes} from 'react';
 const line = require("d3").svg.line();
 const ordinalAdjust = require("../../util/scale-utils").ordinalAdjust;
 
-const LineSeries = React.createClass({
-
-	propTypes: {
-		data: PropTypes.array,
-		xScale: PropTypes.func,
-		yScale: PropTypes.func
-	},
-
-	render: function() {
+class LineSeries extends React.Component {
+	render () {
 		const props = this.props;
-
 		const lineFunc = line
-			.x(function(d) { return ordinalAdjust(props.xScale, d.entry); })
-			.y(function(d) { return props.yScale(d.value); });
+			.x((d) => { return ordinalAdjust(props.xScale, d.entry); })
+			.y((d) => { return props.yScale(d.value); });
 
 		return (
 			<g className="series line-series">
@@ -27,7 +19,12 @@ const LineSeries = React.createClass({
 			</g>
 		);
 	}
+};
 
-});
+LineSeries.propTypes = {
+	data: PropTypes.array,
+	xScale: PropTypes.func,
+	yScale: PropTypes.func
+}
 
 module.exports = LineSeries;

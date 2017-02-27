@@ -181,7 +181,7 @@ const Map_ScaleSettings = React.createClass({
       <div className={this.props.className}>
         {prefixSuffix}
         <div className="scale-tangle-inputs" key={'tangle-scale'}>
-        	<div className="scale-tangle-input">
+        	<div className="scale-tangle-input" key={'tangle-input'}>
 	          <LabelledTangle
 	            label="Breaks"
 	            labelClass="editor-label"
@@ -194,12 +194,11 @@ const Map_ScaleSettings = React.createClass({
 	            value={currScale.colors}
 	          />
 	        </div>
-          <div className="scale-tangle-input">
+          <div className="scale-tangle-input" key={'tangle-thresholds'}>
 	        	{thresholds}
 	        </div>
         </div>
-        <div className="section typesection"
-            key={'type-options'}>
+        <div className="section typesection" key={'type-options'}>
           <ButtonGroup
             className="button-group-wrapper"
             onClick={this._handleScaleUpdate.bind(null, "type")}

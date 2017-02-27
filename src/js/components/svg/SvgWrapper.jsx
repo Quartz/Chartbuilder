@@ -3,16 +3,9 @@ const BackgroundRect = require("./BackgroundRect.jsx");
 const SvgText = require("./SvgText.jsx");
 const ChartFooter = require("./ChartFooter.jsx");
 
-const SvgWrapper = React.createClass({
+class SvgWrapper extends React.Component {
 
-	propTypes: {
-		outerDimensions: PropTypes.object,
-		metadata: PropTypes.object,
-		margin: PropTypes.object,
-		displayConfig: PropTypes.object
-	},
-
-	_createTitle: function(props) {
+	_createTitle (props) {
 		return (
 			<SvgText
 				text={props.metadata.title}
@@ -25,9 +18,9 @@ const SvgWrapper = React.createClass({
 				className="svg-text-title"
 			/>
 		);
-	},
+	}
 
-	_createSubTitle: function(props) {
+	_createSubTitle (props) {
 		const subtitleTrans = props.displayConfig.margin.subtitle || 0;
 		return (
 			<SvgText
@@ -41,9 +34,9 @@ const SvgWrapper = React.createClass({
 				className="svg-text-subtitle"
 			/>
 		);
-	},
+	}
 
-	_getYOffset: function(props, forSVG) {
+	_getYOffset (props, forSVG) {
 		let afterTitle = 0;
 		if (props.metadata.title.length > 0) {
 			afterTitle = props.displayConfig.afterTitle + afterTitle;
@@ -55,9 +48,9 @@ const SvgWrapper = React.createClass({
 			afterTitle = afterTitle + props.displayConfig.margin.subtitle;
 		}
 		return afterTitle
-	},
+	}
 
-	render: function() {
+	render () {
 		const props = this.props;
 		const margin = props.displayConfig.margin;
 		const yOffset = this._getYOffset(props);
@@ -94,7 +87,13 @@ const SvgWrapper = React.createClass({
 			</svg>
 		);
 	}
+};
 
-});
+SvgWrapper.propTypes = {
+	outerDimensions: PropTypes.object,
+	metadata: PropTypes.object,
+	margin: PropTypes.object,
+	displayConfig: PropTypes.object
+};
 
 module.exports = SvgWrapper;

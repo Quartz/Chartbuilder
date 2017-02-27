@@ -16,31 +16,28 @@ const TIMER_DURATION = 300000;
  * chart currently saved in `localStorage`. On click, it updates the
  * `SessionStore`.
  */
-const LocalStorageTimer = React.createClass({
-	propTypes: {
-		timerOn: PropTypes.bool.isRequired
-	},
+class LocalStorageTimer extends React.Component {
 
-	_disableTimer: function() {
+	_disableTimer () {
 		clearTimeout(timer);
 		VisualViewActions.stopTimer();
-	},
+	}
 
-	_handleLoadChart: function() {
+	_handleLoadChart () {
 		ChartbuilderLocalStorageAPI.getChart();
 		this._disableTimer();
-	},
+	}
 
-	componentWillMount: function() {
+	componentWillMount () {
 		if (this.props.timerOn) {
 			timer = setTimeout(function() {
 				this._disableTimer();
 			}.bind(this), TIMER_DURATION);
 			VisualViewActions.startTimer();
 		}
-	},
+	}
 
-	render: function() {
+	render () {
 		const className = cx({
 			"load-localstorage": true,
 			"active": this.props.timerOn
@@ -54,6 +51,10 @@ const LocalStorageTimer = React.createClass({
 			/>
 		);
 	}
-});
+};
+
+LocalStorageTimer.propTypes = {
+	timerOn: PropTypes.bool.isRequired
+};
 
 module.exports = LocalStorageTimer;

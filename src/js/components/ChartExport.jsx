@@ -19,28 +19,20 @@ function outerHTML(el) {
  * @instance
  * @memberof editors
  */
-const ChartExport = React.createClass({
+class ChartExport extends React.Component {
 
-	propTypes: {
-		stepNumber: PropTypes.string,
-		svgWrapperClassName: PropTypes.string.isRequired,
-		enableJSONExport: PropTypes.bool,
-		sendBase64String: PropTypes.func
-	},
+	constructor(props) {
+    super(props);
 
-	getDefaultProps: function() {
-		return {
-			enableJSONExport: false,
-		};
-	},
-
-	getInitialState: function() {
-		return {
+    this.state = {
 			enableSvgExport: true,
 		};
-	},
+		this.downloadSVG = this.downloadSVG.bind(this);
+		this.downloadPNG = this.downloadPNG.bind(this);
+		this.downloadJSON = this.downloadJSON.bind(this);
+  }
 
-	componentDidMount: function() {
+	componentDidMount () {
 		let enableSvgExport;
 		let chartNode = null;
 
@@ -55,17 +47,17 @@ const ChartExport = React.createClass({
 			chartNode: chart,
 			enableSvgExport: true
 		});
-	},
+	}
 
-	componentWillReceiveProps: function(nextProps) {
+	componentWillReceiveProps (nextProps) {
 		const chart = document
 			.getElementsByClassName(this.props.svgWrapperClassName)[0]
 			.getElementsByClassName("chartbuilder-svg")[0];
 
 		this.setState({ chartNode: chart });
-	},
+	}
 
-	_addIDsForIllustrator: function(node) {
+	_addIDsForIllustrator (node) {
 		const chart = d3.select(node);
 		let classAttr = "";
 
@@ -83,9 +75,9 @@ const ChartExport = React.createClass({
 			});
 
 		return chart[0][0];
-	},
+	}
 
-	_makeFilename: function(extension) {
+	_makeFilename (extension) {
 		const filename = this.props.data.reduce(function(a, b, i) {
 			if (a.length === 0) {
 				return b.name;
@@ -97,14 +89,14 @@ const ChartExport = React.createClass({
 			(filename + "_chartbuilder").replace(/\s/g, "_"),
 			extension
 		].join(".");
-	},
+	}
 
-	downloadPNG: function() {
+	downloadPNG () {
 		const filename = this._makeFilename("png");
 		saveSvgAsPng.saveSvgAsPng(this.state.chartNode, filename, { scale: 2.0 });
-	},
+	}
 
-	_autoClickDownload: function(filename, href) {
+	_autoClickDownload (filename, href) {
 		const a = document.createElement('a');
 		a.download = filename;
 		a.href = href;
@@ -113,9 +105,9 @@ const ChartExport = React.createClass({
 			a.parentNode.removeChild(a);
 		});
 		a.click();
-	},
+	}
 
-	downloadSVG: function() {
+	downloadSVG () {
 		const filename = this._makeFilename("svg");
 		const chart = this._addIDsForIllustrator(this.state.chartNode);
 		const autoClickDownload = this._autoClickDownload;
@@ -128,10 +120,9 @@ const ChartExport = React.createClass({
 		}, function(uri) {
 			autoClickDownload(filename, uri);
 		});
-	},
+	}
 
-	downloadJSON: function() {
-
+	downloadJSON () {
 		json_string = JSON.stringify({
 			chartProps: this.props.model.chartProps,
 			metadata: this.props.model.metadata
@@ -140,15 +131,15 @@ const ChartExport = React.createClass({
 		const filename = this._makeFilename("json");
 		const href = "data:text/json;charset=utf-8," + encodeURIComponent(json_string);
 		this._autoClickDownload(filename, href);
-	},
+	}
 
-	setAdvancedOptionState: function() {
+	setAdvancedOptionState () {
 		this.setState({
 			showAdvancedOptions: !this.state.showAdvancedOptions
 		});
-	},
+	}
 
-	render: function() {
+	render () {
 		const self = this;
 
 		const chartExportButtons = [
@@ -191,6 +182,17 @@ const ChartExport = React.createClass({
 			</div>
 		);
 	}
-})
+}
+
+ChartExport.propTypes = {
+	stepNumber: PropTypes.string,
+	svgWrapperClassName: PropTypes.string.isRequired,
+	enableJSONExport: PropTypes.bool,
+	sendBase64String: PropTypes.func
+};
+
+ChartExport.defaultProps = {
+	enableJSONExport: false,
+};
 
 module.exports = ChartExport;
