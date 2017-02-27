@@ -1,10 +1,8 @@
-var React = require("react");
-var PropTypes = React.PropTypes;
-var cx = require("classnames");
-var clone = require("lodash/clone");
+import React, {PropTypes} from 'react';
+const cx = require("classnames");
+import {clone} from 'lodash';
 
-var chartbuilderUI = require("chartbuilder-ui");
-var Button = chartbuilderUI.Button;
+import {Button} from 'chartbuilder-ui';
 
 /**
  * ### Button to delete a scale, resetting it to default settings
@@ -14,7 +12,7 @@ var Button = chartbuilderUI.Button;
  * @instance
  * @memberof editors
  */
-var ScaleReset = React.createClass({
+const ScaleReset = React.createClass({
 
 	propTypes: {
 		scale: PropTypes.object.isRequired,
@@ -30,7 +28,7 @@ var ScaleReset = React.createClass({
 
 	// Delete scale width given `id` and update the parent
 	_handleScaleReset: function() {
-		var scale = clone(this.props.scale, true);
+		const scale = clone(this.props.scale, true);
 		delete scale[this.props.scaleId];
 		this.setState({ customScale: false });
 		this.props.onUpdate(scale);
@@ -38,14 +36,14 @@ var ScaleReset = React.createClass({
 
 	// Only enable button if the scale has been customized
 	componentWillReceiveProps: function(nextProps) {
-		var scale = nextProps.scale[nextProps.scaleId];
+		const scale = nextProps.scale[nextProps.scaleId];
 		if (scale.custom) {
 			this.setState({ customScale: true });
 		}
 	},
 
 	render: function() {
-		var className = cx({
+		const className = cx({
 			"label-reset": true,
 			"active": this.state.customScale
 		});

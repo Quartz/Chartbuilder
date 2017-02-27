@@ -9,12 +9,12 @@ const React = require("react");
 const ReactDOM = require("react-dom");
 const PropTypes = React.PropTypes;
 
-var ChartViewActions = require("../actions/VisualViewActions");
-var convertConfig = require("../util/parse-config-values");
-var SessionStore = require("../stores/SessionStore");
-var breakpoints = require("../config/chartconfig/chart-breakpoints");
-var BackgroundRect = require("./svg/BackgroundRect.jsx");
-var ChartFooter = require("./svg/ChartFooter.jsx");
+const ChartViewActions = require("../actions/VisualViewActions");
+const convertConfig = require("../util/parse-config-values");
+const SessionStore = require("../stores/SessionStore");
+const breakpoints = require("../config/chartconfig/chart-breakpoints");
+const BackgroundRect = require("./svg/BackgroundRect.jsx");
+const ChartFooter = require("./svg/ChartFooter.jsx");
 
 import {assign, clone, isDate, isEqual, throttle, reduce, keys, update, filter, find} from 'lodash';
 
@@ -85,19 +85,19 @@ const RendererWrapper = React.createClass({
 
 	componentWillMount: function() {
 		//var chartType = this.props.model.metadata.chartType;
-		var size_calcs = {};
+		let size_calcs = {};
 		// set chart breakpoints
 		if (this.props.width) {
-			var bp = breakpoints.getBreakpointObj(this.props.enableResponsive, this.props.width);
+			const bp = breakpoints.getBreakpointObj(this.props.enableResponsive, this.props.width);
 			size_calcs = this._resizeUpdate(this.props, bp, this.props.width);
 		}
 
-		var chartProps = null;
+		let chartProps = null;
 		// process date strings as dates
 		// TODO: why do we need this again?
 		if (this.props.model.chartProps.scale.hasDate && !this.props.editable) {
-			var _chartProps = clone(this.props.model.chartProps, true);
-			var newData = _chartProps.data.map(function(d) {
+			const _chartProps = clone(this.props.model.chartProps, true);
+			const newData = _chartProps.data.map(function(d) {
 				d.values = d.values.map(function(val) {
 					if (!isDate(val.entry)) {
 						val.entry = new Date(val.entry);
@@ -109,7 +109,7 @@ const RendererWrapper = React.createClass({
 			_chartProps.data = newData;
 			chartProps = _chartProps;
 		}
-		var state = assign({}, { chartProps: chartProps }, size_calcs);
+		const state = assign({}, { chartProps: chartProps }, size_calcs);
 		this.setState(state);
 	},
 
@@ -131,10 +131,10 @@ const RendererWrapper = React.createClass({
 
 	// check for a new width and update everything if it has changed
 	_updateWidth: function() {
-		var domNodeWidth = ReactDOM.findDOMNode(this).offsetWidth;
-		var bp = breakpoints.getBreakpointObj(this.props.enableResponsive, domNodeWidth);
+		const domNodeWidth = ReactDOM.findDOMNode(this).offsetWidth;
+		const bp = breakpoints.getBreakpointObj(this.props.enableResponsive, domNodeWidth);
 		if (domNodeWidth !== this.state.domNodeWidth) {
-			var resized = this._resizeUpdate(this.props, bp, domNodeWidth);
+			const resized = this._resizeUpdate(this.props, bp, domNodeWidth);
 			if (resized) {
 				this.setState(resized);
 			}
@@ -159,7 +159,7 @@ const RendererWrapper = React.createClass({
 
 	// TODO: remove this feature? seems never used
 	_getMobileMetadata: function(metadata, mobileSettings) {
-		var setMobile = reduce(keys(metadata), function(obj, key) {
+		const setMobile = reduce(keys(metadata), function(obj, key) {
 			if (mobileSettings[key] && mobileSettings[key] !== "") {
 				obj[key] = mobileSettings[key];
 				return obj;
@@ -187,13 +187,13 @@ const RendererWrapper = React.createClass({
 		// this is used for the embed. should be removable if/once we render
 		// metadata with HTML
 		if (this.props.showMetadata === false) {
-			var _padding = {
+			const _padding = {
 				top: displayConfig.padding.top,
 				right: displayConfig.padding.right,
 				bottom: displayConfig.bottomPaddingWithoutFooter,
 				left: displayConfig.padding.left,
 			};
-			var _margin = {
+			const _margin = {
 				top: displayConfig.margin.top,
 				right: 3,
 				bottom: 3,
@@ -206,8 +206,8 @@ const RendererWrapper = React.createClass({
 		}
 
 		const Renderer = chartRenderers[chartType] || mapRenderers[chartType];
-		var chartProps;
-		var metadata;
+		let chartProps;
+		let metadata;
 
 		// If rendered chart is not editable and has a date, we presume data is
 		// being passed in and we need to use the data with processed dates

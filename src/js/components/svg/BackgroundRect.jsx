@@ -1,7 +1,6 @@
-var React = require("react");
-var PropTypes = React.PropTypes;
+import React, {PropTypes} from 'react';
 
-var BackgroundRect = React.createClass({
+const BackgroundRect = React.createClass({
 
 	propTypes: {
 		dimensions: PropTypes.shape({
@@ -20,7 +19,7 @@ var BackgroundRect = React.createClass({
 	},
 
 	render: function() {
-		var props = this.props;
+		const props = this.props;
 		return (
 			<g className="svg-background-wrap">
 				<rect

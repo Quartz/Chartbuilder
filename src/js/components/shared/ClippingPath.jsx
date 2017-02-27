@@ -1,7 +1,4 @@
 
-
-//
-
 import React, {PropTypes} from 'react';
 import ReactDom from 'react-dom';
 import update from 'react-addons-update';
@@ -21,7 +18,6 @@ class ClippingPath extends React.Component {
 
     this.state = {
 		};
-
   }
 
 	render () {

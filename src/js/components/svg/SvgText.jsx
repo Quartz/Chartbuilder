@@ -1,11 +1,9 @@
 // Svg text elements used to describe chart
-var React = require("react");
-var PropTypes = React.PropTypes;
-var markdown = require("markdown-it")();
-var reduce = require("lodash/reduce");
-var map = require("lodash/map");
+import React, {PropTypes} from 'react';
+const markdown = require("markdown-it")();
+import {reduce, map} from 'lodash';
 
-var config = {
+const config = {
 	textDy: 0.7,
 	textLineHeight: 1.2
 };
@@ -15,7 +13,7 @@ var config = {
  * @instance
  * @memberof RendererWrapper
  */
-var SvgText = React.createClass({
+const SvgText = React.createClass({
 
 	propTypes: {
 		className: PropTypes.string,
@@ -39,9 +37,9 @@ var SvgText = React.createClass({
 		if (nextProps.text !== this.props.text) {
 			return true;
 		}
-		var t1 = this.props.translate;
-		var t2 = nextProps.translate;
-		var newTrans = ( (t1[0] !== t2[0]) || (t1[1] !== t2[1]) );
+		const t1 = this.props.translate;
+		const t2 = nextProps.translate;
+		const newTrans = ( (t1[0] !== t2[0]) || (t1[1] !== t2[1]) );
 		if (newTrans) {
 			return true;
 		}
@@ -66,15 +64,15 @@ var SvgText = React.createClass({
 	},
 
 	_wrapLines: function(props) {
-		var lines = [];
+		let lines = [];
 
 		if (props.wrap) {
 			maxCharacters = props.maxCharacters;
-			var newWords = props.text.split(" ");
-			var words = [];
-			var spanLength = 0;
-			var cont_bold = false;
-			var cont_ital = false;
+			const newWords = props.text.split(" ");
+			let words = [];
+			let spanLength = 0;
+			let cont_bold = false;
+			let cont_ital = false;
 
 			newWords.forEach(function(word) {
 				if (spanLength + word.length > maxCharacters) {
@@ -87,7 +85,7 @@ var SvgText = React.createClass({
 			});
 
 			if (words.length) {
-				var line = words.join(" ");
+				let line = words.join(" ");
 
 				//make sure we don't break markdown styling by splitting a line
 				//this will break if _**italic bold**_ is used but not if **_bold italic_** is used
@@ -129,7 +127,7 @@ var SvgText = React.createClass({
 
 	componentWillMount: function() {
 		if (this.props.text && this.props.wrap) {
-			var lineSettings = this._wrapLines(this.props, this.state);
+			const lineSettings = this._wrapLines(this.props, this.state);
 			this.setState(lineSettings);
 		}
 	},
@@ -146,18 +144,18 @@ var SvgText = React.createClass({
 
 	componentWillReceiveProps: function(nextProps) {
 		if (this.props.wrap) {
-			var lineSettings = this._wrapLines(nextProps);
+			const lineSettings = this._wrapLines(nextProps);
 			this.setState(lineSettings);
 		}
 	},
 
 	_markdownToTspans: function(token) {
 		if (!token) return null;
-		var children = token[0].children;
+		const children = token[0].children;
 
 		// take markdown-it parsed markdown and return an array of objs like
 		// { tags: ["em", "strong"], content: "some text…"
-		var tagged = reduce(children, function(prev, child) {
+		const tagged = reduce(children, function(prev, child) {
 			if (child.nesting === 1) {
 				prev[prev.length - 1].tags = prev[prev.length - 1].tags.concat([child.tag]);
 				return prev;
@@ -183,9 +181,9 @@ var SvgText = React.createClass({
 	},
 
 	render: function() {
-		var textNodes;
-		var parsed_text;
-		var mdToSpans = this._markdownToTspans;
+		let textNodes;
+		let parsed_text;
+		const mdToSpans = this._markdownToTspans;
 		if (this.props.wrap) {
 			textNodes = this.state.lines.map(function(text, i) {
 				return (
@@ -200,7 +198,7 @@ var SvgText = React.createClass({
 				);
 			});
 		} else {
-			var dy;
+			let dy;
 			if (this.props.align === "bottom") {
 				dy = "-0.35em";
 			} else if (this.props.align === "top"){

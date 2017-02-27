@@ -1,10 +1,9 @@
-var React = require("react");
-var PropTypes = React.PropTypes;
-var BackgroundRect = require("./BackgroundRect.jsx");
-var SvgText = require("./SvgText.jsx");
-var ChartFooter = require("./ChartFooter.jsx");
+import React, {PropTypes} from 'react';
+const BackgroundRect = require("./BackgroundRect.jsx");
+const SvgText = require("./SvgText.jsx");
+const ChartFooter = require("./ChartFooter.jsx");
 
-var SvgWrapper = React.createClass({
+const SvgWrapper = React.createClass({
 
 	propTypes: {
 		outerDimensions: PropTypes.object,
@@ -59,17 +58,17 @@ var SvgWrapper = React.createClass({
 	},
 
 	render: function() {
-		var props = this.props;
-		var margin = props.displayConfig.margin;
-		var yOffset = this._getYOffset(props);
+		const props = this.props;
+		const margin = props.displayConfig.margin;
+		const yOffset = this._getYOffset(props);
 		// Add to the chart margin if title is present
 
-		var outerDimensions = {
+		const outerDimensions = {
 			width: props.outerDimensions.width,
 			height: props.outerDimensions.height + yOffset
 		};
 
-		var translate = {
+		const translate = {
 			top: margin.top,
 			right: outerDimensions.width - margin.right,
 			bottom: outerDimensions.height - margin.bottom,

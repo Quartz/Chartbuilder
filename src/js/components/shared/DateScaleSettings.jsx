@@ -1,17 +1,13 @@
-var React = require("react");
-var clone = require("lodash/clone");
-var map = require("lodash/map");
+import React, {PropTypes} from 'react';
+import update from 'react-addons-update';
+import {clone, map} from 'lodash';
 
-var shallowEqual = require('react-addons-shallow-compare');
-var PureRenderMixin = require("react-addons-pure-render-mixin");
-var PropTypes = React.PropTypes;
-var update = require("react-addons-update");
+import shallowEqual from 'react-addons-shallow-compare';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 
-var chartbuilderUI = require("chartbuilder-ui");
-var Dropdown = chartbuilderUI.Dropdown;
-var ButtonGroup = chartbuilderUI.ButtonGroup;
+import {ButtonGroup, Dropdown} from 'chartbuilder-ui';
 
-var dateParsers = require("../../util/process-dates").dateParsers;
+const dateParsers = require("../../util/process-dates").dateParsers;
 
 /**
  * ### Date scale settings for a chart editor
@@ -21,7 +17,7 @@ var dateParsers = require("../../util/process-dates").dateParsers;
  * @instance
  * @memberof editors
  */
-var DateScaleSettings = React.createClass({
+const DateScaleSettings = React.createClass({
 
 	propTypes: {
 		scale: PropTypes.object.isRequired,
@@ -120,9 +116,9 @@ var DateScaleSettings = React.createClass({
 	},
 
 	componentWillMount: function() {
-		var props = this.props;
+		const props = this.props;
 
-		var dateFormatOptions = map(this._config.dateFormatOptions, function(opt) {
+		const dateFormatOptions = map(this._config.dateFormatOptions, function(opt) {
 			if (typeof opt.content === "function") {
 				return {
 					value: opt.value,
@@ -137,7 +133,7 @@ var DateScaleSettings = React.createClass({
 	},
 
 	localizeTimeZoneOptions: function(options, offset) {
-		var customOpt = {
+		const customOpt = {
 			value: offset,
 			content: "The same as your timezone: " + offset
 		};
@@ -149,9 +145,9 @@ var DateScaleSettings = React.createClass({
 
 	_handleDateScaleUpdate: function(k, v) {
 		// update `scale.dateSettings`
-		var dateSettings = clone(this.props.scale.dateSettings);
+		const dateSettings = clone(this.props.scale.dateSettings);
 		dateSettings[k] = v;
-		var scale = update(this.props.scale, { $merge: {
+		const scale = update(this.props.scale, { $merge: {
 			dateSettings: dateSettings
 		}});
 
@@ -163,7 +159,7 @@ var DateScaleSettings = React.createClass({
 	},
 
 	_generateTimezoneText: function(curMonth) {
-		var tz_text = "";
+		let tz_text = "";
 		if(curMonth >= 3 && curMonth <= 11) {
 			tz_text += "Many countries in the northern hemisphere are observing day light savings time right now" + (curMonth == 3 ? " or will be soon" : ". ");
 		}
@@ -180,12 +176,12 @@ var DateScaleSettings = React.createClass({
 	},
 
 	render: function() {
-		var dateSettings = this.props.scale.dateSettings;
-		var showTimezoneSettings = this._showTimezoneSettings(dateSettings.dateFrequency);
+		const dateSettings = this.props.scale.dateSettings;
+		let showTimezoneSettings = this._showTimezoneSettings(dateSettings.dateFrequency);
 
-		var timezoneSettings = null;
+		let timezoneSettings = null;
 		if (showTimezoneSettings) {
-			var tz_text = this._generateTimezoneText(this.props.now.getMonth());
+			const tz_text = this._generateTimezoneText(this.props.now.getMonth());
 
 			timezoneSettings = (
 				<div>

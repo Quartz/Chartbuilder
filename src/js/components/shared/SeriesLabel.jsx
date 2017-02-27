@@ -1,9 +1,8 @@
 // Svg text elements used to describe chart
-var React = require("react");
-var PropTypes = React.PropTypes;
-var isNumber = require("lodash/isNumber");
+import React, {PropTypes} from 'react';
+import {isNumber} from 'lodash';
 
-var SeriesLabel = React.createClass({
+const SeriesLabel = React.createClass({
 
 	propTypes: {
 		text: PropTypes.string,
@@ -21,8 +20,8 @@ var SeriesLabel = React.createClass({
 	},
 
 	render: function() {
-		var props = this.props;
-		var x;
+		const props = this.props;
+		let x;
 
 		if (isNumber(props.x)) {
 			x = props.x;

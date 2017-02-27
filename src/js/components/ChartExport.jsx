@@ -1,16 +1,15 @@
 // Export chart to PNG or SVG
 
-var React = require('react');
-var update = require("react-addons-update");
-var cx = require("classnames");
-var PropTypes = React.PropTypes;
-var d3 = require("d3");
+import React, {PropTypes} from 'react';
+import ReactDom from 'react-dom';
+const cx = require("classnames");
+const d3 = require("d3");
 
-var Button = require("chartbuilder-ui").Button;
-var saveSvgAsPng = require("save-svg-as-png");
+import {Button} from 'chartbuilder-ui';
+const saveSvgAsPng = require("save-svg-as-png");
 
 function outerHTML(el) {
-	var outer = document.createElement("div");
+	const outer = document.createElement("div");
 	outer.appendChild(el);
 	return outer.innerHTML;
 }
@@ -20,7 +19,7 @@ function outerHTML(el) {
  * @instance
  * @memberof editors
  */
-var ChartExport = React.createClass({
+const ChartExport = React.createClass({
 
 	propTypes: {
 		stepNumber: PropTypes.string,
@@ -42,13 +41,13 @@ var ChartExport = React.createClass({
 	},
 
 	componentDidMount: function() {
-		var enableSvgExport;
-		var chartNode = null;
+		let enableSvgExport;
+		let chartNode = null;
 
 		// SVG output won't work on most non-Chrome browsers, so we try it first. If
 		// `createSVGFile()` doesnt work we will disable svg download but still allow png.
 		// TODO: figure out what exactly is breaking FF
-		var chart = document
+		const chart = document
 			.getElementsByClassName(this.props.svgWrapperClassName)[0]
 			.getElementsByClassName("chartbuilder-svg")[0];
 
@@ -59,7 +58,7 @@ var ChartExport = React.createClass({
 	},
 
 	componentWillReceiveProps: function(nextProps) {
-		var chart = document
+		const chart = document
 			.getElementsByClassName(this.props.svgWrapperClassName)[0]
 			.getElementsByClassName("chartbuilder-svg")[0];
 
@@ -67,8 +66,8 @@ var ChartExport = React.createClass({
 	},
 
 	_addIDsForIllustrator: function(node) {
-		var chart = d3.select(node);
-		var classAttr = "";
+		const chart = d3.select(node);
+		let classAttr = "";
 
 		chart
 			.attr("id","chartbuilder-export")
@@ -87,7 +86,7 @@ var ChartExport = React.createClass({
 	},
 
 	_makeFilename: function(extension) {
-		var filename = this.props.data.reduce(function(a, b, i) {
+		const filename = this.props.data.reduce(function(a, b, i) {
 			if (a.length === 0) {
 				return b.name;
 			} else {
@@ -101,12 +100,12 @@ var ChartExport = React.createClass({
 	},
 
 	downloadPNG: function() {
-		var filename = this._makeFilename("png");
+		const filename = this._makeFilename("png");
 		saveSvgAsPng.saveSvgAsPng(this.state.chartNode, filename, { scale: 2.0 });
 	},
 
 	_autoClickDownload: function(filename, href) {
-		var a = document.createElement('a');
+		const a = document.createElement('a');
 		a.download = filename;
 		a.href = href;
 		document.body.appendChild(a);
@@ -117,9 +116,9 @@ var ChartExport = React.createClass({
 	},
 
 	downloadSVG: function() {
-		var filename = this._makeFilename("svg");
-		var chart = this._addIDsForIllustrator(this.state.chartNode);
-		var autoClickDownload = this._autoClickDownload;
+		const filename = this._makeFilename("svg");
+		const chart = this._addIDsForIllustrator(this.state.chartNode);
+		const autoClickDownload = this._autoClickDownload;
 		saveSvgAsPng.svgAsDataUri(chart, {
 			cleanFontDefs: true,
 			fontFamilyRemap: {
@@ -138,8 +137,8 @@ var ChartExport = React.createClass({
 			metadata: this.props.model.metadata
 		}, null, "\t")
 
-		var filename = this._makeFilename("json");
-		var href = "data:text/json;charset=utf-8," + encodeURIComponent(json_string);
+		const filename = this._makeFilename("json");
+		const href = "data:text/json;charset=utf-8," + encodeURIComponent(json_string);
 		this._autoClickDownload(filename, href);
 	},
 
@@ -150,9 +149,9 @@ var ChartExport = React.createClass({
 	},
 
 	render: function() {
-		var self = this;
+		const self = this;
 
-		var chartExportButtons = [
+		const chartExportButtons = [
 			<Button
 				key="png-export"
 				className="export-button"

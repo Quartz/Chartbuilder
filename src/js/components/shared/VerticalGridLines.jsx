@@ -1,10 +1,8 @@
-var React = require("react");
-var PropTypes = React.PropTypes;
-var map = require("lodash/map");
-var isNumber = require("lodash/isNumber");
-var ordinalAdjust = require("../../util/scale-utils").ordinalAdjust;
+import React, {PropTypes} from 'react';
+import {isNumber, map} from 'lodash';
+const ordinalAdjust = require("../../util/scale-utils").ordinalAdjust;
 
-var VerticalGridLines = React.createClass({
+const VerticalGridLines = React.createClass({
 
 	propTypes: {
 		orient: PropTypes.string,
@@ -35,13 +33,13 @@ var VerticalGridLines = React.createClass({
 
 	// TODO: dont need to get range extent unless props.y1 and y2 absent
 	_generateTicks: function(props) {
-		var yRange = this._getRangeExtent(props.yScale);
+		const yRange = this._getRangeExtent(props.yScale);
 
 		return map(props.tickValues, function(tickValue, i) {
-			var scalePos = ordinalAdjust(props.xScale, tickValue);
+			const scalePos = ordinalAdjust(props.xScale, tickValue);
 			//TODO: DRY
-			var y1 = (isNumber(props.y1)) ? props.y1 : yRange[0] || 0;
-			var y2 = (isNumber(props.y2)) ? props.y2 : yRange[1] || props.dimensions.height;
+			const y1 = (isNumber(props.y1)) ? props.y1 : yRange[0] || 0;
+			const y2 = (isNumber(props.y2)) ? props.y2 : yRange[1] || props.dimensions.height;
 
 			return (
 				<line

@@ -1,10 +1,9 @@
-var React = require("react");
-var PropTypes = React.PropTypes;
-var map = require("lodash/map");
-var cx = require("classnames");
-var ordinalAdjust = require("../../util/scale-utils").ordinalAdjust;
+import React, {PropTypes} from 'react';
+import {map} from 'lodash';
+const cx = require("classnames");
+const ordinalAdjust = require("../../util/scale-utils").ordinalAdjust;
 
-var VerticalGridLines = React.createClass({
+const VerticalGridLines = React.createClass({
 
 	propTypes: {
 		tickValues: PropTypes.array,
@@ -35,12 +34,12 @@ var VerticalGridLines = React.createClass({
 	},
 
 	_generateTicks: function(props) {
-		var getRange = this._getRangeExtent;
+		const getRange = this._getRangeExtent;
 
 		return map(props.tickValues, function(tickValue, i) {
-			var scalePos = ordinalAdjust(props.yScale, tickValue) + props.offset.y;
-			var x1 = !isNaN(props.x1) ? props.x1 : props.translate[0] * -1;
-			var className = cx("tick", { zero: (tickValue === 0) });
+			const scalePos = ordinalAdjust(props.yScale, tickValue) + props.offset.y;
+			const x1 = !isNaN(props.x1) ? props.x1 : props.translate[0] * -1;
+			const className = cx("tick", { zero: (tickValue === 0) });
 			return (
 				<line
 					key={i}

@@ -1,24 +1,22 @@
-var SessionStore = require("../stores/SessionStore");
-var VisualViewActions = require("../actions/VisualViewActions");
-var ChartbuilderLocalStorageAPI = require("../util/ChartbuilderLocalStorageAPI");
+const SessionStore = require("../stores/SessionStore");
+const VisualViewActions = require("../actions/VisualViewActions");
+const ChartbuilderLocalStorageAPI = require("../util/ChartbuilderLocalStorageAPI");
 
 /* Node modules */
-var React = require("react");
-var cx = require("classnames");
-var PropTypes = React.PropTypes;
+import React, {PropTypes} from 'react';
+const cx = require("classnames");
 
 /* Chartbuilder UI components */
-var chartbuilderUI = require("chartbuilder-ui");
-var Button = chartbuilderUI.Button;
-var timer;
-var TIMER_DURATION = 300000;
+import {Button} from 'chartbuilder-ui';
+let timer;
+const TIMER_DURATION = 300000;
 
 /**
  * Button that persists for `TIMER_DURATION` and allows user to re-load the
  * chart currently saved in `localStorage`. On click, it updates the
  * `SessionStore`.
  */
-var LocalStorageTimer = React.createClass({
+const LocalStorageTimer = React.createClass({
 	propTypes: {
 		timerOn: PropTypes.bool.isRequired
 	},
@@ -43,7 +41,7 @@ var LocalStorageTimer = React.createClass({
 	},
 
 	render: function() {
-		var className = cx({
+		const className = cx({
 			"load-localstorage": true,
 			"active": this.props.timerOn
 		});

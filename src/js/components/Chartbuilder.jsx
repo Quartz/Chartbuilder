@@ -26,7 +26,7 @@ import ChartExport from './ChartExport.jsx';
 
 import {AlertGroup} from 'chartbuilder-ui';
 
-var svgWrapperClassName = {
+const svgWrapperClassName = {
 	desktop: "renderer-svg-desktop",
 	mobile: "renderer-svg-mobile"
 };
@@ -76,7 +76,7 @@ function getStateFromStores() {
  *   />,
  * container );
 */
-var Chartbuilder = React.createClass({
+const Chartbuilder = React.createClass({
 
 	propTypes: {
 		autosave: PropTypes.bool,
@@ -258,7 +258,7 @@ var Chartbuilder = React.createClass({
 	 */
 	_onChange: function() {
 		// On change, update and save state.
-		var state = getStateFromStores();
+		const state = getStateFromStores();
 		this.setState(state);
 
 		if (this.props.autosave && !this.state.session.timerOn) {

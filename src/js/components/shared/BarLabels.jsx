@@ -1,10 +1,9 @@
 // Label with the number for a bar.
 // Currently only works for horiz bars
-var React = require("react");
-var PropTypes = React.PropTypes;
-var map = require("lodash/map");
+import React, {PropTypes} from 'react';
+import {map} from 'lodash';
 
-var BarLabels = React.createClass({
+const BarLabels = React.createClass({
 
 	propTypes: {
 		text: PropTypes.string,
@@ -41,15 +40,15 @@ var BarLabels = React.createClass({
 	},
 
 	render: function() {
-		var props = this.props;
-		var addPrefSuf = this._addPrefSuf;
-		var numTicks = props.data.length;
-		var getTransformY = this._getTransformY;
+		const props = this.props;
+		const addPrefSuf = this._addPrefSuf;
+		const numTicks = props.data.length;
+		const getTransformY = this._getTransformY;
 
-		var labels = map(props.data, function(d, i) {
-			var formatted = props.formatLabel(d.value)
-			var text = addPrefSuf(formatted, i, numTicks, props.prefix, props.suffix)
-			var yPos = getTransformY(props.yScale, d.entry);
+		const labels = map(props.data, function(d, i) {
+			const formatted = props.formatLabel(d.value)
+			const text = addPrefSuf(formatted, i, numTicks, props.prefix, props.suffix)
+			const yPos = getTransformY(props.yScale, d.entry);
 			return (
 				<text
 					key={i}

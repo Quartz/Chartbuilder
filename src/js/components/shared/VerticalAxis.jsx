@@ -1,14 +1,12 @@
 // Svg text elements used to describe chart
-var React = require("react");
-var PropTypes = React.PropTypes;
-var map = require("lodash/map");
-var max = require("lodash/max");
-var help = require("../../util/helper.js");
-var ordinalAdjust = require("../../util/scale-utils").ordinalAdjust;
+import React, {PropTypes} from 'react';
+import {map, max} from 'lodash';
+const help = require("../../util/helper.js");
+const ordinalAdjust = require("../../util/scale-utils").ordinalAdjust;
 
-var DY = "0.32em";
+const DY = "0.32em";
 
-var VerticalAxis = React.createClass({
+const VerticalAxis = React.createClass({
 
 	propTypes: {
 		orient: PropTypes.string,
@@ -82,33 +80,33 @@ var VerticalAxis = React.createClass({
 	},
 
 	_generateText: function(props) {
-		var numTicks = props.tickValues.length;
-		var concealerHeight = props.tickTextHeight + props.displayConfig.blockerRectOffset;
-		var orientation = this._orientation[props.orient]
-		var textAnchor = orientation.textAnchor[props.textAlign];
+		const numTicks = props.tickValues.length;
+		const concealerHeight = props.tickTextHeight + props.displayConfig.blockerRectOffset;
+		const orientation = this._orientation[props.orient]
+		const textAnchor = orientation.textAnchor[props.textAlign];
 
 		return map(props.tickValues, function(tickValue, i) {
-			var formatted = props.tickFormat(tickValue);
-			var currTickWidth = props.tickWidths.widths[i];
-			var maxTickWidth = Math.max(currTickWidth, props.tickWidths.max);
+			const formatted = props.tickFormat(tickValue);
+			const currTickWidth = props.tickWidths.widths[i];
+			const maxTickWidth = Math.max(currTickWidth, props.tickWidths.max);
 
-			var rectWidth;
+			let rectWidth;
 			if (props.textAlign === "inside") {
 				rectWidth = maxTickWidth + props.displayConfig.blockerRectOffset;
 			} else {
 				rectWidth = currTickWidth + props.displayConfig.blockerRectOffset
 			}
 
-			var textX = orientation.transformTextX(props.width, props.textAlign, currTickWidth, maxTickWidth);
+			const textX = orientation.transformTextX(props.width, props.textAlign, currTickWidth, maxTickWidth);
 
-			var text;
+			let text;
 			if (i === (numTicks - 1)) {
 				text = [props.prefix, formatted, props.suffix].join("");
 			} else {
 				text = formatted;
 			}
 
-			var transformY = ordinalAdjust(props.yScale, tickValue);
+			const transformY = ordinalAdjust(props.yScale, tickValue);
 
 			return (
 				<g
@@ -136,9 +134,9 @@ var VerticalAxis = React.createClass({
 	},
 
 	render: function() {
-		var props = this.props;
-		var text = this._generateText(props);
-		var transformGroup = (props.orient === "left") ? 0 : props.width;
+		const props = this.props;
+		const text = this._generateText(props);
+		const transformGroup = (props.orient === "left") ? 0 : props.width;
 
 		return (
 			<g
