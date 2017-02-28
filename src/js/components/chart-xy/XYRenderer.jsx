@@ -50,20 +50,17 @@ class XYRenderer extends React.Component {
 		this.state = { labelYMax : 0};
 		this._updateLabelYMax = this._updateLabelYMax.bind(this);
 	}
-
 	// we need to know the largest y value for a label so that we can
 	// compute where the chart should start
 	_updateLabelYMax (labelYMax) {
 		this.setState({ labelYMax: labelYMax });
 	}
-
 	// some styles are different if there is a column. check here
 	_chartHasColumn (chartSettings) {
 		return some(chartSettings, function(setting) {
 			return setting.type === "column";
 		});
 	}
-
 	// compute the max tick width for each scale
 	_getTickWidths (scales, tickFont) {
 		return reduce(scaleNames, function(prev, key, i) {
@@ -71,7 +68,6 @@ class XYRenderer extends React.Component {
 			return prev;
 		}, {});
 	}
-
 	// get x-axis which can be one of many types
 	_generateXAxis (scale, data, range) {
 		if (scale.hasDate) {
@@ -92,7 +88,6 @@ class XYRenderer extends React.Component {
 			return "middle";
 		}
 	}
-
 	// add specified column padding to x axis if chart contains column
 	// TODO: put outside XY renderer so that grid can use this
 	_getXOuterPadding (hasCol) {
@@ -102,7 +97,6 @@ class XYRenderer extends React.Component {
 			return 0;
 		}
 	}
-
 	// Add space between legend and chart unless all legend labels
 	// dragged or if labels not displayed
 	_needsLabelOffset (labels, data) {

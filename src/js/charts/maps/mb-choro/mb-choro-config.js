@@ -137,7 +137,7 @@ const defaultProps = {
    * @memberof xy_defaultProps
    */
   metadata: {
-    chartType: 'map50',
+    chartType: 'mapchoro',
     title: "Title",
     subtitle: "Subtitle",
     source: "TK",
@@ -148,8 +148,8 @@ const defaultProps = {
 
 const map_config = new MapConfig({
   displayName: "Choropleth",
-  parser: require("./50-parse"),
-  calculateDimensions: require("./mb-50-dimensions"),
+  parser: require("./choro-parse"),
+  calculateDimensions: require("./mb-choro-dimensions"),
   display: display,
   defaultProps: defaultProps
 });

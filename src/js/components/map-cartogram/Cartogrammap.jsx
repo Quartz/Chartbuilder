@@ -17,13 +17,12 @@ const radius = d3.scale.sqrt();
 const cartogramClass = 'cartogram-Polygons';
 const colorScales = require('./../../util/colorscales').scalesMap;
 
-
 const SvgWrapper = require("../svg/SvgWrapper.jsx");
 
 const ClippingPath = require("../../components/shared/ClippingPath.jsx");
 const LegendSpace = require("../../components/svg/MapLegendSpace.jsx");
 const cartoDimensions = require("../../charts/maps/mb-cartogram/mb-cartogram-dimensions.js");
-
+const RenderHelper = require("../../util/map-render-helpers");
 
 class MapRenderer extends React.Component{
 
@@ -69,16 +68,7 @@ class MapRenderer extends React.Component{
 
   	const polygonCollection = [];
 
-    const projObj = {
-      projection: schema.proj,
-      scale: updatedScale,
-      translate: updatedTranslate,
-      precision: schema.precision
-    }
-
-    if (schema.parallels) projObj.parallels = schema.parallels;
-    if (schema.rotate) projObj.rotate = schema.rotate;
-
+  	const projObj = RenderHelper.get_projection(schema, updatedScale, updatedTranslate);
     const geo = geoPath(projectionFunc(projObj));
 
     if (cartogramType !== 'grid') {
@@ -163,7 +153,6 @@ class MapRenderer extends React.Component{
 		}
 
     const legendsArray = Object.keys(chartProps.legend).map((k) => chartProps.legend[k]);
-
 
     const columnNames = chartProps.columns;
     const keyColumn = columnNames[0];

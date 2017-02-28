@@ -9,6 +9,7 @@ const MapViewActions = require("../../actions/VisualViewActions");
 // Color scales and helpers
 const colorScales = require('./../../util/colorscales');
 const helperCarto = require('../../charts/maps/mb-cartogram/mb-cartogram-helpers');
+const RenderHelper = require("../../util/map-render-helpers");
 
 import {filter, toNumber} from 'lodash';
 
@@ -78,19 +79,6 @@ class PolygonCollection extends React.Component {
       force.start();
     }
   }
-  _testDataChange (pastDataset, newDataset) {
-  	let testDatasetChange = false;
-
-  	pastDataset.forEach(function(d, i) {
-  		if (!newDataset[i]) {
-  			testDatasetChange = true;
-  		} else {
-  			if (d.values.length !== newDataset[i].values.length) testDatasetChange = true;
-  		}
-  	});
-
-  	return testDatasetChange;
-  }
   componentWillUpdate (nextProps, nextState) {
 
   	const props = this.props;
@@ -126,7 +114,7 @@ class PolygonCollection extends React.Component {
           || props.chartProps.stylings.showDC !== stylings.showDC
           || nextProps.schemaType !== props.schemaType
           || nextProps.radiusVal !== props.radiusVal
-          || this._testDataChange(props.chartProps.data, nextProps.chartProps.data)) {
+          || RenderHelper.test_data_change(props.chartProps.data, nextProps.chartProps.data)) {
 
         force.on("tick", (e, i) => {
           if (i > 200) force.stop();
@@ -146,26 +134,9 @@ class PolygonCollection extends React.Component {
 	     helperCarto.switchGrid(d3Node, stylings, nextProps.isSmall);
     }
   }
-  _topTranslation (topTranslation) {
-  	if (this.props.metadata.subtitle.length > 0) {
-  		topTranslation += this.props.displayConfig.margin.subtitle;
-  	}
-    return topTranslation;
-  }
-  _getTranslation (chartProps) {
-  	const props = this.props;
-  	const withMobile = (props.isSmall) ? props.displayConfig.margin.mobile.extraMapMarginTop : 0;
-    const topTranslation = (Object.keys(chartProps.legend).length === 1) ?
-    				withMobile + props.displayConfig.margin.maptop + props.displayConfig.margin.legendsOneRow
-    			: props.displayConfig.margin.maptopMultiple;
-
-    return `translate(0,${this._topTranslation(topTranslation)})`;
-  }
   render () {
-
   	const props = this.props;
-  	//const topTranslation = this._topTranslation(props.displayConfig.margin.maptop);
-    const translation = this._getTranslation(props.chartProps);
+    const translation = RenderHelper.get_translation(props.chartProps, props);
 
     const polygonCollection = props.polygonCollection;
 

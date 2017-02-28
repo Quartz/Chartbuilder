@@ -18,7 +18,7 @@ const legendDefaultHeight = 8;
 // set how far below the second row fits
 const legendSecondRowwOffset = 56;
 // distance from the top for radial
-const radialTier1 = 65;
+const radialTier1 = 45;
 // line height for radial / demers legend
 const legendLineHeight = 14;
 
@@ -40,19 +40,19 @@ const legendTotalPercents = {
  */
 class LegendSpace extends React.Component {
 	mountDraggyLegend () {
-
-		const stylings = this.props.chartProps.stylings;
-
+		//
+		const props = this.props;
+		const stylings = props.chartProps.stylings;
+		//
 		if (stylings.type === 'dorling' || stylings.type === 'demers'
-				|| this.props.metadata.chartType === 'mapbubble') {
+				|| props.metadata.chartType === 'mapbubble') {
 
-			const g = d3.select('.legendsGroup.' + this.props.isSmall);
+			const g = d3.select('.legendsGroup.' + props.isSmall);
 
 			if (g.size()) {
-				const drag = d3.behavior.drag()
-					.on('drag', function (d) {
-						g.attr('transform', 'translate('+d3.event.x +','+d3.event.y+')');
-					});
+				const drag = d3.behavior.drag().on('drag', function (d) {
+					g.attr('transform', 'translate('+d3.event.x +','+d3.event.y+')');
+				});
 				g.call(drag);
 			}
 		}
@@ -64,10 +64,10 @@ class LegendSpace extends React.Component {
 		this.mountDraggyLegend();
 	}
 	_offsetPositions (chartWidth, legendsArray) {
-
+		//
 		const positions = {};
 		const numLegends = legendsArray.length;
-
+		//
 		positions.legendTotalSize = chartWidth * ((legendTotalPercents[numLegends]) / 100);
 
 		// Don't make the legend too big for single or double color values
@@ -111,7 +111,7 @@ class LegendSpace extends React.Component {
 			//move the legends lower if only one legend row
 			translateLegendsAdjusted = translate.legendsOneRow;
 		}
-
+		//
 		return {
 			legendHeightAdjusted: legendheightAdjusted,
 			legendTranslateAdjusted: translateLegendsAdjusted
@@ -120,7 +120,7 @@ class LegendSpace extends React.Component {
 	_tickOffsets (j, thisTick, legendData, legendRectWidth) {
 		//
 		const tickOffsets = {};
-
+		//
 		tickOffsets.thisTick = thisTick;
 
 		//Add prefix to first tick
@@ -314,8 +314,6 @@ class Map_Radial_Legend extends React.Component {
   			.range([0, radiusComputed])
   			.domain(currSettings.domain);
 
-  	const translated = props.legendsArray.length === 1 ? radialTier1 : 0;
-
 		const dataMax = currSettings.domain[1];
 		const dataCircleSm = radius(Math.round(dataMax / 10));
 		// Don't show a label if the circle is tiny. The labels will overlap
@@ -324,7 +322,7 @@ class Map_Radial_Legend extends React.Component {
 		const dataCircleLg = radius(Math.round(dataMax / 2.2));
 		const dataCirclelabelLg = Math.round(dataMax / 2.2);
 
-		const demersYOffset = (dataCircleLg * 2);
+		const demersYOffset = 20; //(dataCircleLg * 2);
 		const demersYTextOffset = demersYOffset - 2;
 
 		const rxLg = (stylings.type === 'dorling' || metadata.chartType === 'mapbubble') ? dataCircleLg : 0;

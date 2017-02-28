@@ -1,5 +1,5 @@
 /*
- * ### Editor interface for 50-state map
+ * ### Editor interface for Bubble map
  */
 import React, {PropTypes} from 'react';
 import update from 'react-addons-update';

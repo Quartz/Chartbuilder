@@ -56,7 +56,7 @@
     "us-abbreviations": "git://github.com/nbcnews/us-abbreviations.git"
   },
   "devDependencies": {
-    "babel-preset-react": "^6.22.0",
+    "babel-preset-react": "^6.23.0",
     "babelify": "^7.3.0",
     "browser-sync": "2.x.x",
     "browserify": "^13.0.0",

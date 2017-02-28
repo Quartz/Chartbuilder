@@ -4,9 +4,9 @@
 
 // Editor components for chart types, as well as their mobile override editor interfaces
 module.exports = {
-  map50: {
-    Editor: require("../../components/map-50/Map50Editor.jsx"),
-    MobileOverrides: require("../../components/map-50/Map50Mobile.jsx")
+  mapchoro: {
+    Editor: require("../../components/map-choro/MapchoroEditor.jsx"),
+    MobileOverrides: require("../../components/map-choro/MapchoroMobile.jsx")
   },
   mapcartogram: {
     Editor: require("../../components/map-cartogram/MapCartogramEditor.jsx"),

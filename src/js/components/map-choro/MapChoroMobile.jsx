@@ -8,19 +8,19 @@ const ChartEditorMixin = require("../mixins/ChartEditorMixin");
 // Chartbuilder UI components
 import {ButtonGroup, LabelledTangle, TextInput} from 'chartbuilder-ui';
 
-var ChoroMobile = React.createClass({
+const ChoroMobile = React.createClass({
 
 	mixins: [ChartEditorMixin],
 
 	_handleUpdate: function(k, v) {
-		var newSetting = {};
+		const newSetting = {};
 		newSetting[k] = v;
-		var newMobile = update(this.props.chartProps.mobile, { $merge: newSetting });
+		const newMobile = update(this.props.chartProps.mobile, { $merge: newSetting });
 		this._handlePropUpdate("mobile", newMobile);
 	},
 
 	render: function() {
-		var chartProps = this.props.chartProps;
+		const chartProps = this.props.chartProps;
 		return (
 			<div className="editor-options mobile-overrides">
 				<h2>

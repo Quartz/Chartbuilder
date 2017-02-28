@@ -14,6 +14,7 @@ const ClippingPath = require("../../components/shared/ClippingPath.jsx");
 const LegendSpace = require("../../components/svg/MapLegendSpace.jsx");
 
 const bubbleDimensions = require("../../charts/maps/mb-bubble/mb-bubble-dimensions.js");
+const RenderHelper = require("../../util/map-render-helpers");
 
 const polygonClass = 'polygon-render';
 
@@ -36,19 +37,10 @@ class MapRenderer extends React.Component {
     const updatedTranslate = [schema.translate[0] * (this.props.width / 640), schema.translate[1]  * (this.props.width / 640)];
     const updatedScale = schema.scale * (this.props.width / 700);
 
-    const projObj = {
-      projection: schema.proj,
-      scale: updatedScale,
-      translate: updatedTranslate,
-      precision: schema.precision
-    }
-
-    if (schema.parallels) projObj.parallels = schema.parallels;
-    if (schema.rotate) projObj.rotate = schema.rotate;
+    const projObj = RenderHelper.get_projection(schema, updatedScale, updatedTranslate);
 
     const proj = projectionFunc(projObj);
     const geo = geoPath(proj);
-
 
 		const styleConfig = props.styleConfig;
 		const margin = displayConfig.margin;

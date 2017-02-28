@@ -3,25 +3,25 @@ import update from 'react-addons-update';
 import d3 from 'd3';
 const topojson = require('topojson');
 
-import PolygonCollection from './Map50Renderer.jsx';
+import PolygonCollection from './MapchoroRenderer.jsx';
 import ChartRendererMixin from "./../mixins/MapRendererMixin.js";
 
 const projectionFunc = require('react-d3-map-core').projection;
 const geoPath = require('react-d3-map-core').geoPath;
 
 const SvgWrapper = require("../svg/SvgWrapper.jsx");
-
 const ClippingPath = require("../../components/shared/ClippingPath.jsx");
 const LegendSpace = require("../../components/svg/MapLegendSpace.jsx");
 
-const choroplethDimensions = require("../../charts/maps/mb-50/mb-50-dimensions.js");
+const choroplethDimensions = require("../../charts/maps/mb-choro/mb-choro-dimensions.js");
+const RenderHelper = require("../../util/map-render-helpers");
 
 // move into config?
 const polygonClass = 'polygon-render';
 
 class MapRenderer extends React.Component {
   render () {
-
+  	// save props
   	const props = this.props;
     const chartProps = props.chartProps;
     const stylings = chartProps.stylings;
@@ -34,22 +34,13 @@ class MapRenderer extends React.Component {
     const data = topojson.feature(schema.topojson, schema.topojson.objects[featname]);
 
     // replace these hardcoded values with proper numbers from outerDimensions
-    const updatedTranslate = [schema.translate[0] * (this.props.width / 640), schema.translate[1]  * (this.props.width / 640)];
-    const updatedScale = schema.scale * (this.props.width / 700);
+    const updatedTranslate = [schema.translate[0] * (props.width / 640), schema.translate[1]  * (props.width / 640)];
+    const updatedScale = schema.scale * (props.width / 700);
 
-    let projObj = {
-      projection: schema.proj,
-      scale: updatedScale,
-      translate: updatedTranslate,
-      precision: schema.precision
-    }
-
-    if (schema.parallels) projObj.parallels = schema.parallels;
-    if (schema.rotate) projObj.rotate = schema.rotate;
+    const projObj = RenderHelper.get_projection(schema, updatedScale, updatedTranslate);
 
     const proj = projectionFunc(projObj);
     const geo = geoPath(proj);
-
 
 		const styleConfig = props.styleConfig;
 		const margin = displayConfig.margin;

@@ -5,6 +5,7 @@ import {centroid} from 'turf';
 
 // Flux actions
 const MapViewActions = require("../../actions/VisualViewActions");
+const RenderHelper = require("../../util/map-render-helpers");
 //
 class PolygonsRender extends React.Component {
 
@@ -23,7 +24,7 @@ class PolygonsRender extends React.Component {
   	const keyColumn = columnNames[0];
   	const valueColumn = (columnNames.length === 2) ? columnNames[1] : columnNames[2];
 
-    const translation = this._getTranslation(chartProps);
+    const translation = RenderHelper.get_translation(chartProps, nextProps);
 
     const svg = d3.select('.polygon-group' + '.' + nextProps.isSmall);
 
@@ -49,25 +50,6 @@ class PolygonsRender extends React.Component {
 	    }
     }
   }
-  _updateStroke (nextProps) {
-  	//update all strokes to new stroke val
-    d3.select('.polygon-group'  + '.' + nextProps.isSmall)
-    	.selectAll('.' + nextProps.polygonClass)
-    	.style('stroke', nextProps.stylings.stroke);
-  }
-  _testDataChange (pastDataset, newDataset) {
-  	let testDatasetChange = false;
-
-  	pastDataset.forEach(function(d, i) {
-  		if (!newDataset[i]) {
-  			testDatasetChange = true;
-  		} else {
-  			if (d.values.length !== newDataset[i].values.length) testDatasetChange = true;
-  		}
-  	});
-
-  	return testDatasetChange;
-  }
   shouldComponentUpdate (nextProps) {
   	/* only update if the schema type changes or the dataset length or groupings change
   	otherwise just update the styles. */
@@ -76,106 +58,15 @@ class PolygonsRender extends React.Component {
   	if (props.schema.name !== nextProps.schema.name
   		 || props.stylings.showStateLabels !== nextProps.stylings.showStateLabels
   		 || props.chartProps.data.length !== nextProps.chartProps.data.length
-  		 || this._testDataChange(props.chartProps.data, nextProps.chartProps.data)) {
+  		 || RenderHelper.test_data_change(props.chartProps.data, nextProps.chartProps.data)) {
   		return true;
   	} else if (this.props.stylings.stroke !== nextProps.stylings.stroke) {
-  		this._updateStroke(nextProps);
+  		RenderHelper.update_stroke(nextProps);
   		return false;
   	} else {
   		this._updateStyles(nextProps);
   		return false;
   	}
-  }
-  _topTranslation (topTranslation) {
-  	if (this.props.metadata.subtitle.length > 0) {
-  		topTranslation += this.props.displayConfig.margin.subtitle;
-  	}
-    return topTranslation;
-  }
-  _getTranslation (chartProps) {
-  	const props = this.props;
-  	const withMobile = (props.isSmall) ? props.displayConfig.margin.mobile.extraMapMarginTop : 0;
-    const topTranslation = (Object.keys(chartProps.legend).length === 1) ?
-    				withMobile + props.displayConfig.margin.maptop + props.displayConfig.margin.legendsOneRow
-    			: props.displayConfig.margin.maptopMultiple;
-
-    return `translate(0,${this._topTranslation(topTranslation)})`;
-  }
-  _bruteSearchForValue (start,stop,mapSchema,d,keyColumn,polygonData,testObj,index) {
-  	for (var j = start; j<stop; j++) {
-  		if (testObj.found) break;
-  		if (mapSchema.test(d[keyColumn], polygonData[j])) {
-    		testObj.k = j;
-    		testObj.i = j;
-    		testObj.id = polygonData[j].id;
-    		testObj.found = true;
-    		testObj.geometry = polygonData[j].geometry;
-    		testObj.thisvalue = [Object.assign({'index':index},d)];
-    		break;
-  		}
-  	}
-  	return testObj;
-  }
-  _binarySearch (polygondata, key, testObj, d, index, keyColumn) {
-    var lo = 0;
-    var hi = polygondata.length - 1;
-    var mid;
-    let element;
-
-    key = (typeof key === 'string' && isNaN(key)) ? key.toLowerCase().replace(/\s+/g, '') : +key;
-
-    while (lo <= hi) {
-        mid = (lo + hi) >> 1;
-
-        const thisPolygon = polygondata[mid].id;
-        element = (typeof thisPolygon === 'string' && isNaN(thisPolygon)) ? thisPolygon.toLowerCase().replace(/\s+/g, '') : +thisPolygon;
-
-       	if (key < element) {
-            hi = mid - 1;
-            //
-        } else if (key > element) {
-            lo = mid + 1;
-            //
-        } else {
-        	if (key !== element) return testObj;
-        	testObj.k = mid;
-	    		testObj.i = mid;
-	    		testObj.id = element;
-	    		testObj.found = true;
-	    		testObj.geometry = polygondata[mid].geometry;
-	    		testObj.thisvalue = [Object.assign({'index':index},d)];
-        	return testObj;
-        	break;
-        }
-    }
-    return testObj;
-  }
-  _binarySearchCounty (polygondata, key, testObj, d, index, keyColumn) {
-    var lo = 0;
-    var hi = polygondata.length - 1;
-    var mid;
-    let element;
-
-    while (lo <= hi) {
-        mid = (lo + hi) >> 1;
-        element = polygondata[mid].id;
-       	if (key < element) {
-            hi = mid - 1;
-        } else if (key > element) {
-            lo = mid + 1;
-        } else {
-        	if (key !== element) return testObj;
-        	testObj.k = mid;
-	    		testObj.i = mid;
-	    		testObj.found = true;
-	    		testObj.id = element;
-	    		testObj.geometry = polygondata[mid].geometry;
-	    		testObj.thisvalue = [Object.assign({'index':index},d)];
-        	return testObj;
-        	break;
-        }
-    }
-    return testObj;
   }
   _matchValues (testObj={}, testData, keyColumn, allpolygons, mapSchema, index) {
 
@@ -200,13 +91,14 @@ class PolygonsRender extends React.Component {
 	  	const stop = (testObj.k + 3 > allpolygons.length) ? allpolygons.length : testObj.k + 3;
 
 	  	// first brute search inside the subarray
-	  	testObj = this._bruteSearchForValue(start,stop,mapSchema,testData,keyColumn,allpolygons,testObj,index);
+	  	testObj = RenderHelper.brute_search(start,stop,mapSchema,testData,keyColumn,allpolygons,testObj,index);
 
 	  	// if still not found, use binary search
     	if (!testObj.found) {
+    		// use a special search alg for the counties dataset
     		return testObj = (mapSchema.name === 'countiesUS') ?
-    			this._binarySearchCounty(allpolygons, mapSchema.matchLogic(testData[keyColumn]), testObj, testData, index, keyColumn) :
-    			this._binarySearch(allpolygons, mapSchema.matchLogic(testData[keyColumn]), testObj, testData, index, keyColumn);
+    			RenderHelper.binary_search_numeric(allpolygons, mapSchema.matchLogic(testData[keyColumn]), testObj, testData, index, keyColumn) :
+    			RenderHelper.binary_search(allpolygons, mapSchema.matchLogic(testData[keyColumn]), testObj, testData, index, keyColumn);
     	}
     };
     return testObj;
@@ -277,7 +169,7 @@ class PolygonsRender extends React.Component {
     const adjustLabels = mapSchema.adjustLabels;
 
     // lower the map for the single legend;
-    const translation = this._getTranslation(chartProps);
+    const translation = RenderHelper.get_translation(chartProps, props);
 
     // define extra variables for the needed update
   	const keyColumn = columnNames[0];
