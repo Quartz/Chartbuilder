@@ -29,23 +29,14 @@ const orientation_map = {
 	},
 };
 
-const BarGroup = React.createClass({
+class BarGroup extends React.Component {
 
-	propTypes: {
-		dimensions: PropTypes.object,
-		xScale: PropTypes.func,
-		bars: PropTypes.array,
-		orientation: PropTypes.oneOf(["vertical", "horizontal"])
-	},
+	constructor(props) {
+		super(props);
+		this._makeBarProps = this._makeBarProps.bind(this);
+	}
 
-	getDefaultProps: function() {
-		return {
-			groupPadding: 0.2,
-			orientation: "vertical"
-		}
-	},
-
-	_makeBarProps: function(bar, i, mapping, linearScale, ordinalScale, size, offset) {
+	_makeBarProps (bar, i, mapping, linearScale, ordinalScale, size, offset) {
 		const props = this.props;
 		const barProps = { key: i, colorIndex: bar.colorIndex };
 		barProps[mapping.ordinalVal] = ordinalScale(bar.entry);
@@ -56,9 +47,9 @@ const BarGroup = React.createClass({
 		barProps[mapping.linearVal] = linearScale(mapping.linearCalculation(bar.value));
 		barProps[mapping.linearSize] = Math.abs(linearScale(bar.value) - linearScale(0));
 		return barProps;
-	},
+	}
 
-	render: function() {
+	render () {
 		const props = this.props;
 		const mapping = orientation_map[props.orientation];
 		const numDataPoints = props.bars[0].data.length;
@@ -67,13 +58,9 @@ const BarGroup = React.createClass({
 		const outerScale = props[mapping.ordinalScale];
 		const isOrdinal = outerScale.hasOwnProperty("bandwidth");
 		let offset = 0;
-		let innerSize;
 
-		if (isOrdinal) {
-			innerSize = outerScale.bandwidth();
-		} else {
-			innerSize = props.dimensions[mapping.ordinalSize] / numDataPoints;
-		}
+		const innerSize = (isOrdinal) ? outerScale.bandwidth()
+										: props.dimensions[mapping.ordinalSize] / numDataPoints;
 
 		const innerScale = d3scale.scaleBand().domain(range(props.bars.length))
 			.rangeRound([0, innerSize], 0.2, groupInnerPadding);
@@ -100,7 +87,18 @@ const BarGroup = React.createClass({
 
 		return <g className="bar-series-group">{groups}</g>;
 	}
+};
 
-});
+BarGroup.propTypes = {
+	dimensions: PropTypes.object,
+	xScale: PropTypes.func,
+	bars: PropTypes.array,
+	orientation: PropTypes.oneOf(["vertical", "horizontal"])
+};
+
+BarGroup.defaultProps = {
+	groupPadding: 0.2,
+	orientation: "vertical"
+};
 
 module.exports = BarGroup;

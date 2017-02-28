@@ -5,15 +5,8 @@ const line = require("d3").svg.line();
 const LineSeries = require("./LineSeries.jsx")
 const MarkSeries = require("./MarkSeries.jsx")
 
-const LineMarkSeries = React.createClass({
-
-	propTypes: {
-		data: PropTypes.array,
-		xScale: PropTypes.func,
-		yScale: PropTypes.func
-	},
-
-	render: function() {
+class LineMarkSeries extends React.Component {
+	render () {
 		return (
 			<g className="series line-mark-series">
 				<LineSeries {...this.props} />
@@ -21,7 +14,13 @@ const LineMarkSeries = React.createClass({
 			</g>
 		);
 	}
+};
 
-});
+LineMarkSeries.propTypes = {
+	data: PropTypes.array,
+	xScale: PropTypes.func,
+	yScale: PropTypes.func
+}
+
 
 module.exports = LineMarkSeries;

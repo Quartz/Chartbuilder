@@ -17,13 +17,9 @@ const bubbleDimensions = require("../../charts/maps/mb-bubble/mb-bubble-dimensio
 
 const polygonClass = 'polygon-render';
 
-let MapRenderer = React.createClass({
+class MapRenderer extends React.Component {
 
-  propTypes: {
-    chartProps: React.PropTypes.object.isRequired
-  },
-
-  render: function() {
+  render () {
 
   	const props = this.props;
     const chartProps = props.chartProps;
@@ -40,7 +36,7 @@ let MapRenderer = React.createClass({
     const updatedTranslate = [schema.translate[0] * (this.props.width / 640), schema.translate[1]  * (this.props.width / 640)];
     const updatedScale = schema.scale * (this.props.width / 700);
 
-    let projObj = {
+    const projObj = {
       projection: schema.proj,
       scale: updatedScale,
       translate: updatedTranslate,
@@ -144,6 +140,10 @@ let MapRenderer = React.createClass({
 	    </SvgWrapper>
     );
   }
-});
+};
+
+MapRenderer.propTypes = {
+  chartProps: React.PropTypes.object.isRequired
+};
 
 module.exports = MapRenderer;

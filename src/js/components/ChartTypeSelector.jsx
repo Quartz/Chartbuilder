@@ -43,7 +43,6 @@ class ChartTypeSelctor extends React.Component{
 			};
 		});
 		const allTypeButtons = concat(chartTypeButtons, mapTypeButtons);
-
     this.state = { chartConfig: allTypeButtons };
     this._handleChartTypeChange = this._handleChartTypeChange.bind(this);
   }

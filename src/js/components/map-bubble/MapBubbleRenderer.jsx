@@ -7,21 +7,15 @@ import d3 from 'd3';
 // Flux actions
 const MapViewActions = require("../../actions/VisualViewActions");
 
-const ShapesCollection = React.createClass({
+class ShapesCollection extends React.Component {
 
-  propTypes: {
-    geoPath: React.PropTypes.func,
-    polygonClass: React.PropTypes.string,
-    onClick: React.PropTypes.func,
-    chartProps: React.PropTypes.object.isRequired
-  },
-  _returnRadius: function(props, dataDomain) {
+  _returnRadius (props, dataDomain) {
   	const radiusComputed = (props.isSmall) ? props.stylings.radiusVal / 2 : props.stylings.radiusVal;
 
   	return d3.scale.sqrt().range([0, radiusComputed])
                   .domain(dataDomain);
-  },
-  _updateStyles: function(nextProps) {
+  }
+  _updateStyles (nextProps) {
 
   	const chartProps = nextProps.chartProps;
     const mapSchema = nextProps.schema;
@@ -68,14 +62,14 @@ const ShapesCollection = React.createClass({
 	    	}
 	    }
     }
-  },
-  _updateStroke(nextProps) {
+  }
+  _updateStroke (nextProps) {
   	//update all strokes to new stroke val
     d3.select('.polygon-group'  + '.' + nextProps.isSmall)
     	.selectAll('.' + nextProps.polygonClass)
     	.style('stroke', nextProps.stylings.stroke);
-  },
-  _testDataChange(pastDataset, newDataset) {
+  }
+  _testDataChange (pastDataset, newDataset) {
   	let testDatasetChange = false;
 
   	pastDataset.forEach(function(d, i) {
@@ -87,8 +81,8 @@ const ShapesCollection = React.createClass({
   	});
 
   	return testDatasetChange;
-  },
-  shouldComponentUpdate: function(nextProps) {
+  }
+  shouldComponentUpdate (nextProps) {
   	const props = this.props;
   	/* only update if the schema type changes or the dataset length or groupings change
   	otherwise just update the styles. */
@@ -103,14 +97,14 @@ const ShapesCollection = React.createClass({
   		this._updateStyles(nextProps);
   		return false;
   	}
-  },
-  _topTranslation: function(topTranslation) {
+  }
+  _topTranslation (topTranslation) {
   	if (this.props.metadata.subtitle.length > 0) {
   		topTranslation += this.props.displayConfig.margin.subtitle;
   	}
     return topTranslation;
-  },
-  _getTranslation: function(chartProps) {
+  }
+  _getTranslation (chartProps) {
   	const props = this.props;
   	const withMobile = (props.isSmall) ? props.displayConfig.margin.mobile.extraMapMarginTop : 0;
     const topTranslation = (Object.keys(chartProps.legend).length === 1) ?
@@ -118,8 +112,8 @@ const ShapesCollection = React.createClass({
     			: props.displayConfig.margin.maptopMultiple;
 
     return `translate(0,${this._topTranslation(topTranslation)})`;
-  },
-  _bruteSearchForValue: function(start,stop,mapSchema,d,keyColumn,polygonData,testObj,index) {
+  }
+  _bruteSearchForValue (start,stop,mapSchema,d,keyColumn,polygonData,testObj,index) {
   	for (let j = start; j<stop; j++) {
   		if (testObj.found) break;
   		if (mapSchema.test(d[keyColumn], polygonData[j])) {
@@ -133,8 +127,8 @@ const ShapesCollection = React.createClass({
   		}
   	}
   	return testObj;
-  },
-  _binarySearch: function(polygondata, key, testObj, d, index, keyColumn) {
+  }
+  _binarySearch (polygondata, key, testObj, d, index, keyColumn) {
     let lo = 0;
     let hi = polygondata.length - 1;
     let mid;
@@ -167,8 +161,8 @@ const ShapesCollection = React.createClass({
         }
     }
     return testObj;
-  },
-  _binarySearchCounty: function(polygondata, key, testObj, d, index, keyColumn) {
+  }
+  _binarySearchCounty (polygondata, key, testObj, d, index, keyColumn) {
     let lo = 0;
     let hi = polygondata.length - 1;
     let mid;
@@ -194,8 +188,8 @@ const ShapesCollection = React.createClass({
         }
     }
     return testObj;
-  },
-  _matchValues: function(testObj={}, testData, keyColumn, allpolygons, mapSchema, index) {
+  }
+  _matchValues (testObj={}, testData, keyColumn, allpolygons, mapSchema, index) {
 
     testObj.thisvalue = [];
     testObj.found = false;
@@ -228,8 +222,8 @@ const ShapesCollection = React.createClass({
     	}
     };
     return testObj;
-  },
-  _renderCircles: function(testObj, chartProps, currSettings, projection, geoPath, radius, valueColumn) {
+  }
+  _renderCircles (testObj, chartProps, currSettings, projection, geoPath, radius, valueColumn) {
 
   	if (!testObj.thisvalue.length) return (null);
 
@@ -265,8 +259,8 @@ const ShapesCollection = React.createClass({
         className={'state-labels-show'}
       />
     );
-  },
-  _renderPolygons: function(testObj, chartProps, currSettings, projection, geoPath) {
+  }
+  _renderPolygons (testObj, chartProps, currSettings, projection, geoPath) {
 
 		const valueSet = testObj.thisvalue[0];
 		const styles = {
@@ -282,8 +276,8 @@ const ShapesCollection = React.createClass({
             style={styles}
           />
         </g>);
-  },
-  render: function() {
+  }
+  render () {
 
   	const props = this.props;
 
@@ -360,6 +354,13 @@ const ShapesCollection = React.createClass({
       </g>
     );
   }
-});
+};
+
+ ShapesCollection.propTypes = {
+  geoPath: React.PropTypes.func,
+  polygonClass: React.PropTypes.string,
+  onClick: React.PropTypes.func,
+  chartProps: React.PropTypes.object.isRequired
+};
 
 module.exports = ShapesCollection

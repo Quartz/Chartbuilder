@@ -3,21 +3,8 @@ import React, {PropTypes} from 'react';
 import {map} from 'lodash';
 const ordinalAdjust = require("../../util/scale-utils").ordinalAdjust;
 
-const MarkSeries = React.createClass({
-
-	propTypes: {
-		data: PropTypes.array,
-		dimensions: PropTypes.object,
-		dotRadiusFactor: PropTypes.number,
-		xScale: PropTypes.func,
-		yScale: PropTypes.func
-	},
-
-	getDefaultProps: function() {
-		return { dotRadiusFactor: 0.007 }
-	},
-
-	render: function() {
+class MarkSeries extends React.Component {
+	render () {
 		const props = this.props;
 		const radius = props.dimensions.width * props.dotRadiusFactor;
 		const marks = map(props.data, function(d, i) {
@@ -35,9 +22,19 @@ const MarkSeries = React.createClass({
 		return (
 			<g className="series mark-series">{marks}</g>
 		);
-
 	}
+};
 
-});
+MarkSeries.propTypes = {
+	data: PropTypes.array,
+	dimensions: PropTypes.object,
+	dotRadiusFactor: PropTypes.number,
+	xScale: PropTypes.func,
+	yScale: PropTypes.func
+};
+
+MarkSeries.defaultProps = {
+	dotRadiusFactor: 0.007
+};
 
 module.exports = MarkSeries;

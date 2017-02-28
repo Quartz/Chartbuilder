@@ -3,30 +3,16 @@ const d3scale = require("d3-scale");
 import {map, reduce, isArray} from 'lodash';
 const ordinal = require("d3").scale.ordinal;
 
-const BarSeries = React.createClass({
+class BarSeries extends React.Component {
 
-	propTypes: {
-		data: PropTypes.array,
-		dimensions: PropTypes.object,
-		xScale: PropTypes.func,
-		yScale: PropTypes.array // each bar can have different yscale
-	},
-
-	getDefaultProps: function() {
-		return {
-			groupPadding: 0.2
-		}
-	},
-
-	_createDataArray: function(data) {
+	_createDataArray (data) {
 		if (isArray(data[0])) {
 			return data;
-		} else {
-			return [data];
 		}
-	},
+		return [data];
+	}
 
-	render: function() {
+	render () {
 		const props = this.props;
 		const data = this._createDataArray(props.data);
 		const numDataPoints = data[0].length;
@@ -57,7 +43,17 @@ const BarSeries = React.createClass({
 			<g className="bar-series">{rects}</g>
 		);
 	}
+};
 
-});
+BarSeries.propTypes = {
+	data: PropTypes.array,
+	dimensions: PropTypes.object,
+	xScale: PropTypes.func,
+	yScale: PropTypes.array // each bar can have different yscale
+};
+
+BarSeries.defaultProps = {
+	groupPadding: 0.2
+};
 
 module.exports = BarSeries;

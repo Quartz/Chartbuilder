@@ -87,7 +87,7 @@ const map_type = [
  * @instance
  * @memberof editors
  */
-let MapEditor = React.createClass({
+const MapEditor = React.createClass({
 
   propTypes: {
     errors: PropTypes.object,

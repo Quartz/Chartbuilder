@@ -22,8 +22,6 @@ const forceMobile = d3.layout.force()
     .gravity(0)
     .size([372, 244]);
 
-let d3Nodes;
-
 const enterNode = (selection, stylings, data, typeCast, isMobile, force) => {
 
   selection.classed('node', true);
@@ -41,24 +39,18 @@ const enterNode = (selection, stylings, data, typeCast, isMobile, force) => {
   }
 };
 
-const PolygonCollection = React.createClass({
+class PolygonCollection extends React.Component {
 
-  propTypes: {
-    polygonClass: React.PropTypes.string,
-    onClick: React.PropTypes.func,
-    nodes: React.PropTypes.array,
-    chartProps: React.PropTypes.object.isRequired
-  },
-  componentDidMount: function() {
+  componentDidMount () {
 
   	const props = this.props;
     const stylings = props.chartProps.stylings;
     const typeCast = props.schemaName;
 
-    d3Nodes = d3.select(ReactDOM.findDOMNode(this.refs.graph));
+    let d3Nodes = d3.select(ReactDOM.findDOMNode(this.refs.graph));
 
     const theseNodes = d3Nodes.selectAll('.node')
-      .data(props.nodes, function (node) { return node.shp; })
+      .data(props.nodes, (node) => { return node.shp; })
 
     theseNodes.enter().append('g').attr('class','node');
 
@@ -85,8 +77,8 @@ const PolygonCollection = React.createClass({
       force.nodes(this.props.nodes);
       force.start();
     }
-  },
-  _testDataChange(pastDataset, newDataset) {
+  }
+  _testDataChange (pastDataset, newDataset) {
   	let testDatasetChange = false;
 
   	pastDataset.forEach(function(d, i) {
@@ -98,10 +90,8 @@ const PolygonCollection = React.createClass({
   	});
 
   	return testDatasetChange;
-  },
-  componentDidUpdate: function() {
-  },
-  componentWillUpdate: function(nextProps, nextState) {
+  }
+  componentWillUpdate (nextProps, nextState) {
 
   	const props = this.props;
 
@@ -111,7 +101,7 @@ const PolygonCollection = React.createClass({
 
     const force = (nextProps.isSmall) ? forceMobile : forceDesktop;
 
-    d3Nodes = d3.select(ReactDOM.findDOMNode(this.refs.graph));
+    let d3Nodes = d3.select(ReactDOM.findDOMNode(this.refs.graph));
 
     let theseNodes = d3Nodes.selectAll('.node')
 	      .data(nodes, function (node) { return node.shp; });
@@ -155,14 +145,14 @@ const PolygonCollection = React.createClass({
 	  	 force.stop();
 	     helperCarto.switchGrid(d3Node, stylings, nextProps.isSmall);
     }
-  },
-  _topTranslation: function(topTranslation) {
+  }
+  _topTranslation (topTranslation) {
   	if (this.props.metadata.subtitle.length > 0) {
   		topTranslation += this.props.displayConfig.margin.subtitle;
   	}
     return topTranslation;
-  },
-  _getTranslation: function(chartProps) {
+  }
+  _getTranslation (chartProps) {
   	const props = this.props;
   	const withMobile = (props.isSmall) ? props.displayConfig.margin.mobile.extraMapMarginTop : 0;
     const topTranslation = (Object.keys(chartProps.legend).length === 1) ?
@@ -170,8 +160,8 @@ const PolygonCollection = React.createClass({
     			: props.displayConfig.margin.maptopMultiple;
 
     return `translate(0,${this._topTranslation(topTranslation)})`;
-  },
-  render: function() {
+  }
+  render () {
 
   	const props = this.props;
   	//const topTranslation = this._topTranslation(props.displayConfig.margin.maptop);
@@ -187,6 +177,13 @@ const PolygonCollection = React.createClass({
       >{polygonCollection}</g>
     );
   }
-});
+};
+
+PolygonCollection.propTypes = {
+  polygonClass: React.PropTypes.string,
+  onClick: React.PropTypes.func,
+  nodes: React.PropTypes.array,
+  chartProps: React.PropTypes.object.isRequired
+};
 
 module.exports = PolygonCollection

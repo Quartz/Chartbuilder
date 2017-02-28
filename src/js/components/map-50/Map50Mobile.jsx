@@ -1,15 +1,12 @@
-var React = require("react");
-var PropTypes = React.PropTypes;
-var update = require("react-addons-update");
-var clone = require("lodash/clone");
+import React, {PropTypes} from 'react';
+import {clone} from 'lodash';
+import update from 'react-addons-update';
 
-var ChartEditorMixin = require("../mixins/ChartEditorMixin");
+const ChartEditorMixin = require("../mixins/ChartEditorMixin");
 
 // Chartbuilder UI components
-var chartbuilderUI = require("chartbuilder-ui");
-var ButtonGroup = chartbuilderUI.ButtonGroup;
-var LabelledTangle = chartbuilderUI.LabelledTangle;
-var TextInput = chartbuilderUI.TextInput;
+// Chartbuilder UI components
+import {ButtonGroup, LabelledTangle, TextInput} from 'chartbuilder-ui';
 
 var ChoroMobile = React.createClass({
 

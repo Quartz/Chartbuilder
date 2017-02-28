@@ -1,29 +1,24 @@
-var React = require("react");
-var PropTypes = React.PropTypes;
-var update = require("react-addons-update");
-var clone = require("lodash/clone");
+import React, {PropTypes} from 'react';
+import {clone} from 'lodash';
+import update from 'react-addons-update';
 
-var ChartEditorMixin = require("../mixins/ChartEditorMixin");
+const ChartEditorMixin = require("../mixins/ChartEditorMixin");
 
 // Chartbuilder UI components
-var chartbuilderUI = require("chartbuilder-ui");
-var ButtonGroup = chartbuilderUI.ButtonGroup;
-var LabelledTangle = chartbuilderUI.LabelledTangle;
-var TextInput = chartbuilderUI.TextInput;
+import {ButtonGroup, LabelledTangle, TextInput} from 'chartbuilder-ui';
 
-var CartoMobile = React.createClass({
+const CartoMobile = React.createClass({
 
 	mixins: [ChartEditorMixin],
 
 	_handleUpdate: function(k, v) {
-		var newSetting = {};
+		const newSetting = {};
 		newSetting[k] = v;
-		var newMobile = update(this.props.chartProps.mobile, { $merge: newSetting });
+		const newMobile = update(this.props.chartProps.mobile, { $merge: newSetting });
 		this._handlePropUpdate("mobile", newMobile);
 	},
-
 	render: function() {
-		var chartProps = this.props.chartProps;
+		const chartProps = this.props.chartProps;
 		return (
 			<div className="editor-options mobile-overrides">
 				<h2>
