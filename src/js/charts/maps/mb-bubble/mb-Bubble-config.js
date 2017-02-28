@@ -126,12 +126,10 @@ const defaultProps = {
       bottom: 0,
       left: 0
     },
-    _annotations: {
-      labels: {
-        hasDragged: false,
-        values: []
-      }
-    },
+		_annotations: {
+			logo: {
+			}
+		},
     mobile: {}
   },
   /**

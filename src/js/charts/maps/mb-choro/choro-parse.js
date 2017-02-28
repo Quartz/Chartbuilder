@@ -38,9 +38,6 @@ const parse50 = (config, _chartProps, callback, parseOpts, priorData = false, pr
   let parsedInputEntries;
   let columnNames;
 
-  const labels = chartProps._annotations.labels;
-
-
 	if (!chartProps.input.type) {
   	maptype = defaultmap;
   } else {
