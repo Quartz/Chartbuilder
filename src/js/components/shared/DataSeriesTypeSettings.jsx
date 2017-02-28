@@ -9,25 +9,27 @@ const dataTypeOptions = [
 	{ title: "Numbers", content: "Numbers", value: "numeric" }
 ];
 
-const DataSeriesTypeSettings = React.createClass({
-	propTypes: {
-		onUpdate: PropTypes.func,
-		chartProps: PropTypes.object
-	},
-	_handleSeriesTypeUpdate: function(ix,k,v) {
+class DataSeriesTypeSettings extends React.Component {
+
+	constructor(props) {
+		super(props);
+		this._handleSeriesTypeUpdate = this._handleSeriesTypeUpdate.bind(this);
+	}
+
+	_handleSeriesTypeUpdate (ix,k,v) {
 		const chartProps = this.props.chartProps;
 		chartProps.input.type = v;
 		this.props.onUpdate(chartProps.input);
-	},
-	_availableMaps: function() {
+	}
+	_availableMaps () {
 		const allMaps = [];
 
 		mapSchemas.forEach(function(d) {
 			allMaps.push({content: d.label, value: d.name});
 		});
 		return allMaps;
-	},
-	_availableMapName: function(map) {
+	}
+	_availableMapName (map) {
 		let mapName = '';
 
 		mapSchemas.forEach(function(d) {
@@ -36,8 +38,8 @@ const DataSeriesTypeSettings = React.createClass({
 			}
 		});
 		return mapName;
-	},
-	render: function() {
+	}
+	render () {
 		const chartProps = this.props.chartProps;
 
 		if (chartProps.visualType === 'chart') {
@@ -73,6 +75,11 @@ const DataSeriesTypeSettings = React.createClass({
 			);
 		}
 	}
-});
+};
+
+DataSeriesTypeSettings.propTypes = {
+	onUpdate: PropTypes.func,
+	chartProps: PropTypes.object
+};
 
 module.exports = DataSeriesTypeSettings;

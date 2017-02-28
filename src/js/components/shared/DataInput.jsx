@@ -16,29 +16,21 @@ const DataSeriesTypeSettings = require("../shared/DataSeriesTypeSettings.jsx");
  * @instance
  * @memberof editors
  */
-var DataInput = React.createClass({
-
-	propTypes: {
-		errors: PropTypes.array.isRequired,
-		chartProps: PropTypes.shape({
-			chartSettings: PropTypes.array,
-			data: PropTypes.array,
-			scale: PropTypes.object,
-			input: PropTypes.object
-		}).isRequired,
-		className: PropTypes.string
-	},
-
-	getInitialState: function() {
-		return {
+class DataInput extends React.Component {
+	constructor(props) {
+    super(props);
+		this.state = {
 			alertType: "default",
 			alertText: "Waiting for data...",
 			boldText: "",
 			dropping: false
 		};
-	},
+		this._handleReparseUpdate = this._handleReparseUpdate.bind(this);
+		this._toggleDropState = this._toggleDropState.bind(this);
+		this.onFileUpload = this.onFileUpload.bind(this);
+	}
 
-	_handleReparseUpdate: function(k, v) {
+	_handleReparseUpdate (k, v) {
 
 		let input;
 
@@ -57,13 +49,13 @@ var DataInput = React.createClass({
 		} else {
 			return;
 		}
-	},
+	}
 
-	_toggleDropState: function(e) {
+	_toggleDropState (e) {
 		this.setState({ dropping: !this.state.dropping });
-	},
+	}
 
-	onFileUpload: function(e) {
+	onFileUpload (e) {
 		var reader = new FileReader();
 		reader.onload = function() {
 			parsedModel = validateChartModel(this.result);
@@ -74,10 +66,10 @@ var DataInput = React.createClass({
 		};
 		this._toggleDropState();
 		reader.readAsText(e.target.files[0]);
-	},
+	}
 
 	// Render only the dropover area
-	_renderDropArea: function() {
+	_renderDropArea () {
 		return (
 			<div
 				className={this.props.className + " dropping"}
@@ -89,9 +81,9 @@ var DataInput = React.createClass({
 				<input type="file" id="input" onChange={this.onFileUpload}/>
 			</div>
 		);
-	},
+	}
 
-	_renderErrors: function() {
+	_renderErrors () {
 		if (this.props.errors.length === 0) return null;
 
 		return (
@@ -99,10 +91,10 @@ var DataInput = React.createClass({
 				<AlertGroup alerts={this.props.errors} />
 			</div>
 		);
-	},
+	}
 
 	// Render the data input text area and indicator
-	_renderDataInput: function() {
+	_renderDataInput () {
 
 		var errors = this._renderErrors();
 
@@ -125,16 +117,25 @@ var DataInput = React.createClass({
 				/>
 			</div>
 		);
-	},
-
-	render: function() {
+	}
+	render () {
 		if (this.state.dropping) {
 			return this._renderDropArea();
 		} else {
 			return this._renderDataInput();
 		}
 	}
+};
 
-});
+DataInput.propTypes = {
+	errors: PropTypes.array.isRequired,
+	chartProps: PropTypes.shape({
+		chartSettings: PropTypes.array,
+		data: PropTypes.array,
+		scale: PropTypes.object,
+		input: PropTypes.object
+	}).isRequired,
+	className: PropTypes.string
+};
 
 module.exports = DataInput;

@@ -14,21 +14,15 @@ import {AlertGroup, LabelledTangle, TextInput} from 'chartbuilder-ui';
  * @instance
  * @memberof editors
  */
-const XY_yScaleSettings = React.createClass({
+class XY_yScaleSettings extends React.Component {
+	constructor(props) {
+		super(props);
+		this._handleScaleUpdate = this._handleScaleUpdate.bind(this);
+		this._handleDomainUpdate = this._handleDomainUpdate.bind(this);
+		this._renderErrors = this._renderErrors.bind(this);
+	}
 
-	propTypes: {
-		className: PropTypes.string,
-		id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-		name: PropTypes.string,
-		onReset: PropTypes.func,
-		onUpdate: PropTypes.func.isRequired,
-		scale: PropTypes.object.isRequired,
-		stepNumber: PropTypes.string,
-		titleOverride: PropTypes.string,
-		errors: PropTypes.array
-	},
-
-	_handleScaleUpdate: function(k, v) {
+	_handleScaleUpdate (k, v) {
 		const scale = clone(this.props.scale, true);
 
 		if(k != "precision") {
@@ -37,9 +31,9 @@ const XY_yScaleSettings = React.createClass({
 
 		scale[this.props.id][k] = v;
 		this.props.onUpdate(scale);
-	},
+	}
 
-	_handleDomainUpdate: function(k, v) {
+	_handleDomainUpdate (k, v) {
 		const scale = clone(this.props.scale, true);
 		scale[this.props.id].custom = true;
 		if (k == "min") {
@@ -48,9 +42,9 @@ const XY_yScaleSettings = React.createClass({
 			scale[this.props.id].domain[1] = v;
 		}
 		this.props.onUpdate(scale);
-	},
+	}
 
-	_renderErrors: function() {
+	_renderErrors () {
 
 		if (!this.props.errors) {
 			return null;
@@ -63,9 +57,9 @@ const XY_yScaleSettings = React.createClass({
 				</div>
 			);
 		}
-	},
+	}
 
-	render: function() {
+	render () {
 		const currScale = this.props.scale[this.props.id];
 		const errors = this._renderErrors();
 
@@ -174,6 +168,18 @@ const XY_yScaleSettings = React.createClass({
 			</div>
 		);
 	}
-});
+};
+
+XY_yScaleSettings.propTypes = {
+	className: PropTypes.string,
+	id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+	name: PropTypes.string,
+	onReset: PropTypes.func,
+	onUpdate: PropTypes.func.isRequired,
+	scale: PropTypes.object.isRequired,
+	stepNumber: PropTypes.string,
+	titleOverride: PropTypes.string,
+	errors: PropTypes.array
+};
 
 module.exports = XY_yScaleSettings;

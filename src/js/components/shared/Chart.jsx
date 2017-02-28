@@ -1,27 +1,9 @@
 import React, {PropTypes} from 'react';
 import {map, assign} from 'lodash';
-
 // Wrapper class for charts. Clone all children assigning them the properties of
 // this component so that chart configuration is passed down
-const Chart = React.createClass({
-
-	propTypes: {
-		xScale: PropTypes.func,
-		yScale: PropTypes.func,
-		dimensions: PropTypes.object,
-		chartType: PropTypes.string,
-		metadata: PropTypes.object,
-		translate: PropTypes.array
-	},
-
-	getDefaultProps: function() {
-		return {
-			translate: [0, 0],
-			tickTextHeight: 0
-		}
-	},
-
-	render: function() {
+class Chart extends React.Component {
+	render () {
 		const props = this.props;
 		const children = React.Children.toArray(props.children);
 		const childrenWithProps = map(children, function(child) {
@@ -38,7 +20,20 @@ const Chart = React.createClass({
 			</g>
 		);
 	}
+};
 
-});
+Chart.propTypes = {
+	xScale: PropTypes.func,
+	yScale: PropTypes.func,
+	dimensions: PropTypes.object,
+	chartType: PropTypes.string,
+	metadata: PropTypes.object,
+	translate: PropTypes.array
+}
+
+Chart.defaultProps = {
+	translate: [0, 0],
+	tickTextHeight: 0
+}
 
 module.exports = Chart;

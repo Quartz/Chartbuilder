@@ -3,43 +3,23 @@
 import React, {PropTypes} from 'react';
 import {map} from 'lodash';
 
-const BarLabels = React.createClass({
-
-	propTypes: {
-		text: PropTypes.string,
-		translate: PropTypes.array,
-		colorIndex: PropTypes.number,
-		formatLabel: PropTypes.func
-	},
-
-	getDefaultProps: function() {
-		return {
-			translate: [0, 0],
-			text: "BarLabels",
-			colorIndex: 0,
-			formatLabel: function(d) { return d; },
-			dy: "0.35em"
-		};
-	},
+class BarLabels extends React.Component {
 
 	// TODO: make this generic (for axis as well)
-	_addPrefSuf: function(formattedLabel, i, numTicks, prefix, suffix) {
+	_addPrefSuf (formattedLabel, i, numTicks, prefix, suffix) {
 		if (i === 0) {
 			return [prefix, formattedLabel, suffix].join("");
 		} else {
 			return formattedLabel;
 		}
-	},
+	}
 
-	_getTransformY: function(yScale, tickValue) {
-		if (yScale.bandwidth) {
-			return yScale(tickValue) + yScale.bandwidth() / 2;
-		} else {
-			return yScale(tickValue);
-		}
-	},
+	_getTransformY (ySc, tickValue) {
+		return (ySc.bandwidth) ? ySc(tickValue) + ySc.bandwidth() / 2
+						: ySc(tickValue);
+	}
 
-	render: function() {
+	render () {
 		const props = this.props;
 		const addPrefSuf = this._addPrefSuf;
 		const numTicks = props.data.length;
@@ -72,7 +52,21 @@ const BarLabels = React.createClass({
 			</g>
 		);
 	}
+};
 
-});
+BarLabels.propTypes = {
+	text: PropTypes.string,
+	translate: PropTypes.array,
+	colorIndex: PropTypes.number,
+	formatLabel: PropTypes.func
+}
+
+BarLabels.defaultProps = {
+	translate: [0, 0],
+	text: "BarLabels",
+	colorIndex: 0,
+	formatLabel: function(d) { return d; },
+	dy: "0.35em"
+}
 
 module.exports = BarLabels;

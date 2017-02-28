@@ -2,24 +2,8 @@
 import React, {PropTypes} from 'react';
 import {isNumber} from 'lodash';
 
-const SeriesLabel = React.createClass({
-
-	propTypes: {
-		text: PropTypes.string,
-		translate: PropTypes.array,
-		colorIndex: PropTypes.number
-	},
-
-	getDefaultProps: function() {
-		return {
-			translate: [0, 0],
-			text: "SeriesLabel",
-			colorIndex: 0,
-			xVal: 0
-		};
-	},
-
-	render: function() {
+class SeriesLabel extends React.Component {
+	render () {
 		const props = this.props;
 		let x;
 
@@ -39,7 +23,19 @@ const SeriesLabel = React.createClass({
 			</text>
 		);
 	}
+};
 
-});
+SeriesLabel.propTypes = {
+	text: PropTypes.string,
+	translate: PropTypes.array,
+	colorIndex: PropTypes.number
+};
+
+SeriesLabel.defaultProps = {
+	translate: [0, 0],
+	text: "SeriesLabel",
+	colorIndex: 0,
+	xVal: 0
+};
 
 module.exports = SeriesLabel;

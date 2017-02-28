@@ -13,22 +13,14 @@ import {ButtonGroup, TextInput, LabelledTangle, AlertGroup} from 'chartbuilder-u
  * @instance
  * @memberof editors
  */
-const Map_ScaleSettings = React.createClass({
+class Map_ScaleSettings extends React.Component {
 
-  propTypes: {
-    className: PropTypes.string,
-    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    name: PropTypes.string,
-    onReset: PropTypes.func,
-    onUpdate: PropTypes.func.isRequired,
-    scale: PropTypes.object,
-    stylings: PropTypes.object,
-    stepNumber: PropTypes.string,
-    titleOverride: PropTypes.string,
-    errors: PropTypes.array
-  },
-
-  _handleScaleUpdate: function(k, v) {
+	constructor(props) {
+		super(props);
+		this._handleScaleUpdate = this._handleScaleUpdate.bind(this);
+		this._renderErrors = this._renderErrors.bind(this);
+	}
+  _handleScaleUpdate (k, v) {
 
     let scale = cloneDeep(this.props.scale, true);
 
@@ -38,9 +30,9 @@ const Map_ScaleSettings = React.createClass({
 
     scale[this.props.index][k] = v;
     this.props.onUpdate(scale);
-  },
+  }
 
-  _renderErrors: function() {
+  _renderErrors () {
 
     if (!this.props.errors) {
       return null;
@@ -53,9 +45,9 @@ const Map_ScaleSettings = React.createClass({
         </div>
       );
     }
-  },
+  }
 
-  render: function() {
+  render () {
 
     const currScale = this.props.scale[this.props.index];
     const errors = this._renderErrors();
@@ -90,6 +82,20 @@ const Map_ScaleSettings = React.createClass({
       </div>
     );
   }
-});
+};
+
+Map_ScaleSettings.propTypes = {
+  className: PropTypes.string,
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  name: PropTypes.string,
+  onReset: PropTypes.func,
+  onUpdate: PropTypes.func.isRequired,
+  scale: PropTypes.object,
+  stylings: PropTypes.object,
+  stepNumber: PropTypes.string,
+  titleOverride: PropTypes.string,
+  errors: PropTypes.array
+};
+
 
 module.exports = Map_ScaleSettings;

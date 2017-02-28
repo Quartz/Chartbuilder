@@ -12,37 +12,33 @@ import {Button} from 'chartbuilder-ui';
  * @instance
  * @memberof editors
  */
-const ScaleReset = React.createClass({
+class ScaleReset extends React.Component {
 
-	propTypes: {
-		scale: PropTypes.object.isRequired,
-		scaleId: PropTypes.string.isRequired,
-		onUpdate: PropTypes.func.isRequired
-	},
+	constructor (props) {
+		super(props);
 
-	getInitialState: function() {
-		return {
+		this.state = {
 			customScale: false
-		};
-	},
-
+		}
+		this._handleScaleReset = this._handleScaleReset.bind(this);
+	}
 	// Delete scale width given `id` and update the parent
-	_handleScaleReset: function() {
+	_handleScaleReset () {
 		const scale = clone(this.props.scale, true);
 		delete scale[this.props.scaleId];
 		this.setState({ customScale: false });
 		this.props.onUpdate(scale);
-	},
+	}
 
 	// Only enable button if the scale has been customized
-	componentWillReceiveProps: function(nextProps) {
+	componentWillReceiveProps (nextProps) {
 		const scale = nextProps.scale[nextProps.scaleId];
 		if (scale.custom) {
 			this.setState({ customScale: true });
 		}
-	},
+	}
 
-	render: function() {
+	render () {
 		const className = cx({
 			"label-reset": true,
 			"active": this.state.customScale
@@ -56,7 +52,12 @@ const ScaleReset = React.createClass({
 			/>
 		);
 	}
+};
 
-});
+ScaleReset.propTypes = {
+	scale: PropTypes.object.isRequired,
+	scaleId: PropTypes.string.isRequired,
+	onUpdate: PropTypes.func.isRequired
+};
 
 module.exports = ScaleReset;

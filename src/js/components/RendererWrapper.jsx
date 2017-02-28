@@ -39,33 +39,12 @@ const mapRenderers = require("../charts/maps/renderers");
  * Wrapper component that determines which type of chart to render, wrapping it
  * in Svg and telling it to draw.
 */
-const RendererWrapper = React.createClass({
+class RendererWrapper extends React.Component {
 
-	propTypes: {
-		model: PropTypes.shape({
-			chartProps: PropTypes.object.isRequired,
-			metadata: PropTypes.object.isRequired
-		}),
-		width: PropTypes.number,
-		enableResponsive: PropTypes.bool,
-		showMetadata: PropTypes.bool,
-		showLegenddata: PropTypes.bool,
-		className: PropTypes.string,
-		svgClassName: PropTypes.string
-	},
+	constructor(props) {
+    super(props);
 
-	// don't render incoming chart if there are errors in parsing
-	shouldComponentUpdate: function(nextProps, nextState) {
-		if (!nextProps.model.errors) {
-			return true;
-		} else if (!nextProps.model.errors.valid) {
-			return false;
-		}
-		return true;
-	},
-
-	getInitialState: function() {
-		return {
+    this.state = {
 			domNodeWidth: null,
 			extraHeight: 0,
 			emSize: null,
@@ -73,17 +52,31 @@ const RendererWrapper = React.createClass({
 			chartConfig: {},
 			styleConfig: {}
 		};
-	},
-	componentWillReceiveProps: function(nextProps) {
+
+		this._updateWidth = this._updateWidth.bind(this);
+		this._resizeUpdate = this._resizeUpdate.bind(this);
+	}
+
+	// don't render incoming chart if there are errors in parsing
+	shouldComponentUpdate (nextProps, nextState) {
+		if (!nextProps.model.errors) {
+			return true;
+		} else if (!nextProps.model.errors.valid) {
+			return false;
+		}
+		return true;
+	}
+
+	componentWillReceiveProps (nextProps) {
 		const newType = nextProps.model.metadata.chartType;
 		const prevType = this.props.model.metadata.chartType;
 		if (newType !== prevType) {
 			const chartConfig = convertConfig(chartConfigs[newType] || mapConfigs[newType], null, this.state.emSize, this.state.domNodeWidth);
 			this.setState({ chartConfig: chartConfig });
 		}
-	},
+	}
 
-	componentWillMount: function() {
+	componentWillMount () {
 		//var chartType = this.props.model.metadata.chartType;
 		let size_calcs = {};
 		// set chart breakpoints
@@ -111,10 +104,10 @@ const RendererWrapper = React.createClass({
 		}
 		const state = assign({}, { chartProps: chartProps }, size_calcs);
 		this.setState(state);
-	},
+	}
 
 	// method for updating configs and breakpoints when width changes
-	_resizeUpdate: function(props, bp, domNodeWidth) {
+	_resizeUpdate (props, bp, domNodeWidth) {
 		const chartType = props.model.metadata.chartType;
 		const visualType = this.props.model.chartType;
 		const visualConfig = chartConfigs[chartType] || mapConfigs[chartType];
@@ -127,10 +120,10 @@ const RendererWrapper = React.createClass({
 			chartConfig: convertConfig(visualConfig, null, bp.em_size, domNodeWidth),
 			styleConfig: convertConfig(visualStyle, null, bp.em_size, domNodeWidth)
 		};
-	},
+	}
 
 	// check for a new width and update everything if it has changed
-	_updateWidth: function() {
+	_updateWidth () {
 		const domNodeWidth = ReactDOM.findDOMNode(this).offsetWidth;
 		const bp = breakpoints.getBreakpointObj(this.props.enableResponsive, domNodeWidth);
 		if (domNodeWidth !== this.state.domNodeWidth) {
@@ -139,26 +132,26 @@ const RendererWrapper = React.createClass({
 				this.setState(resized);
 			}
 		}
-	},
+	}
 
 	// add resize listener if chart is responsive
-	componentDidMount: function() {
+	componentDidMount () {
 		if (this.props.enableResponsive) {
 			this._updateWidth(true);
 			this._updateWidth = throttle(this._updateWidth, 50);
 			window.addEventListener("resize", this._updateWidth);
 		}
-	},
+	}
 
 	// remove resize listener on unmount
-	componentWillUnmount: function() {
+	componentWillUnmount () {
 		if (this.props.enableResponsive) {
 			window.removeEventListener("resize", this._updateWidth);
 		}
-	},
+	}
 
 	// TODO: remove this feature? seems never used
-	_getMobileMetadata: function(metadata, mobileSettings) {
+	_getMobileMetadata (metadata, mobileSettings) {
 		const setMobile = reduce(keys(metadata), function(obj, key) {
 			if (mobileSettings[key] && mobileSettings[key] !== "") {
 				obj[key] = mobileSettings[key];
@@ -169,9 +162,9 @@ const RendererWrapper = React.createClass({
 			}
 		}, {});
 		return setMobile;
-	},
+	}
 
-	render: function() {
+	render () {
 
 		const chartType = this.props.model.metadata.chartType;
 		const width = this.props.width || this.state.domNodeWidth;
@@ -246,7 +239,19 @@ const RendererWrapper = React.createClass({
 			</div>
 		);
 	}
+};
 
-});
+RendererWrapper.propTypes = {
+	model: PropTypes.shape({
+		chartProps: PropTypes.object.isRequired,
+		metadata: PropTypes.object.isRequired
+	}),
+	width: PropTypes.number,
+	enableResponsive: PropTypes.bool,
+	showMetadata: PropTypes.bool,
+	showLegenddata: PropTypes.bool,
+	className: PropTypes.string,
+	svgClassName: PropTypes.string
+};
 
 module.exports = RendererWrapper;

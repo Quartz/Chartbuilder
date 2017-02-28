@@ -6,45 +6,25 @@ const ordinalAdjust = require("../../util/scale-utils").ordinalAdjust;
 
 const DY = "0.32em"
 
-const HorizontalAxis = React.createClass({
+class HorizontalAxis extends React.Component {
 
-	propTypes: {
-		prefix: PropTypes.string,
-		suffix: PropTypes.string,
-		orient: PropTypes.string,
-		dimensions: PropTypes.object,
-		xScale: PropTypes.func,
-		tickValues: PropTypes.array,
-		tickFormat: PropTypes.func,
-		textAnchor: PropTypes.string
-	},
-
-	getInitialState: function() {
-		return {
+	constructor(props) {
+		super(props);
+		this.state = {
 			lastTickWidth: 0,
 			firstTickWidth: 0
 		}
-	},
+	}
 
-	componentDidMount: function() {
+	componentDidMount () {
 		this._setTickWidths(this.props);
-	},
+	}
 
-	componentWillReceiveProps: function(nextProps) {
+	componentWillReceiveProps (nextProps) {
 		this._setTickWidths(nextProps);
-	},
+	}
 
-	getDefaultProps: function() {
-		return {
-			orient: "bottom",
-			tickFormat: function(d) { return d; },
-			textAnchor: "middle",
-			prefix: "",
-			suffix: ""
-		}
-	},
-
-	_setTickWidths: function(props) {
+	_setTickWidths (props) {
 		const tickValues = props.tickValues;
 		const lastTick = props.tickFormat(tickValues[tickValues.length - 1]);
 		const firstTick = props.prefix + props.tickFormat(tickValues[0]);
@@ -76,9 +56,9 @@ const HorizontalAxis = React.createClass({
 				firstTickWidth: firstTickWidth
 			});
 		};
-	},
+	}
 
-	_getTransformY: function(orient, height, yScale) {
+	_getTransformY (orient, height, yScale) {
 		let yRange;
 		if (yScale.rangeExtent) {
 			yRange = yScale.rangeExtent();
@@ -91,9 +71,9 @@ const HorizontalAxis = React.createClass({
 		} else if (orient === "bottom") {
 			return yRange[0];
 		}
-	},
+	}
 
-	_generateTicks: function(props) {
+	_generateTicks (props) {
 		const lastTickWidth = this.state.lastTickWidth;
 
 		return map(props.tickValues, function(tickValue, i) {
@@ -125,9 +105,9 @@ const HorizontalAxis = React.createClass({
 				</text>
 			)
 		});
-	},
+	}
 
-	_generateSuffix: function(props) {
+	_generateSuffix (props) {
 		if (props.suffix !== "") {
 			const suffX = props.xScale(props.tickValues[0]);
 			const suffY = props.tickTextHeight + 10; // TODO: remove hardcodes
@@ -146,9 +126,9 @@ const HorizontalAxis = React.createClass({
 		} else {
 			return null;
 		}
-	},
+	}
 
-	render: function() {
+	render () {
 		const props = this.props;
 		const ticks = this._generateTicks(props);
 		const suffix = this._generateSuffix(props);
@@ -165,7 +145,25 @@ const HorizontalAxis = React.createClass({
 			</g>
 		);
 	}
+};
 
-});
+HorizontalAxis.defaultProps = {
+	orient: "bottom",
+	tickFormat: function(d) { return d; },
+	textAnchor: "middle",
+	prefix: "",
+	suffix: ""
+};
+
+HorizontalAxis.propTypes = {
+	prefix: PropTypes.string,
+	suffix: PropTypes.string,
+	orient: PropTypes.string,
+	dimensions: PropTypes.object,
+	xScale: PropTypes.func,
+	tickValues: PropTypes.array,
+	tickFormat: PropTypes.func,
+	textAnchor: PropTypes.string
+};
 
 module.exports = HorizontalAxis;

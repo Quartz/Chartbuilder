@@ -76,51 +76,32 @@ function getStateFromStores() {
  *   />,
  * container );
 */
-const Chartbuilder = React.createClass({
+class Chartbuilder extends React.Component {
 
-	propTypes: {
-		autosave: PropTypes.bool,
-		showMobilePreview: PropTypes.bool,
-		onSave: PropTypes.func,
-		onStateChange: PropTypes.func,
-		additionalComponents: PropTypes.shape({
-			metadata: PropTypes.array,
-			misc: PropTypes.object
-		}),
-		renderedSVGClassName: React.PropTypes.string
-	},
+	constructor(props) {
+    super(props);
 
-	getInitialState: function() {
-		return getStateFromStores();
-	},
-
-	getDefaultProps: function() {
-		return {
-			autosave: true,
-			additionalComponents: {
-				metadata: [],
-				misc: {}
-			}
-		};
-	},
+    this.state = getStateFromStores();
+    this._onChange = this._onChange.bind(this);
+  }
 
 	/* Add listeners to update component state when stores update */
-	componentDidMount: function() {
+	componentDidMount () {
 		VisualPropertiesStore.addChangeListener(this._onChange);
 		ChartMetadataStore.addChangeListener(this._onChange);
 		ErrorStore.addChangeListener(this._onChange);
 		SessionStore.addChangeListener(this._onChange);
-	},
+	}
 
 	/* Remove listeners on component unmount */
-	componentWillUnmount: function() {
+	componentWillUnmount () {
 		VisualPropertiesStore.removeChangeListener(this._onChange);
 		ChartMetadataStore.removeChangeListener(this._onChange);
 		ErrorStore.removeChangeListener(this._onChange);
 		SessionStore.removeChangeListener(this._onChange);
-	},
+	}
 
-	_renderErrors: function() {
+	_renderErrors () {
 		if (this.state.errors.messages.length === 0) {
 			return null;
 		} else {
@@ -133,14 +114,14 @@ const Chartbuilder = React.createClass({
 				</div>
 			);
 		}
-	},
+	}
 
 	/*
 	 * Identify the chart type used and render its Editor. The corresponding
 	 * Renderer is rendered within `RendererWrapper`, in case a Chartbuilder chart
 	 * is being used as a module or without the editor.
 	*/
-	render: function() {
+	render () {
 
 		const chartType = this.state.metadata.chartType;
 		const VisualEditor = chartEditors[chartType] || mapEditors[chartType];
@@ -245,7 +226,7 @@ const Chartbuilder = React.createClass({
 				</div>
 			</div>
 		);
-	},
+	}
 
 	/**
 	 * Function that is fired any time a change is made to a chart. By default it
@@ -256,7 +237,7 @@ const Chartbuilder = React.createClass({
 	 * @instance
 	 * @memberof Chartbuilder
 	 */
-	_onChange: function() {
+	_onChange () {
 		// On change, update and save state.
 		const state = getStateFromStores();
 		this.setState(state);
@@ -274,7 +255,26 @@ const Chartbuilder = React.createClass({
 			});
 		}
 	}
+};
 
-});
+Chartbuilder.defaultProps = {
+	autosave: true,
+	additionalComponents: {
+		metadata: [],
+		misc: {}
+	}
+};
+
+Chartbuilder.propTypes = {
+	autosave: PropTypes.bool,
+	showMobilePreview: PropTypes.bool,
+	onSave: PropTypes.func,
+	onStateChange: PropTypes.func,
+	additionalComponents: PropTypes.shape({
+		metadata: PropTypes.array,
+		misc: PropTypes.object
+	}),
+	renderedSVGClassName: React.PropTypes.string
+};
 
 module.exports = Chartbuilder;

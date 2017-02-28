@@ -14,20 +14,17 @@ import {ButtonGroup, TextInput, LabelledTangle, AlertGroup} from 'chartbuilder-u
  * @instance
  * @memberof editors
  */
-const Map_ScaleSettings = React.createClass({
-  propTypes: {
-    className: PropTypes.string,
-    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    name: PropTypes.string,
-    onReset: PropTypes.func,
-    onUpdate: PropTypes.func.isRequired,
-    scale: PropTypes.object,
-    stylings: PropTypes.object,
-    stepNumber: PropTypes.string,
-    titleOverride: PropTypes.string,
-    errors: PropTypes.array
-  },
-  _handleScaleUpdate: function(k, v) {
+class Map_ScaleSettings extends React.Component {
+
+	constructor(props) {
+		super(props);
+		this._handleScaleUpdate = this._handleScaleUpdate.bind(this);
+		this._handleThresholdUpdate = this._handleThresholdUpdate.bind(this);
+		this._handleDomainUpdate = this._handleDomainUpdate.bind(this);
+		this._renderErrors = this._renderErrors.bind(this);
+	}
+
+  _handleScaleUpdate (k, v) {
 
     const scale = cloneDeep(this.props.scale, true);
 
@@ -37,14 +34,14 @@ const Map_ScaleSettings = React.createClass({
 
     scale[this.props.index][k] = v;
     this.props.onUpdate(scale);
-  },
-  _handleThresholdUpdate: function(k, v) {
+  }
+  _handleThresholdUpdate (k, v) {
     const scale = cloneDeep(this.props.scale, true);
 
     scale[this.props.index][k.key][k.iter] = v;
     this.props.onUpdate(scale);
-  },
-  _handleDomainUpdate: function(k, v) {
+  }
+  _handleDomainUpdate (k, v) {
     const scale = cloneDeep(this.props.scale,true);
 
     if (k == "min") {
@@ -54,8 +51,8 @@ const Map_ScaleSettings = React.createClass({
     }
 
     this.props.onUpdate(scale);
-  },
-  _renderErrors: function() {
+  }
+  _renderErrors () {
     if (!this.props.errors) {
       return null;
     } else if (this.props.errors.length === 0) {
@@ -67,8 +64,8 @@ const Map_ScaleSettings = React.createClass({
         </div>
       );
     }
-  },
-  render: function() {
+  }
+  render () {
 
     const tangleStep = 1;
     let prefixSuffix = false;
@@ -211,6 +208,19 @@ const Map_ScaleSettings = React.createClass({
       </div>
     );
   }
-});
+};
+
+Map_ScaleSettings.propTypes = {
+  className: PropTypes.string,
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  name: PropTypes.string,
+  onReset: PropTypes.func,
+  onUpdate: PropTypes.func.isRequired,
+  scale: PropTypes.object,
+  stylings: PropTypes.object,
+  stepNumber: PropTypes.string,
+  titleOverride: PropTypes.string,
+  errors: PropTypes.array
+};
 
 module.exports = Map_ScaleSettings;

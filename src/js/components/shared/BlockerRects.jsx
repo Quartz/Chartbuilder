@@ -6,35 +6,17 @@ const ordinalAdjust = require("../../util/scale-utils").ordinalAdjust;
 
 const DY = "0.32em";
 
-const BlockerRect = React.createClass({
+class BlockerRect extends React.Component {
 
-	propTypes: {
-		orient: PropTypes.string,
-		width: PropTypes.number,
-		yScale: PropTypes.func,
-		offset: PropTypes.number,
-		tickValues: PropTypes.array,
-		labelWidths: PropTypes.array,
-		colorIndex: PropTypes.number,
-		tickTextHeight: PropTypes.number
-	},
-
-	getDefaultProps: function() {
-		return {
-			orient: "left",
-			offset: 0
-		}
-	},
-
-	_getTransformX: function(orient, width) {
+	_getTransformX (orient, width) {
 		if (orient == "left") {
 			return 0;
 		} else if (orient == "right") {
 			return width;
 		}
-	},
+	}
 
-	_generateRects: function(props) {
+	_generateRects (props) {
 		const concealerHeight = props.tickTextHeight + props.displayConfig.blockerRectOffset;
 
 		return map(props.data, function(label, i) {
@@ -55,9 +37,9 @@ const BlockerRect = React.createClass({
 				/>
 			);
 		});
-	},
+	}
 
-	render: function() {
+	render () {
 		const props = this.props;
 		const rects = this._generateRects(props);
 		const transformX = this._getTransformX(props.orient, props.width);
@@ -71,7 +53,22 @@ const BlockerRect = React.createClass({
 			</g>
 		);
 	}
+};
 
-});
+BlockerRect.propTypes = {
+	orient: PropTypes.string,
+	width: PropTypes.number,
+	yScale: PropTypes.func,
+	offset: PropTypes.number,
+	tickValues: PropTypes.array,
+	labelWidths: PropTypes.array,
+	colorIndex: PropTypes.number,
+	tickTextHeight: PropTypes.number
+};
+
+BlockerRect.defaultProps = {
+	orient: "left",
+	offset: 0
+};
 
 module.exports = BlockerRect;
