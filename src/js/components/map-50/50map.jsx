@@ -16,32 +16,11 @@ const LegendSpace = require("../../components/svg/MapLegendSpace.jsx");
 
 const choroplethDimensions = require("../../charts/maps/mb-50/mb-50-dimensions.js");
 
-
 // move into config?
 const polygonClass = 'polygon-render';
 
-const MapRenderer = React.createClass({
-
-  propTypes: {
-		displayConfig: React.PropTypes.shape({
-			margin: React.PropTypes.object.isRequired,
-			padding: React.PropTypes.object.isRequired,
-			labelRectSize: React.PropTypes.number.isRequired
-		}).isRequired,
-		chartProps: React.PropTypes.shape({
-			chartSettings: React.PropTypes.array.isRequired,
-			data: React.PropTypes.array.isRequired,
-			scale: React.PropTypes.object.isRequired,
-			_annotations: React.PropTypes.object,
-			date: React.PropTypes.object,
-			mobile: React.PropTypes.object
-		}).isRequired,
-		metadata: React.PropTypes.object,
-		showMetadata: React.PropTypes.bool,
-		editable: React.PropTypes.bool,
-		useMobileSettings: React.PropTypes.bool
-	},
-  render: function() {
+class MapRenderer extends React.Component {
+  render () {
 
   	const props = this.props;
     const chartProps = props.chartProps;
@@ -162,6 +141,26 @@ const MapRenderer = React.createClass({
 	    </SvgWrapper>
     );
   }
-});
+};
+
+MapRenderer.propTypes = {
+	displayConfig: React.PropTypes.shape({
+		margin: React.PropTypes.object.isRequired,
+		padding: React.PropTypes.object.isRequired,
+		labelRectSize: React.PropTypes.number.isRequired
+	}).isRequired,
+	chartProps: React.PropTypes.shape({
+		chartSettings: React.PropTypes.array.isRequired,
+		data: React.PropTypes.array.isRequired,
+		scale: React.PropTypes.object.isRequired,
+		_annotations: React.PropTypes.object,
+		date: React.PropTypes.object,
+		mobile: React.PropTypes.object
+	}).isRequired,
+	metadata: React.PropTypes.object,
+	showMetadata: React.PropTypes.bool,
+	editable: React.PropTypes.bool,
+	useMobileSettings: React.PropTypes.bool
+}
 
 module.exports = MapRenderer;

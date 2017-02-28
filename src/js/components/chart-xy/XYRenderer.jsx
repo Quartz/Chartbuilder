@@ -43,52 +43,37 @@ const scaleNames = ["primaryScale", "secondaryScale"];
  * @instance
  * @memberof renderers
  */
-const XYRenderer = React.createClass({
+class XYRenderer extends React.Component {
 
-	propTypes: {
-		displayConfig: PropTypes.object.isRequired,
-		styleConfig: PropTypes.object.isRequired,
-		chartProps: PropTypes.shape({
-			chartSettings: PropTypes.array.isRequired,
-			data: PropTypes.array.isRequired,
-			scale: PropTypes.object.isRequired,
-			_annotations: PropTypes.object,
-			date: PropTypes.object,
-			mobile: PropTypes.object
-		}).isRequired,
-		metadata: PropTypes.object,
-		showMetadata: PropTypes.bool,
-		editable: PropTypes.bool,
-		useMobileSettings: PropTypes.bool
-	},
-
-	getInitialState: function() {
-		return { labelYMax: 0 };
-	},
+	constructor(props) {
+		super(props);
+		this.state = { labelYMax : 0};
+		this._updateLabelYMax = this._updateLabelYMax.bind(this);
+	}
 
 	// we need to know the largest y value for a label so that we can
 	// compute where the chart should start
-	_updateLabelYMax: function(labelYMax) {
+	_updateLabelYMax (labelYMax) {
 		this.setState({ labelYMax: labelYMax });
-	},
+	}
 
 	// some styles are different if there is a column. check here
-	_chartHasColumn: function(chartSettings) {
+	_chartHasColumn (chartSettings) {
 		return some(chartSettings, function(setting) {
 			return setting.type === "column";
 		});
-	},
+	}
 
 	// compute the max tick width for each scale
-	_getTickWidths: function(scales, tickFont) {
+	_getTickWidths (scales, tickFont) {
 		return reduce(scaleNames, function(prev, key, i) {
 			prev[key] = scaleUtils.getTickWidths(scales[key], tickFont);
 			return prev;
 		}, {});
-	},
+	}
 
 	// get x-axis which can be one of many types
-	_generateXAxis: function(scale, data, range) {
+	_generateXAxis (scale, data, range) {
 		if (scale.hasDate) {
 			return scaleUtils.generateScale("time", scale.dateSettings, data, range)
 		} else if (scale.isNumeric) {
@@ -96,39 +81,39 @@ const XYRenderer = React.createClass({
 		} else {
 			return scaleUtils.generateScale("ordinal", scale, data, range)
 		}
-	},
+	}
 
 	// conditionally anchor x axis text based on type of axis
 	// TODO: put outside XY renderer so that grid can use this
-	_xAxisTextAnchor: function(chartProps, hasDate, hasCol) {
+	_xAxisTextAnchor (chartProps, hasDate, hasCol) {
 		if (hasDate && !hasCol) {
 			return "start";
 		} else {
 			return "middle";
 		}
-	},
+	}
 
 	// add specified column padding to x axis if chart contains column
 	// TODO: put outside XY renderer so that grid can use this
-	_getXOuterPadding: function(hasCol) {
+	_getXOuterPadding (hasCol) {
 		if (hasCol) {
 			return this.props.displayConfig.columnOuterPadding;
 		} else {
 			return 0;
 		}
-	},
+	}
 
 	// Add space between legend and chart unless all legend labels
 	// dragged or if labels not displayed
-	_needsLabelOffset: function(labels, data) {
+	_needsLabelOffset (labels, data) {
 		var hasUndraggedLabel = some(labels.values, function(value) {
 			return !value.dragged;
 		}, true);
 		return (hasUndraggedLabel && data.length > 1);
-	},
+	}
 
 	// create flat array of series components based on data and scales
-	_generateSeries: function(yAxes) {
+	_generateSeries (yAxes) {
 		const props = this.props;
 		const primaryScale = yAxes.primaryScale.scale;
 		const secondaryScale = yAxes.secondaryScale.scale;
@@ -178,9 +163,9 @@ const XYRenderer = React.createClass({
 			series.line,
 			series.scatterPlot
 		]);
-	},
+	}
 
-	render: function() {
+	render () {
 		// grab some props for convenience
 		const props = this.props;
 		const _chartProps = props.chartProps;
@@ -351,7 +336,24 @@ const XYRenderer = React.createClass({
 			</SvgWrapper>
 		);
 	}
-});
+};
+
+XYRenderer.propTypes = {
+	displayConfig: PropTypes.object.isRequired,
+	styleConfig: PropTypes.object.isRequired,
+	chartProps: PropTypes.shape({
+		chartSettings: PropTypes.array.isRequired,
+		data: PropTypes.array.isRequired,
+		scale: PropTypes.object.isRequired,
+		_annotations: PropTypes.object,
+		date: PropTypes.object,
+		mobile: PropTypes.object
+	}).isRequired,
+	metadata: PropTypes.object,
+	showMetadata: PropTypes.bool,
+	editable: PropTypes.bool,
+	useMobileSettings: PropTypes.bool
+};
 
 /**
  * ### Component that renders the legend labels for an XY chart
@@ -371,25 +373,16 @@ const XYRenderer = React.createClass({
  * @instance
  * @memberof XYRenderer
  */
-const XYLabels = React.createClass({
+class XYLabels extends React.Component {
 
-	propTypes: {
-		chartProps: PropTypes.object.isRequired,
-		editable: PropTypes.bool,
-		displayConfig: PropTypes.object.isRequired,
-		styleConfig: PropTypes.object.isRequired,
-		xScale: PropTypes.func.isRequired,
-		yScale: PropTypes.func.isRequired,
-		dimensions: PropTypes.object,
-		labelYMax: PropTypes.number,
-		updateLabelYMax: PropTypes.func
-	},
+	constructor(props) {
+		super(props);
+		this.state = { undraggedLabels: {} };
+		this._handleLabelPositionUpdate = this._handleLabelPositionUpdate.bind(this);
+		this._enableDrag = this._enableDrag.bind(this);
+	}
 
-	getInitialState: function() {
-		return { undraggedLabels: {} };
-	},
-
-	componentWillReceiveProps: function(nextProps) {
+	componentWillReceiveProps (nextProps) {
 		/*
 		* We use this XYLabels component's state to save locations of undragged
 		* labels. Dragged labels are saved to the parent store so that they can be
@@ -412,9 +405,9 @@ const XYLabels = React.createClass({
 		this.setState({
 			undraggedLabels: updateUndragged
 		});
-	},
+	}
 
-	_getLabelYMax: function(labels, height) {
+	_getLabelYMax (labels, height) {
 		let labelYMax = 0;
 
 		// Find out how much vertical space the labels are taking up
@@ -431,16 +424,16 @@ const XYLabels = React.createClass({
 			}, this);
 		}
 		return labelYMax;
-	},
+	}
 
-	_enableDrag: function() {
+	_enableDrag () {
 		// tell the parent app that dragging has been enabled
 		const annotations = this.props.chartProps._annotations;
 		annotations.labels.hasDragged = true;
 		VisualViewActions.updateChartProp("_annotations", annotations);
-	},
+	}
 
-	_handleLabelPositionUpdate: function(ix, pos) {
+	_handleLabelPositionUpdate (ix, pos) {
 		// If a label is dragged, update its position in the parent app
 		if (pos.dragged) {
 			const values = clone(this.props.chartProps._annotations.labels.values);
@@ -464,7 +457,7 @@ const XYLabels = React.createClass({
 				this.props.updateLabelYMax(labelYMax);
 			}
 		}
-	},
+	}
 
 	/**
 	 * XYLabels#_getPrevUndraggedNode
@@ -476,7 +469,7 @@ const XYLabels = React.createClass({
 	 * @instance
 	 * @memberof XYLabels
 	 */
-	_getPrevUndraggedNode: function(ix, undraggedLabels) {
+	_getPrevUndraggedNode (ix, undraggedLabels) {
 		if (ix < 0) return null;
 
 		if (undraggedLabels[ix]) {
@@ -484,10 +477,10 @@ const XYLabels = React.createClass({
 		} else {
 			return this._getPrevUndraggedNode(ix - 1, undraggedLabels);
 		}
-	},
+	}
 
 	// create array of SvgRectLabel components
-	render: function() {
+	render () {
 		// get props for convenience
 		const props = this.props;
 		const labels = props.chartProps._annotations.labels;
@@ -549,7 +542,18 @@ const XYLabels = React.createClass({
 			</g>
 		);
 	}
+};
 
-});
+XYRenderer.propTypes = {
+	chartProps: PropTypes.object.isRequired,
+	editable: PropTypes.bool,
+	displayConfig: PropTypes.object.isRequired,
+	styleConfig: PropTypes.object.isRequired,
+	xScale: PropTypes.func,
+	yScale: PropTypes.func,
+	dimensions: PropTypes.object,
+	labelYMax: PropTypes.number,
+	updateLabelYMax: PropTypes.func
+};
 
 module.exports = XYRenderer;

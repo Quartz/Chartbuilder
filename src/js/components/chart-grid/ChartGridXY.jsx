@@ -34,37 +34,22 @@ const gridUtils           = require("../../util/grid-utils.js");
  * @instance
  * @memberof ChartGridRenderer
  */
-const ChartGridXY = React.createClass({
-
-	propTypes: {
-		editable: PropTypes.bool.isRequired,
-		styleConfig: PropTypes.object.isRequired,
-		displayConfig: PropTypes.shape({
-			margin: PropTypes.obj,
-			padding: PropTypes.obj
-		}).isRequired,
-		chartProps: PropTypes.shape({
-			chartSettings: PropTypes.array.isRequired,
-			data: PropTypes.array.isRequired,
-			scale: PropTypes.object.isRequired,
-			_grid: PropTypes.object.isRequired
-		}).isRequired
-	},
+class ChartGridXY extends React.Component {
 
 	//getInitialState: function() {
 	//},
 
-	shouldComponentUpdate: function(nextProps, nextState) {
+	shouldComponentUpdate (nextProps, nextState) {
 		// Don't render if data is for some reason unavailable
 		if (nextProps.chartProps.data) {
 			return true;
 		} else {
 			return false;
 		}
-	},
+	}
 
 	// get x-axis which can be one of many types
-	_generateXAxis: function(scale, data, range) {
+	_generateXAxis (scale, data, range) {
 		if (scale.hasDate) {
 			return scaleUtils.generateScale("time", scale.dateSettings, data, range)
 		} else if (scale.isNumeric) {
@@ -72,12 +57,12 @@ const ChartGridXY = React.createClass({
 		} else {
 			return scaleUtils.generateScale("ordinal", scale, data, range)
 		}
-	},
+	}
 
 	// render a single chart in the grid. this gets passed to `gridUtils.makeMults` to
 	// render one for each column of data
 	// TODO: have in mind a maybe better way to do this
-	_xyGridBlock: function(gridType, xAxis, yAxis, d, i) {
+	_xyGridBlock (gridType, xAxis, yAxis, d, i) {
 		const props = this.props;
 		const isFirstBlock = Math.floor((i + 1) / props.chartProps._grid.cols) === 0;
 		const x1 = (isFirstBlock) ? NaN : 0;
@@ -125,9 +110,9 @@ const ChartGridXY = React.createClass({
 			/>,
 			el
 		];
-	},
+	}
 
-	render: function() {
+	render () {
 		const props = this.props;
 		const displayConfig = props.displayConfig;
 		const margin = displayConfig.margin;
@@ -254,6 +239,21 @@ const ChartGridXY = React.createClass({
 			</SvgWrapper>
 		);
 	}
-});
+};
+
+ChartGridXY.propTypes = {
+	editable: PropTypes.bool.isRequired,
+	styleConfig: PropTypes.object.isRequired,
+	displayConfig: PropTypes.shape({
+		margin: PropTypes.obj,
+		padding: PropTypes.obj
+	}).isRequired,
+	chartProps: PropTypes.shape({
+		chartSettings: PropTypes.array.isRequired,
+		data: PropTypes.array.isRequired,
+		scale: PropTypes.object.isRequired,
+		_grid: PropTypes.object.isRequired
+	}).isRequired
+};
 
 module.exports = ChartGridXY;

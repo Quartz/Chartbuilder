@@ -24,20 +24,13 @@ const ScaleReset = require("../shared/ScaleReset.jsx");
  *  stepNumber="4"
  * />
 */
-const ChartGrid_xScaleSettings = React.createClass({
+class ChartGrid_xScaleSettings extends React.Component {
 
-	propTypes: {
-		scale: PropTypes.shape({
-			primaryScale: PropTypes.shape({
-				domain: PropTypes.arrayOf(React.PropTypes.number),
-				precision: PropTypes.number,
-				ticks: PropTypes.number,
-				prefix: PropTypes.string.isRequired,
-				suffix: PropTypes.string.isRequired
-			}),
-		}).isRequired
-	},
-
+	constructor (props) {
+		super(props);
+		this._handleDomainUpdate = this._handleDomainUpdate.bind(this);
+		this._handleScaleUpdate = this._handleScaleUpdate.bind(this);
+	}
 	/**
 	 * _handleScaleUpdate
 	 * Apply new values to the `scale` object and pass it to the parent's callback
@@ -47,14 +40,14 @@ const ChartGrid_xScaleSettings = React.createClass({
 	 * @instance
 	 * @memberof ChartGrid_xScaleSettings
 	 */
-	_handleScaleUpdate: function(k, v) {
+	_handleScaleUpdate (k, v) {
 		const primaryScale = clone(this.props.scale.primaryScale);
 		primaryScale[k] = v;
 		const scale = update(this.props.scale, {
 			$merge: { primaryScale: primaryScale }
 		});
 		this.props.onUpdate(scale);
-	},
+	}
 
 	/**
 	 * _handleDomainUpdate
@@ -66,7 +59,7 @@ const ChartGrid_xScaleSettings = React.createClass({
 	 * @instance
 	 * @memberof ChartGrid_xScaleSettings
 	 */
-	_handleDomainUpdate: function(k, v) {
+	_handleDomainUpdate (k, v) {
 		const scale = clone(this.props.scale, true);
 		scale.primaryScale.custom = true;
 		if (k == "min") {
@@ -75,9 +68,9 @@ const ChartGrid_xScaleSettings = React.createClass({
 			scale.primaryScale.domain[1] = v;
 		}
 		this.props.onUpdate(scale);
-	},
+	}
 
-	render: function() {
+	render () {
 		const currScale = this.props.scale.primaryScale;
 		const domain = currScale.domain;
 
@@ -145,6 +138,18 @@ const ChartGrid_xScaleSettings = React.createClass({
 			</div>
 		);
 	}
-});
+};
+
+ChartGrid_xScaleSettings.propTypes = {
+	scale: PropTypes.shape({
+		primaryScale: PropTypes.shape({
+			domain: PropTypes.arrayOf(React.PropTypes.number),
+			precision: PropTypes.number,
+			ticks: PropTypes.number,
+			prefix: PropTypes.string.isRequired,
+			suffix: PropTypes.string.isRequired
+		}),
+	}).isRequired
+};
 
 module.exports = ChartGrid_xScaleSettings;

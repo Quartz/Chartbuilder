@@ -6,15 +6,9 @@ import {centroid} from 'turf';
 // Flux actions
 const MapViewActions = require("../../actions/VisualViewActions");
 //
-const PolygonsRender = React.createClass({
+class PolygonsRender extends React.Component {
 
-  propTypes: {
-    geoPath: React.PropTypes.func,
-    polygonClass: React.PropTypes.string,
-    chartProps: React.PropTypes.object.isRequired
-  },
-
-  _updateStyles: function(nextProps) {
+  _updateStyles (nextProps) {
 
   	const chartProps = nextProps.chartProps;
     const mapSchema = nextProps.schema;
@@ -54,14 +48,14 @@ const PolygonsRender = React.createClass({
 	    	}
 	    }
     }
-  },
-  _updateStroke(nextProps) {
+  }
+  _updateStroke (nextProps) {
   	//update all strokes to new stroke val
     d3.select('.polygon-group'  + '.' + nextProps.isSmall)
     	.selectAll('.' + nextProps.polygonClass)
     	.style('stroke', nextProps.stylings.stroke);
-  },
-  _testDataChange(pastDataset, newDataset) {
+  }
+  _testDataChange (pastDataset, newDataset) {
   	let testDatasetChange = false;
 
   	pastDataset.forEach(function(d, i) {
@@ -73,8 +67,8 @@ const PolygonsRender = React.createClass({
   	});
 
   	return testDatasetChange;
-  },
-  shouldComponentUpdate: function(nextProps) {
+  }
+  shouldComponentUpdate (nextProps) {
   	/* only update if the schema type changes or the dataset length or groupings change
   	otherwise just update the styles. */
   	const props = this.props;
@@ -91,14 +85,14 @@ const PolygonsRender = React.createClass({
   		this._updateStyles(nextProps);
   		return false;
   	}
-  },
-  _topTranslation: function(topTranslation) {
+  }
+  _topTranslation (topTranslation) {
   	if (this.props.metadata.subtitle.length > 0) {
   		topTranslation += this.props.displayConfig.margin.subtitle;
   	}
     return topTranslation;
-  },
-  _getTranslation: function(chartProps) {
+  }
+  _getTranslation (chartProps) {
   	const props = this.props;
   	const withMobile = (props.isSmall) ? props.displayConfig.margin.mobile.extraMapMarginTop : 0;
     const topTranslation = (Object.keys(chartProps.legend).length === 1) ?
@@ -106,8 +100,8 @@ const PolygonsRender = React.createClass({
     			: props.displayConfig.margin.maptopMultiple;
 
     return `translate(0,${this._topTranslation(topTranslation)})`;
-  },
-  _bruteSearchForValue: function(start,stop,mapSchema,d,keyColumn,polygonData,testObj,index) {
+  }
+  _bruteSearchForValue (start,stop,mapSchema,d,keyColumn,polygonData,testObj,index) {
   	for (var j = start; j<stop; j++) {
   		if (testObj.found) break;
   		if (mapSchema.test(d[keyColumn], polygonData[j])) {
@@ -121,8 +115,8 @@ const PolygonsRender = React.createClass({
   		}
   	}
   	return testObj;
-  },
-  _binarySearch: function(polygondata, key, testObj, d, index, keyColumn) {
+  }
+  _binarySearch (polygondata, key, testObj, d, index, keyColumn) {
     var lo = 0;
     var hi = polygondata.length - 1;
     var mid;
@@ -155,8 +149,8 @@ const PolygonsRender = React.createClass({
         }
     }
     return testObj;
-  },
-  _binarySearchCounty: function(polygondata, key, testObj, d, index, keyColumn) {
+  }
+  _binarySearchCounty (polygondata, key, testObj, d, index, keyColumn) {
     var lo = 0;
     var hi = polygondata.length - 1;
     var mid;
@@ -182,8 +176,8 @@ const PolygonsRender = React.createClass({
         }
     }
     return testObj;
-  },
-  _matchValues: function(testObj={}, testData, keyColumn, allpolygons, mapSchema, index) {
+  }
+  _matchValues (testObj={}, testData, keyColumn, allpolygons, mapSchema, index) {
 
     testObj.thisvalue = [];
     testObj.found = false;
@@ -216,8 +210,8 @@ const PolygonsRender = React.createClass({
     	}
     };
     return testObj;
-  },
-  _renderPolygons: function(testObj, chartProps, currSettings, showLabels, projection, adjustLabels, valueColumn, keyColumn, geoPath) {
+  }
+  _renderPolygons(testObj, chartProps, currSettings, showLabels, projection, adjustLabels, valueColumn, keyColumn, geoPath) {
 
 		const valueSet = testObj.thisvalue[0];
 		const styles = {
@@ -264,8 +258,8 @@ const PolygonsRender = React.createClass({
           style={styles}
         />);
     }
-  },
-  render: function() {
+  }
+  render () {
   	//grab some props for convienience
   	const props = this.props;
   	const chartProps = props.chartProps;
@@ -350,6 +344,12 @@ const PolygonsRender = React.createClass({
 	      </g>
     );
   }
-});
+};
+
+PolygonsRender.propTypes = {
+  geoPath: React.PropTypes.func,
+  polygonClass: React.PropTypes.string,
+  chartProps: React.PropTypes.object.isRequired
+};
 
 module.exports = PolygonsRender

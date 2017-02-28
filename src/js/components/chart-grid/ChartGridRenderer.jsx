@@ -25,25 +25,9 @@ const ChartGridXY = require("./ChartGridXY.jsx");
  * @instance
  * @memberof renderers
  */
-const ChartGridRenderer = React.createClass({
+class ChartGridRenderer extends React.Component {
 
-	propTypes: {
-		editable: PropTypes.bool.isRequired,
-		displayConfig: PropTypes.shape({
-			margin: PropTypes.obj,
-			padding: PropTypes.obj
-		}).isRequired,
-		chartProps: PropTypes.shape({
-			chartSettings: PropTypes.array.isRequired,
-			data: PropTypes.array.isRequired,
-			scale: PropTypes.object.isRequired,
-			_grid: PropTypes.object.isRequired
-		}).isRequired,
-		showMetadata: PropTypes.bool,
-		metadata: PropTypes.object
-	},
-
-	_createMobileScale: function(_chartProps) {
+	_createMobileScale (_chartProps) {
 		const mobile = clone(_chartProps.mobile.scale, true);
 		const scale = assign({}, _chartProps.scale, mobile);
 		each(["prefix", "suffix"], function(text) {
@@ -52,9 +36,9 @@ const ChartGridRenderer = React.createClass({
 			}
 		});
 		return scale;
-	},
+	}
 
-	render: function() {
+	render () {
 		const props = this.props;
 		const _chartProps = this.props.chartProps;
 		let gridTypeRenderer;
@@ -106,7 +90,22 @@ const ChartGridRenderer = React.createClass({
 		}
 		return gridTypeRenderer;
 	}
-});
+};
 
+ChartGridRenderer.propTypes = {
+	editable: PropTypes.bool.isRequired,
+	displayConfig: PropTypes.shape({
+		margin: PropTypes.obj,
+		padding: PropTypes.obj
+	}).isRequired,
+	chartProps: PropTypes.shape({
+		chartSettings: PropTypes.array.isRequired,
+		data: PropTypes.array.isRequired,
+		scale: PropTypes.object.isRequired,
+		_grid: PropTypes.object.isRequired
+	}).isRequired,
+	showMetadata: PropTypes.bool,
+	metadata: PropTypes.object
+};
 
 module.exports = ChartGridRenderer;
