@@ -18,7 +18,7 @@ const mintickPrecision = 0;
  * @instance
  * @memberof xy_config
  */
-let parseBubble = (config, _chartProps, callback, parseOpts, priorData = false, priorSchema = false) => {
+const parseBubble = (config, _chartProps, callback, parseOpts, priorData = false, priorSchema = false) => {
    // Build chart settings from defaults or provided settings
 
   // clone so that we aren't modifying original
