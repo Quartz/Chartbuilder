@@ -25,6 +25,23 @@ $chart-colors = \
 	#dddddd \
 	#999999
 
+$map-colors = \
+	#35b8b5 \
+	#e8983a \
+	#c96f9a \
+	#c7e9b4 \
+	#006aab \
+	#cf4c49 \
+	#31a354 \
+	#dddddd \
+
+
+for d, j in $map-colors
+	[data-color-index=\"{j}\"]
+	.map
+		.cb-colorpicker-color-{j}
+			background-color (d)
+
 for c, i in $chart-colors
 	[data-color-index=\"{i}\"]
 		path
@@ -57,9 +74,9 @@ for c, i in $chart-colors
 	g.axis.color-index-{i}
 		text
 			fill (c)
-
-	.cb-colorpicker-color-{i}
-		background-color (c)
+	.chart
+		.cb-colorpicker-color-{i}
+			background-color (c)
 
 	.series-label-{i}
 		color (c)

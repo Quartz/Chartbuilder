@@ -193,7 +193,7 @@ const MapBubble_mapSettings = React.createClass({
         </h3>
 
         <div className="section axis-color">
-          <div className="section colorsection">
+          <div className="section colorsection map">
             <ColorPicker
               onChange={this._handleSettingsUpdate.bind(null, this.props.index, "colorIndex")}
               numColors={numColors}

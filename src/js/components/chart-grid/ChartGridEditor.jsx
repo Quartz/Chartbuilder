@@ -272,7 +272,7 @@ const ChartGrid_chartSettings = React.createClass({
 		const seriesSetting = this.props.chartSettings[this.props.index];
 		return (
 			<div className="series-control">
-				<div className="section colorsection">
+				<div className="section colorsection chart">
 					<ColorPicker
 						onChange={this._handleColorUpdate.bind(null, this.props.index, "colorIndex")}
 						numColors={this.props.numColors}

@@ -287,7 +287,7 @@ const XY_chartSettings = React.createClass({
 				</h3>
 
 				<div className="section axis-color">
-					<div className="section colorsection">
+					<div className="section colorsection chart">
 						<ColorPicker
 							onChange={this._handleSettingsUpdate.bind(null, this.props.index, "colorIndex")}
 							numColors={this.props.numColors}
