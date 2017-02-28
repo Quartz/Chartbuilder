@@ -63,7 +63,7 @@ gulp.task("browserify:dev", function () {
 		cache: {},
 		packageCache: {},
 		fullPaths: true,
-    	transform: [[babelify, {presets: ['es2015', 'react']}]]
+    	transform: [[babelify, {presets: ['babel-preset-react', 'react', 'es2015']}]]
 	};
 
 	var bundler = watchify(browserify(props)
