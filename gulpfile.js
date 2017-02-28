@@ -67,7 +67,6 @@ gulp.task("browserify:dev", function () {
 	};
 
 	var bundler = watchify(browserify(props)
-		.transform("babelify", {presets: ["react"]})
 		.transform(envify({ NODE_ENV: "dev" })
 		));
 
