@@ -1,5 +1,5 @@
-import React from 'react';
-import d3 from 'd3';
+const React = require('react');
+const d3 = require('d3');
 import {clone} from 'lodash';
 import {centroid} from 'turf';
 

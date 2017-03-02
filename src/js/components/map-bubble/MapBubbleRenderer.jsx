@@ -1,4 +1,4 @@
-import React from 'react';
+const React = require('react');
 const Polygon = require('react-d3-map-core').Polygon; // https://github.com/react-d3/react-d3-map-core/blob/master/src/polygon.jsx
 const centroid = require('turf-centroid');
 
@@ -13,7 +13,7 @@ class ShapesCollection extends React.Component {
 	_returnRadius (props, dataDomain) {
 		const radiusComputed = RenderHelper.radius_size(props);
 
-		return d3.scale.sqrt().range([0, radiusComputed])
+		return d3.scale.sqrt().range([1, radiusComputed])
 									.domain(dataDomain);
 	}
 	_updateStyles (nextProps) {
