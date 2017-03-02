@@ -3,6 +3,8 @@
  * @instance
  * @memberof RendererWrapper
  */
+import React, {PropTypes} from 'react';
+
 function ClippingPath (props) {
 	const margin = props.displayConfig.margin;
 	const chartAreaDimensions = props.chartAreaDimensions;

@@ -1,7 +1,7 @@
 //Premade map schemas
-const nycSchema = require('./schemas/nyc.js');
 const us50Schema = require('./schemas/us50.js');
-const usCountiesSchema = require('./schemas/usCounties.js');
+const usCountiesSchema = require('./schemas/usCounties.js');/*
+const nycSchema = require('./schemas/nyc.js');
 const worldSchema = require('./schemas/world.js');
 const meSchema = require('./schemas/middleEast.js');
 const meSchema2 = require('./schemas/middleEast2.js');
@@ -15,17 +15,19 @@ const naSchema = require('./schemas/northamerica.js');
 const ozSchema = require('./schemas/oz.js');
 const caSchema = require('./schemas/centralamerica.js');
 const saSchema = require('./schemas/southamerica.js');
-const russia = require('./schemas/russia.js');
+const russia = require('./schemas/russia.js');*/
 
-const maps = [us50Schema,nycSchema,usCountiesSchema,worldSchema,
+/*const maps = [us50Schema,nycSchema,usCountiesSchema,worldSchema,
 							meSchema,meSchema2,meSchema3,meSchema4,meSchema5,asiaSchema,
-							africaSchema,europeSchema,naSchema,ozSchema,saSchema,caSchema,russia];
+							africaSchema,europeSchema,naSchema,ozSchema,saSchema,caSchema,russia];*/
+
+const maps = [us50Schema,usCountiesSchema];
 
 //Optional
 //States Counties arrives as an array of all states objects
-const showCounties = false;
+const showCounties = true;
 if (showCounties) {
-	//const statesCounties = require('./schemas/statesCounties.js')
+	const statesCounties = require('./schemas/statesCounties.js')
 	statesCounties.forEach(function(d) {
 		maps.push(d);
 	});
