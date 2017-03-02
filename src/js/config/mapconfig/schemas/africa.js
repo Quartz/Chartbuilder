@@ -10,7 +10,7 @@ const Africa = {
 	translateCartogram: [290, 160],
 	precision: 1,
 	scale: 225,
-	topojson : require('./../mapfiles/world/world.topo.json'),
+	topojson : countries,
 	feature: 'lsib_world',
 	adjustLabels: function(adjusty=0,adjustx=0, label) {
 	  return [adjusty,adjustx,label];

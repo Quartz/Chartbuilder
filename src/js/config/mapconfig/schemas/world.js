@@ -11,7 +11,7 @@ const world = {
 	translateCartogram: [260, 240],
 	precision: 1,
 	scale: 110,
-	topojson : Object.freeze(require('./../mapfiles/world/world.topo.json')),
+	topojson : countries,
 	feature: 'lsib_world',
 	adjustLabels: function(adjusty=0,adjustx=0, label) {
 	  return [adjusty,adjustx,label];

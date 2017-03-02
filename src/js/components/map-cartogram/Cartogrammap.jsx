@@ -1,8 +1,8 @@
 import React, {Component, PropTypes} from 'react';
 import {flatten, each, clone, map} from 'lodash';
-import {centroid} from 'turf';
 
-import d3 from 'd3';
+const centroid = require('turf-centroid');
+const d3 = require('d3');
 // Map
 const topojson = require('topojson');
 const projectionFunc = require('react-d3-map-core').projection;

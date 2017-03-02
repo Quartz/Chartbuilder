@@ -1,8 +1,8 @@
 import React from 'react';
 const Polygon = require('react-d3-map-core').Polygon; // https://github.com/react-d3/react-d3-map-core/blob/master/src/polygon.jsx
-import {centroid} from 'turf';
+const centroid = require('turf-centroid');
 
-import d3 from 'd3';
+const d3 = require('d3');
 const RenderHelper = require("../../util/map-render-helpers");
 
 // Flux actions

@@ -10,7 +10,7 @@ const Europe = {
 	translateCartogram: [320, 640],
 	precision: 1,
 	scale: 600,
-	topojson : require('./../mapfiles/world/world.topo.json'),
+	topojson : countries,
 	feature: 'lsib_world',
 	adjustLabels: function(adjusty=0,adjustx=0, label) {
 	  return [adjusty,adjustx,label];

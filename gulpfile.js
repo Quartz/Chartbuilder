@@ -109,8 +109,8 @@ gulp.task("browserify:prod", function () {
 
 	return bundler.bundle()
 		.pipe(source("main.js"))
-		//.pipe(buffer())
-		//.pipe(uglify().on("error", gutil.log))
+		.pipe(buffer())
+		.pipe(uglify().on("error", gutil.log))
 		.pipe(gulp.dest(config.paths.build.js));
 });
 

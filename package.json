@@ -48,15 +48,15 @@
     "react-addons-pure-render-mixin": "^0.14.7",
     "react-addons-shallow-compare": "^0.14.7",
     "react-addons-update": "^0.14.7",
-    "react-dom": "^0.14.7",
     "react-d3-core": "*",
     "react-d3-map-core": "*",
+    "react-dom": "^0.14.7",
     "save-svg-as-png": "git://github.com/nsonnad/saveSvgAsPng.git#clean-svg-fonts",
     "simple-statistics": "2.2",
     "sizeof": "^1.0.0",
     "sugar-date": "^1.5.1",
     "topojson": "^2.2",
-    "turf": "^3.0.14",
+    "turf-centroid": "^3.0.12",
     "us-abbreviations": "git://github.com/nbcnews/us-abbreviations.git"
   },
   "devDependencies": {
