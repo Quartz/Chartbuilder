@@ -207,7 +207,7 @@ class PolygonsRender extends React.Component {
 
     	const styles = {};
   		styles.stroke = chartProps.stylings.stroke;
-      styles.fill = '#eee';
+      styles.fill = '#e8e8e8';
 
     	if (alreadyRenderedFips.indexOf(polygonData.id) > -1) {
     		testObj = testMap.get(polygonData.id);
