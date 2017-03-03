@@ -25,7 +25,7 @@ const maps = [us50Schema,nycSchema,worldSchema,
 
 //Optional
 //States Counties arrives as an array of all states objects
-const showCounties = true;
+const showCounties = false;
 if (showCounties) {
 	//const statesCounties = require('./schemas/statesCounties.js')
 	statesCounties.forEach(function(d) {
