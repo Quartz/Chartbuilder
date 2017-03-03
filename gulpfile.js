@@ -93,7 +93,7 @@ gulp.task("browserify:test", function () {
 	var bundler = browserify("./test/test-page/main.js", {
 				debug: true
 			})
-			.transform("babelify", {presets: ['babel-preset-react', 'react', 'es2015']})
+			.transform("babelify", {plugins: ['lodash'], presets: ['babel-preset-react', 'react', 'es2015']})
 			.transform(envify({ NODE_ENV: "dev" }));
 
 	return bundler.bundle()
@@ -104,7 +104,7 @@ gulp.task("browserify:test", function () {
 
 gulp.task("browserify:prod", function () {
 	var bundler = browserify(config.paths.src.js + "/index.js")
-			.transform("babelify", {presets: ['babel-preset-react', 'react', 'es2015']})
+			.transform("babelify", {plugins: ['lodash'], presets: ['babel-preset-react', 'react', 'es2015']})
 			.transform(envify({ NODE_ENV: "prod" }));
 
 	return bundler.bundle()
