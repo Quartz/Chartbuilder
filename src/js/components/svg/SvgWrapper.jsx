@@ -69,7 +69,11 @@ class SvgWrapper extends React.Component {
 		};
 
 		return (
-			<svg className="chartbuilder-svg" width={outerDimensions.width} height={outerDimensions.height}>
+			<svg
+				className={["chartbuilder-svg", props.svgSizeClass].join(" ")}
+				width={outerDimensions.width}
+				height={outerDimensions.height}
+			>
 				<BackgroundRect dimensions={outerDimensions} />
 				{this._createTitle(props)}
 				{this._createSubTitle(props)}

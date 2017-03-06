@@ -219,6 +219,7 @@ class ChartGridXY extends React.Component {
 
 		return (
 			<SvgWrapper
+				svgSizeClass={this.props.svgSizeClass}
 				outerDimensions={outerDimensions}
 				metadata={props.metadata}
 				displayConfig={displayConfig}

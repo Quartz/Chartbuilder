@@ -51,7 +51,7 @@ class ChartGridRenderer extends React.Component {
 		});
 
 		let scale;
-		if (this.props.enableResponsive && _chartProps.hasOwnProperty("mobile") && this.props.isSmall) {
+		if (this.props.enableResponsive && _chartProps.hasOwnProperty("mobile") && this.props.svgSizeClass === "small") {
 			if (_chartProps.mobile.scale) {
 				scale = this._createMobileScale(_chartProps);
 			} else {

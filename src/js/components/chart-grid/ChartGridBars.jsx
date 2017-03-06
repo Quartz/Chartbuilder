@@ -254,6 +254,7 @@ const ChartGridBars = React.createClass({
 
 		return (
 			<SvgWrapper
+				svgSizeClass={this.props.svgSizeClass}
 				outerDimensions={outerDimensions}
 				metadata={props.metadata}
 				displayConfig={displayConfig}

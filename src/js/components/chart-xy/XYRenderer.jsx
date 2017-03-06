@@ -260,7 +260,7 @@ class XYRenderer extends React.Component {
 		});
 
 		// mobile overrides TODO: do we actually need this?
-		if (props.enableResponsive && _chartProps.hasOwnProperty("mobile") && this.props.isSmall) {
+		if (props.enableResponsive && _chartProps.hasOwnProperty("mobile") && this.props.isSmall && this.props.svgSizeClass === "small") {
 			if (_chartProps.mobile.scale) {
 				scale = assign({}, _chartProps.scale, _chartProps.mobile.scale);
 			} else {
@@ -273,10 +273,11 @@ class XYRenderer extends React.Component {
 		// draw the chart
 		return (
 			<SvgWrapper
+				svgSizeClass={this.props.svgSizeClass}
 				outerDimensions={outerDimensions}
-				metadata={props.metadata}
+				metadata={this.props.metadata}
 				displayConfig={displayConfig}
-				styleConfig={props.styleConfig}
+				styleConfig={this.props.styleConfig}
 			>
 				{/* main chart area */}
 				<Chart

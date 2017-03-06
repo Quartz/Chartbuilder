@@ -223,19 +223,20 @@ class RendererWrapper extends React.Component {
 		metadata = this.props.model.metadata;
 
 		return (
-			<div className={["renderer-wrapper", this.state.svgSizeClass, this.props.className].join(" ")}>
-					<Renderer
-						width={width}
-						extraHeight={this.state.extraHeight}
-						chartProps={chartProps}
-						isSmall={isSmall}
-						displayConfig={displayConfig}
-						styleConfig={this.state.styleConfig}
-						showMetadata={this.props.showMetadata}
-						metadata={metadata}
-						editable={this.props.editable}
-						enableResponsive={this.props.enableResponsive}
-					/>
+			<div className={["renderer-wrapper", this.props.className].join(" ")}>
+				<Renderer
+					svgSizeClass={this.state.svgSizeClass}
+					width={width}
+					extraHeight={this.state.extraHeight}
+					chartProps={chartProps}
+					isSmall={isSmall}
+					displayConfig={displayConfig}
+					styleConfig={this.state.styleConfig}
+					showMetadata={this.props.showMetadata}
+					metadata={metadata}
+					editable={this.props.editable}
+					enableResponsive={this.props.enableResponsive}
+				/>
 			</div>
 		);
 	}
