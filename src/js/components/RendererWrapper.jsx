@@ -232,12 +232,12 @@ var RendererWrapper = React.createClass({
 
 		// pass these props to the selected Renderer
 		return (
-			<div className={["renderer-wrapper", this.state.svgSizeClass, this.props.className].join(" ")}>
+			<div className={["renderer-wrapper", this.props.className].join(" ")}>
 				<Renderer
+					svgSizeClass={this.state.svgSizeClass}
 					width={width}
 					extraHeight={this.state.extraHeight}
 					chartProps={chartProps}
-					isSmall={isSmall}
 					displayConfig={displayConfig}
 					styleConfig={this.state.styleConfig}
 					showMetadata={this.props.showMetadata}

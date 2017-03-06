@@ -290,7 +290,7 @@ var XYRenderer = React.createClass({
 		});
 
 		// mobile overrides TODO: do we actually need this?
-		if (this.props.enableResponsive && _chartProps.hasOwnProperty("mobile") && this.props.isSmall) {
+		if (this.props.enableResponsive && _chartProps.hasOwnProperty("mobile") && this.props.svgSizeClass === "small") {
 			if (_chartProps.mobile.scale) {
 				scale = assign({}, _chartProps.scale, _chartProps.mobile.scale);
 			} else {
@@ -303,6 +303,7 @@ var XYRenderer = React.createClass({
 		// draw the chart
 		return (
 		<SvgWrapper
+			svgSizeClass={this.props.svgSizeClass}
 			outerDimensions={outerDimensions}
 			metadata={this.props.metadata}
 			displayConfig={displayConfig}
