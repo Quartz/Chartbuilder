@@ -286,6 +286,17 @@ var XY_chartSettings = React.createClass({
 
 	render: function() {
 		var chartSetting = this.props.chartSettings[this.props.index];
+		var altAxisToggle = null;
+		if (this.props.allowSecondaryAxis || chartSetting.altAxis) {
+			altAxisToggle = (
+				<Toggle
+					className={"toggle-" + chartSetting.colorIndex}
+					onToggle={this._handleSettingsUpdate.bind(null, this.props.index, "altAxis")}
+					label="Right axis"
+					toggled={chartSetting.altAxis}
+				/>
+			);
+		}
 
 		return (
 			<div className="series-control">
@@ -309,12 +320,7 @@ var XY_chartSettings = React.createClass({
 						/>
 					</div>
 					<div className="section axissection">
-						<Toggle
-							className={"toggle-" + chartSetting.colorIndex}
-							onToggle={this._handleSettingsUpdate.bind(null, this.props.index, "altAxis")}
-							label="Right axis"
-							toggled={chartSetting.altAxis}
-						/>
+						{altAxisToggle}
 					</div>
 				</div>
 
