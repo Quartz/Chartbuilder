@@ -170,7 +170,7 @@ class MapRenderer extends React.Component{
       .translate(updatedTranslate)
       .scale(updatedScale);
 
-    if (schema.parallels) projojection.parallels = schema.parallels;
+    if (schema.parallels) projection.parallels = schema.parallels;
     if (schema.rotate) projection.rotate = schema.rotate;
 
     const dataById = d3.map(chartProps.alldata, function(d) { return schema.matchLogic(d[keyColumn]); });
