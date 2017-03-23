@@ -581,7 +581,7 @@ span.step-number {
   margin-right: 0.25em;
 }
 .editor-options {
-  font-family: 'Khula-Regular', Arial, Helvetica, sans-serif;
+  font-family: 'SourceSansPro-Regular', Arial, Helvetica, sans-serif;
   margin: 30px 0;
   display: block;
   width: 100%;
@@ -615,7 +615,7 @@ span.step-number {
   background-color: #f1f1f1;
   width: 100%;
   text-align: center;
-  font-family: 'Khula-Regular', Arial, Helvetica, sans-serif;
+  font-family: 'SourceSansPro-Regular', Arial, Helvetica, sans-serif;
 }
 .data-input .file-drop p {
   font-size: 2em;
@@ -809,7 +809,7 @@ span.step-number {
 }
 .editor-label {
   font-size: 18px;
-  font-family: 'Khula-Regular', Arial, Helvetica, sans-serif;
+  font-family: 'SourceSansPro-Regular', Arial, Helvetica, sans-serif;
 }
 .load-localstorage {
   display: none;
@@ -897,7 +897,7 @@ span.step-number {
   margin-bottom: 2em;
 }
 .mobile-overrides> h2:first-child {
-  font-family: "Khula-Bold", Arial, sans-serif;
+  font-family: "SourceSansPro-Bold", Arial, sans-serif;
   margin-bottom: 1em;
 }
 .mobile-overrides .scale-options {
@@ -946,12 +946,14 @@ svg .svg-background {
   font-style: italic;
 }
 .svg-text tspan.strong {
-  font-family: "Khula-Bold", Arial, sans-serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
+  font-weight: bold;
 }
 .svg-text tspan.strong .em,
 .svg-text tspan.em .strong {
-  font-family: "Khula-Bold", Arial, sans-serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-style: italic;
+  font-weight: bold;
 }
 .svg-text.svg-text-credit {
   fill: #ccc;
