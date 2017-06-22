@@ -2,7 +2,6 @@
 var browserSync = require("browser-sync");
 var buffer = require("vinyl-buffer");
 var del = require("del");
-var nib = require("nib");
 var reload = browserSync.reload;
 
 // browserify
@@ -27,8 +26,6 @@ require("./gulp/publish");
 gulp.task("stylus", function () {
 	return gulp.src(config.paths.src.styl + "/main.styl")
 		.pipe(stylus({
-			use: [nib()],
-			import: ["nib"],
 			"include css": true,
 			errors: true
 		}))
@@ -43,7 +40,6 @@ gulp.task("stylus", function () {
 gulp.task("stylus:core", ["clean-dist"], function () {
 	return gulp.src(config.paths.src.styl + "/core.styl")
 		.pipe(stylus({
-			use: [nib()],
 			"include css": true,
 			errors: true
 		}))
