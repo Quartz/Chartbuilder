@@ -2,7 +2,6 @@ var React = require("react");
 var clone = require("lodash/clone");
 var map = require("lodash/map");
 
-var shallowEqual = require('react-addons-shallow-compare');
 var PureRenderMixin = require("react-addons-pure-render-mixin");
 var PropTypes = React.PropTypes;
 var update = require("react-addons-update");

@@ -42,7 +42,6 @@
     "markdown-it": "^6.0.0",
     "react": "^15.5.4",
     "react-addons-pure-render-mixin": "^15.5.4",
-    "react-addons-shallow-compare": "^15.5.4",
     "react-addons-update": "^15.5.4",
     "react-dom": "^15.5.4",
     "save-svg-as-png": "git://github.com/nsonnad/saveSvgAsPng.git#clean-svg-fonts",
