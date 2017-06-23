@@ -11,7 +11,7 @@ var _session = {
 	emSize: 10,
 	width: 640,
 	timerOn: (localStorage.hasOwnProperty("model") === true),
-	nowOffset: getTZOffset(now),
+	nowOffset: now.getTimezoneOffset(),
 	now: now
 };
 

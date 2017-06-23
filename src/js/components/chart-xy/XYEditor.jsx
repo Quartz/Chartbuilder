@@ -65,14 +65,16 @@ var XYEditor = React.createClass({
 			scale: PropTypes.object,
 			_annotations: PropTypes.object
 		}),
-		numSteps: PropTypes.number
+		numSteps: PropTypes.number,
+		showDataInput: PropTypes.bool
 	},
 
 	mixins: [ChartEditorMixin],
 
 	getDefaultProps: function() {
 		return {
-			numSteps: 4
+			numSteps: 4,
+			showDataInput: true
 		};
 	},
 
@@ -85,6 +87,35 @@ var XYEditor = React.createClass({
 		 * axis option
 		*/
 		var allowSecondaryAxis = (chartProps._numSecondaryAxis < (chartProps.data.length - 1));
+
+
+		var inputErrors = this.props.errors.messages.filter(function(e) {
+			return e.location === "input";
+		});
+
+		var axisErrors = this.props.errors.messages.filter(function(e) {
+			return e.location === "axis";
+		});
+
+		// Step 1 is chart type, not in this component
+		var nextStep = 2;
+
+		var dataInput = null;
+		if (this.props.showDataInput) {
+			dataInput =
+				<div className="editor-options">
+					<h2>
+						<span className="step-number">{nextStep}</span>
+						<span>Input your data</span>
+					</h2>
+					<DataInput
+						errors={inputErrors}
+						chartProps={chartProps}
+						className="data-input"
+					/>
+				</div>
+			nextStep += 1;
+		}
 
 		/* Create a settings component for each data series (column) */
 		var chartSettings = map(chartProps.chartSettings, bind(function(chartSetting, i) {
@@ -101,13 +132,19 @@ var XYEditor = React.createClass({
 			);
 		}, this));
 
-		var inputErrors = this.props.errors.messages.filter(function(e) {
-			return e.location === "input";
-		});
-
-		var axisErrors = this.props.errors.messages.filter(function(e) {
-			return e.location === "axis";
-		});
+		var seriesOptions =
+			<div className="editor-options">
+				<h2>
+					<span className="step-number">{nextStep}</span>
+					<span>Set series options</span>
+				</h2>
+				<XY_resetLabels
+					annotations={chartProps._annotations}
+					onUpdate={this._handlePropUpdate.bind(null, "_annotations")}
+				/>
+				{chartSettings}
+			</div>
+		nextStep += 1;
 
 		/* Y scale settings */
 		scaleSettings.push(
@@ -119,7 +156,7 @@ var XYEditor = React.createClass({
 				onReset={this._handlePropAndReparse.bind(null, "scale")}
 				id="primaryScale"
 				name="Primary"
-				stepNumber="4"
+				stepNumber={nextStep}
 				key="primaryScale"
 			/>
 		);
@@ -135,11 +172,12 @@ var XYEditor = React.createClass({
 					className="scale-options"
 					id="secondaryScale"
 					name="Secondary"
-					stepNumber="4+"
+					stepNumber={nextStep + '+'}
 					key="secondaryScale"
 				/>
 			);
 		}
+		nextStep += 1;
 
 		/* Add date settings if we are parsing a date */
 		if (chartProps.scale.hasDate) {
@@ -149,7 +187,7 @@ var XYEditor = React.createClass({
 					nowOffset={this.props.session.nowOffset}
 					now={this.props.session.now}
 					scale={chartProps.scale}
-					stepNumber="5"
+					stepNumber={nextStep}
 					onUpdate={this._handlePropAndReparse.bind(null, "scale")}
 				/>
 			);
@@ -163,34 +201,15 @@ var XYEditor = React.createClass({
 					className="scale-options"
 					id="numericSettings"
 					name="Bottom"
-					stepNumber="5"
+					stepNumber={nextStep}
 				/>
 			);
 		}
+
 		return (
 			<div className="xy-editor">
-				<div className="editor-options">
-					<h2>
-						<span className="step-number">2</span>
-						<span>Input your data</span>
-					</h2>
-					<DataInput
-						errors={inputErrors}
-						chartProps={chartProps}
-						className="data-input"
-					/>
-				</div>
-				<div className="editor-options">
-					<h2>
-						<span className="step-number">3</span>
-						<span>Set series options</span>
-					</h2>
-				<XY_resetLabels
-					annotations={chartProps._annotations}
-					onUpdate={this._handlePropUpdate.bind(null, "_annotations")}
-				/>
-					{chartSettings}
-				</div>
+				{dataInput}
+				{seriesOptions}
 				<div className="editor-options">
 					{scaleSettings}
 				</div>
@@ -270,6 +289,7 @@ var XY_chartSettings = React.createClass({
 	propTypes: {
 		chartSettings: PropTypes.arrayOf(PropTypes.object),
 		allowSecondaryAxis: PropTypes.bool,
+		showDataEditor: PropTypes.bool,
 		numColors: PropTypes.number,
 		onUpdate: PropTypes.func,
 		onUpdateReparse: PropTypes.func,

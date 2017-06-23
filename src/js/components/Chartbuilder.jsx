@@ -82,6 +82,8 @@ var Chartbuilder = React.createClass({
 	propTypes: {
 		autosave: PropTypes.bool,
 		showMobilePreview: PropTypes.bool,
+		showDataInput: PropTypes.bool,
+		showLoadPrevious: PropTypes.bool,
 		onSave: PropTypes.func,
 		onStateChange: PropTypes.func,
 		additionalComponents: PropTypes.shape({
@@ -98,6 +100,8 @@ var Chartbuilder = React.createClass({
 	getDefaultProps: function() {
 		return {
 			autosave: true,
+			showDataInput: true,
+			showLoadPrevious: true,
 			additionalComponents: {
 				metadata: [],
 				misc: {}
@@ -159,7 +163,10 @@ var Chartbuilder = React.createClass({
 			mobileOverrides = null;
 		}
 
-		var editorSteps = Editor.defaultProps.numSteps + (this.state.chartProps.hasDate || this.state.chartProps.isNumeric ? 1 : 0);
+		var editorSteps = Editor.defaultProps.numSteps
+			+ (this.state.chartProps.hasDate || this.state.chartProps.isNumeric ? 1 : 0)
+		  - (this.props.showDataInput==false ? 1 : 0);
+
 		var mobilePreview;
 
 		// Mobile preview of the chart, if told to render
@@ -183,6 +190,12 @@ var Chartbuilder = React.createClass({
 				</div>
 			);
 		}
+
+		var loadPrevious = null;
+		if (this.props.showLoadPrevious)	{
+			loadPrevious = <LocalStorageTimer timerOn={this.state.session.timerOn} />
+		}
+
 		return (
 			<div className="chartbuilder-main">
 				<div className="chartbuilder-renderer">
@@ -204,14 +217,13 @@ var Chartbuilder = React.createClass({
 						metadata={this.state.metadata}
 						chartProps={this.state.chartProps}
 					/>
-					<LocalStorageTimer
-						timerOn={this.state.session.timerOn}
-					/>
+					{loadPrevious}
 					<Editor
 						errors={this.state.errors}
 						session={this.state.session}
 						chartProps={this.state.chartProps}
 						numColors={numColors}
+						showDataInput={this.props.showDataInput}
 					/>
 					<ChartMetadata
 						metadata={this.state.metadata}
@@ -261,7 +273,8 @@ var Chartbuilder = React.createClass({
 		if(this.props.onStateChange) {
 			this.props.onStateChange({
 				chartProps: state.chartProps,
-				metadata: state.metadata
+				metadata: state.metadata,
+				errors: this.state.errors,
 			});
 		}
 	}

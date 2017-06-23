@@ -131,6 +131,7 @@ function cast_data(input, columnNames, stripCharsRegex, opts) {
 
 	var index_types = unique(all_index_types);
 
+	/* Dead code, hasDate/isNumeric never used, and strict mode complains about assignment to undefined
 	if(index_types.length !== 1 && !opts.type) {
 
 	}
@@ -138,6 +139,7 @@ function cast_data(input, columnNames, stripCharsRegex, opts) {
 		hasDate = opts.type ? opts.type == "date" : index_types[0] === "date";
 		isNumeric = opts.type ? opts.type == "numeric" : index_types[0] === "number";
 	}
+	*/
 
 	return {
 		data: data,
