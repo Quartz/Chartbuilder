@@ -78,7 +78,7 @@ function parseChartgrid(config, _chartProps, callback, parseOpts) {
 		var factor = Math.pow(10, maxPrecision);
 		gridSettings.type = _chartProps._grid.type || "line";
 
-		_computed = {
+		var _computed = {
 			//TODO look at entries for all series not just the first
 			data: bySeries.series[0].values.map(function(d){return +d.entry}),
 			hasColumn: false,
