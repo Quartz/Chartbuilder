@@ -8,7 +8,7 @@ var some = require("lodash/some");
 var unique = require("lodash/uniq");
 var catchChartMistakes = require("./catch-chart-mistakes");
 
-types = {
+let types = {
 	"number": "numeric",
 	"object": "date",
 	"string": "ordinal"
