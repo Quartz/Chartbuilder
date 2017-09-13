@@ -1,7 +1,7 @@
 const React = require('react');
 const d3 = require('d3');
 import {clone} from 'lodash';
-import {centroid} from 'turf';
+const centroid = require('turf-centroid');
 
 // Flux actions
 const MapViewActions = require("../../actions/VisualViewActions");

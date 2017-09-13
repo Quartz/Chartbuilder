@@ -57,7 +57,7 @@
     "sugar-date": "^1.5.1",
     "topojson": "^2.2",
     "turf-centroid": "^3.0.12",
-    "us-abbreviations": "git://github.com/nbcnews/us-abbreviations.git"
+    "us-abbreviations": "git://github.com/kevinschaul/us-abbreviations"
   },
   "devDependencies": {
     "babel-plugin-lodash": "^3.2.11",
