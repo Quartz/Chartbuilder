@@ -5,40 +5,39 @@
 */
 
 /* Node modules */
-var React = require("react");
-var update = require("react-addons-update");
-var PropTypes = React.PropTypes;
+import React, {Component, PropTypes} from 'react';
 
 /* Flux stores */
-var ChartPropertiesStore = require("../stores/ChartPropertiesStore");
-var ChartMetadataStore = require("../stores/ChartMetadataStore");
-var SessionStore = require("../stores/SessionStore");
-var ErrorStore = require("../stores/ErrorStore");
+const VisualPropertiesStore = require("../stores/VisualPropertiesStore");
+const ChartMetadataStore = require("../stores/VisualMetadataStore");
+const SessionStore = require("../stores/SessionStore");
+const ErrorStore = require("../stores/ErrorStore");
 
 /*
  * Global React components that are used irrespective of chart type
  * More info within each component's definition.
 */
-var Canvas = require("./Canvas.jsx");
-var ChartExport = require("./ChartExport.jsx");
-var ChartMetadata = require("./ChartMetadata.jsx");
-var ChartTypeSelector = require("./ChartTypeSelector.jsx");
-var RendererWrapper = require("./RendererWrapper.jsx");
-var LocalStorageTimer = require("./LocalStorageTimer.jsx");
+import Canvas from './Canvas.jsx';
+import ChartMetadata from './ChartMetadata.jsx';
+import ChartTypeSelector from "./ChartTypeSelector.jsx";
+import RendererWrapper from "./RendererWrapper.jsx";
+import LocalStorageTimer from './LocalStorageTimer.jsx';
+import ChartExport from './ChartExport.jsx';
 
-var AlertGroup = require("chartbuilder-ui").AlertGroup;
+import {AlertGroup} from 'chartbuilder-ui';
 
-var svgWrapperClassName = {
+const svgWrapperClassName = {
 	desktop: "renderer-svg-desktop",
 	mobile: "renderer-svg-mobile"
 };
 
 // Associates a given chart type with its Editor and Renderer components.
-var chartEditors = require("../charts/editors");
-var numColors = require("../config/chart-style").numColors;
+const chartEditors = require("../charts/charts/editors");
+const mapEditors = require("../charts/maps/editors");
+const numColors = require("../config/chartconfig/chart-style").numColors;
 
 /* API to localStorage that allows saving and retrieving charts */
-var ChartbuilderLocalStorageAPI = require("../util/ChartbuilderLocalStorageAPI");
+const ChartbuilderLocalStorageAPI = require("../util/ChartbuilderLocalStorageAPI");
 
 /**
  * Function to query Flux stores for all data. Runs whenever the stores are
@@ -49,7 +48,7 @@ var ChartbuilderLocalStorageAPI = require("../util/ChartbuilderLocalStorageAPI")
 */
 function getStateFromStores() {
 	return {
-		chartProps: ChartPropertiesStore.getAll(),
+		chartProps: VisualPropertiesStore.getAll(),
 		metadata: ChartMetadataStore.getAll(),
 		errors: ErrorStore.getAll(),
 		session: SessionStore.getAll()
@@ -77,51 +76,32 @@ function getStateFromStores() {
  *   />,
  * container );
 */
-var Chartbuilder = React.createClass({
+class Chartbuilder extends React.Component {
 
-	propTypes: {
-		autosave: PropTypes.bool,
-		showMobilePreview: PropTypes.bool,
-		onSave: PropTypes.func,
-		onStateChange: PropTypes.func,
-		additionalComponents: PropTypes.shape({
-			metadata: PropTypes.array,
-			misc: PropTypes.object
-		}),
-		renderedSVGClassName: React.PropTypes.string
-	},
+	constructor(props) {
+    super(props);
 
-	getInitialState: function() {
-		return getStateFromStores();
-	},
-
-	getDefaultProps: function() {
-		return {
-			autosave: true,
-			additionalComponents: {
-				metadata: [],
-				misc: {}
-			}
-		};
-	},
+    this.state = getStateFromStores();
+    this._onChange = this._onChange.bind(this);
+  }
 
 	/* Add listeners to update component state when stores update */
-	componentDidMount: function() {
-		ChartPropertiesStore.addChangeListener(this._onChange);
+	componentDidMount () {
+		VisualPropertiesStore.addChangeListener(this._onChange);
 		ChartMetadataStore.addChangeListener(this._onChange);
 		ErrorStore.addChangeListener(this._onChange);
 		SessionStore.addChangeListener(this._onChange);
-	},
+	}
 
 	/* Remove listeners on component unmount */
-	componentWillUnmount: function() {
-		ChartPropertiesStore.removeChangeListener(this._onChange);
+	componentWillUnmount () {
+		VisualPropertiesStore.removeChangeListener(this._onChange);
 		ChartMetadataStore.removeChangeListener(this._onChange);
 		ErrorStore.removeChangeListener(this._onChange);
 		SessionStore.removeChangeListener(this._onChange);
-	},
+	}
 
-	_renderErrors: function() {
+	_renderErrors () {
 		if (this.state.errors.messages.length === 0) {
 			return null;
 		} else {
@@ -134,20 +114,24 @@ var Chartbuilder = React.createClass({
 				</div>
 			);
 		}
-	},
+	}
 
 	/*
 	 * Identify the chart type used and render its Editor. The corresponding
 	 * Renderer is rendered within `RendererWrapper`, in case a Chartbuilder chart
 	 * is being used as a module or without the editor.
 	*/
-	render: function() {
-		var chartType = this.state.metadata.chartType;
-		var Editor = chartEditors[chartType].Editor;
+	render () {
+
+		const chartType = this.state.metadata.chartType;
+		const VisualEditor = chartEditors[chartType] || mapEditors[chartType];
+		const showLegendBool = chartEditors[chartType] ? false : true;
+		const Editor = VisualEditor.Editor;
 
 		// Check for mobile override settings and pass them in
-		var MobileComponent = chartEditors[chartType].MobileOverrides;
-		var mobileOverrides;
+		const MobileComponent = VisualEditor.MobileOverrides;
+		let mobileOverrides;
+
 		if (MobileComponent && this.props.showMobilePreview) {
 			mobileOverrides = (
 				<MobileComponent
@@ -159,8 +143,9 @@ var Chartbuilder = React.createClass({
 			mobileOverrides = null;
 		}
 
-		var editorSteps = Editor.defaultProps.numSteps + (this.state.chartProps.hasDate || this.state.chartProps.isNumeric ? 1 : 0);
-		var mobilePreview;
+		const editorSteps = Editor.defaultProps.numSteps + (this.state.chartProps.hasDate || this.state.chartProps.isNumeric ? 1 : 0);
+
+		let mobilePreview;
 
 		// Mobile preview of the chart, if told to render
 		if (this.props.showMobilePreview) {
@@ -173,16 +158,17 @@ var Chartbuilder = React.createClass({
 								showMetadata={true}
 								model={this.state}
 								enableResponsive={true}
+								showLegenddata={showLegendBool}
 								className={svgWrapperClassName.mobile}
 								svgClassName={this.props.renderedSVGClassName}
 							/>
 							<div></div>
 						</div>
 					</div>
-
 				</div>
 			);
 		}
+
 		return (
 			<div className="chartbuilder-main">
 				<div className="chartbuilder-renderer">
@@ -192,6 +178,7 @@ var Chartbuilder = React.createClass({
 							model={this.state}
 							enableResponsive={false}
 							width={640}
+							showLegenddata={showLegendBool}
 							showMetadata={true}
 							className={svgWrapperClassName.desktop}
 							svgClassName={this.props.renderedSVGClassName}
@@ -208,12 +195,15 @@ var Chartbuilder = React.createClass({
 						timerOn={this.state.session.timerOn}
 					/>
 					<Editor
-						errors={this.state.errors}
-						session={this.state.session}
 						chartProps={this.state.chartProps}
+						errors={this.state.errors}
+						metadata={this.state.metadata}
+						session={this.state.session}
+						stepNumber={String(editorSteps)}
 						numColors={numColors}
 					/>
 					<ChartMetadata
+						chartProps={this.state.chartProps}
 						metadata={this.state.metadata}
 						data={this.state.chartProps.data}
 						stepNumber={String(editorSteps + 2)}
@@ -236,7 +226,7 @@ var Chartbuilder = React.createClass({
 				</div>
 			</div>
 		);
-	},
+	}
 
 	/**
 	 * Function that is fired any time a change is made to a chart. By default it
@@ -247,9 +237,9 @@ var Chartbuilder = React.createClass({
 	 * @instance
 	 * @memberof Chartbuilder
 	 */
-	_onChange: function() {
+	_onChange () {
 		// On change, update and save state.
-		var state = getStateFromStores();
+		const state = getStateFromStores();
 		this.setState(state);
 
 		if (this.props.autosave && !this.state.session.timerOn) {
@@ -265,7 +255,26 @@ var Chartbuilder = React.createClass({
 			});
 		}
 	}
+};
 
-});
+Chartbuilder.defaultProps = {
+	autosave: true,
+	additionalComponents: {
+		metadata: [],
+		misc: {}
+	}
+};
+
+Chartbuilder.propTypes = {
+	autosave: PropTypes.bool,
+	showMobilePreview: PropTypes.bool,
+	onSave: PropTypes.func,
+	onStateChange: PropTypes.func,
+	additionalComponents: PropTypes.shape({
+		metadata: PropTypes.array,
+		misc: PropTypes.object
+	}),
+	renderedSVGClassName: React.PropTypes.string
+};
 
 module.exports = Chartbuilder;

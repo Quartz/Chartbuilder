@@ -1,13 +1,11 @@
-var React = require("react");
-var PropTypes = React.PropTypes;
-var clone = require("lodash/clone");
+import React, {PropTypes} from 'react';
+import {clone} from 'lodash';
 
-var ScaleReset = require("./ScaleReset.jsx");
+const ScaleReset = require("./ScaleReset.jsx");
 
 /* Chartbuilder UI components */
-var chartbuilderUI = require("chartbuilder-ui");
-var LabelledTangle = chartbuilderUI.LabelledTangle;
-var TextInput = chartbuilderUI.TextInput;
+
+import {LabelledTangle, TextInput} from 'chartbuilder-ui';
 
 /**
  * Y scale settings for XY charts. Used in both XY and chart grid, and most
@@ -15,7 +13,7 @@ var TextInput = chartbuilderUI.TextInput;
  * @instance
  * @memberof editors
  */
-var NumericScaleSettings = React.createClass({
+const NumericScaleSettings = React.createClass({
 
 	propTypes: {
 		id: PropTypes.string,
@@ -29,7 +27,7 @@ var NumericScaleSettings = React.createClass({
 	},
 
 	_handleScaleUpdate: function(k, v) {
-		var scaleObj = clone(this.props.scale, true);
+		const scaleObj = clone(this.props.scale, true);
 		if(k != "precision") {
 			scaleObj[this.props.id].precision = 0;
 		}
@@ -39,7 +37,7 @@ var NumericScaleSettings = React.createClass({
 	},
 
 	_handleDomainUpdate: function(k, v) {
-		var scale = clone(this.props.scale, true);
+		const scale = clone(this.props.scale, true);
 		scale[this.props.id].custom = true;
 		if (k == "min") {
 			scale[this.props.id].domain[0] = v;
@@ -50,7 +48,7 @@ var NumericScaleSettings = React.createClass({
 	},
 
 	render: function() {
-		var currScale = this.props.scale[this.props.id];
+		const currScale = this.props.scale[this.props.id];
 
 		/*
 		 * Figure out the amount by which to increment the tangle (drag) values: Eg
@@ -60,13 +58,13 @@ var NumericScaleSettings = React.createClass({
 		 * < 10000 = 100
 		 * And so on
 	  */
-		var tangleStep;
+		let tangleStep;
 
-		var range = Math.abs(currScale.domain[1] - currScale.domain[0]);
+		const range = Math.abs(currScale.domain[1] - currScale.domain[0]);
 		if (range <= 10) {
 			tangleStep = 0.5;
 		} else {
-			var numDigits = range.toString().length;
+			const numDigits = range.toString().length;
 			tangleStep = Math.pow(10, (numDigits - 2));
 		}
 

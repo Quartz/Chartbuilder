@@ -1,30 +1,27 @@
 // Return input with validation statuses. These get sent to the UI in order
 // to prevent drawing and give error messages.
+import {max, map, filter, some, includes, uniq} from 'lodash';
 
-var map = require("lodash/map");
-var max = require("lodash/max");
-var filter = require("lodash/filter");
-var some = require("lodash/some");
-var unique = require("lodash/uniq");
-var catchChartMistakes = require("./catch-chart-mistakes");
+const catchChartMistakes = require("./catch-chart-mistakes");
 
-types = {
+const types = {
 	"number": "numeric",
-	"object": "date",
+	"object": "state",
 	"string": "ordinal"
 };
 
-var MAX_BYTES = 400000; // Max 400k for chartProps
+const MAX_BYTES = 400000; // Max 400k for chartProps
 
 function validateDataInput(chartProps) {
-	var input = chartProps.input.raw;
-	var series = chartProps.data;
-	var hasDate = chartProps.scale.hasDate;
-	var isNumeric = chartProps.scale.isNumeric;
-	var type = chartProps.input.type;
-	var scale = chartProps.scale;
 
-	var inputErrors = [];
+	const input = chartProps.input.raw;
+	const series = chartProps.data;
+	const hasDate = chartProps.scale.hasDate;
+	const isNumeric = chartProps.scale.isNumeric;
+	const type = chartProps.input.type;
+	const scale = chartProps.scale;
+
+	const inputErrors = [];
 
 	// Check whether we have input
 	if (input.length === 0) {
@@ -41,7 +38,7 @@ function validateDataInput(chartProps) {
 	}
 
 	// Whether a column has a different number of values
-	var unevenSeries = dataPointTest(
+	const unevenSeries = dataPointTest(
 			series,
 			function(val) { return val.value !== null ? (val.value === undefined || val.value.length === 0) : false;},
 			function(empty,vals) { return empty.length !== vals[0].length;}
@@ -52,7 +49,7 @@ function validateDataInput(chartProps) {
 	}
 
 	// Whether a column has something that is NaN but is not nothing (blank) or `null`
-	var nanSeries = somePointTest(
+	const nanSeries = somePointTest(
 			series,
 			function(val) {
 				return (isNaN(val.value) && val.value !== undefined && val.value !== "");
@@ -64,14 +61,14 @@ function validateDataInput(chartProps) {
 	}
 
 	// Are there multiple types of axis entries
-	var entryTypes = unique(series[0].values.map(function(d){return typeof d.entry;}));
+	const entryTypes = uniq(series[0].values.map(function(d){return typeof d.entry;}));
 	if(entryTypes.length > 1 && !chartProps.input.type) {
 		inputErrors.push("CANT_AUTO_TYPE");
 	}
 
 	//Whether an entry column that is supposed to be a Number is not in fact a number
 	if(isNumeric || chartProps.input.type == "numeric") {
-		var badNumSeries = somePointTest(
+		const badNumSeries = somePointTest(
 				series,
 				function(val) { return isNaN(val.entry); }
 			);
@@ -83,7 +80,7 @@ function validateDataInput(chartProps) {
 
 	// Whether an entry column that is supposed to be a date is not in fact a date
 	if(hasDate || chartProps.input.type == "date") {
-		var badDateSeries = somePointTest(
+		const badDateSeries = somePointTest(
 				series,
 				function(val) { return !val.entry.getTime || isNaN(val.entry.getTime()); }
 			);
@@ -92,15 +89,15 @@ function validateDataInput(chartProps) {
 			inputErrors.push("NOT_DATES");
 		}
 
-		var tz_pattern = /([+-]\d\d:*\d\d)/gi;
-		var found_timezones = input.match(tz_pattern);
+		const tz_pattern = /([+-]\d\d:*\d\d)/gi;
+		const found_timezones = input.match(tz_pattern);
 		if(found_timezones && found_timezones.length != series[0].values.length) {
 			inputErrors.push("UNEVEN_TZ");
 		}
 	}
 
 	// Whether a column has numbers that should be divided
-	var largeNumbers = somePointTest(
+	const largeNumbers = somePointTest(
 			series,
 			function(val) { return Math.floor(val.value).toString().length > 4; },
 			function(largeNums, vals) { return largeNums.length > 0;}
@@ -137,9 +134,9 @@ function somePointTest(series, someTest) {
 	});
 }
 
-// Func that checks wheter all data points pass a test
+// Func that checks whether all data points pass a test
 function dataPointTest(series, filterTest, someTest) {
-	var vals = map(series, function(d,i) {
+	const vals = map(series, function(d,i) {
 		return filter(d.values, filterTest);
 	});
 

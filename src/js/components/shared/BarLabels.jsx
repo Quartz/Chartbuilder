@@ -1,55 +1,34 @@
 // Label with the number for a bar.
 // Currently only works for horiz bars
-var React = require("react");
-var PropTypes = React.PropTypes;
-var map = require("lodash/map");
+import React, {PropTypes} from 'react';
+import {map} from 'lodash';
 
-var BarLabels = React.createClass({
-
-	propTypes: {
-		text: PropTypes.string,
-		translate: PropTypes.array,
-		colorIndex: PropTypes.number,
-		formatLabel: PropTypes.func
-	},
-
-	getDefaultProps: function() {
-		return {
-			translate: [0, 0],
-			text: "BarLabels",
-			colorIndex: 0,
-			formatLabel: function(d) { return d; },
-			dy: "0.35em"
-		};
-	},
+class BarLabels extends React.Component {
 
 	// TODO: make this generic (for axis as well)
-	_addPrefSuf: function(formattedLabel, i, numTicks, prefix, suffix) {
+	_addPrefSuf (formattedLabel, i, numTicks, prefix, suffix) {
 		if (i === 0) {
 			return [prefix, formattedLabel, suffix].join("");
 		} else {
 			return formattedLabel;
 		}
-	},
+	}
 
-	_getTransformY: function(yScale, tickValue) {
-		if (yScale.bandwidth) {
-			return yScale(tickValue) + yScale.bandwidth() / 2;
-		} else {
-			return yScale(tickValue);
-		}
-	},
+	_getTransformY (ySc, tickValue) {
+		return (ySc.bandwidth) ? ySc(tickValue) + ySc.bandwidth() / 2
+						: ySc(tickValue);
+	}
 
-	render: function() {
-		var props = this.props;
-		var addPrefSuf = this._addPrefSuf;
-		var numTicks = props.data.length;
-		var getTransformY = this._getTransformY;
+	render () {
+		const props = this.props;
+		const addPrefSuf = this._addPrefSuf;
+		const numTicks = props.data.length;
+		const getTransformY = this._getTransformY;
 
-		var labels = map(props.data, function(d, i) {
-			var formatted = props.formatLabel(d.value)
-			var text = addPrefSuf(formatted, i, numTicks, props.prefix, props.suffix)
-			var yPos = getTransformY(props.yScale, d.entry);
+		const labels = map(props.data, function(d, i) {
+			const formatted = props.formatLabel(d.value)
+			const text = addPrefSuf(formatted, i, numTicks, props.prefix, props.suffix)
+			const yPos = getTransformY(props.yScale, d.entry);
 			return (
 				<text
 					key={i}
@@ -73,7 +52,21 @@ var BarLabels = React.createClass({
 			</g>
 		);
 	}
+};
 
-});
+BarLabels.propTypes = {
+	text: PropTypes.string,
+	translate: PropTypes.array,
+	colorIndex: PropTypes.number,
+	formatLabel: PropTypes.func
+}
+
+BarLabels.defaultProps = {
+	translate: [0, 0],
+	text: "BarLabels",
+	colorIndex: 0,
+	formatLabel: function(d) { return d; },
+	dy: "0.35em"
+}
 
 module.exports = BarLabels;

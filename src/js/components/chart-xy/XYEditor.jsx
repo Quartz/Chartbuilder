@@ -1,48 +1,36 @@
 /*
  * ### Editor interface for XY chart type
  */
+import React, {PropTypes} from 'react';
 
-var React = require("react");
-var PropTypes = React.PropTypes;
-var PureRenderMixin = require("react-addons-pure-render-mixin");
-var update = require("react-addons-update");
-var cx = require("classnames");
+import PureRenderMixin from 'react-addons-pure-render-mixin';
+import update from 'react-addons-update';
+const cx = require("classnames");
 
-var bind = require("lodash/bind");
-var clone = require("lodash/clone");
-var each = require("lodash/each");
-var keys = require("lodash/keys");
-var map = require("lodash/map");
+import {each, clone, map, keys, bind} from 'lodash';
 
-var dateParsers = require("../../util/process-dates").dateParsers;
+const dateParsers = require("../../util/process-dates").dateParsers;
 
 /* Shared Chartbuilder components */
-var DataInput = require("../shared/DataInput.jsx");
-var DateScaleSettings = require("../shared/DateScaleSettings.jsx");
-var NumericScaleSettings = require("../shared/NumericScaleSettings.jsx");
-var XY_yScaleSettings = require("../shared/XY_yScaleSettings.jsx");
+const DataInput = require("../shared/DataInput.jsx");
+const DateScaleSettings = require("../shared/DateScaleSettings.jsx");
+const NumericScaleSettings = require("../shared/NumericScaleSettings.jsx");
+const XY_yScaleSettings = require("../shared/XY_yScaleSettings.jsx");
 
 /* Chartbuilder UI components */
-var chartbuilderUI = require("chartbuilder-ui");
-var Button = chartbuilderUI.Button;
-var ButtonGroup = chartbuilderUI.ButtonGroup;
-var ColorPicker = chartbuilderUI.ColorPicker;
-var Dropdown = chartbuilderUI.Dropdown;
-var LabelledTangle = chartbuilderUI.LabelledTangle;
-var TextInput = chartbuilderUI.TextInput;
-var Toggle = chartbuilderUI.Toggle;
+import {Button, ButtonGroup, ColorPicker, Dropdown, TextInput, LabelledTangle, Toggle} from 'chartbuilder-ui';
 
-var ChartEditorMixin = require("../mixins/ChartEditorMixin.js");
+const ChartEditorMixin = require("../mixins/ChartEditorMixin.js");
 
 /* Available XY chart type options */
-var typeOptions = [
+const typeOptions = [
 	{ title: "Line", content: "Line", value: "line" },
 	{ title: "Columns", content: "Columns", value: "column" },
 	{ title: "Dots", content: "Dots", value: "scatterPlot" }
 ];
 
 /* Available XY axis options */
-var axisOptions = [
+const axisOptions = [
 	{ title: "Left axis", content: "Left axis", value: "left" },
 	{ title: "Right axis", content: "Right axis", value: "right" }
 ];
@@ -54,7 +42,7 @@ var axisOptions = [
  * @instance
  * @memberof editors
  */
-var XYEditor = React.createClass({
+const XYEditor = React.createClass({
 
 	propTypes: {
 		errors: PropTypes.object,
@@ -77,17 +65,17 @@ var XYEditor = React.createClass({
 	},
 
 	render: function() {
-		var chartProps = this.props.chartProps;
-		var scaleSettings = [];
+		const chartProps = this.props.chartProps;
+		const scaleSettings = [];
 
 		/*
 		 * If all but one series is set to secondary axis, don't allow secondary
 		 * axis option
 		*/
-		var allowSecondaryAxis = (chartProps._numSecondaryAxis < (chartProps.data.length - 1));
+		const allowSecondaryAxis = (chartProps._numSecondaryAxis < (chartProps.data.length - 1));
 
 		/* Create a settings component for each data series (column) */
-		var chartSettings = map(chartProps.chartSettings, bind(function(chartSetting, i) {
+		const chartSettings = map(chartProps.chartSettings, bind(function(chartSetting, i) {
 			return (
 				<XY_chartSettings
 					chartSettings={chartProps.chartSettings}
@@ -101,11 +89,11 @@ var XYEditor = React.createClass({
 			);
 		}, this));
 
-		var inputErrors = this.props.errors.messages.filter(function(e) {
+		const inputErrors = this.props.errors.messages.filter(function(e) {
 			return e.location === "input";
 		});
 
-		var axisErrors = this.props.errors.messages.filter(function(e) {
+		const axisErrors = this.props.errors.messages.filter(function(e) {
 			return e.location === "axis";
 		});
 
@@ -216,10 +204,10 @@ var XY_resetLabels = React.createClass({
 		 * We will keep the width cached as it is used to calculate distance from a
 		 * previous label
 		*/
-		var labels = clone(this.props.annotations.labels, true);
+		const labels = clone(this.props.annotations.labels, true);
 		each(keys(labels.values), function(labelKey, i) {
 			if (labelKey !== "hasDragged") {
-				var currLabel = labels.values[i];
+				const currLabel = labels.values[i];
 				if (currLabel.dragged == true) {
 					labels.values[i] = {
 						dragged: false,
@@ -231,14 +219,14 @@ var XY_resetLabels = React.createClass({
 		});
 		/* Tell the app that the labels are no longer dragged */
 		labels.hasDragged = false;
-		var annotations = update(this.props.annotations, { $merge: {
+		const annotations = update(this.props.annotations, { $merge: {
 			labels: labels
 		}});
 		this.props.onUpdate(annotations);
 	},
 
 	render: function() {
-		var className = cx({
+		const className = cx({
 			"label-reset": true,
 			"active": this.props.annotations.labels.hasDragged // only show if we've dragged
 		});
@@ -265,7 +253,7 @@ var XY_resetLabels = React.createClass({
  * @instance
  * @memberof XYEditor
  */
-var XY_chartSettings = React.createClass({
+const XY_chartSettings = React.createClass({
 
 	propTypes: {
 		chartSettings: PropTypes.arrayOf(PropTypes.object),
@@ -277,7 +265,7 @@ var XY_chartSettings = React.createClass({
 
 	_handleSettingsUpdate: function(ix, k, v) {
 		/* Clone the array of objects so that we dont mutate existing state */
-		var chartSettings = map(this.props.chartSettings, clone);
+		const chartSettings = map(this.props.chartSettings, clone);
 		/* We need the index (ix) of the settings object to know which to update */
 		chartSettings[ix][k] = v;
 		/* `axis` and `colorIndex` require reparsing the input and splitting it up */
@@ -285,7 +273,7 @@ var XY_chartSettings = React.createClass({
 	},
 
 	render: function() {
-		var chartSetting = this.props.chartSettings[this.props.index];
+		const chartSetting = this.props.chartSettings[this.props.index];
 		var altAxisToggle = null;
 		if (this.props.allowSecondaryAxis || chartSetting.altAxis) {
 			altAxisToggle = (
@@ -310,7 +298,7 @@ var XY_chartSettings = React.createClass({
 				</h3>
 
 				<div className="section axis-color">
-					<div className="section colorsection">
+					<div className="section colorsection chart">
 						<ColorPicker
 							onChange={this._handleSettingsUpdate.bind(null, this.props.index, "colorIndex")}
 							numColors={this.props.numColors}

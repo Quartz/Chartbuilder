@@ -1,11 +1,10 @@
-var React = require("react");
+import React from 'react';
 
-var Canvas = React.createClass({
-
-	render: function() {
-		var self = this;
+class Canvas extends React.Component {
+	render () {
+		const self = this;
 		return <canvas id="output-canvas"></canvas>;
 	}
-});
+};
 
 module.exports = Canvas;

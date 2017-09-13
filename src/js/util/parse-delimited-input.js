@@ -1,15 +1,16 @@
 // Parse a string of TSV or CSV. Returns a flat array of objects of the form { column: value }
 // as well as the column names using `d3.dsv`
 
-var d3 = require("d3");
-var each = require("lodash/each");
+// Parse a string of TSV or CSV. Returns a flat array of objects of the form { column: value }
+// as well as the column names using `d3.dsv`
+import d3 from 'd3';
+import {each, assign, defaults, uniq} from 'lodash';
+
+const parseUtils = require("./parse-utils");
+const help = require("./helper");
 require("sugar-date");
-var parseUtils = require("./parse-utils");
-var help = require("./helper.js");
-var assign = require("lodash/assign");
-var defaults = require("lodash/defaults");
-var unique = require("lodash/uniq");
-var separators;
+
+let separators;
 
 // We need this to get the current locale's thousands separator
 // Check for localStorage in case we are testing from node
@@ -22,22 +23,22 @@ if (typeof(localStorage) !== 'undefined') {
 	};
 }
 
-var stripChars = [
+const stripChars = [
 	"$",
 	"£",
 	"€",
 	"%"
 ];
 
-var newLineRegex = /\r\n|\r|\n/;
-var parseErrors = [];
+const newLineRegex = /\r\n|\r|\n/;
 
 function parseDelimInput(input, opts) {
-	var hasDate = null;
-	var isNumeric = null;
+
+	let hasDate = null;
+	let isNumeric = null;
 
 	opts = opts || {};
-	var _defaultOpts = defaults(opts, {
+	const _defaultOpts = defaults(opts, {
 		delimiter: parseUtils.detectDelimiter(input),
 		type: opts.type,
 		inputTZ: "Z"
@@ -47,26 +48,28 @@ function parseDelimInput(input, opts) {
 		_defaultOpts.type = "ordinal";
 	}
 
-	parseErrors = [];
+	const parseErrors = [];
 	// create regex of special characters we want to strip out as well as our
 	// computed locale-specific thousands separator.
-	var _stripCharsStr = stripChars.concat([separators.thousands]).reduce(function(a, b) {
+	const _stripCharsStr = stripChars.concat([separators.thousands]).reduce(function(a, b) {
 		return a.concat(parseUtils.escapeRegExp(b));
 	}, []).join("|");
 	var stripCharsRegex = new RegExp(_stripCharsStr, "g");
 
 	var columnNames = input.split(newLineRegex)[0].split(_defaultOpts.delimiter);
+
 	var dsv = d3.dsv(_defaultOpts.delimiter, "text/plain");
 	var all_index_types = [];
 
-	var casted_data = cast_data(input, columnNames, stripCharsRegex, _defaultOpts);
-	var data = casted_data.data;
+	const casted_data = cast_data(input, columnNames, stripCharsRegex, _defaultOpts);
+	let data = casted_data.data;
 	all_index_types = casted_data.indexes;
-	var all_entry_values = casted_data.entries;
-	var index_types = unique(all_index_types);
+
+	const all_entry_values = casted_data.entries;
+	const index_types = uniq(all_index_types);
 
 	if(index_types.length !== 1 && !_defaultOpts.type) {
-		//there is possilby more than one type of data, an error will be thrown in validate-data-input
+		//there is possibly more than one type of data, an error will be thrown in validate-data-input
 	} else {
 		hasDate = _defaultOpts.type ? _defaultOpts.type == "date" : index_types[0] === "date";
 		isNumeric = _defaultOpts.type ? _defaultOpts.type == "numeric" : index_types[0] === "number";
@@ -93,20 +96,25 @@ function parseDelimInput(input, opts) {
 }
 
 function cast_data(input, columnNames, stripCharsRegex, opts) {
-	var dsv = d3.dsv(opts.delimiter, "text/plain");
-	var all_index_types = [];
-	var all_entry_values = [];
 
-	var tz_pattern = /([+-]\d\d:*\d\d)/gi;
-	var found_timezones = input.match(tz_pattern);
+	const dsv = d3.dsv(opts.delimiter, "text/plain");
+	const all_index_types = [];
+	const all_entry_values = [];
 
-	var data = dsv.parse(input, function(d,ii) {
-		var curOffset = Date.create().getTimezoneOffset();
-		var offset = opts.inputTZ !== null ? -help.TZOffsetToMinutes(opts.inputTZ) : curOffset;
+	let hasDate;
+	let isNumeric;
+
+	const tz_pattern = /([+-]\d\d:*\d\d)/gi;
+	const found_timezones = input.match(tz_pattern);
+
+	const data = dsv.parse(input, function(d,ii) {
+
+		const curOffset = Date.create().getTimezoneOffset();
+		const offset = opts.inputTZ !== null ? -help.TZOffsetToMinutes(opts.inputTZ) : curOffset;
+
 		each(columnNames, function(column, i) {
 			if (i === 0) {
 				//first column
-
 				var parsed = parseKeyColumn(d[column], opts.type);
 
 				if(parsed.type == "date") {
@@ -129,14 +137,14 @@ function cast_data(input, columnNames, stripCharsRegex, opts) {
 		return d;
 	});
 
-	var index_types = unique(all_index_types);
+	var index_types = uniq(all_index_types);
 
 	if(index_types.length !== 1 && !opts.type) {
 
 	}
 	else {
-		hasDate = opts.type ? opts.type == "date" : index_types[0] === "date";
-		isNumeric = opts.type ? opts.type == "numeric" : index_types[0] === "number";
+		hasDate = opts.type ? opts.type === "date" : index_types[0] === "date";
+		isNumeric = opts.type ? opts.type === "numeric" : index_types[0] === "number";
 	}
 
 	return {
@@ -180,8 +188,13 @@ function parseKeyColumn(entry, type) {
 	}
 }
 
+function parseDelimInputMaps(input, opts) {
+
+}
+
 module.exports = {
 	parser: parseDelimInput,
+	mapParser: parseDelimInputMaps,
 	_cast_data: cast_data,
 	_parseKeyColumn: parseKeyColumn,
 	_parseValue: parseValue

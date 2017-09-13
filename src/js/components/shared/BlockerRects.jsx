@@ -1,50 +1,31 @@
 // Svg text elements used to describe chart
-var React = require("react");
-var PropTypes = React.PropTypes;
-var map = require("lodash/map");
-var help = require("../../util/helper.js");
-var ordinalAdjust = require("../../util/scale-utils").ordinalAdjust;
+import React, {PropTypes} from 'react';
+import {map} from 'lodash';
+const help = require("../../util/helper.js");
+const ordinalAdjust = require("../../util/scale-utils").ordinalAdjust;
 
-var DY = "0.32em";
+const DY = "0.32em";
 
-var BlockerRect = React.createClass({
+class BlockerRect extends React.Component {
 
-	propTypes: {
-		orient: PropTypes.string,
-		width: PropTypes.number,
-		yScale: PropTypes.func,
-		offset: PropTypes.number,
-		tickValues: PropTypes.array,
-		labelWidths: PropTypes.array,
-		colorIndex: PropTypes.number,
-		tickTextHeight: PropTypes.number
-	},
-
-	getDefaultProps: function() {
-		return {
-			orient: "left",
-			offset: 0
-		}
-	},
-
-	_getTransformX: function(orient, width) {
+	_getTransformX (orient, width) {
 		if (orient == "left") {
 			return 0;
 		} else if (orient == "right") {
 			return width;
 		}
-	},
+	}
 
-	_generateRects: function(props) {
-		var concealerHeight = props.tickTextHeight + props.displayConfig.blockerRectOffset;
+	_generateRects (props) {
+		const concealerHeight = props.tickTextHeight + props.displayConfig.blockerRectOffset;
 
 		return map(props.data, function(label, i) {
-			var rectX = (props.orient === "left") ? 0 : props.labelWidths[i] * -1;
-			var xPos = props.xScale(Math.max(0, label.value));
-			var yPos = ordinalAdjust(props.yScale, label.entry) - (concealerHeight / 2);
+			const rectX = (props.orient === "left") ? 0 : props.labelWidths[i] * -1;
+			const xPos = props.xScale(Math.max(0, label.value));
+			const yPos = ordinalAdjust(props.yScale, label.entry) - (concealerHeight / 2);
 
-			var labelWidths = props.labelWidths[props.seriesNumber];
-			var width = labelWidths[i] + props.displayConfig.blockerRectOffset * 2;
+			const labelWidths = props.labelWidths[props.seriesNumber];
+			const width = labelWidths[i] + props.displayConfig.blockerRectOffset * 2;
 			return (
 				<rect
 					className="blocker-rect"
@@ -56,12 +37,12 @@ var BlockerRect = React.createClass({
 				/>
 			);
 		});
-	},
+	}
 
-	render: function() {
-		var props = this.props;
-		var rects = this._generateRects(props);
-		var transformX = this._getTransformX(props.orient, props.width);
+	render () {
+		const props = this.props;
+		const rects = this._generateRects(props);
+		const transformX = this._getTransformX(props.orient, props.width);
 
 		return (
 			<g
@@ -72,7 +53,22 @@ var BlockerRect = React.createClass({
 			</g>
 		);
 	}
+};
 
-});
+BlockerRect.propTypes = {
+	orient: PropTypes.string,
+	width: PropTypes.number,
+	yScale: PropTypes.func,
+	offset: PropTypes.number,
+	tickValues: PropTypes.array,
+	labelWidths: PropTypes.array,
+	colorIndex: PropTypes.number,
+	tickTextHeight: PropTypes.number
+};
+
+BlockerRect.defaultProps = {
+	orient: "left",
+	offset: 0
+};
 
 module.exports = BlockerRect;

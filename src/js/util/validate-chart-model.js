@@ -6,7 +6,7 @@
  * @memberof helper
 */
 function validate_chart_model(modelStr) {
-	var parsed;
+	let parsed;
 
 	try {
 		parsed = JSON.parse(modelStr);
@@ -14,7 +14,7 @@ function validate_chart_model(modelStr) {
 		throw new TypeError("Chart model is not valid JSON");
 	}
 
-	var isValidChartModel = (parsed.hasOwnProperty("chartProps") && parsed.hasOwnProperty("metadata"));
+	const isValidChartModel = (parsed.hasOwnProperty("chartProps") && parsed.hasOwnProperty("metadata"));
 	if (isValidChartModel) {
 		return parsed;
 	} else {

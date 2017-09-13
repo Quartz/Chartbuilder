@@ -1,14 +1,13 @@
-var React = require("react");
-var update = require("react-addons-update");
-var assign = require("lodash/assign");
-var map = require("lodash/map");
+import React from 'react';
+import update from 'react-addons-update';
+import {assign, map} from 'lodash';
 
 /**
  * ### Functions common to chart renderers
  * @instance
  * @memberof renderers
  */
-var ChartRendererMixin = {
+const ChartRendererMixin = {
 
 	/**
 	 * _applySettingsToData
@@ -22,8 +21,7 @@ var ChartRendererMixin = {
 	 */
 	_applySettingsToData: function(_chartProps, additional) {
 		return map(_chartProps.data, function(d, i) {
-			var series = {};
-			series.key = d.name;
+			let series = {key: d.name};
 			if (additional) {
 				series = assign(series, additional);
 			}
@@ -38,7 +36,7 @@ var ChartRendererMixin = {
 	 * @param v - `this.state` value
 	 */
 	_handleStateUpdate: function(k, v) {
-		var newValue = {};
+		const newValue = {};
 		newValue[k] = v;
 		this.setState(update(this.state, { $merge: newValue }));
 	}

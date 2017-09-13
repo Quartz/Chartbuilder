@@ -2,35 +2,28 @@
  * ### ChartGridXY
  * Render a grid of N columns by N rows of XY (line, column, dot) charts
 */
+import React, {PropTypes} from 'react';
+import update from 'react-addons-update';
 
-var React     = require("react");
-var PropTypes = React.PropTypes;
-var update    = require("react-addons-update");
-
-var bind      = require("lodash/bind");
-var clone     = require("lodash/clone");
-var filter    = require("lodash/filter");
-var map       = require("lodash/map");
-var max       = require("lodash/max");
-var reduce    = require("lodash/reduce");
+import {bind, clone, filter, map, max, reduce} from 'lodash';
 
 /* Helper functions */
-var help = require("../../util/helper.js");
+const help = require("../../util/helper.js");
 
 /* Renderer mixins */
-var ChartRendererMixin = require("../mixins/ChartRendererMixin.js");
+const ChartRendererMixin = require("../mixins/ChartRendererMixin.js");
 
-var HorizontalGridLines = require("../shared/HorizontalGridLines.jsx");
-var HorizontalAxis      = require("../shared/HorizontalAxis.jsx");
-var VerticalGridLines   = require("../shared/VerticalGridLines.jsx");
-var BarGroup            = require("../series/BarGroup.jsx");
-var SvgWrapper          = require("../svg/SvgWrapper.jsx");
-var Chart               = require("../shared/Chart.jsx");
-var VerticalAxis        = require("../shared/VerticalAxis.jsx");
-var SeriesLabel         = require("../shared/SeriesLabel.jsx");
-var scaleUtils          = require("../../util/scale-utils.js");
-var seriesUtils         = require("../../util/series-utils.js");
-var gridUtils           = require("../../util/grid-utils.js");
+const HorizontalGridLines = require("../shared/HorizontalGridLines.jsx");
+const HorizontalAxis      = require("../shared/HorizontalAxis.jsx");
+const VerticalGridLines   = require("../shared/VerticalGridLines.jsx");
+const BarGroup            = require("../series/BarGroup.jsx");
+const SvgWrapper          = require("../svg/SvgWrapper.jsx");
+const Chart               = require("../shared/Chart.jsx");
+const VerticalAxis        = require("../shared/VerticalAxis.jsx");
+const SeriesLabel         = require("../shared/SeriesLabel.jsx");
+const scaleUtils          = require("../../util/scale-utils.js");
+const seriesUtils         = require("../../util/series-utils.js");
+const gridUtils           = require("../../util/grid-utils.js");
 
 /**
  * ### Component that renders xy charts in a chart grid
@@ -41,37 +34,22 @@ var gridUtils           = require("../../util/grid-utils.js");
  * @instance
  * @memberof ChartGridRenderer
  */
-var ChartGridXY = React.createClass({
-
-	propTypes: {
-		editable: PropTypes.bool.isRequired,
-		styleConfig: PropTypes.object.isRequired,
-		displayConfig: PropTypes.shape({
-			margin: PropTypes.obj,
-			padding: PropTypes.obj
-		}).isRequired,
-		chartProps: PropTypes.shape({
-			chartSettings: PropTypes.array.isRequired,
-			data: PropTypes.array.isRequired,
-			scale: PropTypes.object.isRequired,
-			_grid: PropTypes.object.isRequired
-		}).isRequired
-	},
+class ChartGridXY extends React.Component {
 
 	//getInitialState: function() {
 	//},
 
-	shouldComponentUpdate: function(nextProps, nextState) {
+	shouldComponentUpdate (nextProps, nextState) {
 		// Don't render if data is for some reason unavailable
 		if (nextProps.chartProps.data) {
 			return true;
 		} else {
 			return false;
 		}
-	},
+	}
 
 	// get x-axis which can be one of many types
-	_generateXAxis: function(scale, data, range) {
+	_generateXAxis (scale, data, range) {
 		if (scale.hasDate) {
 			return scaleUtils.generateScale("time", scale.dateSettings, data, range)
 		} else if (scale.isNumeric) {
@@ -79,17 +57,17 @@ var ChartGridXY = React.createClass({
 		} else {
 			return scaleUtils.generateScale("ordinal", scale, data, range)
 		}
-	},
+	}
 
 	// render a single chart in the grid. this gets passed to `gridUtils.makeMults` to
 	// render one for each column of data
 	// TODO: have in mind a maybe better way to do this
-	_xyGridBlock: function(gridType, xAxis, yAxis, d, i) {
-		var props = this.props;
-		var isFirstBlock = Math.floor((i + 1) / props.chartProps._grid.cols) === 0;
-		var x1 = (isFirstBlock) ? NaN : 0;
-		var seriesSettings = props.chartProps.chartSettings[i];
-		var elProps;
+	_xyGridBlock (gridType, xAxis, yAxis, d, i) {
+		const props = this.props;
+		const isFirstBlock = Math.floor((i + 1) / props.chartProps._grid.cols) === 0;
+		const x1 = (isFirstBlock) ? NaN : 0;
+		const seriesSettings = props.chartProps.chartSettings[i];
+		let elProps;
 
 		if (gridType === "column") {
 			elProps = {
@@ -107,7 +85,7 @@ var ChartGridXY = React.createClass({
 			};
 		}
 
-		var el = seriesUtils.createSeries(gridType, elProps);
+		const el = seriesUtils.createSeries(gridType, elProps);
 
 		return [
 			<SeriesLabel
@@ -132,23 +110,23 @@ var ChartGridXY = React.createClass({
 			/>,
 			el
 		];
-	},
+	}
 
-	render: function() {
-		var props = this.props;
-		var displayConfig = props.displayConfig;
-		var margin = displayConfig.margin;
-		var styleConfig = props.styleConfig;
-		var chartProps = props.chartProps;
-		var dimensions = props.dimensions;
-		var primaryScale = chartProps.scale.primaryScale;
+	render () {
+		const props = this.props;
+		const displayConfig = props.displayConfig;
+		const margin = displayConfig.margin;
+		const styleConfig = props.styleConfig;
+		const chartProps = props.chartProps;
+		const dimensions = props.dimensions;
+		const primaryScale = chartProps.scale.primaryScale;
 
-		var tickFont = styleConfig.fontSizes.medium + "px " + styleConfig.fontFamilies.axes;
-		var tickTextHeight = help.computeTextWidth("M", tickFont);
-		var tickWidths = scaleUtils.getTickWidths(primaryScale, tickFont);
+		const tickFont = styleConfig.fontSizes.medium + "px " + styleConfig.fontFamilies.axes;
+		const tickTextHeight = help.computeTextWidth("M", tickFont);
+		const tickWidths = scaleUtils.getTickWidths(primaryScale, tickFont);
 
 		// Dimensions of the chart area
-		var chartAreaDimensions = {
+		const chartAreaDimensions = {
 			width: (
 				dimensions.width - margin.left - margin.right -
 				displayConfig.xy.padding.left - displayConfig.xy.padding.right -
@@ -159,18 +137,18 @@ var ChartGridXY = React.createClass({
 			)
 		};
 
-		var outerDimensions = {
+		const outerDimensions = {
 			width: dimensions.width,
 			height: dimensions.height + margin.top + margin.bottom +
 				displayConfig.xy.padding.bottom
 		}
 
 		// range for all charts in grid (outer)
-		var xRangeOuter = [props.styleConfig.xOverTick, chartAreaDimensions.width];
-		var yRangeOuter = [chartAreaDimensions.height, 0];
+		const xRangeOuter = [props.styleConfig.xOverTick, chartAreaDimensions.width];
+		const yRangeOuter = [chartAreaDimensions.height, 0];
 
 		// place grid elements using gridScales generated by d3
-		var gridScales = gridUtils.createGridScales(chartProps._grid, {
+		const gridScales = gridUtils.createGridScales(chartProps._grid, {
 			x: xRangeOuter,
 			y: yRangeOuter
 		}, {
@@ -180,15 +158,15 @@ var ChartGridXY = React.createClass({
 			yOuterPadding: props.displayConfig.gridPadding.yOuterPadding
 		});
 
-		var xRangeInner = [0, gridScales.cols.rangeBand()];
-		var yRangeInner = [gridScales.rows.rangeBand() - displayConfig.xy.padding.bottom, displayConfig.afterLegend];
-		var xAxis = this._generateXAxis(chartProps.scale, chartProps.data, xRangeInner);
-		var yAxis = scaleUtils.generateScale("linear", primaryScale, chartProps.data, yRangeInner);
+		const xRangeInner = [0, gridScales.cols.rangeBand()];
+		const yRangeInner = [gridScales.rows.rangeBand() - displayConfig.xy.padding.bottom, displayConfig.afterLegend];
+		const xAxis = this._generateXAxis(chartProps.scale, chartProps.data, xRangeInner);
+		const yAxis = scaleUtils.generateScale("linear", primaryScale, chartProps.data, yRangeInner);
 
 		// `Outer` is the common wrapper component that will be used for each chart
 		// in the grid
-		var Outer = React.createFactory(Chart);
-		var outerProps = {
+		const Outer = React.createFactory(Chart);
+		const outerProps = {
 			chartType: "xy-grid",
 			styleConfig: props.styleConfig,
 			displayConfig: displayConfig,
@@ -200,14 +178,14 @@ var ChartGridXY = React.createClass({
 			tickFont: tickFont
 		};
 
-		var renderGridFunc = this._xyGridBlock.bind(null, chartProps._grid.type, xAxis, yAxis);
-		var grid = gridUtils.makeMults(Outer, outerProps, chartProps.data, gridScales, renderGridFunc);
+		const renderGridFunc = this._xyGridBlock.bind(null, chartProps._grid.type, xAxis, yAxis);
+		const grid = gridUtils.makeMults(Outer, outerProps, chartProps.data, gridScales, renderGridFunc);
 
 		// create vertical axis and grid lines for each row.
 		// this should possibly be part of the grid generation
 		// and could be its own wrapper component
-		var verticalAxes = map(gridScales.rows.domain(), function(row, i) {
-			var yPos = gridScales.rows(i);
+		const verticalAxes = map(gridScales.rows.domain(), function(row, i) {
+			const yPos = gridScales.rows(i);
 			return (
 				<g
 					className="axis grid-row-axis"
@@ -262,6 +240,21 @@ var ChartGridXY = React.createClass({
 			</SvgWrapper>
 		);
 	}
-});
+};
+
+ChartGridXY.propTypes = {
+	editable: PropTypes.bool.isRequired,
+	styleConfig: PropTypes.object.isRequired,
+	displayConfig: PropTypes.shape({
+		margin: PropTypes.obj,
+		padding: PropTypes.obj
+	}).isRequired,
+	chartProps: PropTypes.shape({
+		chartSettings: PropTypes.array.isRequired,
+		data: PropTypes.array.isRequired,
+		scale: PropTypes.object.isRequired,
+		_grid: PropTypes.object.isRequired
+	}).isRequired
+};
 
 module.exports = ChartGridXY;

@@ -1,20 +1,12 @@
 // Svg text elements used to describe chart
-var React = require("react");
-var PropTypes = React.PropTypes;
-var line = require("d3").svg.line();
+import React, {PropTypes} from 'react';
+const line = require("d3").svg.line();
 
-var LineSeries = require("./LineSeries.jsx")
-var MarkSeries = require("./MarkSeries.jsx")
+const LineSeries = require("./LineSeries.jsx")
+const MarkSeries = require("./MarkSeries.jsx")
 
-var LineMarkSeries = React.createClass({
-
-	propTypes: {
-		data: PropTypes.array,
-		xScale: PropTypes.func,
-		yScale: PropTypes.func
-	},
-
-	render: function() {
+class LineMarkSeries extends React.Component {
+	render () {
 		return (
 			<g className="series line-mark-series">
 				<LineSeries {...this.props} />
@@ -22,7 +14,13 @@ var LineMarkSeries = React.createClass({
 			</g>
 		);
 	}
+};
 
-});
+LineMarkSeries.propTypes = {
+	data: PropTypes.array,
+	xScale: PropTypes.func,
+	yScale: PropTypes.func
+}
+
 
 module.exports = LineMarkSeries;

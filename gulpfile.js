@@ -3,6 +3,7 @@ var browserSync = require("browser-sync");
 var buffer = require("vinyl-buffer");
 var del = require("del");
 var nib = require("nib");
+var babelify = require('babelify');
 var reload = browserSync.reload;
 
 // browserify
@@ -61,11 +62,11 @@ gulp.task("browserify:dev", function () {
 		debug: true,
 		cache: {},
 		packageCache: {},
-		fullPaths: true
+		fullPaths: true,
+    	transform: [[babelify, {plugins: ['lodash'], presets: ['babel-preset-react', 'react', 'es2015']}]]
 	};
 
 	var bundler = watchify(browserify(props)
-		.transform("babelify", {presets: ["react"]})
 		.transform(envify({ NODE_ENV: "dev" })
 		));
 
@@ -92,7 +93,7 @@ gulp.task("browserify:test", function () {
 	var bundler = browserify("./test/test-page/main.js", {
 				debug: true
 			})
-			.transform("babelify", {presets: ["react"]})
+			.transform("babelify", {plugins: ['lodash'], presets: ['babel-preset-react', 'react', 'es2015']})
 			.transform(envify({ NODE_ENV: "dev" }));
 
 	return bundler.bundle()
@@ -103,7 +104,7 @@ gulp.task("browserify:test", function () {
 
 gulp.task("browserify:prod", function () {
 	var bundler = browserify(config.paths.src.js + "/index.js")
-			.transform("babelify", {presets: ["react"]})
+			.transform("babelify", {plugins: ['lodash'], presets: ['babel-preset-react', 'react', 'es2015']})
 			.transform(envify({ NODE_ENV: "prod" }));
 
 	return bundler.bundle()
@@ -151,7 +152,7 @@ gulp.task("copy-fonts", function () {
 });
 
 gulp.task("copy-assets", function () {
-	return gulp.src(config.paths.src.assets + "/**")
+	return gulp.src([config.paths.src.assets + "/**", config.paths.src.datasets + "/**"])
 		.pipe(changed(config.paths.build.assets))
 		.pipe(gulp.dest(config.paths.build.assets))
 		.pipe(reload({ stream: true }));

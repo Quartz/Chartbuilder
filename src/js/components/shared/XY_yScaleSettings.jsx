@@ -1,14 +1,12 @@
-var React = require("react");
-var PropTypes = React.PropTypes;
-var clone = require("lodash/clone");
 
-var ScaleReset = require("./ScaleReset.jsx");
+import React, {PropTypes} from 'react';
+import {clone} from 'lodash';
+
+const ScaleReset = require("./ScaleReset.jsx");
 
 /* Chartbuilder UI components */
-var chartbuilderUI = require("chartbuilder-ui");
-var AlertGroup = chartbuilderUI.AlertGroup;
-var LabelledTangle = chartbuilderUI.LabelledTangle;
-var TextInput = chartbuilderUI.TextInput;
+
+import {AlertGroup, LabelledTangle, TextInput} from 'chartbuilder-ui';
 
 /**
  * Y scale settings for XY charts. Used in both XY and chart grid, and most
@@ -16,22 +14,16 @@ var TextInput = chartbuilderUI.TextInput;
  * @instance
  * @memberof editors
  */
-var XY_yScaleSettings = React.createClass({
+class XY_yScaleSettings extends React.Component {
+	constructor(props) {
+		super(props);
+		this._handleScaleUpdate = this._handleScaleUpdate.bind(this);
+		this._handleDomainUpdate = this._handleDomainUpdate.bind(this);
+		this._renderErrors = this._renderErrors.bind(this);
+	}
 
-	propTypes: {
-		className: PropTypes.string,
-		id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-		name: PropTypes.string,
-		onReset: PropTypes.func,
-		onUpdate: PropTypes.func.isRequired,
-		scale: PropTypes.object.isRequired,
-		stepNumber: PropTypes.string,
-		titleOverride: PropTypes.string,
-		errors: PropTypes.array
-	},
-
-	_handleScaleUpdate: function(k, v) {
-		var scale = clone(this.props.scale, true);
+	_handleScaleUpdate (k, v) {
+		const scale = clone(this.props.scale, true);
 
 		if(k != "precision") {
 			scale[this.props.id].precision = 0;
@@ -39,10 +31,10 @@ var XY_yScaleSettings = React.createClass({
 
 		scale[this.props.id][k] = v;
 		this.props.onUpdate(scale);
-	},
+	}
 
-	_handleDomainUpdate: function(k, v) {
-		var scale = clone(this.props.scale, true);
+	_handleDomainUpdate (k, v) {
+		const scale = clone(this.props.scale, true);
 		scale[this.props.id].custom = true;
 		if (k == "min") {
 			scale[this.props.id].domain[0] = v;
@@ -50,9 +42,9 @@ var XY_yScaleSettings = React.createClass({
 			scale[this.props.id].domain[1] = v;
 		}
 		this.props.onUpdate(scale);
-	},
+	}
 
-	_renderErrors: function() {
+	_renderErrors () {
 
 		if (!this.props.errors) {
 			return null;
@@ -65,11 +57,11 @@ var XY_yScaleSettings = React.createClass({
 				</div>
 			);
 		}
-	},
+	}
 
-	render: function() {
-		var currScale = this.props.scale[this.props.id];
-		var errors = this._renderErrors();
+	render () {
+		const currScale = this.props.scale[this.props.id];
+		const errors = this._renderErrors();
 
 		/*
 		 * Figure out the amount by which to increment the tangle (drag) values: Eg
@@ -79,16 +71,16 @@ var XY_yScaleSettings = React.createClass({
 		 * < 10000 = 100
 		 * And so on
 	  */
-		var tangleStep;
-		var range = Math.abs(currScale.domain[1] - currScale.domain[0]);
+		let tangleStep;
+		const range = Math.abs(currScale.domain[1] - currScale.domain[0]);
 		if (range <= 10) {
 			tangleStep = 0.5;
 		} else {
-			var numDigits = range.toString().length;
+			const numDigits = range.toString().length;
 			tangleStep = Math.pow(10, (numDigits - 2));
 		}
 
-		var tickSetting;
+		let tickSetting;
 		if (this.props.id === "primaryScale") {
 			tickSetting = (
 				<LabelledTangle
@@ -104,7 +96,7 @@ var XY_yScaleSettings = React.createClass({
 			);
 		}
 
-		var title_block = (
+		let title_block = (
 			<h2 className="scale-option-title">
 				<span className="step-number">{this.props.stepNumber}</span>
 				{this.props.titleOverride ? this.props.titleOverride : "Configure the " + this.props.name + " axis"}
@@ -176,6 +168,18 @@ var XY_yScaleSettings = React.createClass({
 			</div>
 		);
 	}
-});
+};
+
+XY_yScaleSettings.propTypes = {
+	className: PropTypes.string,
+	id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+	name: PropTypes.string,
+	onReset: PropTypes.func,
+	onUpdate: PropTypes.func.isRequired,
+	scale: PropTypes.object.isRequired,
+	stepNumber: PropTypes.string,
+	titleOverride: PropTypes.string,
+	errors: PropTypes.array
+};
 
 module.exports = XY_yScaleSettings;

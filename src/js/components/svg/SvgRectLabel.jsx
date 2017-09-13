@@ -3,13 +3,13 @@
  * The rect is removed on drag
  */
 
-var React = require("react");
-var ReactDOM = require("react-dom");
-var PureRenderMixin = require("react-addons-pure-render-mixin");
-var isEqual = require("lodash/isEqual");
-var assign = require("lodash/assign");
-var PropTypes = React.PropTypes;
-var d3 = require("d3");
+import React, {PropTypes} from 'react';
+import ReactDOM from 'react-dom';
+
+import PureRenderMixin from 'react-addons-pure-render-mixin';
+
+import d3 from 'd3';
+import {isEqual, assign} from 'lodash';
 
 /**
  * Render labels that are either automatically placed into a legend, or can be
@@ -17,78 +17,49 @@ var d3 = require("d3");
  * @instance
  * @memberof RendererWrapper
  */
-var SvgRectLabel = React.createClass({
+class SvgRectLabel extends React.Component {
 
-	propTypes: {
-		text: PropTypes.string,
-		settings: PropTypes.shape({
-			dragged: PropTypes.bool,
-			name: PropTypes.string,
-			width: PropTypes.number,
-			x: PropTypes.number,
-			y: PropTypes.number,
-			val_x: PropTypes.date,
-			val_y: PropTypes.number
-		}).isRequired,
-		editable: PropTypes.bool.isRequired,
-		dimensions: PropTypes.shape({
-			width: PropTypes.number,
-			height: PropTypes.number
-		}).isRequired,
-		prevNode: PropTypes.object,
-		margin: PropTypes.object,
-		scale: PropTypes.shape({
-			x: PropTypes.object,
-			y: PropTypes.object
-		}),
-		onPositionUpdate: PropTypes.func.isRequired
-	},
+	constructor(props) {
+    super(props);
 
-	getDefaultProps: function() {
-		return {
-			settings: {
-				x: 0,
-				y: 0,
-				val_x: null,
-				val_y: null,
-				dragged: false,
-			}
-		};
-	},
-
-	getInitialState: function() {
-		return assign({
+    this.state = assign({
 			dragging: false,
 			origin: { x: 0, y: 0 },
 			values: { x: 0, y: 0 }
 		}, this._computeNewState(this.props));
-	},
 
-	shouldComponentUpdate: function(nextProps, nextState) {
-		var newProps = (!isEqual(this.props, nextProps));
-		var newDrag = (this.state.dragging !== nextState.dragging);
-		var hasValCoords = (nextProps.settings.val_x && nextProps.settings.val_y);
+		this._getSVGMousePosition = this._getSVGMousePosition.bind(this)
+		this._onMouseDown = this._onMouseDown.bind(this);
+		this._onMouseMove = this._onMouseMove.bind(this);
+		this._onMouseUp = this._onMouseUp.bind(this);
+		this._getSVGParent = this._getSVGParent.bind(this);
+  }
+
+	shouldComponentUpdate (nextProps, nextState) {
+		const newProps = (!isEqual(this.props, nextProps));
+		const newDrag = (this.state.dragging !== nextState.dragging);
+		const hasValCoords = (nextProps.settings.val_x && nextProps.settings.val_y);
 
 		return (newProps || newDrag || nextState.dragging || hasValCoords);
-	},
+	}
 
-	componentWillReceiveProps: function(nextProps) {
-		var newState = this._computeNewState(nextProps);
+	componentWillReceiveProps (nextProps) {
+		const newState = this._computeNewState(nextProps);
 		this.setState(newState);
-	},
+	}
 
-	_computeNewState: function(props) {
-		var xScale = props.scale.xScale;
-		var yScale = props.scale.yScale;
+	_computeNewState (props) {
+		const xScale = props.scale.xScale;
+		const yScale = props.scale.yScale;
 
-		var proportionalComputedPos = this._fromPropotionalPostion(props.settings, props);
+		const proportionalComputedPos = this._fromPropotionalPostion(props.settings, props);
 
-		var valueComputedPos = this._fromValuePosition({
+		const valueComputedPos = this._fromValuePosition({
 			x: props.settings.val_x,
 			y: props.settings.val_y
 		}, xScale, yScale);
 
-		var elementPos = {
+		const elementPos = {
 			x: valueComputedPos.x || proportionalComputedPos.x,
 			y: valueComputedPos.y || proportionalComputedPos.y
 		};
@@ -100,34 +71,34 @@ var SvgRectLabel = React.createClass({
 			yScale: yScale,
 			xScale: xScale
 		}
-	},
+	}
 
-	_getSVGParent: function(el) {
+	_getSVGParent (el) {
 		// we need the parent SVG to compute mouse position
 		if (el.parentNode.tagName == "svg") {
 			return el.parentNode;
 		} else {
 			return this._getSVGParent(el.parentNode);
 		}
-	},
+	}
 
-	_getSVGMousePosition: function(e) {
+	_getSVGMousePosition (e) {
 		// get SVG mouse position accounting for the location of SVG
 		// see https://stackoverflow.com/questions/10298658/mouse-position-inside-autoscaled-svg
 		// and https://github.com/mbostock/d3/blob/master/src/event/mouse.js
-		var svg = this.state.parentSVG;
-		var rect = svg.getBoundingClientRect();
-		var pos = {
+		const svg = this.state.parentSVG;
+		const rect = svg.getBoundingClientRect();
+		const pos = {
 			x: e.clientX - rect.left - svg.clientLeft,
 			y: e.clientY - rect.top - svg.clientTop
 		};
 		return pos;
-	},
+	}
 
-	_onMouseDown: function(e) {
+	_onMouseDown (e) {
 		// only respect left mouse button
 		if (e.button !== 0) { return; }
-		var mousePos = this._getSVGMousePosition(e);
+		const mousePos = this._getSVGMousePosition(e);
 		this._updatePosition({
 			name: this.props.text,
 			x: this.props.settings.x,
@@ -158,16 +129,16 @@ var SvgRectLabel = React.createClass({
 
 		e.stopPropagation();
 		e.preventDefault();
-	},
+	}
 
-	_onMouseMove: function(e) {
+	_onMouseMove (e) {
 		if (!this.state.dragging) {
 			return;
 		}
 
-		var mousePos = this._getSVGMousePosition(e);
-		var deltaX = (mousePos.x - this.state.origin.x);
-		var deltaY = (mousePos.y - this.state.origin.y);
+		const mousePos = this._getSVGMousePosition(e);
+		const deltaX = (mousePos.x - this.state.origin.x);
+		const deltaY = (mousePos.y - this.state.origin.y);
 
 		this.setState({
 			dragging: true,
@@ -183,20 +154,20 @@ var SvgRectLabel = React.createClass({
 
 		e.stopPropagation();
 		e.preventDefault();
-	},
+	}
 
-	_onMouseUp: function(e) {
+	_onMouseUp (e) {
 		this.setState({ dragging: false });
 		this._refreshPosition();
 
 		e.stopPropagation();
 		e.preventDefault();
-	},
+	}
 
-	_refreshPosition: function(){
+	_refreshPosition () {
 		if(this.props.settings.dragged) {
-			var pos = this._toProportionalPosition(this.state.element);
-			var vals = this._toValuePosition(this.state.element);
+			const pos = this._toProportionalPosition(this.state.element);
+			const vals = this._toValuePosition(this.state.element);
 			this._updatePosition({
 				name: this.props.text,
 				x: pos.x,
@@ -206,14 +177,13 @@ var SvgRectLabel = React.createClass({
 				dragged: true
 			});
 		}
+	}
 
-	},
-
-	_updatePosition: function(posObj) {
+	_updatePosition (posObj) {
 		this.props.onPositionUpdate(this.props.index, posObj);
-	},
+	}
 
-	_toProportionalPosition: function(pos,props){
+	_toProportionalPosition (pos,props){
 		if (!props) {
 			props = this.props;
 		}
@@ -221,9 +191,9 @@ var SvgRectLabel = React.createClass({
 			x: pos.x / props.dimensions.width,
 			y: pos.y / props.dimensions.height,
 		};
-	},
+	}
 
-	_fromPropotionalPostion: function(pos,props){
+	_fromPropotionalPostion (pos,props){
 		if (!props) {
 			props = this.props;
 		}
@@ -231,9 +201,9 @@ var SvgRectLabel = React.createClass({
 			x: pos.x * props.dimensions.width,
 			y: pos.y * props.dimensions.height,
 		};
-	},
+	}
 
-	_fromValuePosition: function(vals,xScale,yScale) {
+	_fromValuePosition (vals,xScale,yScale) {
 		if(!xScale) {
 			xScale = this.state.xScale;
 		}
@@ -246,9 +216,9 @@ var SvgRectLabel = React.createClass({
 			x: vals.x ? xScale(vals.x)-this.props.offset.x : 0,
 			y: vals.y ? yScale(vals.y)-this.props.offset.y : 0
 		};
-	},
+	}
 
-	_toValuePosition: function(pos,xScale,yScale) {
+	_toValuePosition (pos,xScale,yScale) {
 		if(!xScale) {
 			xScale = this.state.xScale;
 		}
@@ -262,14 +232,14 @@ var SvgRectLabel = React.createClass({
 			x: pos.x !== 0 ? xScale.invert(pos.x+this.props.offset.x):null,
 			y: pos.y !== 0 ? yScale.invert(pos.y+this.props.offset.y):null
 		};
-	},
+	}
 
-	_setLegendPosition: function(nextProps, node) {
+	_setLegendPosition (nextProps, node) {
 		// Update label positions
-		var nodeBBox = node.getBBox();
-		var prevNode = nextProps.prevNode;
-		var x;
-		var y;
+		const nodeBBox = node.getBBox();
+		const prevNode = nextProps.prevNode;
+		let x;
+		let y;
 
 		// only place label if it hasn't been dragged
 		// compute based on previous node position, but only if it exists
@@ -324,18 +294,18 @@ var SvgRectLabel = React.createClass({
 					width: nodeBBox.width
 				});
 		}
-	},
+	}
 
-	componentDidUpdate: function(prevProps) {
+	componentDidUpdate (prevProps) {
 		// when label updates, check if its width is different. if so, update it
-		var isLabelTextNew = (this.props.text !== prevProps.text);
-		var isReset = (prevProps.settings.dragged === true && this.props.settings.dragged === false);
-		var newConfig = !isEqual(this.props.labelConfig, prevProps.labelConfig);
+		const isLabelTextNew = (this.props.text !== prevProps.text);
+		const isReset = (prevProps.settings.dragged === true && this.props.settings.dragged === false);
+		const newConfig = !isEqual(this.props.labelConfig, prevProps.labelConfig);
 
 		if (isLabelTextNew || isReset || newConfig) {
-			var node = ReactDOM.findDOMNode(this);
-			var nodeBBox = node.getBBox();
-			var prevNode = this.props.prevNode;
+			const node = ReactDOM.findDOMNode(this);
+			const nodeBBox = node.getBBox();
+			const prevNode = this.props.prevNode;
 			this._updatePosition({
 				name: this.props.text,
 				x: this.props.settings.x,
@@ -347,13 +317,13 @@ var SvgRectLabel = React.createClass({
 			});
 		}
 
-	},
+	}
 
-	componentDidMount: function() {
+	componentDidMount () {
 		// Set default position of left-most label
-		var node = ReactDOM.findDOMNode(this);
-		var nodeBBox = node.getBBox();
-		var parentSVG = this._getSVGParent(node);
+		const node = ReactDOM.findDOMNode(this);
+		const nodeBBox = node.getBBox();
+		const parentSVG = this._getSVGParent(node);
 		if (!node.previousSibling) {
 			this._updatePosition({
 				name: this.props.text,
@@ -365,7 +335,7 @@ var SvgRectLabel = React.createClass({
 				width: nodeBBox.width
 			});
 		} else if (this.props.prevNode) {
-			var x = ((this.props.prevNode.x * this.props.dimensions.width) +
+			const x = ((this.props.prevNode.x * this.props.dimensions.width) +
 							 this.props.prevNode.width +
 							 this.props.labelConfig.xMargin) / this.props.dimensions.width;
 
@@ -380,19 +350,19 @@ var SvgRectLabel = React.createClass({
 			});
 		}
 		this.setState({ parentSVG: parentSVG });
-	},
+	}
 
-	_addDragEvents: function() {
+	_addDragEvents () {
 		document.addEventListener("mousemove", this._onMouseMove);
 		document.addEventListener("mouseup", this._onMouseUp);
-	},
+	}
 
-	_removeDragEvents: function() {
+	_removeDragEvents () {
 		document.removeEventListener("mousemove", this._onMouseMove);
 		document.removeEventListener("mouseup", this._onMouseUp);
-	},
+	}
 
-	componentWillUpdate: function(nextProps, nextState) {
+	componentWillUpdate (nextProps, nextState) {
 		if (!nextProps.settings.dragged) {
 			this._setLegendPosition(nextProps, ReactDOM.findDOMNode(this));
 		}
@@ -407,12 +377,11 @@ var SvgRectLabel = React.createClass({
 				this._removeDragEvents();
 			}
 		}
-	},
+	}
+	render () {
 
-	render: function() {
-
-		var colorClass = "color-index-" + this.props.colorIndex.toString();
-		var translate;
+		const colorClass = "color-index-" + this.props.colorIndex.toString();
+		let translate;
 		// if we are dragging, get position from local state
 		if (this.state.dragging) {
 			translate = [this.state.element.x, this.state.element.y ];
@@ -424,10 +393,10 @@ var SvgRectLabel = React.createClass({
 		}
 
 		// only add rect if we haven't dragged
-		var rect = null;
-		var textOffsetX = null;
-		var textOffsetY = null;
-		var dy = "0.35em";
+		let rect = null;
+		let textOffsetX = null;
+		let textOffsetY = null;
+		let dy = "0.35em";
 
 		if (!this.props.settings.dragged) {
 			rect = <rect
@@ -439,13 +408,13 @@ var SvgRectLabel = React.createClass({
 			textOffsetX = this.props.labelConfig.rectSize + this.props.labelConfig.textMargin;
 			textOffsetY = 0;
 		} else {
-			textXOffset = 0;
+			textOffsetX = 0;
 			textOffsetY = 0;
 			dy = 0
 		}
 
-		var ch_size = 9
-		var crosshair = null
+		const ch_size = 9
+		let crosshair = null
 
 		if(this.state.dragging) {
 			crosshair = <g className="crosshair">
@@ -454,8 +423,8 @@ var SvgRectLabel = React.createClass({
 			</g>
 		}
 
-		var handleMouseDown = null;
-		var draggableClass = "";
+		let handleMouseDown = null;
+		let draggableClass = "";
 		if (this.props.editable) {
 			handleMouseDown = this._onMouseDown;
 			draggableClass = "draggable";
@@ -481,7 +450,41 @@ var SvgRectLabel = React.createClass({
 			</g>
 		);
 	}
+};
 
-});
+SvgRectLabel.propTypes = {
+	text: PropTypes.string,
+	settings: PropTypes.shape({
+		dragged: PropTypes.bool,
+		name: PropTypes.string,
+		width: PropTypes.number,
+		x: PropTypes.number,
+		y: PropTypes.number,
+		val_x: PropTypes.date,
+		val_y: PropTypes.number
+	}).isRequired,
+	editable: PropTypes.bool.isRequired,
+	dimensions: PropTypes.shape({
+		width: PropTypes.number,
+		height: PropTypes.number
+	}).isRequired,
+	prevNode: PropTypes.object,
+	margin: PropTypes.object,
+	scale: PropTypes.shape({
+		x: PropTypes.object,
+		y: PropTypes.object
+	}),
+	onPositionUpdate: PropTypes.func.isRequired
+};
+
+SvgRectLabel.defaultProps = {
+	settings: {
+			x: 0,
+			y: 0,
+			val_x: null,
+			val_y: null,
+			dragged: false,
+	}
+};
 
 module.exports = SvgRectLabel;

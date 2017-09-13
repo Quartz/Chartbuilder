@@ -1,114 +1,80 @@
 // Svg text elements used to describe chart
-var React = require("react");
-var PropTypes = React.PropTypes;
-var map = require("lodash/map");
-var max = require("lodash/max");
-var help = require("../../util/helper.js");
-var ordinalAdjust = require("../../util/scale-utils").ordinalAdjust;
+import React, {PropTypes} from 'react';
+import {map, max} from 'lodash';
+const help = require("../../util/helper.js");
+const ordinalAdjust = require("../../util/scale-utils").ordinalAdjust;
 
-var DY = "0.32em";
+const DY = "0.32em";
 
-var VerticalAxis = React.createClass({
-
-	propTypes: {
-		orient: PropTypes.string,
-		width: PropTypes.number,
-		yScale: PropTypes.func,
-		offset: PropTypes.shape({
-			x: PropTypes.number,
-			y: PropTypes.number
-		}),
-		tickValues: PropTypes.array,
-		tickFormat: PropTypes.func,
-		prefix: PropTypes.string,
-		suffix: PropTypes.string,
-		tickWidths: PropTypes.shape({
-			widths: PropTypes.array,
-			max: PropTypes.number
-		}),
-		colorIndex: PropTypes.number,
-		tickTextHeight: PropTypes.number
-	},
-
-	getDefaultProps: function() {
-		return {
-			orient: "left",
-			offset: {
-				x: 0,
-				y: 0
-			},
-			tickFormat: function(d) { return d; },
-			textAlign: "outside"
-		}
-	},
-
-	_orientation: {
-		"left": {
-			transformTextX: function(width, textAlign, tickWidth, maxTickWidth) {
-				if (textAlign === "inside") {
-					return tickWidth * -1 + maxTickWidth;
-				} else {
-					return 0;
-				}
-			},
-			textAnchor: {
-				"inside": "end",
-				"outside": "start",
-			},
-			transformRectX: function(textAlign, tickWidth, maxTickWidth) {
+const _orientation = {
+	"left": {
+		transformTextX: function(width, textAlign, tickWidth, maxTickWidth) {
+			if (textAlign === "inside") {
+				return tickWidth * -1 + maxTickWidth;
+			} else {
 				return 0;
 			}
 		},
-		"right": {
-			transformTextX: function(width, textAlign, tickWidth, maxTickWidth) {
-				if (textAlign === "inside") {
-					return maxTickWidth * -1;
-				} else {
-					return tickWidth * -1;
-				}
-			},
-			textAnchor: {
-				"inside": "start",
-				"outside": "end"
-			},
-			transformRectX: function(textAlign, tickWidth, maxTickWidth) {
-				if (textAlign === "inside") {
-					return maxTickWidth * -1;
-				} else {
-					return tickWidth * -1;
-				}
-			}
+		textAnchor: {
+			"inside": "end",
+			"outside": "start",
+		},
+		transformRectX: function(textAlign, tickWidth, maxTickWidth) {
+			return 0;
 		}
 	},
+	"right": {
+		transformTextX: function(width, textAlign, tickWidth, maxTickWidth) {
+			if (textAlign === "inside") {
+				return maxTickWidth * -1;
+			} else {
+				return tickWidth * -1;
+			}
+		},
+		textAnchor: {
+			"inside": "start",
+			"outside": "end"
+		},
+		transformRectX: function(textAlign, tickWidth, maxTickWidth) {
+			if (textAlign === "inside") {
+				return maxTickWidth * -1;
+			} else {
+				return tickWidth * -1;
+			}
+		}
+	}
+}
 
-	_generateText: function(props) {
-		var numTicks = props.tickValues.length;
-		var concealerHeight = props.tickTextHeight + props.displayConfig.blockerRectOffset;
-		var orientation = this._orientation[props.orient]
-		var textAnchor = orientation.textAnchor[props.textAlign];
+class VerticalAxis extends React.Component {
+
+	_generateText (props) {
+		const numTicks = props.tickValues.length;
+		const concealerHeight = props.tickTextHeight + props.displayConfig.blockerRectOffset;
+		const orientation = _orientation[props.orient]
+		const textAnchor = orientation.textAnchor[props.textAlign];
 
 		return map(props.tickValues, function(tickValue, i) {
-			var formatted = props.tickFormat(tickValue);
-			var currTickWidth = props.tickWidths.widths[i];
-			var maxTickWidth = Math.max(currTickWidth, props.tickWidths.max);
+			const formatted = props.tickFormat(tickValue);
+			const currTickWidth = props.tickWidths.widths[i];
+			const maxTickWidth = Math.max(currTickWidth, props.tickWidths.max);
 
-			var rectWidth;
+			let rectWidth;
 			if (props.textAlign === "inside") {
 				rectWidth = maxTickWidth + props.displayConfig.blockerRectOffset;
 			} else {
 				rectWidth = currTickWidth + props.displayConfig.blockerRectOffset
 			}
 
-			var textX = orientation.transformTextX(props.width, props.textAlign, currTickWidth, maxTickWidth);
+			const textX = orientation.transformTextX(props.width, props.textAlign, currTickWidth, maxTickWidth);
 
-			var text;
+			let text;
 			if (i === (numTicks - 1)) {
 				text = [props.prefix, formatted, props.suffix].join("");
 			} else {
 				text = formatted;
 			}
 
-			var transformY = ordinalAdjust(props.yScale, tickValue);
+			const transformY = ordinalAdjust(props.yScale, tickValue);
 
 			return (
 				<g
@@ -133,12 +99,12 @@ var VerticalAxis = React.createClass({
 			)
 
 		});
-	},
+	}
 
-	render: function() {
-		var props = this.props;
-		var text = this._generateText(props);
-		var transformGroup = (props.orient === "left") ? 0 : props.width;
+	render () {
+		const props = this.props;
+		const text = this._generateText(props);
+		const transformGroup = (props.orient === "left") ? 0 : props.width;
 
 		return (
 			<g
@@ -150,7 +116,36 @@ var VerticalAxis = React.createClass({
 			</g>
 		);
 	}
+};
 
-});
+VerticalAxis.propTypes = {
+	orient: PropTypes.string,
+	width: PropTypes.number,
+	yScale: PropTypes.func,
+	offset: PropTypes.shape({
+		x: PropTypes.number,
+		y: PropTypes.number
+	}),
+	tickValues: PropTypes.array,
+	tickFormat: PropTypes.func,
+	prefix: PropTypes.string,
+	suffix: PropTypes.string,
+	tickWidths: PropTypes.shape({
+		widths: PropTypes.array,
+		max: PropTypes.number
+	}),
+	colorIndex: PropTypes.number,
+	tickTextHeight: PropTypes.number
+};
+
+VerticalAxis.defaultProps = {
+		orient: "left",
+		offset: {
+			x: 0,
+			y: 0
+		},
+		tickFormat: (d) => { return d; },
+		textAlign: "outside"
+}
 
 module.exports = VerticalAxis;

@@ -1,22 +1,18 @@
 // Component that handles global metadata, ie data that is universal regardless
 // of chart type. Eg title, source, credit, size.
-
-var React = require("react");
-var PropTypes = React.PropTypes;
-var PureRenderMixin = require("react-addons-pure-render-mixin");
-var clone = require("lodash/clone");
-
-// Flux stores
-var ChartMetadataStore = require("../stores/ChartMetadataStore");
-var ChartViewActions = require("../actions/ChartViewActions");
+import React, {Component, PropTypes} from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 // Chartbuilder UI components
-var chartbuilderUI = require("chartbuilder-ui");
-var ButtonGroup = chartbuilderUI.ButtonGroup;
-var TextInput = chartbuilderUI.TextInput;
+import chartbuilderUI, {ButtonGroup, TextInput} from "chartbuilder-ui";
+
+import {clone} from 'lodash';
+
+// Flux stores
+const VisualViewActions = require("../actions/VisualViewActions");
 
 // Give chart sizes friendly names
-var chart_sizes = [
+const chart_sizes = [
 	{
 		title: "Auto",
 		content: "Auto",
@@ -38,9 +34,21 @@ var chart_sizes = [
 		value: "spotSmall"
 	}
 ];
-
-var text_input_values = [
-	{ name: "title", content: "Title" },
+const map_sizes = [
+	{
+		title: "Auto",
+		content: "Auto",
+		value: "auto"
+	}
+];
+const text_input_values_sub = [
+	{ name: "title", content: "Title", isRequired: true },
+	{ name: "credit", content: "Credit" },
+	{ name: "subtitle", content: "Subtitle" },
+	{ name: "source", content: "Source" }
+];
+const text_input_values = [
+	{ name: "title", content: "Title", isRequired: true  },
 	{ name: "credit", content: "Credit" },
 	{ name: "source", content: "Source" }
 ];
@@ -55,33 +63,20 @@ var text_input_values = [
  * @instance
  * @memberof editors
  */
-var ChartMetadata = React.createClass({
-
-	propTypes: {
-		metadata: PropTypes.shape({
-			chartType: PropTypes.string.isRequired,
-			size: PropTypes.string.isRequired,
-			source: PropTypes.string,
-			credit: PropTypes.string,
-			title: PropTypes.string
-		}),
-		stepNumber: PropTypes.string,
-		additionalComponents: PropTypes.array
-	},
-
+class ChartMetadata extends React.Component {
 	// Get text input types from state
-	getInitialState: function() {
-		return {
-		};
-	},
+
+	constructor(props) {
+    super(props);
+  }
 
 	// Update metadata store with new settings
-	_handleMetadataUpdate: function(k, v) {
-		ChartViewActions.updateMetadata(k, v);
-	},
+	_handleMetadataUpdate (k, v) {
+		VisualViewActions.updateMetadata(k, v);
+	}
 
-	render: function() {
-		var metadata = this.props.metadata;
+	render () {
+		const metadata = this.props.metadata;
 
 		if (this.props.additionalComponents.length > 0) {
 			this.props.additionalComponents.forEach(function(c, i) {
@@ -90,7 +85,10 @@ var ChartMetadata = React.createClass({
 			}, this);
 		}
 		// Create text input field for each metadata textInput
-		var textInputs = text_input_values.map(function(textInput) {
+		const _text_input_values = (this.props.chartProps.visualType === 'map') ? text_input_values_sub : text_input_values;
+		const visual_sizes = (this.props.chartProps.visualType === 'map') ? map_sizes : chart_sizes;
+
+		const textInputs = _text_input_values.map(function(textInput) {
 			return <ChartMetadataText
 				key={textInput.name}
 				name={textInput.name}
@@ -109,17 +107,29 @@ var ChartMetadata = React.createClass({
 				{textInputs}
 				{this.props.additionalComponents}
 				<ButtonGroup
-					buttons={chart_sizes}
+					buttons={visual_sizes}
 					onClick={this._handleMetadataUpdate.bind(null, "size")}
 					value={metadata.size}
 				/>
 			</div>
 		);
 	}
-});
+};
+
+ChartMetadata.propTypes = {
+	metadata: PropTypes.shape({
+		chartType: PropTypes.string.isRequired,
+		size: PropTypes.string.isRequired,
+		source: PropTypes.string,
+		credit: PropTypes.string,
+		title: PropTypes.string
+	}),
+	stepNumber: PropTypes.string,
+	additionalComponents: PropTypes.array
+}
 
 // Small wrapper arount TextInput component specific to metadata
-var ChartMetadataText = React.createClass({
+const ChartMetadataText = React.createClass({
 
 	mixins: [ PureRenderMixin ],
 

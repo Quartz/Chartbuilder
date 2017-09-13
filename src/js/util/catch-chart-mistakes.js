@@ -1,24 +1,24 @@
-var map = require("lodash/map");
-var some = require("lodash/some");
-var reduce = require("lodash/reduce");
-var sizeof = require("sizeof");
+const map = require("lodash/map");
+const some = require("lodash/some");
+const reduce = require("lodash/reduce");
+const sizeof = require("sizeof");
 
-var MAX_BYTES = 240000; // warning for too much data at 240k for chartProps
-var INTERVAL_BASE_VALS = [1, 2, 2.5, 5, 10, 25]; // used to determine "good" tick intervals
-var MAX_TICKS = 8;
+const MAX_BYTES = 240000; // warning for too much data at 240k for chartProps
+const INTERVAL_BASE_VALS = [1, 2, 2.5, 5, 10, 25]; // used to determine "good" tick intervals
+const MAX_TICKS = 8;
 
 function too_much_data(chartProps) {
 	return (sizeof.sizeof(chartProps) > MAX_BYTES);
 }
 
 function axis_ticks_even(scale) {
-	var range = (scale.domain[1] - scale.domain[0]);
-	var minimum = range / MAX_TICKS;
-	var digits = Math.floor(range).toString().length;
-	var multiplier = Math.pow(10, (digits - 2));
+	const range = (scale.domain[1] - scale.domain[0]);
+	const minimum = range / MAX_TICKS;
+	const digits = Math.floor(range).toString().length;
+	const multiplier = Math.pow(10, (digits - 2));
 
-	var acceptable_intervals = reduce(INTERVAL_BASE_VALS, function(prev, curr) {
-		var mult = curr * multiplier;
+	const acceptable_intervals = reduce(INTERVAL_BASE_VALS, function(prev, curr) {
+		const mult = curr * multiplier;
 
 		if (mult >= minimum) {
 			prev = prev.concat([mult]);
@@ -27,7 +27,7 @@ function axis_ticks_even(scale) {
 		return prev;
 	}, []);
 
-	var are_ticks_even = some(acceptable_intervals, function(inter) {
+	const are_ticks_even = some(acceptable_intervals, function(inter) {
 		return all_modulo(scale.tickValues, inter);
 	});
 

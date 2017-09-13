@@ -1,13 +1,10 @@
-var React = require("react");
-var PropTypes = React.PropTypes;
-var update = require("react-addons-update");
+import React, {PropTypes} from 'react';
+import update from 'react-addons-update';
 
-var clone = require("lodash/clone");
+import {clone} from 'lodash';
+import {LabelledTangle, TextInput} from 'chartbuilder-ui';
 
-var chartbuilderUI = require("chartbuilder-ui");
-var LabelledTangle = chartbuilderUI.LabelledTangle;
-var TextInput = chartbuilderUI.TextInput;
-var ScaleReset = require("../shared/ScaleReset.jsx");
+const ScaleReset = require("../shared/ScaleReset.jsx");
 
 /**
  * ### Chart grid xScale settings parent component
@@ -27,20 +24,13 @@ var ScaleReset = require("../shared/ScaleReset.jsx");
  *  stepNumber="4"
  * />
 */
-var ChartGrid_xScaleSettings = React.createClass({
+class ChartGrid_xScaleSettings extends React.Component {
 
-	propTypes: {
-		scale: PropTypes.shape({
-			primaryScale: PropTypes.shape({
-				domain: PropTypes.arrayOf(React.PropTypes.number),
-				precision: PropTypes.number,
-				ticks: PropTypes.number,
-				prefix: PropTypes.string.isRequired,
-				suffix: PropTypes.string.isRequired
-			}),
-		}).isRequired
-	},
-
+	constructor (props) {
+		super(props);
+		this._handleDomainUpdate = this._handleDomainUpdate.bind(this);
+		this._handleScaleUpdate = this._handleScaleUpdate.bind(this);
+	}
 	/**
 	 * _handleScaleUpdate
 	 * Apply new values to the `scale` object and pass it to the parent's callback
@@ -50,14 +40,14 @@ var ChartGrid_xScaleSettings = React.createClass({
 	 * @instance
 	 * @memberof ChartGrid_xScaleSettings
 	 */
-	_handleScaleUpdate: function(k, v) {
-		var primaryScale = clone(this.props.scale.primaryScale);
+	_handleScaleUpdate (k, v) {
+		const primaryScale = clone(this.props.scale.primaryScale);
 		primaryScale[k] = v;
-		var scale = update(this.props.scale, {
+		const scale = update(this.props.scale, {
 			$merge: { primaryScale: primaryScale }
 		});
 		this.props.onUpdate(scale);
-	},
+	}
 
 	/**
 	 * _handleDomainUpdate
@@ -69,8 +59,8 @@ var ChartGrid_xScaleSettings = React.createClass({
 	 * @instance
 	 * @memberof ChartGrid_xScaleSettings
 	 */
-	_handleDomainUpdate: function(k, v) {
-		var scale = clone(this.props.scale, true);
+	_handleDomainUpdate (k, v) {
+		const scale = clone(this.props.scale, true);
 		scale.primaryScale.custom = true;
 		if (k == "min") {
 			scale.primaryScale.domain[0] = v;
@@ -78,13 +68,13 @@ var ChartGrid_xScaleSettings = React.createClass({
 			scale.primaryScale.domain[1] = v;
 		}
 		this.props.onUpdate(scale);
-	},
+	}
 
-	render: function() {
-		var currScale = this.props.scale.primaryScale;
-		var domain = currScale.domain;
+	render () {
+		const currScale = this.props.scale.primaryScale;
+		const domain = currScale.domain;
 
-		var tangleInputs = [
+		const tangleInputs = [
 			<LabelledTangle
 				label="Minimum"
 				labelClass="editor-label"
@@ -105,7 +95,7 @@ var ChartGrid_xScaleSettings = React.createClass({
 			/>
 		];
 
-		var title_block = (
+		let title_block = (
 				<h2 className="scale-option-title">
 					<span className="step-number">{this.props.stepNumber}</span>
 					Set the units, max, and min of the {this.props.axis} axis
@@ -148,6 +138,18 @@ var ChartGrid_xScaleSettings = React.createClass({
 			</div>
 		);
 	}
-});
+};
+
+ChartGrid_xScaleSettings.propTypes = {
+	scale: PropTypes.shape({
+		primaryScale: PropTypes.shape({
+			domain: PropTypes.arrayOf(React.PropTypes.number),
+			precision: PropTypes.number,
+			ticks: PropTypes.number,
+			prefix: PropTypes.string.isRequired,
+			suffix: PropTypes.string.isRequired
+		}),
+	}).isRequired
+};
 
 module.exports = ChartGrid_xScaleSettings;

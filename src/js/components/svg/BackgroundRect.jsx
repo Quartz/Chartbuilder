@@ -1,26 +1,8 @@
-var React = require("react");
-var PropTypes = React.PropTypes;
+import React, {PropTypes} from 'react';
 
-var BackgroundRect = React.createClass({
-
-	propTypes: {
-		dimensions: PropTypes.shape({
-			width: PropTypes.number,
-			height: PropTypes.number
-		}),
-		x: PropTypes.number,
-		y: PropTypes.number
-	},
-
-	getDefaultProps: function() {
-		return {
-			x: 0,
-			y: 0
-		}
-	},
-
-	render: function() {
-		var props = this.props;
+class BackgroundRect extends React.Component {
+	render () {
+		const props = this.props;
 		return (
 			<g className="svg-background-wrap">
 				<rect
@@ -33,7 +15,19 @@ var BackgroundRect = React.createClass({
 			</g>
 		);
 	}
+};
 
-});
+BackgroundRect.propTypes = {
+	dimensions: PropTypes.shape({
+		width: PropTypes.number,
+		height: PropTypes.number
+	}),
+	x: PropTypes.number,
+	y: PropTypes.number
+}
+BackgroundRect.defaultProps = {
+	x: 0,
+	y: 0
+}
 
 module.exports = BackgroundRect;

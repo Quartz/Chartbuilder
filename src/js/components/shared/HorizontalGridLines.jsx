@@ -1,46 +1,31 @@
-var React = require("react");
-var PropTypes = React.PropTypes;
-var map = require("lodash/map");
-var cx = require("classnames");
-var ordinalAdjust = require("../../util/scale-utils").ordinalAdjust;
+import React, {PropTypes} from 'react';
+import {map} from 'lodash';
+const cx = require("classnames");
+const ordinalAdjust = require("../../util/scale-utils").ordinalAdjust;
 
-var VerticalGridLines = React.createClass({
+class VerticalGridLines extends React.Component {
 
-	propTypes: {
-		tickValues: PropTypes.array,
-		orient: PropTypes.string,
-		dimensions: PropTypes.object,
-		yScale: PropTypes.func,
-		offset: PropTypes.shape({
-			x: PropTypes.number,
-			y: PropTypes.number
-		}),
-	},
+	constructor(props) {
+		super(props);
+		this._generateTicks = this._generateTicks.bind(this);
+		this._getRangeExtent = this._getRangeExtent.bind(this);
+	}
 
-	getDefaultProps: function() {
-		return {
-			offset: {
-				x: 0,
-				y: 0
-			}
-		}
-	},
-
-	_getRangeExtent: function(scale) {
+	_getRangeExtent (scale) {
 		if (scale.rangeExtent) {
 			return scale.rangeExtent();
 		} else {
 			return scale.range();
 		}
-	},
+	}
 
-	_generateTicks: function(props) {
-		var getRange = this._getRangeExtent;
+	_generateTicks (props) {
+		const getRange = this._getRangeExtent;
 
 		return map(props.tickValues, function(tickValue, i) {
-			var scalePos = ordinalAdjust(props.yScale, tickValue) + props.offset.y;
-			var x1 = !isNaN(props.x1) ? props.x1 : props.translate[0] * -1;
-			var className = cx("tick", { zero: (tickValue === 0) });
+			const scalePos = ordinalAdjust(props.yScale, tickValue) + props.offset.y;
+			const x1 = !isNaN(props.x1) ? props.x1 : props.translate[0] * -1;
+			const className = cx("tick", { zero: (tickValue === 0) });
 			return (
 				<line
 					key={i}
@@ -52,16 +37,33 @@ var VerticalGridLines = React.createClass({
 				/>
 			)
 		});
-	},
+	}
 
-	render: function() {
+	render () {
 		return (
 			<g className="grid-lines horizontal-grid-lines">
 				{this._generateTicks(this.props)}
 			</g>
 		);
 	}
+};
 
-});
+VerticalGridLines.propTypes = {
+	tickValues: PropTypes.array,
+	orient: PropTypes.string,
+	dimensions: PropTypes.object,
+	yScale: PropTypes.func,
+	offset: PropTypes.shape({
+		x: PropTypes.number,
+		y: PropTypes.number
+	}),
+};
+
+VerticalGridLines.defaultProps = {
+	offset: {
+		x: 0,
+		y: 0
+	}
+};
 
 module.exports = VerticalGridLines;

@@ -1,49 +1,44 @@
-var SessionStore = require("../stores/SessionStore");
-var ChartViewActions = require("../actions/ChartViewActions");
-var ChartbuilderLocalStorageAPI = require("../util/ChartbuilderLocalStorageAPI");
+const SessionStore = require("../stores/SessionStore");
+const VisualViewActions = require("../actions/VisualViewActions");
+const ChartbuilderLocalStorageAPI = require("../util/ChartbuilderLocalStorageAPI");
 
 /* Node modules */
-var React = require("react");
-var cx = require("classnames");
-var PropTypes = React.PropTypes;
+import React, {PropTypes} from 'react';
+const cx = require("classnames");
 
 /* Chartbuilder UI components */
-var chartbuilderUI = require("chartbuilder-ui");
-var Button = chartbuilderUI.Button;
-var timer;
-var TIMER_DURATION = 30000;
+import {Button} from 'chartbuilder-ui';
+let timer;
+const TIMER_DURATION = 300000;
 
 /**
  * Button that persists for `TIMER_DURATION` and allows user to re-load the
  * chart currently saved in `localStorage`. On click, it updates the
  * `SessionStore`.
  */
-var LocalStorageTimer = React.createClass({
-	propTypes: {
-		timerOn: PropTypes.bool.isRequired
-	},
+class LocalStorageTimer extends React.Component {
 
-	_disableTimer: function() {
+	_disableTimer () {
 		clearTimeout(timer);
-		ChartViewActions.stopTimer();
-	},
+		VisualViewActions.stopTimer();
+	}
 
-	_handleLoadChart: function() {
+	_handleLoadChart () {
 		ChartbuilderLocalStorageAPI.getChart();
 		this._disableTimer();
-	},
+	}
 
-	componentWillMount: function() {
+	componentWillMount () {
 		if (this.props.timerOn) {
 			timer = setTimeout(function() {
 				this._disableTimer();
 			}.bind(this), TIMER_DURATION);
-			ChartViewActions.startTimer();
+			VisualViewActions.startTimer();
 		}
-	},
+	}
 
-	render: function() {
-		var className = cx({
+	render () {
+		const className = cx({
 			"load-localstorage": true,
 			"active": this.props.timerOn
 		});
@@ -56,6 +51,10 @@ var LocalStorageTimer = React.createClass({
 			/>
 		);
 	}
-});
+};
+
+LocalStorageTimer.propTypes = {
+	timerOn: PropTypes.bool.isRequired
+};
 
 module.exports = LocalStorageTimer;

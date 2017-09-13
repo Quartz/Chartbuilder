@@ -1,19 +1,11 @@
-var React = require("react");
-var PropTypes = React.PropTypes;
-var BackgroundRect = require("./BackgroundRect.jsx");
-var SvgText = require("./SvgText.jsx");
-var ChartFooter = require("./ChartFooter.jsx");
+import React, {PropTypes} from 'react';
+const BackgroundRect = require("./BackgroundRect.jsx");
+const SvgText = require("./SvgText.jsx");
+const ChartFooter = require("./ChartFooter.jsx");
 
-var SvgWrapper = React.createClass({
+class SvgWrapper extends React.Component {
 
-	propTypes: {
-		outerDimensions: PropTypes.object,
-		metadata: PropTypes.object,
-		margin: PropTypes.object,
-		displayConfig: PropTypes.object
-	},
-
-	_createTitle: function(props) {
+	_createTitle (props) {
 		return (
 			<SvgText
 				text={props.metadata.title}
@@ -26,27 +18,50 @@ var SvgWrapper = React.createClass({
 				className="svg-text-title"
 			/>
 		);
-	},
+	}
 
-	_getYOffset: function(props) {
+	_createSubTitle (props) {
+		const subtitleTrans = props.displayConfig.margin.subtitle || 0;
+		return (
+			<SvgText
+				text={props.metadata.subtitle}
+				key="subtitle"
+				translate={[
+					props.displayConfig.margin.left,
+					subtitleTrans + props.displayConfig.margin.top
+				]}
+				align="top"
+				className="svg-text-subtitle"
+			/>
+		);
+	}
+
+	_getYOffset (props, forSVG) {
+		let afterTitle = 0;
 		if (props.metadata.title.length > 0) {
-			return props.displayConfig.afterTitle;
-		} else {
-			return 0;
+			afterTitle = props.displayConfig.afterTitle + afterTitle;
+			if (props.metadata.subtitle && props.isSmall && !forSVG) {
+				afterTitle = afterTitle + props.displayConfig.margin.subtitle;
+			}
 		}
-	},
+		if (!forSVG && props.isMap && props.metadata.subtitle) {
+			afterTitle = afterTitle + props.displayConfig.margin.subtitle;
+		}
+		return afterTitle
+	}
 
-	render: function() {
-		var props = this.props;
-		var margin = props.displayConfig.margin;
-		var yOffset = this._getYOffset(props);
+	render () {
+		const props = this.props;
+		const margin = props.displayConfig.margin;
+		const yOffset = this._getYOffset(props);
 		// Add to the chart margin if title is present
-		var outerDimensions = {
+
+		const outerDimensions = {
 			width: props.outerDimensions.width,
 			height: props.outerDimensions.height + yOffset
 		};
 
-		var translate = {
+		const translate = {
 			top: margin.top,
 			right: outerDimensions.width - margin.right,
 			bottom: outerDimensions.height - margin.bottom,
@@ -61,9 +76,10 @@ var SvgWrapper = React.createClass({
 			>
 				<BackgroundRect dimensions={outerDimensions} />
 				{this._createTitle(props)}
+				{this._createSubTitle(props)}
 				<g
 					className="chart-margin"
-					transform={"translate(" + [translate.left, translate.top + this._getYOffset(props)] + ")"} >
+					transform={"translate(" + [translate.left, translate.top + this._getYOffset(props, true)] + ")"} >
 					{props.children}
 				</g>
 				<ChartFooter
@@ -75,7 +91,13 @@ var SvgWrapper = React.createClass({
 			</svg>
 		);
 	}
+};
 
-});
+SvgWrapper.propTypes = {
+	outerDimensions: PropTypes.object,
+	metadata: PropTypes.object,
+	margin: PropTypes.object,
+	displayConfig: PropTypes.object
+};
 
 module.exports = SvgWrapper;

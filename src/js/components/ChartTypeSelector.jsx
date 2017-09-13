@@ -2,61 +2,81 @@
 // Delete chartProps that are "private" to certain chart types (namespaced with `_`)
 // and apply setting that carry over to the new type
 
-var React = require("react");
-var clone = require("lodash/clone");
-var map = require("lodash/map");
-var keys = require("lodash/keys");
-var helper = require("../util/helper");
+import React, {Component, PropTypes} from 'react';
+import {clone, map, keys, concat} from 'lodash';
+
+// helpers
+const helper = require("../util/helper");
 
 // Flux actions
-var ChartServerActions = require("../actions/ChartServerActions");
+const VisualServerActions = require("../actions/VisualServerActions");
 
 // Chartbuilder UI components
-var chartbuilderUI = require("chartbuilder-ui");
-var ButtonGroup = chartbuilderUI.ButtonGroup;
+import {ButtonGroup} from 'chartbuilder-ui';
 
-var chartConfig = require("../charts/chart-type-configs");
+const chartConfig = require("../charts/charts/chart-config");
+const mapConfig = require("../charts/maps/map-config");
 
 /**
  * Select a new chart type, copying shared settings over to the new type.
  * @instance
  * @memberof editors
  */
-var ChartTypeSelctor = React.createClass({
+class ChartTypeSelctor extends React.Component{
 
-	/* Generate values for each chart type that can be used to create buttons */
-	getInitialState: function() {
-		var chartTypeButtons = map(keys(chartConfig), function(chartTypeKey) {
+	constructor(props) {
+    super(props);
+
+    /* Generate values for each chart type that can be used to create buttons */
+    const chartTypeButtons = map(keys(chartConfig), function(chartTypeKey) {
 			return {
 				title: chartConfig[chartTypeKey].displayName,
 				content: chartConfig[chartTypeKey].displayName,
 				value: chartTypeKey
 			};
 		});
-		return { chartConfig: chartTypeButtons };
-	},
+		const mapTypeButtons = map(keys(mapConfig), function(mapTypeKey) {
+			return {
+				title: mapConfig[mapTypeKey].displayName,
+				content: mapConfig[mapTypeKey].displayName,
+				value: mapTypeKey
+			};
+		});
+		const allTypeButtons = concat(chartTypeButtons, mapTypeButtons);
+    this.state = { chartConfig: allTypeButtons };
+    this._handleChartTypeChange = this._handleChartTypeChange.bind(this);
+  }
 
 	/*
 	 * Change the chart type
 	 * @param {string} chartType - the new chart type
 	*/
-	_handleChartTypeChange: function(chartType) {
+	_handleChartTypeChange (chartType) {
 		/* Dont rerender if the chart type is the same */
+
 		if (chartType === this.props.metadata.chartType) {
 			return;
 		}
-		var metadata = clone(this.props.metadata);
+		/* If switching from chart to map or vice versa, help the ..
+			 user out with a default dataset
+		*/
+		const visualConfig = chartConfig[chartType] || mapConfig[chartType];
+		const metadata = clone(this.props.metadata);
 		/* Set the new chart type in metadata */
 		metadata.chartType = chartType;
+		/* Set the new visual type in metadata */
+		//chartProps.visualType = visualConfig.defaultProps.chartProps.visualType;
 
-		var prevProps = this.props.chartProps;
-		var newDefaultProps = chartConfig[chartType].defaultProps.chartProps;
-		var prevSettings = prevProps.chartSettings;
-		var newDefaultSettings = newDefaultProps.chartSettings[0];
-		var prevKeys = keys(prevSettings[0]);
+		const prevProps = this.props.chartProps;
+		const newDefaultProps = visualConfig.defaultProps.chartProps;
+		const stylings = newDefaultProps.stylings;
+
+		const prevSettings = prevProps.chartSettings;
+		const newDefaultSettings = newDefaultProps.chartSettings[0];
+		const prevKeys = keys(prevSettings[0]);
 
 		/* Apply any settings that carry over, otherwise ignore them */
-		var newProps = helper.mergeOrApply(newDefaultProps, prevProps);
+		const newProps = helper.mergeOrApply(newDefaultProps, prevProps);
 
 		/*
 		 * For each data series, check whether a `chartSetting` has already been
@@ -67,19 +87,21 @@ var ChartTypeSelctor = React.createClass({
 			return helper.mergeOrApply(newDefaultSettings, prevSettings[i]);
 		});
 
+		newProps.stylings = stylings;
+
 		/* Dispatch the new model to the flux stores */
-		ChartServerActions.receiveModel({
+		VisualServerActions.receiveModel({
 			chartProps: newProps,
 			metadata: metadata
 		});
-	},
+	}
+	render () {
 
-	render: function() {
 		return (
 		<div className="editor-options">
 			<h2>
 				<span className="step-number">1</span>
-				<span>Select chart type</span>
+				<span>Select visual type</span>
 			</h2>
 			<ButtonGroup
 				buttons={this.state.chartConfig}
@@ -90,7 +112,6 @@ var ChartTypeSelctor = React.createClass({
 		 </div>
 		);
 	}
-
-});
+};
 
 module.exports = ChartTypeSelctor;

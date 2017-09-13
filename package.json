@@ -29,6 +29,10 @@
     {
       "name": "David Yanofsky",
       "email": "david@yanofsky.info"
+    },
+    {
+      "name": "Sam Petulla",
+      "email": "sam.petulla@gmail.com"
     }
   ],
   "license": "MIT",
@@ -44,13 +48,21 @@
     "react-addons-pure-render-mixin": "^0.14.7",
     "react-addons-shallow-compare": "^0.14.7",
     "react-addons-update": "^0.14.7",
+    "react-d3-core": "*",
+    "react-d3-map-core": "*",
     "react-dom": "^0.14.7",
     "save-svg-as-png": "git://github.com/nsonnad/saveSvgAsPng.git#clean-svg-fonts",
+    "simple-statistics": "2.2",
     "sizeof": "^1.0.0",
-    "sugar-date": "^1.5.1"
+    "sugar-date": "^1.5.1",
+    "topojson": "^2.2",
+    "turf-centroid": "^3.0.12",
+    "us-abbreviations": "git://github.com/kevinschaul/us-abbreviations"
   },
   "devDependencies": {
-    "babel-preset-react": "^6.22.0",
+    "babel-plugin-lodash": "^3.2.11",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-react": "^6.23.0",
     "babelify": "^7.3.0",
     "browser-sync": "2.x.x",
     "browserify": "^13.0.0",

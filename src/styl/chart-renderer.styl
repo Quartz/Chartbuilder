@@ -170,3 +170,105 @@ svg
 
 .cb-credit-logo
 	fill $color-chart-meta
+
+.polygon-render
+	fill #ddd
+	stroke #ccc
+	stroke-width 0.85px
+
+.state-labels-show
+	fill #000
+	font-family $font-sans
+	font-size 0.8em
+	text-anchor middle
+
+.small .state-labels-show
+	fill #000
+	font-family $font-sans
+	font-size 0.6em
+	text-anchor middle
+
+.state-name
+	font-family $font-sans
+
+.legend-label
+	fill #000
+	font-family $font-sans
+	font-size 1.2em
+	text-anchor start
+
+.small .legend-label
+	fill #000
+	font-family $font-sans
+	font-size 0.8em
+	text-anchor start
+
+.demersdorlingLegend
+	rect
+		fill none
+		stroke #000
+		stroke-width 1px
+	text
+		fill #000
+		font-size 0.8em
+		font-family $font-sans
+		text-anchor middle
+	.small text
+		fill #000
+		font-size 0.6em
+		font-family $font-sans
+		text-anchor middle
+
+.legendsGroup
+	cursor move
+	pointer-events all
+
+.legend-ticks
+	stroke #000
+	stroke-width 1.5px
+
+.legend-text
+	fill #000
+	font-family $font-sans
+	font-size 0.9em
+	text-anchor middle
+
+.small .legend-text
+	fill #000
+	font-family $font-sans
+	font-size 0.6em
+	text-anchor middle
+
+.extra-legend
+	.extra-legend-text
+		fill #000
+		font-family $font-sans
+		font-size 1.1em
+		text-anchor end
+
+.small .extra-legend
+	.extra-legend-text
+		fill #000
+		font-family $font-sans
+		font-size 0.8em
+		text-anchor end
+
+.cartogram-map-render
+	.node
+		text
+			text-anchor middle
+			&.state-name
+				fill #fff
+				font-size 1.25em
+			&.state-values
+				font-size 1em
+				fill #000
+			&.state-name.small
+				fill #fff
+				font-size 1em
+			&.state-values.small
+				font-size 0.8em
+				fill #000
+		rect
+			&.carto-rects
+				stroke-width 1.5px
